@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Github pages + Org mode - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>static site generator</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Github pages + Org mode</h1>
+
+<div id="outline-container-orgd14477d" class="outline-2">
+<h2 id="orgd14477d">介绍</h2>
+<div class="outline-text-2" id="text-orgd14477d">
+<p>
+org-page是一个基于org-mode的静态网站生成器。提供了以下功能：
+</p>
+
+<ul class="org-ul">
+<li>使用git管理org文件和html文件</li>
+<li>可多次编辑</li>
+<li>支持分类</li>
+<li>支持标签</li>
+<li>支持RSS</li>
+<li>支持搜索</li>
+<li>定制主题</li>
+<li>可评论</li>
+<li>网站流量统计</li>
+<li>网站预览</li>
+<li>高度定制</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org634bbff" class="outline-2">
+<h2 id="org634bbff">工作流程</h2>
+<div class="outline-text-2" id="text-org634bbff">
+<ul class="org-ul">
+<li>指定一个git仓库，用source分支管理org文件，用master分支管理html文件。仓库可以手动创建，也可以使用org-page的 <b>op/new-repository</b> 命令创建。</li>
+<li>指定一个基本的提交，默认是最近一次提交。org-page将从source分支读取最近的改变，并标记它们，用于发布文章。</li>
+<li>准备工作。</li>
+<li>发布改变的内容。由于删除文章这种操作不常有，所以org-page不支持。</li>
+<li>更新所有的分类和标签。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb0e387c" class="outline-2">
+<h2 id="orgb0e387c">用法</h2>
+<div class="outline-text-2" id="text-orgb0e387c">
+<p>
+在doc/quick-guide.org中有详细用法。
+</p>
+</div>
+
+<div id="outline-container-org609e707" class="outline-3">
+<h3 id="org609e707">安装</h3>
+<div class="outline-text-3" id="text-org609e707">
+<p>
+从melpa上安装org-page
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgabc41a7" class="outline-3">
+<h3 id="orgabc41a7">配置</h3>
+<div class="outline-text-3" id="text-orgabc41a7">
+<p>
+如果手动安装，则将配置信息放在.emacs文件中。
+</p>
+
+<pre class="example">
+(require 'org-page)
+(setq op/repository-directory "~/Blog")
+(setq op/site-domain "http://pinvondev.github.io/")
+;;; for commenting, you can choose either disqus, duoshuo or hashover
+;;; (setq op/personal-disqus-shortname "your_disqus_shortname")
+;;; (setq op/personal-duoshuo-shortname "your_duoshuo_shortname")
+(setq op/hashover-comments t)
+;;; the configuration below are optional
+;;; (setq op/personal-google-analytics-id "your_google_analytics_id")
+(setq op/personal-github-link "https://github.com/pinvondev")
+(setq op/site-main-title "Pinvon's Blog")
+</pre>
+
+<p>
+使用 <b>op/new-repository</b> 指定配置中的文件夹为本地仓库。
+</p>
+
+<p>
+使用 <b>op/new-post</b> 写文章。
+</p>
+
+<p>
+在发布文章之前，先为本地仓库关联远程仓库。
+</p>
+
+<pre class="example">
+git remote add origin git@pinvondev.github.com/pinvondev/pinvondev.github.io.git
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga0a90ff" class="outline-3">
+<h3 id="orga0a90ff">发布</h3>
+<div class="outline-text-3" id="text-orga0a90ff">
+<p>
+执行以下代码：
+</p>
+<pre class="example">
+(op/do-publication nil "HEAD^1" "~/org-pub/" nil)
+</pre>
+
+<p>
+或
+</p>
+
+<pre class="example">
+(op/do-publication)
+</pre>
+
+<p>
+或
+</p>
+
+<p>
+<b>M-x op/do-publication &lt;Enter&gt;</b> 但是这样做之前，需要把org文件上传到github。
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-org1a89540" class="outline-3">
+<h3 id="org1a89540">预览</h3>
+<div class="outline-text-3" id="text-org1a89540">
+<p>
+<b>M-x op/do-publication-and-preview-site &lt;Enter&gt;</b> ，网站将在 <b>~/.op-tmp</b> 中发布。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3c6f138" class="outline-2">
+<h2 id="org3c6f138">Quick-guide for org-page</h2>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2017-12-29</span>
+        <span title="last modification date" class="post-info">2017-12-29</span>
+        <span title="tags" class="post-info"><a href="/tags/org-page/">org page</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2017/12/29/github-pages-+-org-mode";
+          var disqus_url = "http://pinvondev.github.io/blog/2017/12/29/github-pages-+-org-mode";
+          var disqus_shortname = 'pw_lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
