@@ -1,0 +1,97 @@
+#+TITLE:       Github pages + Org mode
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2017-12-29 五
+#+URI:         /blog/%y/%m/%d/github-pages-+-org-mode
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        org page
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 介绍
+
+org-page是一个基于org-mode的静态网站生成器。提供了以下功能：
+
+- 使用git管理org文件和html文件
+- 可多次编辑
+- 支持分类
+- 支持标签
+- 支持RSS
+- 支持搜索
+- 定制主题
+- 可评论
+- 网站流量统计
+- 网站预览
+- 高度定制
+
+* 工作流程
+
+- 指定一个git仓库，用source分支管理org文件，用master分支管理html文件。仓库可以手动创建，也可以使用org-page的 *op/new-repository* 命令创建。
+- 指定一个基本的提交，默认是最近一次提交。org-page将从source分支读取最近的改变，并标记它们，用于发布文章。
+- 准备工作。
+- 发布改变的内容。由于删除文章这种操作不常有，所以org-page不支持。
+- 更新所有的分类和标签。
+
+* 用法
+
+在doc/quick-guide.org中有详细用法。
+
+** 安装
+
+从melpa上安装org-page
+
+** 配置
+
+如果手动安装，则将配置信息放在.emacs文件中。
+
+#+BEGIN_SRC 
+(require 'org-page)
+(setq op/repository-directory "~/Blog")
+(setq op/site-domain "http://pinvondev.github.io/")
+;;; for commenting, you can choose either disqus, duoshuo or hashover
+;;; (setq op/personal-disqus-shortname "your_disqus_shortname")
+;;; (setq op/personal-duoshuo-shortname "your_duoshuo_shortname")
+(setq op/hashover-comments t)
+;;; the configuration below are optional
+;;; (setq op/personal-google-analytics-id "your_google_analytics_id")
+(setq op/personal-github-link "https://github.com/pinvondev")
+(setq op/site-main-title "Pinvon's Blog")
+#+END_SRC
+
+使用 *op/new-repository* 指定配置中的文件夹为本地仓库。
+
+使用 *op/new-post* 写文章。
+
+在发布文章之前，先为本地仓库关联远程仓库。
+
+#+BEGIN_SRC 
+git remote add origin git@pinvondev.github.com/pinvondev/pinvondev.github.io.git
+#+END_SRC
+
+** 发布
+
+执行以下代码：
+#+BEGIN_SRC 
+(op/do-publication nil "HEAD^1" "~/org-pub/" nil)
+#+END_SRC
+
+或
+
+#+BEGIN_SRC 
+(op/do-publication)
+#+END_SRC
+
+或
+
+*M-x op/do-publication <Enter>* 但是这样做之前，需要把org文件上传到github。
+
+
+
+** 预览
+
+*M-x op/do-publication-and-preview-site <Enter>* ，网站将在 *~/.op-tmp* 中发布。
+
+* Quick-guide for org-page
+
+
