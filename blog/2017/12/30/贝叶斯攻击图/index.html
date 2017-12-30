@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>贝叶斯攻击图 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>贝叶斯攻击图</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org765c79b">攻击行为预测</a>
+<ul>
+<li><a href="#org54fdef5">攻击图</a>
+<ul>
+<li><a href="#orgcd1283d">攻击图生成</a></li>
+<li><a href="#org160f748">攻击图分析方法</a></li>
+</ul>
+</li>
+<li><a href="#org3ce3b15">攻击图转贝叶斯网</a>
+<ul>
+<li><a href="#orgc6b68e5">贝叶斯网与网络安全态势感知</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org923bc8d">网络安全态势感知</a>
+<ul>
+<li><a href="#org22779a5">网络攻击建模</a>
+<ul>
+<li><a href="#orgdea780d">定义</a></li>
+<li><a href="#orgfe514b8">建模</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org765c79b" class="outline-2">
+<h2 id="org765c79b">攻击行为预测</h2>
+<div class="outline-text-2" id="text-org765c79b">
+</div>
+<div id="outline-container-org54fdef5" class="outline-3">
+<h3 id="org54fdef5">攻击图</h3>
+<div class="outline-text-3" id="text-org54fdef5">
+<p>
+攻击图模型目前是网络安全风险评估中，用于表达网络或信息系统中存在的脆弱点，以及脆弱点之间的关联关系的最有效的模型之一。攻击图以有向图的方式来表达攻击者利用存在的脆弱性对网络或信息系统进行攻击的所有可能的攻击路径，全面地反映了网络或信息系统中脆弱点利用之间的依赖关系。
+</p>
+</div>
+
+<div id="outline-container-orgcd1283d" class="outline-4">
+<h4 id="orgcd1283d">攻击图生成</h4>
+<div class="outline-text-4" id="text-orgcd1283d">
+<p>
+工具：MulVAL
+</p>
+</div>
+</div>
+
+<div id="outline-container-org160f748" class="outline-4">
+<h4 id="org160f748">攻击图分析方法</h4>
+<div class="outline-text-4" id="text-org160f748">
+<p>
+攻击图表示了被评估的网络或信息系统中存在的脆弱点以及攻击者利用这些脆弱点进行一步或多步攻击的各种可能的攻击路径。学术界对攻击图的自动化生成方法进行了充分的研究，并且得到了有效的研究成果和实际应用的工具，使得攻击图的生成复杂度以及攻击图的规模能够控制在 \(O(n^2)\) 之内，因此，攻击图模型相对其他脆弱性评估模型而言，有巨大的优势。
+</p>
+
+<p>
+网络安全态势预测中，一个重要的指标是攻击发生的可能性大小，即攻击概率。攻击概率反映了网络的安全状况，并预测将会发生的攻击及其可能性大小，这是后续安全态势计算的基础。
+</p>
+
+<p>
+状态攻击图存在状态爆炸问题，无法适用于大规模网络。而属性攻击图则避免了状态爆炸现象。
+</p>
+
+<p>
+大部分论文，都是通过对网络或信息系统中的脆弱点利用的不确定性以及脆弱点利用的关联性来计算攻击概率（或类似的指标），但忽略了网络或信息系统中资产分布和威胁分布状况等重要环境因素对攻击发生可能性的影响<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3ce3b15" class="outline-3">
+<h3 id="org3ce3b15">攻击图转贝叶斯网</h3>
+<div class="outline-text-3" id="text-org3ce3b15">
+<p>
+属性攻击图是一种有向无环图，它含有2种节点：属性节点和原子攻击节点。而贝叶斯网络是一个有向无环图，具有因果关系和概率主义，可以根据已知的信息对未知的结果或原因进行推理和预测。在贝叶斯网络中，节点的状态及发生概率只与父节点有关，在攻击图中网络脆弱点是否被利用也只与攻击路径中的父节点有关，这种节点关系在贝叶斯网络和攻击图中相对应。由于贝叶斯网络和攻击图都是一种有向无环图，并且有向边表示一种因果关系，因此可以将贝叶斯网络和攻击图进行结合，对网络安全态势进行预测<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+</p>
+</div>
+
+<div id="outline-container-orgc6b68e5" class="outline-4">
+<h4 id="orgc6b68e5">贝叶斯网与网络安全态势感知</h4>
+<div class="outline-text-4" id="text-orgc6b68e5">
+<p>
+由于基于贝叶斯网络的方法能够充分利用攻击图的结构和脆弱点利用复杂度等信息，从而不需要对结构和参数进行学习，加上贝叶斯网络在概率逻辑关系推理方面的优势，使其适用于网络安全态势感知。
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org360bced"></a>现有的方法<br />
+<div class="outline-text-5" id="text-org360bced">
+<p>
+Xie等人<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>在攻击图的基础上构建贝叶斯网络，然后建立报警节点作为证据节点；Poolsappasit等人<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>也是在攻击图的基础上构建贝叶斯网络，然后根据警报将相应的原子攻击节点设为证据节点。每个节点的攻击发生概率是这些证据的后验概率。
+</p>
+
+<p>
+缺点：需要对所有节点建立条件概率表，需要较多的先验知识，在实时性上性能不同。
+</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org923bc8d" class="outline-2">
+<h2 id="org923bc8d">网络安全态势感知</h2>
+<div class="outline-text-2" id="text-org923bc8d">
+</div>
+<div id="outline-container-org22779a5" class="outline-3">
+<h3 id="org22779a5">网络攻击建模</h3>
+<div class="outline-text-3" id="text-org22779a5">
+<p>
+对于攻击者来说，发动一次攻击可能需要具备一些前提条件，而攻击成功后，往往又会获得一些新的后置条件。
+</p>
+</div>
+
+<div id="outline-container-orgdea780d" class="outline-4">
+<h4 id="orgdea780d">定义</h4>
+<div class="outline-text-4" id="text-orgdea780d">
+<ol class="org-ol">
+<li>攻击条件 \(S\)</li>
+</ol>
+
+<p>
+攻击条件指的是访问权限、网络连通性、系统状态、网络状态等攻击者可以获得或利用的网络或信息系统属性。
+</p>
+
+<ol class="org-ol">
+<li>原子攻击 \(A(S_{pre}, S_{post})\)</li>
+</ol>
+
+<p>
+原子攻击指的是攻击者的一次基本攻击，对应于一次脆弱点利用。对于每一个原子攻击 \(a \in A\) ，只有满足其前提条件集合 \(S_{pre}\) ，才可能成功发动该原子攻击。而当该原子攻击成功发生之后，攻击者将会获得其后置条件集合 \(S_{post}\) 。
+</p>
+
+<ol class="org-ol">
+<li>攻击难度 \(D(a)\)</li>
+</ol>
+
+<p>
+在实际情况中，不能脆弱点的利用难度是不同的。有些脆弱点的利用不需要借助其他额外条件，而有些则必须依赖其他行为。CVSS给出了脆弱点的攻击难度度量的依据。
+</p>
+
+<ol class="org-ol">
+<li>资产 \(H\)</li>
+</ol>
+
+<p>
+资产是网络中存在价值的信息和资源，是网络中需要保护的对象。包括网络中的硬件、软件、文档、数据等。
+</p>
+
+<p>
+在分析攻击概率的时候，不能忽略资产对攻击发生可能性的影响。为了分析资产的价值和重要度对攻击发生可能性的影响，定义了攻击收益的概念。
+</p>
+
+<ol class="org-ol">
+<li>攻击收益 \(G\)</li>
+</ol>
+
+<p>
+资产被成功攻击后攻击者获得的收益的度量指标。
+</p>
+
+<ol class="org-ol">
+<li>攻击成功概率 \(P\)</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgfe514b8" class="outline-4">
+<h4 id="orgfe514b8">建模</h4>
+<div class="outline-text-4" id="text-orgfe514b8">
+<p>
+\(BAG=(S, A, E, P)\)
+</p>
+
+<p>
+攻击图中的节点除了各种状态，还包括攻击。而转化为贝叶斯攻击图后，连接状态之间的边就是攻击。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+吴金宇. 网络安全风险评估关键技术研究[D]. 北京邮电大学, 2013.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+王秀娟, 孙博, 廖彦文, 等. 贝叶斯属性攻击图网络脆弱性评估[J]. 2015.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+Xie P, Li J H, Ou X, et al. Using Bayesian networks for cyber security analysis[C]//Dependable Systems and Networks (DSN), 2010 IEEE/IFIP International Conference on. IEEE, 2010: 211-220.
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+Poolsappasit N, Dewri R, Ray I. Dynamic security risk management using bayesian attack graphs[J]. IEEE Transactions on Dependable and Secure Computing, 2012, 9(1): 61-74.
+</p></div></div>
+
+
+</div>
+</div>
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2017-12-30</span>
+        <span title="last modification date" class="post-info">2017-12-30</span>
+        <span title="tags" class="post-info"><a href="/tags/everydaypaper/">EverydayPaper</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2017/12/30/贝叶斯攻击图";
+          var disqus_url = "http://pinvondev.github.io/blog/2017/12/30/贝叶斯攻击图";
+          var disqus_shortname = 'pw_lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
