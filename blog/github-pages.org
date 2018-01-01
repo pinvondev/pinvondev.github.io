@@ -97,6 +97,15 @@ git remote add origin git@pinvondev.github.com/pinvondev/pinvondev.github.io.git
 - 然后op/do-publication，op/do-publication会自动切换到master分支。
 - 如果没有上传html文件到github，则手动上传。
 
+** 无法上传的情况
+
+在正确配置git的情况下，如果source分支已上传，而op/do-publication时没上传成功，则将仓库根目录下 =.git= 里面的所有文件都赋给当前用户所有操作权限。
+#+BEGIN_SRC 
+sudo chown -R pinvon:pinvon ./.git
+cd .git
+sudo chown -R pingon:pinvon *
+#+END_SRC
+
 * 定制
 
 ** 生成页面目录
