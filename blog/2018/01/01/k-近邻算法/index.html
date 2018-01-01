@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>概率论基础 - Pinvon&#39;s Blog</title>
+    <title>k-近邻算法 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,82 +30,41 @@
 
 <div>
 <div class="post">
-<h1>概率论基础</h1>
+<h1>k-近邻算法</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4830ae7">主观解释</a></li>
-<li><a href="#orge5b2295">多元概率分布</a>
-<ul>
-<li><a href="#orgb4a089f">联合概率</a></li>
-<li><a href="#orgbcb9db7">边缘概率</a></li>
-<li><a href="#orgec2217c">条件概率</a></li>
-</ul>
-</li>
-<li><a href="#org9eb14ea">贝叶斯定理</a></li>
+<li><a href="#orgeaf0a84">k-近邻算法概述</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4830ae7" class="outline-2">
-<h2 id="org4830ae7">主观解释</h2>
-<div class="outline-text-2" id="text-org4830ae7">
+<div id="outline-container-orgeaf0a84" class="outline-2">
+<h2 id="orgeaf0a84">k-近邻算法概述</h2>
+<div class="outline-text-2" id="text-orgeaf0a84">
 <p>
-主观解释又称为贝叶斯解释，它认为概率就是合理信度。如，巴西队赢得下届世界杯，用频率解释，则认为无意义，因为下届世界杯巴西队能赢不是一个可以重复的事件。但在主观解释中仍可以根据各种 <b>先验知识</b> 给出一个主观概率评估。
-</p>
-</div>
-</div>
-
-<div id="outline-container-orge5b2295" class="outline-2">
-<h2 id="orge5b2295">多元概率分布</h2>
-<div class="outline-text-2" id="text-orge5b2295">
-</div>
-<div id="outline-container-orgb4a089f" class="outline-3">
-<h3 id="orgb4a089f">联合概率</h3>
-<div class="outline-text-3" id="text-orgb4a089f">
-<p>
-如 \(P(X_1, X_2)\) ， <b>包含多个条件，且所有条件同时成立</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgbcb9db7" class="outline-3">
-<h3 id="orgbcb9db7">边缘概率</h3>
-<div class="outline-text-3" id="text-orgbcb9db7">
-<p>
-如 \(P(X=a), P(Y=b)\) ， <b>仅与单个随机变量有关</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgec2217c" class="outline-3">
-<h3 id="orgec2217c">条件概率</h3>
-<div class="outline-text-3" id="text-orgec2217c">
-<p>
-如 \(P(A \mid B) = \frac{P(A \cap B)}{P(B)}\) ， <b>B发生的前提下，A发生的概率</b>
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org9eb14ea" class="outline-2">
-<h2 id="org9eb14ea">贝叶斯定理</h2>
-<div class="outline-text-2" id="text-org9eb14ea">
-<p>
-设 \(H\) 和 \(E\) 是两个随机变量， \(H=h\) 为某一假设， \(E=e\) 为一组证据。在考虑 \(E=e\) 之前， \(P(H=h)\) 为先验概率，考虑 \(E=e\) 之后， \(P(H=h \cap E=e)\) 为后验概率。
+\(k\) -近邻算法是监督学习算法，用于解决分类问题。
 </p>
 
 <p>
-贝叶斯定理描述了先验概率和后验概率之间的关系：
+对于训练集中的每个数据，其所属分类已知。输入新数据后，根据新数据的特征与训练集中的特征进行比较，得出新数据最接近的分类。而 \(k\)  这个名字的来源，是因为一般只与前 \(k\) 个最相似的数据比较，其中， \(k \leq 20\) 。
 </p>
 
 <p>
-\[P(H=h \cap E=e)=\frac{P(H=h)P(E=e \cap H=h)}{P(E=e)}\]
+思考：如果 \(k\) 太大，有很多相似度较低的数据也参与了比较，在结果中与相似度较高的数据有同等的权重决定分类结果，会使得结果不准确。当然，也可以为这些相似度低的数据分配较低的权重，但这样也增加了复杂的复杂度。
 </p>
 
 <p>
-这也称为贝叶斯公式。
+使用欧氏距离公式来计算距离。然后对距离进行排序，确定前 \(k\) 个距离的元素所在的主要分类。
+</p>
+
+<p>
+使用数值归一化的情况：假如结果由两个特征决定，由于特征1的数值很大，所以特征1对结果造成的影响很大，而实际上，特征1和特征2的权重是相同的，这时候，需要对特征进行数值归一化。方法： \(new=\frac{old-min}{max-min}\) 。
+</p>
+
+<p>
+\(k\) -近邻算法是分类数据最简单最有效的方法，它是基于实例的学习，使用算法时我们必须有接近实际数据的训练样本数据。 \(k\) -近邻算法必须保存全部数据集，如果训练数据集很大，必须使用大量的存储空间。此外，必须对数据集中的每个数据计算距离值，实际使用时可能非常耗时。
 </p>
 </div>
 </div>
@@ -114,9 +73,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2017-12-29</span>
-        <span title="last modification date" class="post-info">2017-12-30</span>
-        <span title="tags" class="post-info"><a href="/tags/《贝叶斯网引论》读书笔记/">《贝叶斯网引论》读书笔记</a></span>
+        <span title="post date" class="post-info">2018-01-01</span>
+        <span title="last modification date" class="post-info">2018-01-01</span>
+        <span title="tags" class="post-info"><a href="/tags/《机器学习实战》读书笔记/">《机器学习实战》读书笔记</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -124,8 +83,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2017/12/29/概率论基础";
-          var disqus_url = "http://pinvondev.github.io/blog/2017/12/29/概率论基础";
+          var disqus_identifier = "/blog/2018/01/01/k-近邻算法";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/01/k-近邻算法";
           var disqus_shortname = 'pw_lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
