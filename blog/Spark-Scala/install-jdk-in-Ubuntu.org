@@ -1,0 +1,62 @@
+#+TITLE:       Ubuntu下安装JDK
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@ubuntu
+#+DATE:        2018-01-03 三
+#+URI:         /blog/%y/%m/%d/ubuntu下安装jdk
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Spark
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 直接下载JDK压缩包方式安装
+
+** 官网下载对应版本的JDK
+
+** 解压缩并放至指定目录
+#+BEGIN_SRC 
+sudo mkdir /usr/lib/jvm
+sudo tar -zxvf jdk-xxx.gz -C /usr/lib/jvm
+#+END_SRC
+
+** 修改环境变量
+#+BEGIN_SRC 
+sudo vim ~/.bashrc
+
+export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_151
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:$PATH
+
+~/.bashrc
+#+END_SRC
+
+** 设置系统默认JDK版本
+#+BEGIN_SRC 
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_151/bin/java 300 # 数字表示优先级
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.8.0_151/bin/javac 300
+sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.8.0_151/bin/jar 300
+sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk1.8.0_151/bin/javah 300
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_151/bin/javap 300
+
+sudo update-alternatives --config java
+# 选择合适的JDK
+#+END_SRC
+
+* 通过ppa(源)方式安装
+
+** 添加ppa
+#+BEGIN_SRC 
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+#+END_SRC
+
+** 安装oracle-java-installer
+#+BEGIN_SRC 
+sudo apt-get install oracle-java8-installer
+#+END_SRC
+
+** 注意事项
+
+1. ppa有可能会失效，若失效则再找过一个
+2. 如果installer下载很慢，可以中断，然后下载好对应的jdk的tar.gz包。放在 =/var/cache/oracle-jdk8-installer= 目录下。然后再安装一次installer，它会默认使用下载好的压缩包。
