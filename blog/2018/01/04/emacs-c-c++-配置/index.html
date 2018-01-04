@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Emacs C/C++ 配置 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Emacs C/C++ 配置</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0651664">auto-complete或company</a></li>
+<li><a href="#orgabe42b7">yasnippet</a>
+<ul>
+<li><a href="#orgaa0351a">配置</a></li>
+</ul>
+</li>
+<li><a href="#org9ce50f0">auto-complete-c-headers或company-c-headers</a>
+<ul>
+<li><a href="#orge7bc515">配置</a></li>
+</ul>
+</li>
+<li><a href="#org87e2114">代码检查</a>
+<ul>
+<li><a href="#orge638a58">配置</a></li>
+</ul>
+</li>
+<li><a href="#orgca46e15">google-c-style-mode</a></li>
+<li><a href="#org60723f0">cedet</a>
+<ul>
+<li><a href="#org982a07d">semantic</a>
+<ul>
+<li><a href="#orgeca5f03">功能</a></li>
+<li><a href="#orgd2ec006">解释</a></li>
+<li><a href="#orga587c5f">配置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0651664" class="outline-2">
+<h2 id="org0651664">auto-complete或company</h2>
+</div>
+<div id="outline-container-orgabe42b7" class="outline-2">
+<h2 id="orgabe42b7">yasnippet</h2>
+<div class="outline-text-2" id="text-orgabe42b7">
+<p>
+功能: 比如, 输入while()后, 按TAB键, 就会自动补充循环的内容. 在Sublime Text中很常用. 当然, 补充的内容还得自己改.
+</p>
+
+<p>
+除了这些之外, 还能补充很多, 如常用的函数main(), cout等.
+</p>
+</div>
+
+<div id="outline-container-orgaa0351a" class="outline-3">
+<h3 id="orgaa0351a">配置</h3>
+<div class="outline-text-3" id="text-orgaa0351a">
+<div class="org-src-container">
+<pre class="src src-lisp">(require 'yasnippet)
+(yas-global-mode 1)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9ce50f0" class="outline-2">
+<h2 id="org9ce50f0">auto-complete-c-headers或company-c-headers</h2>
+<div class="outline-text-2" id="text-org9ce50f0">
+</div>
+<div id="outline-container-orge7bc515" class="outline-3">
+<h3 id="orge7bc515">配置</h3>
+<div class="outline-text-3" id="text-orge7bc515">
+<p>
+查看C/C++头文件所在目录: <code>gcc -xc++ -E -v -</code>
+</p>
+
+<p>
+记下 <code>path/to/gcc/include</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(defun my:ac-c-header-init ()
+    (require 'auto-complete-c-headers)
+    (add-to-list 'ac-sources 'ac-source-c-headers)
+    (add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include"))
+(add-hook 'c++-mode-hook 'my:ac-c-header-init)
+(add-hook 'c-mode-hook 'my:ac-c-header-init)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org87e2114" class="outline-2">
+<h2 id="org87e2114">代码检查</h2>
+<div class="outline-text-2" id="text-org87e2114">
+<p>
+安装flymake-google-cpplint
+</p>
+
+<p>
+安装flymake-cursor
+</p>
+
+<p>
+安装cpplint.py(静态代码检查工具)
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">pip install cpplint
+which cpplint # 复制其路径
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orge638a58" class="outline-3">
+<h3 id="orge638a58">配置</h3>
+<div class="outline-text-3" id="text-orge638a58">
+<div class="org-src-container">
+<pre class="src src-lisp">(defun my:flymake-google-init ()
+  (require 'flymake-google-cpplint)
+  (custom-set-variables
+   '(flymake-google-cpplint-command "/home/pinvon/.local/bin/cpplint"))
+  (flymake-google-cpplint-load))
+(add-hook 'c-mode-hook 'my:flymake-google-init)
+(add-hook 'c++-mode-hook 'my:flymake-google-init)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca46e15" class="outline-2">
+<h2 id="orgca46e15">google-c-style-mode</h2>
+<div class="outline-text-2" id="text-orgca46e15">
+<div class="org-src-container">
+<pre class="src src-lisp">(require 'google-c-style)
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org60723f0" class="outline-2">
+<h2 id="org60723f0">cedet</h2>
+<div class="outline-text-2" id="text-org60723f0">
+</div>
+<div id="outline-container-org982a07d" class="outline-3">
+<h3 id="org982a07d">semantic</h3>
+<div class="outline-text-3" id="text-org982a07d">
+</div>
+<div id="outline-container-orgeca5f03" class="outline-4">
+<h4 id="orgeca5f03">功能</h4>
+<div class="outline-text-4" id="text-orgeca5f03">
+<p>
+代码跳转, 自动补全, 分析源码
+</p>
+</div>
+</div>
+<div id="outline-container-orgd2ec006" class="outline-4">
+<h4 id="orgd2ec006">解释</h4>
+<div class="outline-text-4" id="text-orgd2ec006">
+<p>
+插件一般是先load, 然后enable某个minor mode. semantic有很多mode, 一个一个去enable, 比较麻烦. 所以cedet定义了几个函数, 自动load并enable某些minor mode.
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org61373cc"></a>semantic-load-enable-minimum-features<br />
+<div class="outline-text-5" id="text-org61373cc">
+<p>
+该函数开启三个特性:
+</p>
+<ul class="org-ul">
+<li>semantic-idle-scheduler-mode: 这个模式让cedet在emacs空闲的时候自动分析buffer的内容.</li>
+<li>semanticdb-minor-mode: 保存分析后的内容</li>
+<li>semanticdb-load-ebrowse-caches</li>
+</ul>
+</div>
+</li>
+
+<li><a id="org884346a"></a>semantic-load-enable-code-helpers<br />
+<div class="outline-text-5" id="text-org884346a">
+<ul class="org-ul">
+<li>semantic-load-enable-minimum-features</li>
+<li>imenu: 显示semantic分析出的类和函数等</li>
+<li>semantic-idle-summary-mode: 光标停留在类或函数上时, 显示原型</li>
+<li>senator-minor-mode: 在emacs中增加senator菜单, 通过菜单在当前文件的各个tag之间移动跳转.</li>
+<li>semantic-mru-bookmark-mode: 书签</li>
+</ul>
+</div>
+</li>
+
+<li><a id="org7a1045f"></a>semantic-load-enable-guady-code-helpers<br />
+<div class="outline-text-5" id="text-org7a1045f">
+<ul class="org-ul">
+<li>semantic-load-enable-code-helpers</li>
+<li>semantic-stickyfunc-mode: 显示当前函数名在buffer顶上</li>
+<li>semantic-decoration-mode: 在类和函数上方添加蓝色的线</li>
+<li>semantic-idle-completions-mode: 补全</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgdd561b5"></a>semantic-load-enable-excessive-code-helpers<br />
+<div class="outline-text-5" id="text-orgdd561b5">
+<ul class="org-ul">
+<li>semantic-load-enable-gaudy-code-helpers</li>
+<li>semantic-highlight-func-mode: 函数名高亮</li>
+<li>semantic-idle-tag-highlight-mode: 光标停在某变量上, 使用到它的地方都变亮</li>
+<li>semantic-decoration-on-*-members: private和protected的函数不同颜色标识</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orga14d6d6"></a>semantic-load-enable-semantic-debugging-helpers<br />
+<div class="outline-text-5" id="text-orga14d6d6">
+<ul class="org-ul">
+<li>semantic-highlight-edits-mode: 高亮最近修改</li>
+<li>semantic-show-unmatched-syntax-mode: 红色下划线标记不匹配的语法</li>
+<li>semantic-show-parser-state-mode</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orga587c5f" class="outline-4">
+<h4 id="orga587c5f">配置</h4>
+<div class="outline-text-4" id="text-orga587c5f">
+<div class="org-src-container">
+<pre class="src src-lisp">(semantic-mode 1)
+(defun my:add-semantic-to-autocomplete()
+  (add-to-list 'ac-sources 'ac-source-semantic))
+(add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+(global-ede-mode 1)
+
+(ede-cpp-root-project "my project" :file "~/demos/my_program/src/main.cpp"
+    :include-path '("/../my_inc")
+    :system-include-path '("/usr/include/c++/3.2.2/"))
+</pre>
+</div>
+<p>
+其中, ede-cpp-root-project后面的my project可以自定义名字, :file是自己的项目根目录中任意一个文件, :include-path中的文件, 是其他的include文件, 但不是库文件.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-01-04</span>
+        <span title="last modification date" class="post-info">2018-01-04</span>
+        <span title="tags" class="post-info"><a href="/tags/emacs/">Emacs</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/01/04/emacs-c-c++-配置";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/04/emacs-c-c++-配置";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
