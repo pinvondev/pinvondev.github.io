@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>概率论基础 - Pinvon&#39;s Blog</title>
+    <title>安装Scala - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
+    <meta name="author" content="pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
@@ -30,83 +30,112 @@
 
 <div>
 <div class="post">
-<h1>概率论基础</h1>
+<h1>安装Scala</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org258f957">主观解释</a></li>
-<li><a href="#orga86c948">多元概率分布</a>
+<li><a href="#org32c24da">下载Scala</a></li>
+<li><a href="#orgab6e15f">安装Scala</a></li>
+<li><a href="#orgc1b4a81">使用</a></li>
+<li><a href="#orgdd2a0ea">编程</a>
 <ul>
-<li><a href="#orge9c11d7">联合概率</a></li>
-<li><a href="#org2cac2eb">边缘概率</a></li>
-<li><a href="#orge4a9ce5">条件概率</a></li>
+<li><a href="#org8164f3c">创建文件</a></li>
+<li><a href="#orgf98d9bb">编写代码</a></li>
+<li><a href="#org718ab8a">编译执行</a></li>
 </ul>
 </li>
-<li><a href="#org7e75281">贝叶斯定理</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org258f957" class="outline-2">
-<h2 id="org258f957">主观解释</h2>
-<div class="outline-text-2" id="text-org258f957">
+<div id="outline-container-org32c24da" class="outline-2">
+<h2 id="org32c24da">下载Scala</h2>
+<div class="outline-text-2" id="text-org32c24da">
 <p>
-主观解释又称为贝叶斯解释，它认为概率就是合理信度。如，巴西队赢得下届世界杯，用频率解释，则认为无意义，因为下届世界杯巴西队能赢不是一个可以重复的事件。但在主观解释中仍可以根据各种 <b>先验知识</b> 给出一个主观概率评估。
+到<a href="http://www.scala-lang.org">官网</a>下载
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga86c948" class="outline-2">
-<h2 id="orga86c948">多元概率分布</h2>
-<div class="outline-text-2" id="text-orga86c948">
-</div>
-<div id="outline-container-orge9c11d7" class="outline-3">
-<h3 id="orge9c11d7">联合概率</h3>
-<div class="outline-text-3" id="text-orge9c11d7">
-<p>
-如 \(P(X_1, X_2)\) ， <b>包含多个条件，且所有条件同时成立</b>
-</p>
+<div id="outline-container-orgab6e15f" class="outline-2">
+<h2 id="orgab6e15f">安装Scala</h2>
+<div class="outline-text-2" id="text-orgab6e15f">
+<pre class="example">
+sudo tar -zxf scala-2.12.4.tgz -C /usr/local
+cd /usr/local
+sudo mv ./scala-2.12.4 ./scala
+sudo chown -R pinvon:pinvon ./scala
+
+emacs ~/.bashrc
+
+export PATH=$PATH:/usr/local/scala/bin
+
+source ~/.bashrc
+
+# 测试
+scala
+</pre>
 </div>
 </div>
 
-<div id="outline-container-org2cac2eb" class="outline-3">
-<h3 id="org2cac2eb">边缘概率</h3>
-<div class="outline-text-3" id="text-org2cac2eb">
-<p>
-如 \(P(X=a), P(Y=b)\) ， <b>仅与单个随机变量有关</b>
-</p>
+<div id="outline-container-orgc1b4a81" class="outline-2">
+<h2 id="orgc1b4a81">使用</h2>
+<div class="outline-text-2" id="text-orgc1b4a81">
+<pre class="example">
+# 进入Scala环境
+scala
+
+scala&gt; 1+1
+res0: Int = 2
+
+# 退出Scala环境
+scala&gt;:quit
+</pre>
 </div>
 </div>
 
-<div id="outline-container-orge4a9ce5" class="outline-3">
-<h3 id="orge4a9ce5">条件概率</h3>
-<div class="outline-text-3" id="text-orge4a9ce5">
-<p>
-如 \(P(A \mid B) = \frac{P(A \cap B)}{P(B)}\) ， <b>B发生的前提下，A发生的概率</b>
-</p>
+<div id="outline-container-orgdd2a0ea" class="outline-2">
+<h2 id="orgdd2a0ea">编程</h2>
+<div class="outline-text-2" id="text-orgdd2a0ea">
+</div>
+<div id="outline-container-org8164f3c" class="outline-3">
+<h3 id="org8164f3c">创建文件</h3>
+<div class="outline-text-3" id="text-org8164f3c">
+<pre class="example">
+cd /usr/local/scala
+mkdir mycode
+cd mycode
+emacs test.scala
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf98d9bb" class="outline-3">
+<h3 id="orgf98d9bb">编写代码</h3>
+<div class="outline-text-3" id="text-orgf98d9bb">
+<div class="org-src-container">
+<pre class="src src-scala">object HelloWorld{
+    def main(args: Array[String]){
+        println("hello world")
+    }
+}
+</pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7e75281" class="outline-2">
-<h2 id="org7e75281">贝叶斯定理</h2>
-<div class="outline-text-2" id="text-org7e75281">
+<div id="outline-container-org718ab8a" class="outline-3">
+<h3 id="org718ab8a">编译执行</h3>
+<div class="outline-text-3" id="text-org718ab8a">
+<pre class="example">
+scalac test.scala
+scala -classpath . HelloWorld
+</pre>
 <p>
-设 \(H\) 和 \(E\) 是两个随机变量， \(H=h\) 为某一假设， \(E=e\) 为一组证据。在考虑 \(E=e\) 之前， \(P(H=h)\) 为先验概率，考虑 \(E=e\) 之后， \(P(H=h \cap E=e)\) 为后验概率。
+注意，执行的时候使用的是 <code>object</code> 后面的名称，而不是文件名。
 </p>
-
-<p>
-贝叶斯定理描述了先验概率和后验概率之间的关系：
-</p>
-
-<p>
-\[P(H=h \cap E=e)=\frac{P(H=h)P(E=e \cap H=h)}{P(E=e)}\]
-</p>
-
-<p>
-这也称为贝叶斯公式。
-</p>
+</div>
 </div>
 </div>
 
@@ -114,18 +143,18 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2017-12-29</span>
-        <span title="last modification date" class="post-info">2017-12-30</span>
-        <span title="tags" class="post-info"><a href="/tags/《贝叶斯网引论》读书笔记/">《贝叶斯网引论》读书笔记</a></span>
-        <span title="author" class="post-info">Pinvon</span>
+        <span title="post date" class="post-info">2018-01-03</span>
+        <span title="last modification date" class="post-info">2018-01-03</span>
+        <span title="tags" class="post-info"><a href="/tags/spark/">Spark</a></span>
+        <span title="author" class="post-info">pinvon</span>
       </div>
       <section>
         <h1>Comments</h1>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2017/12/29/概率论基础";
-          var disqus_url = "http://pinvondev.github.io/blog/2017/12/29/概率论基础";
+          var disqus_identifier = "/blog/2018/01/03/安装scala";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/03/安装scala";
           var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
@@ -147,7 +176,7 @@
       <div class="footer">
         <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; ubuntu">pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
           <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
