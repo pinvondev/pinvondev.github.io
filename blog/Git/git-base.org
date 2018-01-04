@@ -1,0 +1,31 @@
+#+TITLE:       Git基础
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-01-04 四
+#+URI:         /blog/%y/%m/%d/git基础
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Git
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 从远程更新到本地(多分支)
+
+  #+BEGIN_SRC shell
+  git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
+git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
+git merge origin/source # 将origin/source合并到当前分支
+  #+END_SRC
+
+也可以直接使用pull来更新
+#+BEGIN_SRC shell
+git pull --rebase origin source:source
+#+END_SRC
+但是这个方法老出冲突. 或者直接打乱了本地文件.
+
+* 撤销
+
+#+BEGIN_SRC shell
+git reflog source # 查看source的历史
+git reset --hard commid_id
+#+END_SRC
