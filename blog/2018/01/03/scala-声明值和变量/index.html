@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Scala基础 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Scala基础</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5979032">内容声明</a></li>
+<li><a href="#org8c6b6fd">Scala的变量</a>
+<ul>
+<li><a href="#orgd263e9f">val变量</a></li>
+<li><a href="#orgfb75163">var变量</a></li>
+<li><a href="#org5dc0f92">一行输入多条语句</a></li>
+</ul>
+</li>
+<li><a href="#org8670bde">基本数据类型</a>
+<ul>
+<li><a href="#orgdf924ed">使用方法</a></li>
+<li><a href="#org6ee3e39">操作符</a></li>
+</ul>
+</li>
+<li><a href="#orgf6e1dd9">Range</a></li>
+<li><a href="#org34c0c0f">打印</a></li>
+<li><a href="#org59a33a9">读写文件</a>
+<ul>
+<li><a href="#org2641e03">写入文本文件</a></li>
+<li><a href="#org5df3d32">读取文本文件中的行</a></li>
+</ul>
+</li>
+<li><a href="#orgca341bc">if条件表达式</a>
+<ul>
+<li><a href="#org46555ed">while循环</a></li>
+<li><a href="#org35388eb">for循环</a>
+<ul>
+<li><a href="#orgb47361d">格式</a></li>
+<li><a href="#org686f1cc">例子</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5979032" class="outline-2">
+<h2 id="org5979032">内容声明</h2>
+<div class="outline-text-2" id="text-org5979032">
+<p>
+学习内容来自<a href="http://dblab.xmu.edu.cn">厦门大学数据库实验室</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8c6b6fd" class="outline-2">
+<h2 id="org8c6b6fd">Scala的变量</h2>
+<div class="outline-text-2" id="text-org8c6b6fd">
+<p>
+Scala有两种变量， <code>val</code> 和 <code>var</code>
+</p>
+
+<p>
+<b>val是不可变的，在声明时就必须初始化，初始化后不能再赋值</b>
+</p>
+
+<p>
+<b>var是可变的，在声明时必须初始化，后面还可再赋值</b>
+</p>
+</div>
+
+<div id="outline-container-orgd263e9f" class="outline-3">
+<h3 id="orgd263e9f">val变量</h3>
+<div class="outline-text-3" id="text-orgd263e9f">
+<p>
+使用方法：
+</p>
+<div class="org-src-container">
+<pre class="src src-scala"># 未声明变量类型，由scala进行类型推断
+val mystr0 = "hello world"
+
+# 显式声明变量类型
+val mystr1 : String = "hello world"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfb75163" class="outline-3">
+<h3 id="orgfb75163">var变量</h3>
+<div class="outline-text-3" id="text-orgfb75163">
+<pre class="example">
+# 声明时需要初始化
+var dPrice : Double = 3.6
+
+# 再次赋值
+dPrice = 3.0
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org5dc0f92" class="outline-3">
+<h3 id="org5dc0f92">一行输入多条语句</h3>
+<div class="outline-text-3" id="text-org5dc0f92">
+<p>
+使用分号分隔多条语句。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8670bde" class="outline-2">
+<h2 id="org8670bde">基本数据类型</h2>
+<div class="outline-text-2" id="text-org8670bde">
+<p>
+Scala的数据类型包括：Byte, Char, Short, Int, Long, Float, Double, Boolean
+</p>
+
+<p>
+字符串则直接使用java.lang.String类
+</p>
+
+<p>
+Scala中的这些数据类型都是类，在包scala内
+</p>
+</div>
+
+<div id="outline-container-orgdf924ed" class="outline-3">
+<h3 id="orgdf924ed">使用方法</h3>
+<div class="outline-text-3" id="text-orgdf924ed">
+<div class="org-src-container">
+<pre class="src src-scala">var i = 123
+var i = 3.14
+var i = true
+var i = 'A'
+var i = "hello"
+
+5.toString()
+"abc".intersect("bcd") // intersect()方法输出两个字符串中都存在的字符
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6ee3e39" class="outline-3">
+<h3 id="org6ee3e39">操作符</h3>
+<div class="outline-text-3" id="text-org6ee3e39">
+<ul class="org-ul">
+<li>- * / % &gt; &lt; &gt;= &lt;= 等。</li>
+</ul>
+
+<p>
+由于这些类型都是类，所以也可以用类的形式来调用操作符：
+</p>
+<div class="org-src-container">
+<pre class="src src-scala">(5).+(3) // +()方法表示相加
+</pre>
+</div>
+
+<p>
+Scala中没有++和--操作符，需要使用+=和-=。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6e1dd9" class="outline-2">
+<h2 id="orgf6e1dd9">Range</h2>
+<div class="outline-text-2" id="text-orgf6e1dd9">
+<p>
+Range常用在循环中。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">1 to 5 // 创建从1到5的数值序列，步长为1，终点为5 (1,2,3,4,5)
+1.to(5) // 同上
+
+1 until 5 // 创建从1到5的数值序列，步长为1，右开区间 (1,2,3,4)
+
+1 to 10 by 2 //创建从1到10的数值序列，步长为2 (1,3,5,7,9)
+0.5f to 5.9f by 0.8f
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org34c0c0f" class="outline-2">
+<h2 id="org34c0c0f">打印</h2>
+<div class="outline-text-2" id="text-org34c0c0f">
+<p>
+print()
+</p>
+
+<p>
+println()
+</p>
+
+<p>
+printf()
+</p>
+</div>
+</div>
+
+<div id="outline-container-org59a33a9" class="outline-2">
+<h2 id="org59a33a9">读写文件</h2>
+<div class="outline-text-2" id="text-org59a33a9">
+</div>
+<div id="outline-container-org2641e03" class="outline-3">
+<h3 id="org2641e03">写入文本文件</h3>
+<div class="outline-text-3" id="text-org2641e03">
+<div class="org-src-container">
+<pre class="src src-scala">import java.io.PrintWriter
+val out = new PrintWriter("output.txt")
+for(i &lt;- 1 to 5) out.println(i)
+out.close()
+</pre>
+</div>
+
+<p>
+只有执行了 <code>out.close()</code> ，才能在指定目录下看到输出文件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5df3d32" class="outline-3">
+<h3 id="org5df3d32">读取文本文件中的行</h3>
+<div class="outline-text-3" id="text-org5df3d32">
+<div class="org-src-container">
+<pre class="src src-scala">import scala.io.Source
+val inputFile = Source.fromFile("output.txt")
+val lines = inputFile.getLines
+for(line &lt;- lines) println(line)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca341bc" class="outline-2">
+<h2 id="orgca341bc">if条件表达式</h2>
+<div class="outline-text-2" id="text-orgca341bc">
+<p>
+与Java基本一样。唯一的不同：Scala中的if表达式的判断结果，可以赋值给其他变量。
+</p>
+<div class="org-src-container">
+<pre class="src src-scala">val x = 6
+val a = if(x&gt;0) 1 else -1
+
+// a=1
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org46555ed" class="outline-3">
+<h3 id="org46555ed">while循环</h3>
+<div class="outline-text-3" id="text-org46555ed">
+<p>
+while和do-while，与Java无异。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org35388eb" class="outline-3">
+<h3 id="org35388eb">for循环</h3>
+<div class="outline-text-3" id="text-org35388eb">
+</div>
+<div id="outline-container-orgb47361d" class="outline-4">
+<h4 id="orgb47361d">格式</h4>
+<div class="outline-text-4" id="text-orgb47361d">
+<div class="org-src-container">
+<pre class="src src-scala">for(变量&lt;-表达式) 语句块
+</pre>
+</div>
+
+<p>
+变量&lt;-表达式，称为生成器（generator）
+</p>
+</div>
+</div>
+
+<div id="outline-container-org686f1cc" class="outline-4">
+<h4 id="org686f1cc">例子</h4>
+<div class="outline-text-4" id="text-org686f1cc">
+<div class="org-src-container">
+<pre class="src src-scala">for(i &lt;- 1 to 5) println(i)
+
+for(i &lt;- 1 to 5 if i%2==0) println(i)
+
+for(i &lt;- i to 5; j &lt;- 1 to 3) println(i*j)
+
+for(i &lt;- i to 5 if i%2==0) yield i
+// Vector(2, 4)
+</pre>
+</div>
+<p>
+yield表示对结果构建一个集合。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-01-03</span>
+        <span title="last modification date" class="post-info">2018-01-03</span>
+        <span title="tags" class="post-info"><a href="/tags/spark/">Spark</a></span>
+        <span title="author" class="post-info">pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/01/03/scala-声明值和变量";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/03/scala-声明值和变量";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; ubuntu">pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
