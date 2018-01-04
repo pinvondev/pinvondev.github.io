@@ -31,18 +31,40 @@
 <div>
 <div class="post">
 <h1>Ubuntu下安装JDK</h1>
-
-<div id="outline-container-orgc9dc2fd" class="outline-2">
-<h2 id="orgc9dc2fd">直接下载JDK压缩包方式安装</h2>
-<div class="outline-text-2" id="text-orgc9dc2fd">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcdc72e0">直接下载JDK压缩包方式安装</a>
+<ul>
+<li><a href="#orga311b4d">官网下载对应版本的JDK</a></li>
+<li><a href="#orgf0353de">解压缩并放至指定目录</a></li>
+<li><a href="#org2a99c02">修改环境变量</a></li>
+<li><a href="#org265bb34">设置系统默认JDK版本</a></li>
+</ul>
+</li>
+<li><a href="#org7cd0cf3">通过ppa(源)方式安装</a>
+<ul>
+<li><a href="#org3af4aa9">添加ppa</a></li>
+<li><a href="#orgb728b95">安装oracle-java-installer</a></li>
+<li><a href="#org341baa0">注意事项</a></li>
+</ul>
+</li>
+</ul>
 </div>
-<div id="outline-container-org73d3534" class="outline-3">
-<h3 id="org73d3534">官网下载对应版本的JDK</h3>
 </div>
 
-<div id="outline-container-org7a3348e" class="outline-3">
-<h3 id="org7a3348e">解压缩并放至指定目录</h3>
-<div class="outline-text-3" id="text-org7a3348e">
+<div id="outline-container-orgcdc72e0" class="outline-2">
+<h2 id="orgcdc72e0">直接下载JDK压缩包方式安装</h2>
+<div class="outline-text-2" id="text-orgcdc72e0">
+</div>
+<div id="outline-container-orga311b4d" class="outline-3">
+<h3 id="orga311b4d">官网下载对应版本的JDK</h3>
+</div>
+
+<div id="outline-container-orgf0353de" class="outline-3">
+<h3 id="orgf0353de">解压缩并放至指定目录</h3>
+<div class="outline-text-3" id="text-orgf0353de">
 <pre class="example">
 sudo mkdir /usr/lib/jvm
 sudo tar -zxvf jdk-xxx.gz -C /usr/lib/jvm
@@ -50,9 +72,9 @@ sudo tar -zxvf jdk-xxx.gz -C /usr/lib/jvm
 </div>
 </div>
 
-<div id="outline-container-org8499991" class="outline-3">
-<h3 id="org8499991">修改环境变量</h3>
-<div class="outline-text-3" id="text-org8499991">
+<div id="outline-container-org2a99c02" class="outline-3">
+<h3 id="org2a99c02">修改环境变量</h3>
+<div class="outline-text-3" id="text-org2a99c02">
 <pre class="example">
 sudo vim ~/.bashrc
 
@@ -66,9 +88,9 @@ export PATH=${JAVA_HOME}/bin:$PATH
 </div>
 </div>
 
-<div id="outline-container-org90a4472" class="outline-3">
-<h3 id="org90a4472">设置系统默认JDK版本</h3>
-<div class="outline-text-3" id="text-org90a4472">
+<div id="outline-container-org265bb34" class="outline-3">
+<h3 id="org265bb34">设置系统默认JDK版本</h3>
+<div class="outline-text-3" id="text-org265bb34">
 <pre class="example">
 sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_151/bin/java 300 # 数字表示优先级
 sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.8.0_151/bin/javac 300
@@ -83,13 +105,13 @@ sudo update-alternatives --config java
 </div>
 </div>
 
-<div id="outline-container-org0461154" class="outline-2">
-<h2 id="org0461154">通过ppa(源)方式安装</h2>
-<div class="outline-text-2" id="text-org0461154">
+<div id="outline-container-org7cd0cf3" class="outline-2">
+<h2 id="org7cd0cf3">通过ppa(源)方式安装</h2>
+<div class="outline-text-2" id="text-org7cd0cf3">
 </div>
-<div id="outline-container-org543af23" class="outline-3">
-<h3 id="org543af23">添加ppa</h3>
-<div class="outline-text-3" id="text-org543af23">
+<div id="outline-container-org3af4aa9" class="outline-3">
+<h3 id="org3af4aa9">添加ppa</h3>
+<div class="outline-text-3" id="text-org3af4aa9">
 <pre class="example">
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
@@ -97,18 +119,18 @@ sudo apt-get update
 </div>
 </div>
 
-<div id="outline-container-orge6cfa22" class="outline-3">
-<h3 id="orge6cfa22">安装oracle-java-installer</h3>
-<div class="outline-text-3" id="text-orge6cfa22">
+<div id="outline-container-orgb728b95" class="outline-3">
+<h3 id="orgb728b95">安装oracle-java-installer</h3>
+<div class="outline-text-3" id="text-orgb728b95">
 <pre class="example">
 sudo apt-get install oracle-java8-installer
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org5924c9c" class="outline-3">
-<h3 id="org5924c9c">注意事项</h3>
-<div class="outline-text-3" id="text-org5924c9c">
+<div id="outline-container-org341baa0" class="outline-3">
+<h3 id="org341baa0">注意事项</h3>
+<div class="outline-text-3" id="text-org341baa0">
 <ol class="org-ol">
 <li>ppa有可能会失效，若失效则再找过一个</li>
 <li>如果installer下载很慢，可以中断，然后下载好对应的jdk的tar.gz包。放在 <code>/var/cache/oracle-jdk8-installer</code> 目录下。然后再安装一次installer，它会默认使用下载好的压缩包。</li>
@@ -133,7 +155,7 @@ sudo apt-get install oracle-java8-installer
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/01/03/ubuntu下安装jdk";
           var disqus_url = "http://pinvondev.github.io/blog/2018/01/03/ubuntu下安装jdk";
-          var disqus_shortname = 'pw_lin';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
