@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>智慧医疗框架 - Pinvon&#39;s Blog</title>
+    <title>Git基础 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,27 +30,48 @@
 
 <div>
 <div class="post">
-<h1>智慧医疗框架</h1>
+<h1>Git基础</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgde9960c">从远程更新到本地(多分支)</a></li>
+<li><a href="#org3809113">撤销</a></li>
+</ul>
+</div>
+</div>
 
-<div id="outline-container-org68c4bf9" class="outline-2">
-<h2 id="org68c4bf9">数据层</h2>
-<div class="outline-text-2" id="text-org68c4bf9">
+<div id="outline-container-orgde9960c" class="outline-2">
+<h2 id="orgde9960c">从远程更新到本地(多分支)</h2>
+<div class="outline-text-2" id="text-orgde9960c">
+<div class="org-src-container">
+<pre class="src src-shell">  git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
+git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
+git merge origin/source # 将origin/source合并到当前分支
+</pre>
+</div>
+
 <p>
-医疗数据是多源异构的, 有电子病例, 移动app的数据, 可穿戴设备的数据等.
+也可以直接使用pull来更新
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">git pull --rebase origin source:source
+</pre>
+</div>
+<p>
+但是这个方法老出冲突. 或者直接打乱了本地文件.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga035429" class="outline-2">
-<h2 id="orga035429">数据集成层</h2>
-<div class="outline-text-2" id="text-orga035429">
-<p>
-主要是ETL(E: extraction, 抽取; T: transformation, 转换; L: load, 转换).
-</p>
-
-<p>
-ETL的过程: 在数据层的基础上, 进行数据移动, 数据清洗, 数据分离, 数据转换, 数据融合, 排序等, 然后存储(可以是关系型数据库, NoSQL数据库, 分布式文件系统)
-</p>
+<div id="outline-container-org3809113" class="outline-2">
+<h2 id="org3809113">撤销</h2>
+<div class="outline-text-2" id="text-org3809113">
+<div class="org-src-container">
+<pre class="src src-shell">git reflog source # 查看source的历史
+git reset --hard commid_id
+</pre>
+</div>
 </div>
 </div>
 
@@ -58,9 +79,9 @@ ETL的过程: 在数据层的基础上, 进行数据移动, 数据清洗, 数据
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-02</span>
+        <span title="post date" class="post-info">2018-01-04</span>
         <span title="last modification date" class="post-info">2018-01-04</span>
-        <span title="tags" class="post-info"><a href="/tags/healthcare/">Healthcare</a></span>
+        <span title="tags" class="post-info"><a href="/tags/git/">Git</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -68,8 +89,8 @@ ETL的过程: 在数据层的基础上, 进行数据移动, 数据清洗, 数据
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/02/智慧医疗框架";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/02/智慧医疗框架";
+          var disqus_identifier = "/blog/2018/01/04/git基础";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/04/git基础";
           var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
