@@ -1,0 +1,151 @@
+#+TITLE:       逻辑回归(分类)
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-01-05 五
+#+URI:         /blog/%y/%m/%d/逻辑回归
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        机器学习实战-读书笔记
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 基于逻辑回归和Sigmoid函数的分类
+
+** 逻辑回归
+
+假设有一些点, 用一条直线对这些点进行拟合, 这个拟合过程就叫 =回归=
+
+逻辑回归思想: 根据已有数据, 对分类边界线建立回归公式, 进行分类. 回归的意思是要找到最好的拟合参数集. 一般是使用最优化算法来找参数.
+
+优点: 计算代价不高, 易于理解和实现.
+缺点: 容易欠拟合, 分类精度可能不高.
+
+** Sigmoid函数
+
+Sigmoid函数图象是个S型, 在  $x=0$ 是, 值为0.5, $x$ 越大, 越接近1, 越小, 越接近-1.
+
+$$\sigma(z) = \frac{1}{1+e^{-z}}$$
+
+* 基于最优化方法的最佳回归系数确定
+
+Sigmoid函数的输入记为 $z$ , 且 $z=w_0x_0 + w_1x_1 + \cdots + w_nx_n$ , 也可写成 $z=\pmb w^T \pmb x$ .
+
+向量 $\pmb w$ 就是要找的最佳参数.
+
+** 最优化算法: 梯度上升法
+
+梯度上升法的思想: 要找到某函数的最大值, 最好的方法就是沿着该函数的梯度方向探寻. 梯度的计算公式如下:
+$$\triangledown f(x, y) = \Big( \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y} \Big)$$
+意思是要沿 $x$ 的方向移动 $\frac{\partial f(x,y)}{\partial x}$, 沿 $y$ 的方向移动 $\frac{\partial f(x,y)}{\partial y}$
+
+梯度上升算法中, 每到达一个点后, 都需要重新计算移动的方向. 这样算子总是能保证我们能选取到最佳的移动方向.
+
+梯度只是移动的方向, 而不是移动量, 记每次移动的步长为 $alpha$ , 梯度算法的迭代公式为 $w := w + \alpha \triangledown_w f(w)$
+
+梯度上升算法与梯度下降算法原理一样, 只是一个算最大值, 一个算最小值.
+
+** 训练算法: 使用梯度上升找到最佳参数
+
+场景: 100个样本点, 每个点包含两个特征. 使用梯度上升法找到最佳回归系数.
+
+#+BEGIN_SRC python
+def loadDataSet():
+    dataMat = [] # 列表的列表, 每个小列表包含三个元素[回归系数, 特征1, 特征2]
+    labelMat = [] # 每个元素都是分类结果
+    fr = open('testSet.txt') # testSet.txt的格式: 特征1, 特征2, 分类结果
+    for line in fr.readlines():
+        lineArr = line.strip().split()
+        dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])]) # 回归系数初始化为1.0
+        labelMat.append(int(lineArr[2]))
+    return dataMat, labelMat
+
+def sigmoid(inX):
+    return 1.0/(1+exp(-inX))
+
+def gradAscent(dataMatIn, classLabels): # dataMatlin: 2维NumPy数组, 一行对应一条数据的特征; classLabels: 类别
+    dataMatrix = mat(dataMatIn) # 转换成NumPy矩阵
+    labelMat = mat(classLabels).transpose() # 将行向量转换成列向量(转置)
+    m, n = shape(dataMatrix) # 计算矩阵的行数和列数
+    alpha = 0.001 # 步长
+    maxCycles = 500 # 迭代次数
+    weights = ones((n, 1)) # n个系数, 每个都初始化为1
+    for k in range(maxCycles):
+        h = sigmoid(dataMatrix * weights) # h是一个列向量, 元素个数为样本个数
+        error = (labelMat - h)
+        weights = weights + alpha * dataMatrix.transpose() * error
+    return weights
+#+END_SRC
+
+** 分析数据: 画出决策边界
+
+上面的代码解出了一组回归系数, 但不一定是最佳系数, 如何找出最佳的回归系数呢?
+#+BEGIN_SRC python
+def plotBestFit(wei): # wei是一维矩阵
+    import matplotlib.pyplot as plt
+    weights = wei.getA() # 将矩阵转换为数组
+    dataMat, labelMat = loadDataSet() 
+    dataArr = array(dataMat) # 将列表[系数, 特征1, 特征2]转换为数组
+    n = shape(dataArr)[0] # 获得矩阵的行数
+    xcord1 = []; ycord1 = []
+    xcord2 = []; ycord2 = []
+    for i in range(n):
+        if int(labelMat[i]) == 1: # 将分类结果为1和0的分别存储
+            xcord1.append(dataArr[i, 1]); ycord1.append(dataArr[i, 2])
+        else:
+            xcord2.append(dataArr[i, 1]); ycord2.append(dataArr[i, 2])
+    fig = plt.figure() # 生成一个图
+    ax = fig.add_subplot(111) # 添加编号为111的子图
+    ax.scatter(xcord1, ycord1, s=30, c='red', marker='s')
+    ax.scatter(xcord2, ycord2, s=30, c='green')
+    x = arange(-3.0, 3.0, 0.1) # 以-3.0为起点, 3.0为终点, 步长为0.1
+    y = (-weights[0] - weights[1]*x)/weights[2]
+    ax.plot(x, y)
+    pl.xlabel('X1'); plt.ylabel('X2');
+    plt.show()
+#+END_SRC
+
+** 训练算法: 随机梯度上升
+
+使用梯度上升算法, 在每次更新回归系数时, 都要遍历整个数据集. 如果有数十亿样本和成千上万的特征, 那么该方法的计算复杂度就太高了.
+
+随机梯度上升算法可以改善这个问题, 它每次仅用一个样本点来计算误差并更新回归系数, 这样通过多次迭代, 每次都随机选择不同的样本, 最终使回归系数趋于收敛.
+
+#+BEGIN_SRC python
+def stocGradAscent0(dataMatrix, classLabels):
+    m, n = shape(dataMatrix)
+    alpha = 0.01
+    weights = ones(n)
+    for i in range(m):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights = weights + alpha * error * dataMatrix[i]
+    return weights
+#+END_SRC
+
+一个判断优化算法优劣的可靠方法是看它是否收敛, 也就是说参数是否达到了稳定值, 是否还会不断地变化.
+
+但是, 在大的波动停止之后, 还有一些小的周期性波动. 产生这种现象的原因是存在一些不能正确分类的样本点(数据集并非线性可分), 在每次迭代时会引发系数的剧烈改变. 因此, 对随机梯度上升算法进行改进, 避免来回波动.
+
+#+BEGIN_SRC python
+def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+    m, n = shape(dataMatrix)
+    weights = ones(n)
+    for j in range(numIter):
+        dataIndex = range(m) # 0-m
+        for i in range(m):
+            alpha = 4 / (1.0 + j + i) + 0.01 # 随着迭代次数的增加, 步长不断减小, 但不会减到0, 因为存在常数项
+            randIndex = int(random.uniform(0, len(dataIndex))) # 随机选取样本更新回归系数
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights = weights + alpha * error * dataMatrix[randIndex]
+            del(dataIndex[randIndex])
+    return weights
+#+END_SRC
+
+* 小结
+
+逻辑回归的目的是寻找一个 =非线性函数sigmoid的最佳拟合参数= , 求解过程可以由最优化算法来完成.
+
+随机梯度上升算法与梯度上升算法的效果相当, 但占用更少的计算资源. 此外, 随机梯度上升是一个在线算法, 它可以在新数据到来时就完成参数更新, 而不需要重新读取整个数据集来进行批处理运算.
+
+机器学习的一个重要问题是如何处理缺失数据, 这个问题没有标准答案, 取决于实际中的需要.
