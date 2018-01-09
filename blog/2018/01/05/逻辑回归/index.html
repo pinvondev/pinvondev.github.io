@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>逻辑回归(分类) - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>逻辑回归(分类)</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd80de61">基于逻辑回归和Sigmoid函数的分类</a>
+<ul>
+<li><a href="#org1d9d125">逻辑回归</a></li>
+<li><a href="#org6fb3c93">Sigmoid函数</a></li>
+</ul>
+</li>
+<li><a href="#org688eff2">基于最优化方法的最佳回归系数确定</a>
+<ul>
+<li><a href="#org01b478e">最优化算法: 梯度上升法</a></li>
+<li><a href="#orgfb09d2a">训练算法: 使用梯度上升找到最佳参数</a></li>
+<li><a href="#org6331c7d">分析数据: 画出决策边界</a></li>
+<li><a href="#org8d76db1">训练算法: 随机梯度上升</a></li>
+</ul>
+</li>
+<li><a href="#org8c25f2b">小结</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd80de61" class="outline-2">
+<h2 id="orgd80de61">基于逻辑回归和Sigmoid函数的分类</h2>
+<div class="outline-text-2" id="text-orgd80de61">
+</div>
+<div id="outline-container-org1d9d125" class="outline-3">
+<h3 id="org1d9d125">逻辑回归</h3>
+<div class="outline-text-3" id="text-org1d9d125">
+<p>
+假设有一些点, 用一条直线对这些点进行拟合, 这个拟合过程就叫 <code>回归</code>
+</p>
+
+<p>
+逻辑回归思想: 根据已有数据, 对分类边界线建立回归公式, 进行分类. 回归的意思是要找到最好的拟合参数集. 一般是使用最优化算法来找参数.
+</p>
+
+<p>
+优点: 计算代价不高, 易于理解和实现.
+缺点: 容易欠拟合, 分类精度可能不高.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6fb3c93" class="outline-3">
+<h3 id="org6fb3c93">Sigmoid函数</h3>
+<div class="outline-text-3" id="text-org6fb3c93">
+<p>
+Sigmoid函数图象是个S型, 在  \(x=0\) 是, 值为0.5, \(x\) 越大, 越接近1, 越小, 越接近-1.
+</p>
+
+<p>
+\[\sigma(z) = \frac{1}{1+e^{-z}}\]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org688eff2" class="outline-2">
+<h2 id="org688eff2">基于最优化方法的最佳回归系数确定</h2>
+<div class="outline-text-2" id="text-org688eff2">
+<p>
+Sigmoid函数的输入记为 \(z\) , 且 \(z=w_0x_0 + w_1x_1 + \cdots + w_nx_n\) , 也可写成 \(z=\pmb w^T \pmb x\) .
+</p>
+
+<p>
+向量 \(\pmb w\) 就是要找的最佳参数.
+</p>
+</div>
+
+<div id="outline-container-org01b478e" class="outline-3">
+<h3 id="org01b478e">最优化算法: 梯度上升法</h3>
+<div class="outline-text-3" id="text-org01b478e">
+<p>
+梯度上升法的思想: 要找到某函数的最大值, 最好的方法就是沿着该函数的梯度方向探寻. 梯度的计算公式如下:
+\[\triangledown f(x, y) = \Big( \frac{\partial f(x,y)}{\partial x}, \frac{\partial f(x,y)}{\partial y} \Big)\]
+意思是要沿 \(x\) 的方向移动 \(\frac{\partial f(x,y)}{\partial x}\), 沿 \(y\) 的方向移动 \(\frac{\partial f(x,y)}{\partial y}\)
+</p>
+
+<p>
+梯度上升算法中, 每到达一个点后, 都需要重新计算移动的方向. 这样算子总是能保证我们能选取到最佳的移动方向.
+</p>
+
+<p>
+梯度只是移动的方向, 而不是移动量, 记每次移动的步长为 \(alpha\) , 梯度算法的迭代公式为 \(w := w + \alpha \triangledown_w f(w)\)
+</p>
+
+<p>
+梯度上升算法与梯度下降算法原理一样, 只是一个算最大值, 一个算最小值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfb09d2a" class="outline-3">
+<h3 id="orgfb09d2a">训练算法: 使用梯度上升找到最佳参数</h3>
+<div class="outline-text-3" id="text-orgfb09d2a">
+<p>
+场景: 100个样本点, 每个点包含两个特征. 使用梯度上升法找到最佳回归系数.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">def loadDataSet():
+    dataMat = [] # 列表的列表, 每个小列表包含三个元素[回归系数, 特征1, 特征2]
+    labelMat = [] # 每个元素都是分类结果
+    fr = open('testSet.txt') # testSet.txt的格式: 特征1, 特征2, 分类结果
+    for line in fr.readlines():
+        lineArr = line.strip().split()
+        dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])]) # 回归系数初始化为1.0
+        labelMat.append(int(lineArr[2]))
+    return dataMat, labelMat
+
+def sigmoid(inX):
+    return 1.0/(1+exp(-inX))
+
+def gradAscent(dataMatIn, classLabels): # dataMatlin: 2维NumPy数组, 一行对应一条数据的特征; classLabels: 类别
+    dataMatrix = mat(dataMatIn) # 转换成NumPy矩阵
+    labelMat = mat(classLabels).transpose() # 将行向量转换成列向量(转置)
+    m, n = shape(dataMatrix) # 计算矩阵的行数和列数
+    alpha = 0.001 # 步长
+    maxCycles = 500 # 迭代次数
+    weights = ones((n, 1)) # n个系数, 每个都初始化为1
+    for k in range(maxCycles):
+        h = sigmoid(dataMatrix * weights) # h是一个列向量, 元素个数为样本个数
+        error = (labelMat - h)
+        weights = weights + alpha * dataMatrix.transpose() * error
+    return weights
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6331c7d" class="outline-3">
+<h3 id="org6331c7d">分析数据: 画出决策边界</h3>
+<div class="outline-text-3" id="text-org6331c7d">
+<p>
+上面的代码解出了一组回归系数, 但不一定是最佳系数, 如何找出最佳的回归系数呢?
+</p>
+<div class="org-src-container">
+<pre class="src src-python">def plotBestFit(wei): # wei是一维矩阵
+    import matplotlib.pyplot as plt
+    weights = wei.getA() # 将矩阵转换为数组
+    dataMat, labelMat = loadDataSet() 
+    dataArr = array(dataMat) # 将列表[系数, 特征1, 特征2]转换为数组
+    n = shape(dataArr)[0] # 获得矩阵的行数
+    xcord1 = []; ycord1 = []
+    xcord2 = []; ycord2 = []
+    for i in range(n):
+        if int(labelMat[i]) == 1: # 将分类结果为1和0的分别存储
+            xcord1.append(dataArr[i, 1]); ycord1.append(dataArr[i, 2])
+        else:
+            xcord2.append(dataArr[i, 1]); ycord2.append(dataArr[i, 2])
+    fig = plt.figure() # 生成一个图
+    ax = fig.add_subplot(111) # 添加编号为111的子图
+    ax.scatter(xcord1, ycord1, s=30, c='red', marker='s')
+    ax.scatter(xcord2, ycord2, s=30, c='green')
+    x = arange(-3.0, 3.0, 0.1) # 以-3.0为起点, 3.0为终点, 步长为0.1
+    y = (-weights[0] - weights[1]*x)/weights[2]
+    ax.plot(x, y)
+    pl.xlabel('X1'); plt.ylabel('X2');
+    plt.show()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8d76db1" class="outline-3">
+<h3 id="org8d76db1">训练算法: 随机梯度上升</h3>
+<div class="outline-text-3" id="text-org8d76db1">
+<p>
+使用梯度上升算法, 在每次更新回归系数时, 都要遍历整个数据集. 如果有数十亿样本和成千上万的特征, 那么该方法的计算复杂度就太高了.
+</p>
+
+<p>
+随机梯度上升算法可以改善这个问题, 它每次仅用一个样本点来计算误差并更新回归系数, 这样通过多次迭代, 每次都随机选择不同的样本, 最终使回归系数趋于收敛.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">def stocGradAscent0(dataMatrix, classLabels):
+    m, n = shape(dataMatrix)
+    alpha = 0.01
+    weights = ones(n)
+    for i in range(m):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights = weights + alpha * error * dataMatrix[i]
+    return weights
+</pre>
+</div>
+
+<p>
+一个判断优化算法优劣的可靠方法是看它是否收敛, 也就是说参数是否达到了稳定值, 是否还会不断地变化.
+</p>
+
+<p>
+但是, 在大的波动停止之后, 还有一些小的周期性波动. 产生这种现象的原因是存在一些不能正确分类的样本点(数据集并非线性可分), 在每次迭代时会引发系数的剧烈改变. 因此, 对随机梯度上升算法进行改进, 避免来回波动.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+    m, n = shape(dataMatrix)
+    weights = ones(n)
+    for j in range(numIter):
+        dataIndex = range(m) # 0-m
+        for i in range(m):
+            alpha = 4 / (1.0 + j + i) + 0.01 # 随着迭代次数的增加, 步长不断减小, 但不会减到0, 因为存在常数项
+            randIndex = int(random.uniform(0, len(dataIndex))) # 随机选取样本更新回归系数
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights = weights + alpha * error * dataMatrix[randIndex]
+            del(dataIndex[randIndex])
+    return weights
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c25f2b" class="outline-2">
+<h2 id="org8c25f2b">小结</h2>
+<div class="outline-text-2" id="text-org8c25f2b">
+<p>
+逻辑回归的目的是寻找一个 <code>非线性函数sigmoid的最佳拟合参数</code> , 求解过程可以由最优化算法来完成.
+</p>
+
+<p>
+随机梯度上升算法与梯度上升算法的效果相当, 但占用更少的计算资源. 此外, 随机梯度上升是一个在线算法, 它可以在新数据到来时就完成参数更新, 而不需要重新读取整个数据集来进行批处理运算.
+</p>
+
+<p>
+机器学习的一个重要问题是如何处理缺失数据, 这个问题没有标准答案, 取决于实际中的需要.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-01-05</span>
+        <span title="last modification date" class="post-info">2018-01-09</span>
+        <span title="tags" class="post-info"><a href="/tags/机器学习实战-读书笔记/">机器学习实战-读书笔记</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/01/05/逻辑回归";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/05/逻辑回归";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
