@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>第1章 简介 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="UNP-读书笔记" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>第1章 简介</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge1194ef">客户端程序</a>
+<ul>
+<li><a href="#org9612af8">创建TCP套接口</a></li>
+<li><a href="#orgfda157a">指定服务器IP地址和端口</a>
+<ul>
+<li><a href="#org045ccf7">bzero()和memset()</a></li>
+<li><a href="#org3f15d7a">填充地址族和端口</a></li>
+<li><a href="#org3dc2782">inet_pton()和inet_addr()</a></li>
+</ul>
+</li>
+<li><a href="#org2cf88fb">建立连接</a></li>
+<li><a href="#org2f10761">读取服务器的响应并输出</a>
+<ul>
+<li><a href="#org3b2a7fb">read()</a></li>
+<li><a href="#orga1b2f77">fputs()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org658b948">服务器程序</a>
+<ul>
+<li><a href="#orgb174a80">创建TCP套接口</a></li>
+<li><a href="#org531df9a">绑定服务器的端口到套接口</a></li>
+<li><a href="#org1345b86">监听</a></li>
+<li><a href="#org918e4fb">接受连接并响应</a>
+<ul>
+<li><a href="#org33eb6a3">snprintf()和sprintf()</a></li>
+</ul>
+</li>
+<li><a href="#orgd99879a">终止连接</a></li>
+</ul>
+</li>
+<li><a href="#orgdef8eeb">小结</a>
+<ul>
+<li><a href="#org1bb3cac">TCP客户端</a></li>
+<li><a href="#org93dfee4">TCP服务端</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge1194ef" class="outline-2">
+<h2 id="orge1194ef">客户端程序</h2>
+<div class="outline-text-2" id="text-orge1194ef">
+</div>
+<div id="outline-container-org9612af8" class="outline-3">
+<h3 id="org9612af8">创建TCP套接口</h3>
+<div class="outline-text-3" id="text-org9612af8">
+<div class="org-src-container">
+<pre class="src src-C++">if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0) 
+        err_sys("socket error");
+</pre>
+</div>
+
+<p>
+socket()的三个参数:
+第1个: 表示协议族(决定了地址类型). 常用的协议族有 <code>AF_INET</code>, <code>AF_INET6</code>, <code>AF_LOCAL</code>, <code>AF_ROUTE</code>.
+第2个: 表示socket类型(决定了数据传输方式). 常用的socket类型有 <code>SOCK_STREAM</code>, <code>SOCK_DGRAM</code>. <code>SOCK_STREAM</code> 表示面向连接的数据传输方式, <code>SOCK_DGRAM</code> 表示无连接的数据传输方式.
+第3个: 协议类型. 有了协议族和socket类型之后, 一般操作系统会自动推演出协议类型, 所以第3个参数一般直接填0, 表示由系统推演. 除非有两种不同的协议, 支持同一种地址类型和数据传输类型, 这时需要我们指明使用哪个协议, 常用的有 <code>IPPROTO_TCP</code>, <code>IPPROTO_UDP</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfda157a" class="outline-3">
+<h3 id="orgfda157a">指定服务器IP地址和端口</h3>
+<div class="outline-text-3" id="text-orgfda157a">
+<div class="org-src-container">
+<pre class="src src-C++">bzero(&amp;servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_port = htons(13);
+if (inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr) &lt;= 0)
+    err_quit("inet_pton error for %s", argv[1]);
+</pre>
+</div>
+
+<p>
+该代码把服务器的IP地址和端口号填入网际套接口地址结构中(servaddr的sockaddr_in).
+</p>
+</div>
+
+<div id="outline-container-org045ccf7" class="outline-4">
+<h4 id="org045ccf7">bzero()和memset()</h4>
+<div class="outline-text-4" id="text-org045ccf7">
+<p>
+bzero()与memset()的原型:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">extern void bzero(void *s, int n);
+void *memset(void *s, int ch, size_t n);
+</pre>
+</div>
+<p>
+bzero()的功能: 置s的前n个字节为0, 包括'\0'.
+memset()的功能: 将s中前n个字节替换为ch, 并返回s.
+</p>
+
+<p>
+由于memset()的后两个参数是相同的类型, 导致使用者经常搞反了这两个参数的作用.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3f15d7a" class="outline-4">
+<h4 id="org3f15d7a">填充地址族和端口</h4>
+</div>
+
+<div id="outline-container-org3dc2782" class="outline-4">
+<h4 id="org3dc2782">inet_pton()和inet_addr()</h4>
+<div class="outline-text-4" id="text-org3dc2782">
+<p>
+inet_pton()是一个支持IPv6的新函数, 可以把点分十进制数转换成二进制整数. inet_ntop()是反转换.
+</p>
+
+<p>
+inet_addr()则只能支持IPv4.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2cf88fb" class="outline-3">
+<h3 id="org2cf88fb">建立连接</h3>
+<div class="outline-text-3" id="text-org2cf88fb">
+<div class="org-src-container">
+<pre class="src src-C++">if (connect(sockfd, (SA*)&amp;servaddr, sizeof(servaddr)) &lt; 0)
+    err_sys("connect error");
+</pre>
+</div>
+
+<p>
+connect(): 用于与第二个参数所指定的套接口地址结构对应的服务器建立连接. 
+</p>
+
+<p>
+如果套接口未被绑定, 则系统赋给本地关联一个唯一的值, 且设置接口为已绑定. 对于流类套接口(SOCK_STREAM), 利用一个名字来与远程主机建立连接, 一旦套接口调用成功返回, 就能收发数据了. 对于数据报类套接口(SOCK_DGRAM), 则设置成一个默认的目的地址,用来进行后续的send()和recv()调用.
+</p>
+
+<p>
+第1个参数: socket标识.
+第2个参数: 需要连接的远程地址.
+第3个参数: sockaddr的长度.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f10761" class="outline-3">
+<h3 id="org2f10761">读取服务器的响应并输出</h3>
+<div class="outline-text-3" id="text-org2f10761">
+<div class="org-src-container">
+<pre class="src src-C++">while ((n = read(sockfd, recvline, MAXLINE)) &gt; 0) {
+    recvline[n] = 0;
+    if (fputs(recvline, stdout) == EOF)
+        err_sys("fputs error");
+}
+</pre>
+</div>
+
+<p>
+使用read()读取服务器的应答, 并用fputs()输出结果.
+</p>
+</div>
+
+<div id="outline-container-org3b2a7fb" class="outline-4">
+<h4 id="org3b2a7fb">read()</h4>
+<div class="outline-text-4" id="text-org3b2a7fb">
+<div class="org-src-container">
+<pre class="src src-C++">ssize_t read(int fd, void *buf, size_t count);
+</pre>
+</div>
+
+<p>
+若成功, 则返回读取的字节数, 出错则返回-1.
+</p>
+
+<p>
+参数count是请求读取的字节数, 读出来的数据保存在缓冲区buf中, 同时文件的当前读写位置向后移.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga1b2f77" class="outline-4">
+<h4 id="orga1b2f77">fputs()</h4>
+<div class="outline-text-4" id="text-orga1b2f77">
+<div class="org-src-container">
+<pre class="src src-C++">int fputs(char *string, FILE *stream);
+</pre>
+</div>
+
+<p>
+该函数用于将指定的字符串写入到文件流中. string为需要写入的字符串, stream为文件流指针.
+</p>
+
+<p>
+成功则返回非负数, 失败则返回EOF.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org658b948" class="outline-2">
+<h2 id="org658b948">服务器程序</h2>
+<div class="outline-text-2" id="text-org658b948">
+</div>
+<div id="outline-container-orgb174a80" class="outline-3">
+<h3 id="orgb174a80">创建TCP套接口</h3>
+<div class="outline-text-3" id="text-orgb174a80">
+<div class="org-src-container">
+<pre class="src src-c++">int Socket(int family, int type, int protocol) {
+    int n;
+    if ((n = Socket(family, type, protocol)))
+        err_sys("socket error");
+    return (n);
+}
+
+listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org531df9a" class="outline-3">
+<h3 id="org531df9a">绑定服务器的端口到套接口</h3>
+<div class="outline-text-3" id="text-org531df9a">
+<div class="org-src-container">
+<pre class="src src-C++">void Bind(int fd, const struct sockaddr *sa, socklen_t salen) {
+    if (bind(fd, sa, salen) &lt; 0)
+        err_sys("bind error");
+}
+
+bzero(&amp;servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+servaddr.sin_port = htons(13);
+Bind(listenfd, (SA*)&amp;servaddr, sizeof(servaddr));
+</pre>
+</div>
+
+<p>
+其中, htonl(INADDR_ANY)表示允许服务器在任意接口上接受客户连接. 这边假设的是服务器有多个网卡接口.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1345b86" class="outline-3">
+<h3 id="org1345b86">监听</h3>
+<div class="outline-text-3" id="text-org1345b86">
+<div class="org-src-container">
+<pre class="src src-C++">void Listen(int fd, int backlog) {
+    char *ptr;
+    if ((ptr = getenv("LISTENQ")) != NULL)
+        backlog = atoi(ptr);
+    if (listen(fd, backlog) &lt; 0)
+        err_sys("listen error");
+}
+Listen(listenfd, 1024);
+</pre>
+</div>
+<p>
+通过调用listen()函数, 将此套接口变换成一个监听套接口, 它使系统内核接受来自客户的连接.
+</p>
+
+<p>
+其中, fd是需要进入监听状态的套接字, backlog为请求队列的最大长度.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org918e4fb" class="outline-3">
+<h3 id="org918e4fb">接受连接并响应</h3>
+<div class="outline-text-3" id="text-org918e4fb">
+<div class="org-src-container">
+<pre class="src src-C++">int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr) {
+    int n;
+again:
+    if ((n = accept(fd, sa, salenptr)) &lt; 0) {
+#ifdef	EPROTO
+        if (errno == EPROTO || errno == ECONNABORTED)
+#else
+        if (errno == ECONNABORTED)
+#endif
+            goto again;
+        else
+            err_sys("accept error");
+    }
+    return(n);
+}
+void Write(int fd, void *ptr, size_t nbytes) {
+    if (write(fd, ptr, nbytes) != nbytes)
+        err_sys("write error");
+}
+
+for(; ;){
+    connfd = Accept(listenfd, (SA*)NULL, NULL);
+    ticks = time(NULL);
+    snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&amp;ticks));
+    Write(connfd, buff, strlen(buff));
+}
+</pre>
+</div>
+<p>
+一般情况下, 服务器进程在调用accept()后处于睡眠状态, 等待客户的连接和内核对它的接受.
+</p>
+
+<p>
+当三次握手完毕后, accept()返回一个表示已连接的描述字, 此描述字用于与新客户的通信. accept()为每个连接到服务器的客户端返回一个新的已连接描述字.
+</p>
+
+<p>
+snprintf()函数会在字符串末尾添加回车和换行两个字符, 然后write()会将结果发送给客户.
+</p>
+</div>
+
+<div id="outline-container-org33eb6a3" class="outline-4">
+<h4 id="org33eb6a3">snprintf()和sprintf()</h4>
+<div class="outline-text-4" id="text-org33eb6a3">
+<p>
+两个函数的功能都是把格式化的字符串写入缓冲区中. 但是sprintf()不 检查目标缓冲区是否溢出, snprintf()则要求其第二个参数是目标缓冲区的大小, 因此可以确保缓冲区不溢出.
+</p>
+
+<p>
+类似的还有gets(), strcat(), strcpy(), 更推荐使用fgets(), strncat(), strncpy().
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd99879a" class="outline-3">
+<h3 id="orgd99879a">终止连接</h3>
+<div class="outline-text-3" id="text-orgd99879a">
+<div class="org-src-container">
+<pre class="src src-C++">void Close(int fd) {
+    if (close(fd) == -1)
+        err_sys("close error");
+}
+Close(connfd);
+</pre>
+</div>
+<p>
+服务器通过调用close()关闭与客户的连接.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdef8eeb" class="outline-2">
+<h2 id="orgdef8eeb">小结</h2>
+<div class="outline-text-2" id="text-orgdef8eeb">
+</div>
+<div id="outline-container-org1bb3cac" class="outline-3">
+<h3 id="org1bb3cac">TCP客户端</h3>
+<div class="outline-text-3" id="text-org1bb3cac">
+<ol class="org-ol">
+<li>socket(): 创建socket.</li>
+<li>设置远程机器的IP地址和端口.</li>
+<li>connect(): 连接服务器.</li>
+<li>send()/recv()或read()/write(): 收发数据.</li>
+<li>close(): 关闭网络连接.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org93dfee4" class="outline-3">
+<h3 id="org93dfee4">TCP服务端</h3>
+<div class="outline-text-3" id="text-org93dfee4">
+<ol class="org-ol">
+<li>socket(): 创建socket.</li>
+<li>bind(): 绑定服务器的IP地址和端口等信息到socket.</li>
+<li>listen(): 开启监听.</li>
+<li>accept(): 接收客户端的连接.</li>
+<li>send()/recv()或read()/write(): 收发数据.</li>
+<li>close(): 关闭网络连接.</li>
+</ol>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-01-11</span>
+        <span title="last modification date" class="post-info">2018-01-11</span>
+        <span title="tags" class="post-info"><a href="/tags/&lt;todo/">&lt;TODO</a>, <a href="/tags/insert-your-tags-here&gt;/">insert your tags here&gt;</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/01/11/第1章-简介";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/11/第1章-简介";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
