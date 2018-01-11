@@ -1,0 +1,33 @@
+#+TITLE:       传输层: TCP和UDP
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-01-11 四
+#+URI:         /blog/%y/%m/%d/传输层-tcp和udp
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        UNP-读书笔记
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 三次握手
+
+1. 服务器准备接受外来连接. 准备工作通过调用socket(), bind()和listen()函数来完成.
+2. 客户端通过调用connect()主动连接服务器. 这引起客户端发送一个SYN分节(表示同步). 它告诉服务器将要发送的数据的初始序列号.
+3. 服务器确认客户的SYN, 同时自己也发送一个SYN, 它含有服务器将在同一连接中发送的数据的初始序列号.
+4. 客户端确认服务器的SYN.
+
+#+CAPTION: 三次握手
+#+ATTR_HTML: :width 400
+[[./fig2-2.png]]
+
+* 四次挥手
+
+1. 某个应用进程首先调用close()主动关闭. 发送FIN.
+2. 接收到FIN的一端执行被动关闭.
+3. 一段时间后, 接收到文件结束符的应用进程调用close()关闭它的套接口. 发送FIN.
+4. 接收到这个FIN的原发送方对它进行确认.
+
+每个方向都需要有一个FIN和一个ACK, 所以需要四次.
+#+CAPTION: 四次挥手
+#+ATTR_HTML: :width 400
+[[./fig2-3.png]]
