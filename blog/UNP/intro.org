@@ -1,0 +1,211 @@
+#+TITLE:       第1章 简介
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-01-11 四
+#+URI:         /blog/%y/%m/%d/第1章-简介
+#+KEYWORDS:    UNP-读书笔记
+#+TAGS:        <TODO: insert your tags here>
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 客户端程序
+
+** 创建TCP套接口
+#+BEGIN_SRC C++
+if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+        err_sys("socket error");
+#+END_SRC
+
+socket()的三个参数:
+第1个: 表示协议族(决定了地址类型). 常用的协议族有 =AF_INET=, =AF_INET6=, =AF_LOCAL=, =AF_ROUTE=.
+第2个: 表示socket类型(决定了数据传输方式). 常用的socket类型有 =SOCK_STREAM=, =SOCK_DGRAM=. =SOCK_STREAM= 表示面向连接的数据传输方式, =SOCK_DGRAM= 表示无连接的数据传输方式.
+第3个: 协议类型. 有了协议族和socket类型之后, 一般操作系统会自动推演出协议类型, 所以第3个参数一般直接填0, 表示由系统推演. 除非有两种不同的协议, 支持同一种地址类型和数据传输类型, 这时需要我们指明使用哪个协议, 常用的有 =IPPROTO_TCP=, =IPPROTO_UDP=.
+
+** 指定服务器IP地址和端口
+#+BEGIN_SRC C++
+bzero(&servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_port = htons(13);
+if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0)
+    err_quit("inet_pton error for %s", argv[1]);
+#+END_SRC
+
+该代码把服务器的IP地址和端口号填入网际套接口地址结构中(servaddr的sockaddr_in).
+
+*** bzero()和memset()
+
+bzero()与memset()的原型:
+#+BEGIN_SRC C++
+extern void bzero(void *s, int n);
+void *memset(void *s, int ch, size_t n);
+#+END_SRC
+bzero()的功能: 置s的前n个字节为0, 包括'\0'.
+memset()的功能: 将s中前n个字节替换为ch, 并返回s.
+
+由于memset()的后两个参数是相同的类型, 导致使用者经常搞反了这两个参数的作用.
+
+*** 填充地址族和端口
+
+*** inet_pton()和inet_addr()
+
+inet_pton()是一个支持IPv6的新函数, 可以把点分十进制数转换成二进制整数. inet_ntop()是反转换.
+
+inet_addr()则只能支持IPv4.
+
+** 建立连接
+#+BEGIN_SRC C++
+if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr)) < 0)
+    err_sys("connect error");
+#+END_SRC
+
+connect(): 用于与第二个参数所指定的套接口地址结构对应的服务器建立连接. 
+
+如果套接口未被绑定, 则系统赋给本地关联一个唯一的值, 且设置接口为已绑定. 对于流类套接口(SOCK_STREAM), 利用一个名字来与远程主机建立连接, 一旦套接口调用成功返回, 就能收发数据了. 对于数据报类套接口(SOCK_DGRAM), 则设置成一个默认的目的地址,用来进行后续的send()和recv()调用.
+
+第1个参数: socket标识.
+第2个参数: 需要连接的远程地址.
+第3个参数: sockaddr的长度.
+
+** 读取服务器的响应并输出
+#+BEGIN_SRC C++
+while ((n = read(sockfd, recvline, MAXLINE)) > 0) {
+    recvline[n] = 0;
+    if (fputs(recvline, stdout) == EOF)
+        err_sys("fputs error");
+}
+#+END_SRC
+
+使用read()读取服务器的应答, 并用fputs()输出结果.
+
+*** read()
+#+BEGIN_SRC C++
+ssize_t read(int fd, void *buf, size_t count);
+#+END_SRC
+
+若成功, 则返回读取的字节数, 出错则返回-1.
+
+参数count是请求读取的字节数, 读出来的数据保存在缓冲区buf中, 同时文件的当前读写位置向后移.
+
+*** fputs()
+#+BEGIN_SRC C++
+int fputs(char *string, FILE *stream);
+#+END_SRC
+
+该函数用于将指定的字符串写入到文件流中. string为需要写入的字符串, stream为文件流指针.
+
+成功则返回非负数, 失败则返回EOF.
+
+* 服务器程序
+
+** 创建TCP套接口
+#+BEGIN_SRC c++
+int Socket(int family, int type, int protocol) {
+    int n;
+    if ((n = Socket(family, type, protocol)))
+        err_sys("socket error");
+    return (n);
+}
+
+listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+#+END_SRC
+
+** 绑定服务器的端口到套接口
+#+BEGIN_SRC C++
+void Bind(int fd, const struct sockaddr *sa, socklen_t salen) {
+    if (bind(fd, sa, salen) < 0)
+        err_sys("bind error");
+}
+
+bzero(&servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+servaddr.sin_port = htons(13);
+Bind(listenfd, (SA*)&servaddr, sizeof(servaddr));
+#+END_SRC
+
+其中, htonl(INADDR_ANY)表示允许服务器在任意接口上接受客户连接. 这边假设的是服务器有多个网卡接口.
+
+** 监听
+#+BEGIN_SRC C++
+void Listen(int fd, int backlog) {
+    char *ptr;
+    if ((ptr = getenv("LISTENQ")) != NULL)
+        backlog = atoi(ptr);
+    if (listen(fd, backlog) < 0)
+        err_sys("listen error");
+}
+Listen(listenfd, 1024);
+#+END_SRC
+通过调用listen()函数, 将此套接口变换成一个监听套接口, 它使系统内核接受来自客户的连接.
+
+其中, fd是需要进入监听状态的套接字, backlog为请求队列的最大长度.
+
+** 接受连接并响应
+#+BEGIN_SRC C++
+int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr) {
+    int n;
+again:
+	if ((n = accept(fd, sa, salenptr)) < 0) {
+#ifdef	EPROTO
+		if (errno == EPROTO || errno == ECONNABORTED)
+#else
+		if (errno == ECONNABORTED)
+#endif
+			goto again;
+		else
+			err_sys("accept error");
+	}
+	return(n);
+}
+void Write(int fd, void *ptr, size_t nbytes) {
+    if (write(fd, ptr, nbytes) != nbytes)
+        err_sys("write error");
+}
+
+for(; ;){
+    connfd = Accept(listenfd, (SA*)NULL, NULL);
+    ticks = time(NULL);
+    snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
+    Write(connfd, buff, strlen(buff));
+}
+#+END_SRC
+一般情况下, 服务器进程在调用accept()后处于睡眠状态, 等待客户的连接和内核对它的接受.
+
+当三次握手完毕后, accept()返回一个表示已连接的描述字, 此描述字用于与新客户的通信. accept()为每个连接到服务器的客户端返回一个新的已连接描述字.
+
+snprintf()函数会在字符串末尾添加回车和换行两个字符, 然后write()会将结果发送给客户.
+
+*** snprintf()和sprintf()
+两个函数的功能都是把格式化的字符串写入缓冲区中. 但是sprintf()不 检查目标缓冲区是否溢出, snprintf()则要求其第二个参数是目标缓冲区的大小, 因此可以确保缓冲区不溢出.
+
+类似的还有gets(), strcat(), strcpy(), 更推荐使用fgets(), strncat(), strncpy().
+
+** 终止连接
+#+BEGIN_SRC C++
+void Close(int fd) {
+    if (close(fd) == -1)
+        err_sys("close error");
+}
+Close(connfd);
+#+END_SRC
+服务器通过调用close()关闭与客户的连接.
+
+* 小结
+
+** TCP客户端
+
+1. socket(): 创建socket.
+2. 设置远程机器的IP地址和端口.
+3. connect(): 连接服务器.
+4. send()/recv()或read()/write(): 收发数据.
+5. close(): 关闭网络连接.
+
+** TCP服务端
+
+1. socket(): 创建socket.
+2. bind(): 绑定服务器的IP地址和端口等信息到socket.
+3. listen(): 开启监听.
+4. accept(): 接收客户端的连接.
+5. send()/recv()或read()/write(): 收发数据.
+6. close(): 关闭网络连接.
