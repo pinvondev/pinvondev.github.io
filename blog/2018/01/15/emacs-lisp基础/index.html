@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Emacs Lisp基础 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Emacs Lisp基础</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgdce4632">声明</a></li>
+<li><a href="#orga11fbc7">Elisp Basics</a>
+<ul>
+<li><a href="#org1fdd9a5">执行Elisp代码</a></li>
+<li><a href="#org977b0dc">打印</a></li>
+<li><a href="#orgc9380ec">算术表达式</a></li>
+<li><a href="#orgc1f5fad">字符串与数字之间的转换</a></li>
+<li><a href="#org6519aff">True, False</a></li>
+<li><a href="#org46a9b33">Boolean函数</a></li>
+<li><a href="#org2cde54e">变量</a>
+<ul>
+<li><a href="#org0c35290">全局变量</a></li>
+<li><a href="#orge110a51">局部变量</a></li>
+</ul>
+</li>
+<li><a href="#orgeb28d67">If Then Else</a></li>
+<li><a href="#org10a6914">语句块</a></li>
+<li><a href="#orgab00890">循环</a></li>
+<li><a href="#orgaacae70">定义函数</a></li>
+<li><a href="#orgd1c47b0">定义一个命令</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdce4632" class="outline-2">
+<h2 id="orgdce4632">声明</h2>
+<div class="outline-text-2" id="text-orgdce4632">
+<p>
+学习自<a href="http://ergoemacs.org/emacs/elisp_basics.html">李杀网</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga11fbc7" class="outline-2">
+<h2 id="orga11fbc7">Elisp Basics</h2>
+<div class="outline-text-2" id="text-orga11fbc7">
+</div>
+<div id="outline-container-org1fdd9a5" class="outline-3">
+<h3 id="org1fdd9a5">执行Elisp代码</h3>
+<div class="outline-text-3" id="text-org1fdd9a5">
+<p>
+执行Elisp代码的方法有以下几种:
+</p>
+
+<ol class="org-ol">
+<li>在代码末尾, 调用命令 <code>eval-last-sexp[C-x C-e]</code></li>
+<li>调用命令 <code>ielm</code>, 可以打开一个elisp的命令行界面</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org977b0dc" class="outline-3">
+<h3 id="org977b0dc">打印</h3>
+<div class="outline-text-3" id="text-org977b0dc">
+<div class="org-src-container">
+<pre class="src src-Elisp">(message "hello world")
+(message "Her age is: %d" 16)
+(message "Her name is: %s" "Vicky")
+(message "My list is: %S" (list 8 2 3)) ; %S可以表达任何的lisp表达式
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc9380ec" class="outline-3">
+<h3 id="orgc9380ec">算术表达式</h3>
+<div class="outline-text-3" id="text-orgc9380ec">
+<div class="org-src-container">
+<pre class="src src-Elisp">(+ 4 5 1) ; 10
+(/ 7 2) ; 3
+(/ 7 2.0) ; 3.5
+(expt 2 3) ; 8
+(integerp 3.) ; returns t, 3.是整型, 3.0才是浮点型
+(floatp 3.) ; returns nil
+</pre>
+</div>
+<p>
+函数名后面加个p, 一般表示它返回t(true)或nil(false).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc1f5fad" class="outline-3">
+<h3 id="orgc1f5fad">字符串与数字之间的转换</h3>
+<div class="outline-text-3" id="text-orgc1f5fad">
+<div class="org-src-container">
+<pre class="src src-Elisp">(string-to-number "3")
+(number-to-string 3)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6519aff" class="outline-3">
+<h3 id="org6519aff">True, False</h3>
+<div class="outline-text-3" id="text-org6519aff">
+<p>
+nil是False, nil通常与空列表 <code>()</code> 等价, 所以()也是nil. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(if () "yes" "no") ; "no", 因为()与nil等价
+(if '() "yes" "no") ; "no"
+(if (list) "yes" "no") ; "no", (list)等价于()
+</pre>
+</div>
+
+<p>
+<b>除了nil和()之外, 其他的量都看成是t</b>. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(if "" "yes" "no") ; "yes"
+(if [] "yes" "no") ; "yes"
+(if 0 "yes" "no") ; "yes"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org46a9b33" class="outline-3">
+<h3 id="org46a9b33">Boolean函数</h3>
+<div class="outline-text-3" id="text-org46a9b33">
+<div class="org-src-container">
+<pre class="src src-Elisp">(and t nil) ; nil
+(&lt; 3 4) ; t
+(/= 3 4) ; t, /=表示不等于
+(equal "abc" "abc") ; t
+(string-equal "abc" 'abc) ; t, string-equal可以比较字符串和变量
+
+;; 测试是否为奇偶数
+(= (% 5 2) 0) ; nil
+</pre>
+</div>
+<p>
+equal: 比较两个参数的类型和值是否都一样.
+eq: 比较两个参数是不是同一个对象. 一般来说都不是同一个对象.
+/=: 只能用来比较数字.
+not: 取反
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2cde54e" class="outline-3">
+<h3 id="org2cde54e">变量</h3>
+<div class="outline-text-3" id="text-org2cde54e">
+</div>
+<div id="outline-container-org0c35290" class="outline-4">
+<h4 id="org0c35290">全局变量</h4>
+<div class="outline-text-4" id="text-org0c35290">
+<p>
+elisp中的变量不需要先进行声明, 可以直接进行赋值. 全局变量使用 <code>setq</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq a 3 b 2 c 7) ; a=3, b=2, c=7
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge110a51" class="outline-4">
+<h4 id="orge110a51">局部变量</h4>
+<div class="outline-text-4" id="text-orge110a51">
+<p>
+使用 <code>let</code> 来定义局部变量. 语法结构为: <code>(let (bindings) body)</code>, 其中, bingings可以是(var value)这样对var赋初始值的形式, 如果没有value, 则初始化成nil. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(let (a b)
+    (setq a 3)
+    (setq b 4)
+    (+ a b))
+;; returns 7
+</pre>
+</div>
+
+<p>
+再比如一个复杂点的:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun circle-area (radix)
+  (let ((pi 3.1415926)
+        area)
+    (setq area (* pi radix radix))
+    (message "直径为%.2f的圆面积是%.2f" radix area)))
+(circle-area 3)
+;; 可以看出, Elisp中, 参数可以不加括号, 直接使用
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb28d67" class="outline-3">
+<h3 id="orgeb28d67">If Then Else</h3>
+<div class="outline-text-3" id="text-orgeb28d67">
+<p>
+if表达式: (if test body)
+if-else表达式: (if test true_body false_body)
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(if (&lt; 3 2) 7 8) ; returns 8
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org10a6914" class="outline-3">
+<h3 id="org10a6914">语句块</h3>
+<div class="outline-text-3" id="text-org10a6914">
+<p>
+语句块可以使用 <code>progn</code> 来圈起来.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(progn (message "a") (message "b"))
+;; 等价于
+(message "a")
+(message "b")
+</pre>
+</div>
+
+<p>
+常用的情况:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(if something
+    (progn ...) ;; true
+    (progn ...) ;; else
+)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgab00890" class="outline-3">
+<h3 id="orgab00890">循环</h3>
+<div class="outline-text-3" id="text-orgab00890">
+<p>
+语法结构: (while test body)
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq x 0)
+(while (&lt; x 4)
+    (message "number is %d" x)
+    (setq x (1+ x)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaacae70" class="outline-3">
+<h3 id="orgaacae70">定义函数</h3>
+<div class="outline-text-3" id="text-orgaacae70">
+<p>
+语法结构: (defun function_name (param1 param2 ...) "doc_string" body)
+将返回最后一个表达式.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd1c47b0" class="outline-3">
+<h3 id="orgd1c47b0">定义一个命令</h3>
+<div class="outline-text-3" id="text-orgd1c47b0">
+<p>
+语法结构: (defun command_name (param1 param2 ...) "doc_string" (interactive) body)
+</p>
+
+<p>
+其实这也是一个函数, 只是多了个(interactive).
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-01-15</span>
+        <span title="last modification date" class="post-info">2018-01-15</span>
+        <span title="tags" class="post-info"><a href="/tags/emacs/">Emacs</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/01/15/emacs-lisp基础";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/01/15/emacs-lisp基础";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
