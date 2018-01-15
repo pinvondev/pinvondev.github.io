@@ -1,0 +1,152 @@
+#+TITLE:       Emacs Lisp基础
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-01-15 一
+#+URI:         /blog/%y/%m/%d/emacs-lisp基础
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Emacs
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 声明
+
+学习自[[http://ergoemacs.org/emacs/elisp_basics.html][李杀网]]
+
+* Elisp Basics
+
+** 执行Elisp代码
+
+执行Elisp代码的方法有以下几种:
+
+1. 在代码末尾, 调用命令 =eval-last-sexp[C-x C-e]=
+2. 调用命令 =ielm=, 可以打开一个elisp的命令行界面
+
+** 打印
+#+BEGIN_SRC Elisp
+(message "hello world")
+(message "Her age is: %d" 16)
+(message "Her name is: %s" "Vicky")
+(message "My list is: %S" (list 8 2 3)) ; %S可以表达任何的lisp表达式
+#+END_SRC
+
+** 算术表达式
+#+BEGIN_SRC Elisp
+(+ 4 5 1) ; 10
+(/ 7 2) ; 3
+(/ 7 2.0) ; 3.5
+(expt 2 3) ; 8
+(integerp 3.) ; returns t, 3.是整型, 3.0才是浮点型
+(floatp 3.) ; returns nil
+#+END_SRC
+函数名后面加个p, 一般表示它返回t(true)或nil(false).
+
+** 字符串与数字之间的转换
+#+BEGIN_SRC Elisp
+(string-to-number "3")
+(number-to-string 3)
+#+END_SRC
+
+** True, False
+nil是False, nil通常与空列表 =()= 等价, 所以()也是nil. 如:
+#+BEGIN_SRC Elisp
+(if () "yes" "no") ; "no", 因为()与nil等价
+(if '() "yes" "no") ; "no"
+(if (list) "yes" "no") ; "no", (list)等价于()
+#+END_SRC
+
+*除了nil和()之外, 其他的量都看成是t*. 如:
+#+BEGIN_SRC Elisp
+(if "" "yes" "no") ; "yes"
+(if [] "yes" "no") ; "yes"
+(if 0 "yes" "no") ; "yes"
+#+END_SRC
+
+** Boolean函数
+#+BEGIN_SRC Elisp
+(and t nil) ; nil
+(< 3 4) ; t
+(/= 3 4) ; t, /=表示不等于
+(equal "abc" "abc") ; t
+(string-equal "abc" 'abc) ; t, string-equal可以比较字符串和变量
+
+;; 测试是否为奇偶数
+(= (% 5 2) 0) ; nil
+#+END_SRC
+equal: 比较两个参数的类型和值是否都一样.
+eq: 比较两个参数是不是同一个对象. 一般来说都不是同一个对象.
+/=: 只能用来比较数字.
+not: 取反
+
+** 变量
+
+*** 全局变量
+
+elisp中的变量不需要先进行声明, 可以直接进行赋值. 全局变量使用 =setq=
+#+BEGIN_SRC Elisp
+(setq a 3 b 2 c 7) ; a=3, b=2, c=7
+#+END_SRC
+
+*** 局部变量
+
+使用 =let= 来定义局部变量. 语法结构为: =(let (bindings) body)=, 其中, bingings可以是(var value)这样对var赋初始值的形式, 如果没有value, 则初始化成nil. 如:
+#+BEGIN_SRC Elisp
+(let (a b)
+	(setq a 3)
+	(setq b 4)
+	(+ a b))
+;; returns 7
+#+END_SRC
+
+再比如一个复杂点的:
+#+BEGIN_SRC Elisp
+(defun circle-area (radix)
+  (let ((pi 3.1415926)
+        area)
+    (setq area (* pi radix radix))
+    (message "直径为%.2f的圆面积是%.2f" radix area)))
+(circle-area 3)
+;; 可以看出, Elisp中, 参数可以不加括号, 直接使用
+#+END_SRC
+
+** If Then Else
+if表达式: (if test body)
+if-else表达式: (if test true_body false_body)
+#+BEGIN_SRC Elisp
+(if (< 3 2) 7 8) ; returns 8
+#+END_SRC
+
+** 语句块
+语句块可以使用 =progn= 来圈起来.
+#+BEGIN_SRC Elisp
+(progn (message "a") (message "b"))
+;; 等价于
+(message "a")
+(message "b")
+#+END_SRC
+
+常用的情况:
+#+BEGIN_SRC Elisp
+(if something
+	(progn ...) ;; true
+	(progn ...) ;; else
+)
+#+END_SRC
+
+** 循环
+语法结构: (while test body)
+#+BEGIN_SRC Elisp
+(setq x 0)
+(while (< x 4)
+	(message "number is %d" x)
+	(setq x (1+ x)))
+#+END_SRC
+
+** 定义函数
+语法结构: (defun function_name (param1 param2 ...) "doc_string" body)
+将返回最后一个表达式.
+
+** 定义一个命令
+语法结构: (defun command_name (param1 param2 ...) "doc_string" (interactive) body)
+
+其实这也是一个函数, 只是多了个(interactive).
