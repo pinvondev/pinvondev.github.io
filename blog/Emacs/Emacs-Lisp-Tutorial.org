@@ -526,4 +526,48 @@ Elisp每读入一个符号, 都会intern到obarray中, 如果想避免, 则在�
 (unintern name &optional obarray): 将name从obarray中去除, 成功去除返回t, 没有查到对应的符号则返回nil.
 
 ** 符号的组成
+* 求值规则
+一个要求值的lisp对象被称为表达式. 所有的表达式可以分为三种: 符号, 列表和其他类型.
 
+符号表达式的求值: 结果就是符号的值, 如果它没有值则会出错.
+
+列表表达式的求值: 根据第一个元素, 可分为函数调用, 宏调用和特殊表达式三种.
+如果第1个元素是函数调用, 则先对列表中其他元素求值, 求值结果作为函数调用的参数.
+如果第1个元素是宏对象, 列表里的其他元素不会立即求值, 而是根据宏定义进行扩展.
+如果第1个元素是特殊表达式, 则一般用于控制结构或者变量绑定.
+
+* 变量
+
+Elisp中的变量, 包括全局变量和let绑定的局部变量.
+
+关于let绑定的局部变量, 如果一个变量名既是全局变量也是局部变量, 或者用let多层绑定, 只有最里层的那个变量是有效的.
+
+** buffer-local变量
+
+Emacs能使各个缓冲区之间不相互冲突, 很大程度上归功于buffer-local变量.
+
+声明buffer-local变量的方法: make-variable-buffer-local或make-local-variable. 其中, make-variable-buffer-local会在所有缓冲区内都产生一个buffer-local变量, 而make-local-variable则在当前缓冲区内产生一个buffer-local变量. 推荐使用make-local-variable.
+
+(with-current-buffer buffer body)的作用是使唤其中的body表达式在buffer这个缓冲区中执行.
+
+(get-buffer)可以用缓冲区的名字得到对应的缓冲区对象, 如果没有这样的名字, 则返回nil.
+
+** 使用buffer-local的例子
+#+BEGIN_SRC Elisp
+(setq foo "I'm global variable")  ;;  "I'm global variable"
+(make-local-variable 'foo)  ;;  foo
+foo  ;;  "I'm global variable"
+(setq foo "I'm buffer-local variable")  ;;  "I'm buffer-local variable"
+foo  ;;  "I'm buffer-local variable"
+(with-current-buffer "*Messages*" foo)  ;;  "I'm global variable"
+#+END_SRC
+可见, 如果一个值在作为全局变量时有一个值, 使用make-local-variable将变量声明为buffer-local变量后, 对其进行的改变, 只能在当前缓冲区中生效, 而在其他缓冲区则仍使用其作为全局变量时的值. 其在作为全局变量时的值, 叫做默认值, 可以用default-value来查看.
+#+BEGIN_SRC Elisp
+(default-value 'foo)  ;;  "I'm global variable"
+#+END_SRC
+而要修改全局变量的默认值, 可以使用setq-default来修改.
+
+local-variable-p: 测试是否为buffer-local
+buffer-local-value: 在当前缓冲区内得到其他缓冲区的buffer-local变量. 如: (buffer-local-value 'foo (get-buffer "*scratch*"))
+
+** 变量的作用域
