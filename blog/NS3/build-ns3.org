@@ -1,0 +1,38 @@
+#+TITLE:       ns-3快速上手
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-02-06 二
+#+URI:         /blog/%y/%m/%d/ns-3快速上手
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        NS3
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 需要的安装包
+
+#+BEGIN_SRC Shell
+sudo apt install -y gcc g++ python gcc g++ python python-dev mercurial bzr gdb valgrind gsl-bin libgsl0-dev libgsl0ldbl flex bison libfl-dev g++-3.4 gcc-3.4 tcpdup sqlite sqlite3 libsqlite3-dev libxml2 libxml2-dev libgtk2.0-0 libgtk2.0-dev vtun lxc uncrustify doxygen graphviz imagemagick python-pygraphviz python-kiwi python-pygoocanvas libgoo-canvas-dev libboost-signals-dev libboost-filesystem-dev opempi*
+#+END_SRC
+
+其中, gcc和g++可以不是指定的3.4版本, 但要比这个版本更新. 另外, 由于系统的版本不同, libgsl0ldbl和python-pygoocanvas和libgoo-canvas-dev三个装不上, 其中, 在Ubuntu 16.04LTS之后, 使用libgsl0-dev即可替代libgsl0ldbl, 而另外两个则在需要的时候再查看资料安装.
+
+* 下载ns-3
+
+** 使用mercurial
+
+mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现, 易于学习和使用, 扩展性强. 此处不使用mercurial来下载ns-3.
+
+** 直接下载tar压缩包
+
+#+BEGIN_SRC Shell
+wget http://www.nsnam.org/release/ns-allinone-3.16.tar.bz2
+#+END_SRC
+
+下载完后解压即可.
+
+* 编译安装
+
+使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.16的目录, 输入 =sudo ./build.py -enable-examples -enable-tests=.
+
+** 使用waf进行配置
