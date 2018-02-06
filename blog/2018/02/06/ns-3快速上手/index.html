@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>初识ns-3 - Pinvon&#39;s Blog</title>
+    <title>ns-3快速上手 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,38 +30,79 @@
 
 <div>
 <div class="post">
-<h1>初识ns-3</h1>
+<h1>ns-3快速上手</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0923305">ns-3简介</a></li>
+<li><a href="#orgdc39360">需要的安装包</a></li>
+<li><a href="#org9164547">下载ns-3</a>
+<ul>
+<li><a href="#org1c57e22">使用mercurial</a></li>
+<li><a href="#org77654a8">直接下载tar压缩包</a></li>
+</ul>
+</li>
+<li><a href="#org1129418">编译安装</a>
+<ul>
+<li><a href="#org1c1ceee">使用waf进行配置</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0923305" class="outline-2">
-<h2 id="org0923305">ns-3简介</h2>
-<div class="outline-text-2" id="text-org0923305">
-<p>
-ns-3不支持ns-2的API, 它的最终目标是使ns-3成为ns-2的替代品, 并像ns-2一样流行.
-</p>
+<div id="outline-container-orgdc39360" class="outline-2">
+<h2 id="orgdc39360">需要的安装包</h2>
+<div class="outline-text-2" id="text-orgdc39360">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install -y gcc g++ python gcc g++ python python-dev mercurial bzr gdb valgrind gsl-bin libgsl0-dev libgsl0ldbl flex bison libfl-dev g++-3.4 gcc-3.4 tcpdup sqlite sqlite3 libsqlite3-dev libxml2 libxml2-dev libgtk2.0-0 libgtk2.0-dev vtun lxc uncrustify doxygen graphviz imagemagick python-pygraphviz python-kiwi python-pygoocanvas libgoo-canvas-dev libboost-signals-dev libboost-filesystem-dev opempi*
+</pre>
+</div>
 
 <p>
-ns-2使用C++语言进行功能扩展, 使用Otcl脚本语言配置仿真场景, 仿真结果可以用网络动画器NAM来演示. 在ns-2中, 如果仅使用C++语言而不用Otcl, 仿真功能是不可能运行起来的. 
+其中, gcc和g++可以不是指定的3.4版本, 但要比这个版本更新. 另外, 由于系统的版本不同, libgsl0ldbl和python-pygoocanvas和libgoo-canvas-dev三个装不上, 其中, 在Ubuntu 16.04LTS之后, 使用libgsl0-dev即可替代libgsl0ldbl, 而另外两个则在需要的时候再查看资料安装.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org9164547" class="outline-2">
+<h2 id="org9164547">下载ns-3</h2>
+<div class="outline-text-2" id="text-org9164547">
+</div>
+<div id="outline-container-org1c57e22" class="outline-3">
+<h3 id="org1c57e22">使用mercurial</h3>
+<div class="outline-text-3" id="text-org1c57e22">
+<p>
+mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现, 易于学习和使用, 扩展性强. 此处不使用mercurial来下载ns-3.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org77654a8" class="outline-3">
+<h3 id="org77654a8">直接下载tar压缩包</h3>
+<div class="outline-text-3" id="text-org77654a8">
+<div class="org-src-container">
+<pre class="src src-Shell">wget http://www.nsnam.org/release/ns-allinone-3.16.tar.bz2
+</pre>
+</div>
 
 <p>
-ns-3中, 仿真器都由C++编写, 用C++就可以既开发扩展模块又编写网络仿真脚本. ns-3还提供了Python语言绑定, 也可以使用Python编写ns-3脚本. ns-3的动画不仅支持离线的NetAnim, 还有Python语言开发的在线可视化模块PyViz.
+下载完后解压即可.
 </p>
+</div>
+</div>
+</div>
 
+<div id="outline-container-org1129418" class="outline-2">
+<h2 id="org1129418">编译安装</h2>
+<div class="outline-text-2" id="text-org1129418">
 <p>
-ns-3简单易学, 可扩展性好, 节省资源, 并且能提供高性能的、与真实网络相近的网络仿真, 尤其能够集成到实验床和虚拟机环境, 逐渐得到学术界的认可.
+使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.16的目录, 输入 <code>sudo ./build.py -enable-examples -enable-tests</code>.
 </p>
+</div>
 
-<p>
-ns-3中有几个关键概念, 如节点(node), 网络设备(net device), 信道(channel), 应用程序(application)等, 如果能和实际网络相对应, 就能很轻松地搭建网络仿真环境. 在实际环境中, 计算机网络就是多个计算机(节点)通过网卡(网络设备)和媒介(信道)相连, 机器中配有相应的软件协议, 对应ns-3中的是应用层和协议栈(主要是IP 层), 应用层和IP层通过传输层(TCP和UDP)相连, 在ns-3的网络设备中包含了MAC层和物理层, 而信道相当于媒体层, 有些地方称为0层.
-</p>
+<div id="outline-container-org1c1ceee" class="outline-3">
+<h3 id="org1c1ceee">使用waf进行配置</h3>
 </div>
 </div>
 
@@ -79,8 +120,8 @@ ns-3中有几个关键概念, 如节点(node), 网络设备(net device), 信道(
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/02/06/初识ns-3";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/02/06/初识ns-3";
+          var disqus_identifier = "/blog/2018/02/06/ns-3快速上手";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/02/06/ns-3快速上手";
           var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
