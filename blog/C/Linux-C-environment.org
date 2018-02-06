@@ -1,0 +1,102 @@
+#+TITLE:       Linux下的C语言编程环境
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-01-31 三
+#+URI:         /blog/%y/%m/%d/linux下的c语言编程环境
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Linux C编程从入门到精通-读书笔记
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* Makefile
+
+文件格式如下:
+#+BEGIN_SRC Makefile
+目标:依赖项列表
+	[命令]
+目标:依赖项列表
+	[命令]
+...
+#+END_SRC
+切记: 在命令行前, 要跳过一个制表符(Tab).
+#为注释.
+如果一行太长, 要分两行来写, 则用\来连接两行.
+
+** Makefile规则
+
+*** gcc
+
+gcc -M: 为每一个输入的C语言源文件输出一个依赖规则.
+gcc -MM: 与-M相似, 只是不包含系统头文件.
+
+如, main.c中, 包含main.h和stdio.h, 则 =gcc -M main.c= 会输出一系列的头文件和main.h与main.c
+=gcc -MM main.c= 则只输出 =main.o:main.c main.h=
+
+*** Makefile中的变量
+
+作用:
+- 保存文件名列表. 有时, 生成一个可执行文件, 需要许多的.o文件, 如果用一个变量名来保存这一系列的.o文件, 则更方便且不容易出错.
+- 保存编译器的参数. 在很多源代码编译时, gcc需要很多的参数选项, 在很多情况下, 所有的编译命令使用一组相同的选项, 如果把这组选项使用一个变量代表, 那么可以把这个变量放在所有引用编译器的地方. 当要改变选项时, 只需改变一次这个变量的内容即可.
+
+定义变量并使用:
+#+BEGIN_SRC Makefile
+变量名=字符串
+$(变量名)
+#+END_SRC
+
+Makefile中还定义了一些默认的变量. 如$?, $<, 等等.
+
+#+BEGIN_SRC Makefile
+main:main.o f.o
+	gcc main.o f.o -o main
+main.o:main.c f.h
+	gcc -c main.c
+f.o:f.c f.h
+	gcc -c f.c
+clean:
+	rm -f main *.o
+#+END_SRC
+
+使用变量之后, 可以改为:
+#+BEGIN_SRC Makefile
+OBJS=main.o f.o
+C=-c
+main:$(OBJS)
+	gcc $(OBJS) -o main
+main.o:main.c f.h
+	gcc $(C) main.c
+f.o:f.c f.h
+	gcc $(C) f.c
+clean:
+	rm -f main *.o
+#+END_SRC
+
+*** 伪目标
+
+在Makefile中, 并不是所有的目标都对应于磁盘上的文件, 有的目标的存在只是为了形成一条规则, 从而使make完成特定的工作, 并不生成新的目标文件, 这样的目标称为伪目标. 常用的目标有all, clean等.
+
+*** 条件语句
+
+条件语句包含3条指令: ifeq, else和endif
+#+BEGIN_SRC Makefile
+ifeq($(VAR),1)
+	gcc -o main module
+else
+	gcc -o main module2
+endif
+#+END_SRC
+
+** 使用autoconf
+
+autoconf是一个用于生成可以自动的配置软件源代码包以适应多种类UNIX系统的shell脚本的工具. 由autoconf生成的配置脚本在运行时与autoconf是无关的, 也就是说, 配置脚本的用户并不需要拥有autoconf.
+
+由autoconf生成的这些脚本通常被命名为configure, 它们检查当前系统是否满足软件正常运行所需要的特征, 并根据检查得到的信息生成Makefile. 使用者所需要做的只是在软件发布版本的源程序目录中执行./configure, 剩下的工作不需要用户的手工干预, 配置脚本可以自动地确定系统的类型.
+
+*** 创建configure脚本
+
+为了使用autoconf创建configure脚本, 首先需要编写一个configure.in文件, 并作为autoconf的输入文件运行autoconf.
+
+*** 编写configure.in文件
+
+
