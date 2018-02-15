@@ -137,8 +137,10 @@ height=47></TD></TR></TBODY></TABLE>
   }
 
   document.getElementById("btn_submit").addEventListener('click', function(){
-    confirm(sReward); 
+    alert(sReward+"\n请与工作人员联系!\n点击确定关闭此页面?");
     document.getElementById("btn_submit").disabled=true;
+    window.opener=null;
+    window.close();
   }, false);
 
   window.history.forward(1);
@@ -150,43 +152,10 @@ height=47></TD></TR></TBODY></TABLE>
       }
   }
 
-  var newVisitor = isNewVisitor();// 如果是新访客
-  console.log(newVisitor);
-
-  function isNewVisitor() {
-    username=getCookie('wyd');
-    console.log(username);
-    if (username!=null && username!=""){
-      document.getElementById("btn_submit").disabled=true;
-      return false;
-    }
-    else 
-    {
-      setCookie('wyd','wyd',0.0000001);
-      return true;
-    }
+  if(localStorage.nCount){
+    localStorage.nCount = Number(localStorage.nCount) + 1;
+  }else{
+    localStorage.nCount = 1;
   }
-
-  function setCookie(c_name,value,expiredays)
-  {
-    var exdate=new Date();
-    exdate.setDate(exdate.getDate()+expiredays);
-    document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
-  }
-
-  function getCookie(c_name)
-  {
-    console.log(document.cookie);
-    if (document.cookie.length>0)
-    {
-      c_start=document.cookie.indexOf(c_name + "=");
-      if (c_start!=-1){ 
-        c_start=c_start + c_name.length+1 ;
-        c_end=document.cookie.indexOf(";",c_start);
-        if (c_end==-1) c_end=document.cookie.length;
-        return unescape(document.cookie.substring(c_start,c_end));
-      } 
-    }
-    return ""
-  }
+  console.log(localStorage.nCount);
 </script>
