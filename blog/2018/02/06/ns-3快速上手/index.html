@@ -35,25 +35,39 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org879f1fa">需要的安装包</a></li>
-<li><a href="#orgca09f25">下载ns-3</a>
+<li><a href="#orga753a12">需要的安装包</a></li>
+<li><a href="#org7c51152">下载ns-3</a>
 <ul>
-<li><a href="#org2534aef">使用mercurial</a></li>
-<li><a href="#org8f9e23e">直接下载tar压缩包</a></li>
+<li><a href="#org5c2500d">使用mercurial</a></li>
+<li><a href="#org232f6ce">直接下载tar压缩包</a></li>
 </ul>
 </li>
-<li><a href="#org96fef40">编译安装</a>
+<li><a href="#orgc2256bb">编译安装</a>
 <ul>
-<li><a href="#org1587dc3">使用waf进行配置</a></li>
+<li><a href="#orgadf5c7a">使用waf进行配置</a></li>
+<li><a href="#orgfe517ff">测试</a></li>
+<li><a href="#org4e8d111">目录结构</a></li>
+<li><a href="#orgaddaf53">ns-3模块</a></li>
+<li><a href="#orgcf89779">ns-3模块基本流程</a></li>
+<li><a href="#org181aa2d">代码简单介绍</a>
+<ul>
+<li><a href="#org226bd6e">头文件</a></li>
+<li><a href="#orgb4a0228">命名空间</a></li>
+<li><a href="#orgb3ee89f">日志</a></li>
+<li><a href="#org9bb0385">main()</a></li>
+<li><a href="#org2bdbf33">生成网络节点</a></li>
+<li><a href="#orgfd5d7a5">物理连接计算机</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org879f1fa" class="outline-2">
-<h2 id="org879f1fa">需要的安装包</h2>
-<div class="outline-text-2" id="text-org879f1fa">
+<div id="outline-container-orga753a12" class="outline-2">
+<h2 id="orga753a12">需要的安装包</h2>
+<div class="outline-text-2" id="text-orga753a12">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install -y gcc g++ python gcc g++ python python-dev mercurial bzr gdb valgrind gsl-bin libgsl0-dev libgsl0ldbl flex bison libfl-dev g++-3.4 gcc-3.4 tcpdup sqlite sqlite3 libsqlite3-dev libxml2 libxml2-dev libgtk2.0-0 libgtk2.0-dev vtun lxc uncrustify doxygen graphviz imagemagick python-pygraphviz python-kiwi python-pygoocanvas libgoo-canvas-dev libboost-signals-dev libboost-filesystem-dev opempi*
 </pre>
@@ -65,24 +79,24 @@
 </div>
 </div>
 
-<div id="outline-container-orgca09f25" class="outline-2">
-<h2 id="orgca09f25">下载ns-3</h2>
-<div class="outline-text-2" id="text-orgca09f25">
+<div id="outline-container-org7c51152" class="outline-2">
+<h2 id="org7c51152">下载ns-3</h2>
+<div class="outline-text-2" id="text-org7c51152">
 </div>
-<div id="outline-container-org2534aef" class="outline-3">
-<h3 id="org2534aef">使用mercurial</h3>
-<div class="outline-text-3" id="text-org2534aef">
+<div id="outline-container-org5c2500d" class="outline-3">
+<h3 id="org5c2500d">使用mercurial</h3>
+<div class="outline-text-3" id="text-org5c2500d">
 <p>
 mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现, 易于学习和使用, 扩展性强. 此处不使用mercurial来下载ns-3.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8f9e23e" class="outline-3">
-<h3 id="org8f9e23e">直接下载tar压缩包</h3>
-<div class="outline-text-3" id="text-org8f9e23e">
+<div id="outline-container-org232f6ce" class="outline-3">
+<h3 id="org232f6ce">直接下载tar压缩包</h3>
+<div class="outline-text-3" id="text-org232f6ce">
 <div class="org-src-container">
-<pre class="src src-Shell">wget http://www.nsnam.org/release/ns-allinone-3.16.tar.bz2
+<pre class="src src-Shell">wget http://www.nsnam.org/release/ns-allinone-3.24.tar.bz2
 </pre>
 </div>
 
@@ -90,23 +104,262 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 下载完后解压即可.
 </p>
 <div class="org-src-container">
-<pre class="src src-Shell">tar jxvf ns-allinone-3.16.tar.bz2
+<pre class="src src-Shell">tar jxvf ns-allinone-3.24.tar.bz2
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org96fef40" class="outline-2">
-<h2 id="org96fef40">编译安装</h2>
-<div class="outline-text-2" id="text-org96fef40">
+<div id="outline-container-orgc2256bb" class="outline-2">
+<h2 id="orgc2256bb">编译安装</h2>
+<div class="outline-text-2" id="text-orgc2256bb">
 <p>
-使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.16的目录, 输入 <code>./build.py</code>.
+使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.24的目录, 输入 <code>./build.py</code>.
 </p>
 </div>
 
-<div id="outline-container-org1587dc3" class="outline-3">
-<h3 id="org1587dc3">使用waf进行配置</h3>
+<div id="outline-container-orgadf5c7a" class="outline-3">
+<h3 id="orgadf5c7a">使用waf进行配置</h3>
+<div class="outline-text-3" id="text-orgadf5c7a">
+<p>
+使用waf进行配置和编译ns-3工程, 因为工程一旦已经编译过, 就不能再使用build.py脚本 了, 这时如果读者想改变原有ns-3的配置, 就需要使用交互式的waf命令, 进行重新配置和编译. 如果使用make来编译ns-3这样的庞大工程是一件痛苦的事, waf是一个基于Python语言的开源编译系统, 使用它将会轻松不少.
+</p>
+
+<p>
+进入ns-3.24目录, 在该目录下可看到waf可执行文件.
+使用waf重新配置和编译ns-3. 首先清除先前配置编译:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./waf clean
+</pre>
+</div>
+
+<p>
+重新配置ns-3, 优化编译包括例子和测试(因为默认情况下例子和测试是不编译的), 然后系统会重新配置.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./waf -d optimized --enable-examples --enable-tests configure
+</pre>
+</div>
+
+<p>
+如果此时说 <code>pyviz visualizer not enable</code>, 则把配置命令改成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">python ./waf -d debug --enable-examples --enable-tests configure --with-pybindgen=../pybindgen-0.17.0.post41+ngd10fa60/
+</pre>
+</div>
+
+<p>
+编译ns-3:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./waf
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe517ff" class="outline-3">
+<h3 id="orgfe517ff">测试</h3>
+<div class="outline-text-3" id="text-orgfe517ff">
+<p>
+测试ns-3发行版是否编译正确:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./test.y -c core
+</pre>
+</div>
+
+<p>
+验证ns-3是否正常安装:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 重新配置, 使得可显示日志
+./waf -d debug --enable-examples --enable-tests configure
+./waf
+sudo ./waf --run scratch-simulator
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4e8d111" class="outline-3">
+<h3 id="org4e8d111">目录结构</h3>
+<div class="outline-text-3" id="text-org4e8d111">
+<p>
+waf是基于Python开发的编译工具, ns-3系统本身和将要写的仿真代码都由waf负责编译运行.
+</p>
+
+<p>
+scratch目录一般存放用户脚本文件, 也可以把要运行的例子拷贝到此目录下, 该目录是ns-3默认的脚本存放目录, 使用waf编译运行脚本文件时, 可以不加目录scratch, 如果脚本文件在其他目录下需要在文件名前加入目录.
+</p>
+
+<p>
+examples是ns-3提供的关于如何使用ns-3的例子, 包含许多模块的使用, 如能量, 路由, 无线网络等, 对初学者有很大的帮助, 其中, tutorial目录下的例子适合入门者学习.
+</p>
+
+<p>
+doc是帮助文档.
+</p>
+
+<p>
+build目录是ns-3编译目录.
+</p>
+
+<p>
+src是ns-3源代码目录, 里面的文件基本和ns-3模块相对应. 打开其中一个模块目录, 包含几个子文件. 其中, wscript文件结构是固定的, 用来注册模块中包含的源代码和使用其他模块情况; 模块代码的.cc和.h文件包含在model目录下; helper目录存放的模块对应helper类代码的源文件; test目录包含的是模块设计者编写的模块测试代码; examples目录存放的则是应用该模块的示例代码; doc是帮助文档; bindings目录是模块用来绑定Python语言的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaddaf53" class="outline-3">
+<h3 id="orgaddaf53">ns-3模块</h3>
+<div class="outline-text-3" id="text-orgaddaf53">
+<p>
+core: ns-3的内核模块, 实现了ns-3的基本机制, 如智能指针, 属性, 回调, 随机变量, 日志, 追踪, 事件调度等内容.
+</p>
+
+<p>
+network: 网络数据分组(packet)的模块, 一般仿真都会使用.
+</p>
+
+<p>
+Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
+</p>
+
+<p>
+...
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcf89779" class="outline-3">
+<h3 id="orgcf89779">ns-3模块基本流程</h3>
+<div class="outline-text-3" id="text-orgcf89779">
+<ol class="org-ol">
+<li>选择或开发相应模块</li>
+<li>编写网络仿真脚本(C++或Python): 生成节点, 安装网络设备, 安装协议栈, 安装应用层协议, 其他配置, 启动仿真.</li>
+<li>仿真结果分析</li>
+<li>依据仿真结果调整网络配置参数或修改源代码</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org181aa2d" class="outline-3">
+<h3 id="org181aa2d">代码简单介绍</h3>
+<div class="outline-text-3" id="text-org181aa2d">
+</div>
+<div id="outline-container-org226bd6e" class="outline-4">
+<h4 id="org226bd6e">头文件</h4>
+<div class="outline-text-4" id="text-org226bd6e">
+<p>
+为了帮助高层的用户脚本处理大量系统中的include文件, 会把所有的文件根据模块功能进行大致的分类, 提供了按大致功能分类的一组include文件, 在使用时只需选择包含几个头文件即可. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/internet-module.h"
+</pre>
+</div>
+
+<p>
+在编译过程中, 每一个ns-3的include文件被放在build目录下一个叫做ns3的目录中, 这样做可以避免include文件名的冲突.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb4a0228" class="outline-4">
+<h4 id="orgb4a0228">命名空间</h4>
+<div class="outline-text-4" id="text-orgb4a0228">
+<div class="org-src-container">
+<pre class="src src-C++">using namespace ns3;
+</pre>
+</div>
+<p>
+C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用这个声明, 可以在用ns-3的代码时不必打上ns3::作用域操作符. 这把所有与ns-3相关的声明, 集中在一个与全局命名空间相区别的命名空间中, 但是如果使用标准C++的内容就需要加上std::前缀了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3ee89f" class="outline-4">
+<h4 id="orgb3ee89f">日志</h4>
+<div class="outline-text-4" id="text-orgb3ee89f">
+<p>
+日志要定义之后才能使用, 日志定义很简单:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">NS_LOG_COMPONENT_DEFINE("unique_string");
+</pre>
+</div>
+
+<p>
+在自己写的代码中, 使用上面定义的日志名字来启动日志:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">LogComponentEnable("unique_string", LOG_LEVEL_INFO);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9bb0385" class="outline-4">
+<h4 id="org9bb0385">main()</h4>
+<div class="outline-text-4" id="text-org9bb0385">
+<div class="org-src-container">
+<pre class="src src-C++">LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
+LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
+</pre>
+</div>
+<p>
+这两行代码将"UdpEcho"应用程序的客户端和服务端的日志级别设为"INFO", 当仿真产生数据分组发送和接收时, 对应的应用就会输出相应的日志消息到相关的日志模块.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2bdbf33" class="outline-4">
+<h4 id="org2bdbf33">生成网络节点</h4>
+<div class="outline-text-4" id="text-org2bdbf33">
+<div class="org-src-container">
+<pre class="src src-C++">NodeContainer nodes;
+nodes.Create(2);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfd5d7a5" class="outline-4">
+<h4 id="orgfd5d7a5">物理连接计算机</h4>
+<div class="outline-text-4" id="text-orgfd5d7a5">
+<p>
+现实中连接两台计算机需要使用网卡和网线, ns-3中将对应的物理实体抽象为网络设备和信道2个概念, 使用下面的语句实现网络节点物理连接:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">PointToPointHelper pointToPoint;
+pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("5Mbps"));
+pointToPoint.SetChannelAttribute ("Delay", StringValue ("2ms"));
+NetDeviceContainer devices;
+devices = pointToPoint.Install (nodes);
+</pre>
+</div>
+<p>
+几乎所有的模块都有相应的一个或若干个Helper类, 负责把网络设备连接到节点、信道, 配置IP地址等普遍的任务, ns-3把这些工作抽象出来, 便于程序开发者使用.
+</p>
+
+<p>
+PointToPointHelper类负责设置网络设备和信道属性, 并通过Install方法把设备安装到节点中. 信道和网络设备是对应的, 比如以太网设备和无线信道就不能一起使用.
+</p>
+
+<p>
+第一行初始化了一个PointToPointHelper的对象pointToPoint, 然后设置数据速率和传输延迟值. 然后完成设备和信道的配置, 首先声明一个设备容器, 再使用Install()完成主要工作. 
+</p>
+
+<p>
+对于在NodeContainer对象中的每一个节点(对于一个点到点链路必须明确有2个节点), 1个PointToPointNetDevice被创建和保存在设备容器内, 1个PointToPointChannel对象被创建, 2个PointToPointNetDevices与之连接.
+</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -115,7 +368,7 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-02-06</span>
-        <span title="last modification date" class="post-info">2018-02-13</span>
+        <span title="last modification date" class="post-info">2018-03-05</span>
         <span title="tags" class="post-info"><a href="/tags/ns3/">NS3</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
