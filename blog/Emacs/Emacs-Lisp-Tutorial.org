@@ -571,3 +571,34 @@ local-variable-p: 测试是否为buffer-local
 buffer-local-value: 在当前缓冲区内得到其他缓冲区的buffer-local变量. 如: (buffer-local-value 'foo (get-buffer "*scratch*"))
 
 ** 变量的作用域
+
+* 函数和命令
+
+** 参数
+
+在Elisp中, 参数分为必须的, 可选的, 剩余的. 格式为: (required-vars ... &optional optional-vars ... &rest rest-var)
+
+如:
+#+BEGIN_SRC Elisp
+(defun foo (var1 var2 &optional opt1 opt2 &rest rest)
+  (list var1 var2 opt1 opt2 rest))
+(foo 1 2)  =>  (1 2 nil nil nil)
+(foo 1 2 3)  =>  (1 2 3 nil nil)
+(foo 1 2 3 4 5 6)  =>  (1 2 3 4 (5 6))
+#+END_SRC
+
+** 文档
+
+给函数提供一个文档说明是比较好的习惯.
+#+BEGIN_SRC Elisp
+(defun foo (var1)
+ "test"
+ (list var1))
+#+END_SRC
+
+** 宏
+
+与函数类似. 但宏的参数是出现在最后扩展后的表达式中, 而函数参数是求值后才传递给这个函数. 如:
+#+BEGIN_SRC Elisp
+
+#+END_SRC
