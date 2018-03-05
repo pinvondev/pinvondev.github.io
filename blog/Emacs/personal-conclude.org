@@ -1,0 +1,142 @@
+#+TITLE:       Elisp学习笔记
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-05 一
+#+URI:         /blog/%y/%m/%d/elisp学习笔记
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Emacs
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* Elisp基础
+
+** 程序的执行方法
+
+- 写完代码后, 将光标停在右括号后面, 键入 =C-x C-e=.
+- 在 =*scratch*= 里写完代码后, 将光标停在右括号后面, 键入 =C-j=.
+
+** 打印
+
+#+BEGIN_SRC Elisp
+(message "hi")
+(message "Her age is: %d" 16)
+#+END_SRC
+
+** 算术表达式
+
+Elisp使用前缀表达式.
+#+BEGIN_SRC Elisp
+(/ 7 2.0)  =>  3.5
+#+END_SRC
+
+判断数据类型, 在函数名后加个字母p. 如:
+#+BEGIN_SRC Elisp
+(integerp 3.)  =>  t
+(floatp 3.)  =>  nil
+#+END_SRC
+
+数字与字符串转换:
+#+BEGIN_SRC Elisp
+(string-to-number "3")
+(number-to-string 3)
+#+END_SRC
+
+** 布尔
+
+nil和空括号()为False, 其余都是t(也就是True). 
+
+*** 布尔函数
+
+#+BEGIN_SRC Elisp
+(and t nil)
+(or t nil)
+(< 3 4)
+(= 3 3.000000000000000000001)  => t
+#+END_SRC
+注意, 不等于使用符号/=.
+
+如果比较两个数据(包括字符串)是否相同, 一般使用 =equal=, 因为它会同时比较值和类型.
+
+** 变量
+
+*** 全局变量
+
+#+BEGIN_SRC Elisp
+(setq x 1)
+#+END_SRC
+
+*** 局部变量
+
+#+BEGIN_SRC Elisp
+(let (a b)
+  (setq a 3)
+  (setq b 4)
+  (+ a b))  =>  7
+#+END_SRC
+也可以写成以下形式:
+#+BEGIN_SRC Elisp
+(let ((a 3) (b 4))
+  (+ a b))  =>  7
+#+END_SRC
+
+使用两个双括号, 可以省去写setq.
+
+** 程序控制
+
+*** if-else
+
+(if test body)
+(if test true_body false_body)
+
+#+BEGIN_SRC Elisp
+(if (< 3 2) 7 8)  =>  8
+#+END_SRC
+
+*** loop
+
+(while test body)
+
+#+BEGIN_SRC Elisp
+(setq x 0)
+(while (< x 4)
+  (print (format "number is %d" x))
+  (setq x (1+ x)))
+#+END_SRC
+
+** 语句块
+
+(progn (body1) (body2) ...)
+
+progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
+
+** 函数
+#+BEGIN_SRC Elisp
+(defun myFun ()
+	"test"
+	(message "Yay!"))
+#+END_SRC
+
+** 命令
+#+BEGIN_SRC Elisp
+(defun myCom ()
+	"test command"
+	(interactive)
+	(insert "Yay!"))
+#+END_SRC
+* Elisp文本操作
+
+** 光标位置
+
+#+BEGIN_SRC Elisp
+(point)  ;;  返回当前光标的位置, 从1开始.
+
+(region-beginning)
+(region-end)
+
+(line-beginning-position)  ;;  当前行的开始位置
+(line-end-position)
+
+(point-min)  ;;  buffer的开始位置
+(point-max)
+#+END_SRC
