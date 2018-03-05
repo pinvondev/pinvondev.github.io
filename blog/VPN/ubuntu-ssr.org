@@ -1,0 +1,46 @@
+#+TITLE:       Ubuntu+VPN
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-05 一
+#+URI:         /blog/%y/%m/%d/ubuntu+vpn
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        VPN
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* SSR
+
+下载ssr: [[https://github.com/shadowsocksr-backup/shadowsocksr]]
+
+进入配置文件, 路径为: =./shadowsocks/json/config.json=
+
+编辑配置文件, 格式大致为: 
+#+BEGIN_SRC Shell
+{
+    "server": "your.ip.address",
+    "server_port": 1234,
+    "local_address": "127.0.0.1",
+    "local_port": 1080,
+    "password": "password",
+    "timeout": 600,
+    "udp_timeout": 60,
+    "method":  "chacha20",
+    "protocol": "auth_sha1_v4",
+    "protocol_param": "",
+    "obfs": "http_simple",
+    "obfs_param": "cloudflare.com",
+    "dns_ipv6": false,
+    "connect_verbose_info": 0,
+    "redirect": "",
+    "fast_open": false
+}
+#+END_SRC
+
+开启与关闭, 使用如下脚本, 放在用户目录, 每次开机直接启动:
+#+BEGIN_SRC Shell
+#!/bin/bash
+cd /usr/local/opt/ssr/shadowsocksr/shadowsocks/json/
+sudo python ../local.py -c config.json -d start
+# sudo python ../local.py -c config.json -d stop
+#+END_SRC
