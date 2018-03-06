@@ -35,28 +35,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3110e8a">需要的安装包</a></li>
-<li><a href="#orgd3e2d33">下载ns-3</a>
+<li><a href="#org39c8f28">需要的安装包</a></li>
+<li><a href="#orgaa95a6a">下载ns-3</a>
 <ul>
-<li><a href="#orgcbea978">使用mercurial</a></li>
-<li><a href="#orgf189413">直接下载tar压缩包</a></li>
+<li><a href="#org958afb2">使用mercurial</a></li>
+<li><a href="#org0d2a438">直接下载tar压缩包</a></li>
 </ul>
 </li>
-<li><a href="#org35fb202">编译安装</a>
+<li><a href="#orgc334a15">编译安装</a>
 <ul>
-<li><a href="#org88880ef">使用waf进行配置</a></li>
-<li><a href="#org7ceb46b">测试</a></li>
-<li><a href="#orgb976b50">目录结构</a></li>
-<li><a href="#org1c82fb3">ns-3模块</a></li>
-<li><a href="#org082a642">ns-3模块基本流程</a></li>
-<li><a href="#orgfb5a88b">代码简单介绍</a>
+<li><a href="#orgec0cf61">使用waf进行配置</a></li>
+<li><a href="#org0f0043d">测试</a></li>
+<li><a href="#org89e828f">目录结构</a></li>
+<li><a href="#orgf5cabc2">ns-3模块</a></li>
+<li><a href="#orgc52201c">ns-3模块基本流程</a></li>
+<li><a href="#org0ae9524">代码简单介绍</a>
 <ul>
-<li><a href="#orgbab0e8f">头文件</a></li>
-<li><a href="#org78b91cd">命名空间</a></li>
-<li><a href="#org040cbab">日志</a></li>
-<li><a href="#orgd102b81">main()</a></li>
-<li><a href="#orga2bd6d6">生成网络节点</a></li>
-<li><a href="#orgc349fdd">物理连接计算机</a></li>
+<li><a href="#orge99685f">头文件</a></li>
+<li><a href="#org0eadfb6">命名空间</a></li>
+<li><a href="#org031bfde">日志</a></li>
+<li><a href="#org3c0db76">main()</a></li>
+<li><a href="#org40a0673">生成网络节点</a></li>
+<li><a href="#orgaaece42">物理连接计算机</a></li>
 </ul>
 </li>
 </ul>
@@ -65,9 +65,9 @@
 </div>
 </div>
 
-<div id="outline-container-org3110e8a" class="outline-2">
-<h2 id="org3110e8a">需要的安装包</h2>
-<div class="outline-text-2" id="text-org3110e8a">
+<div id="outline-container-org39c8f28" class="outline-2">
+<h2 id="org39c8f28">需要的安装包</h2>
+<div class="outline-text-2" id="text-org39c8f28">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install gcc g++ python 
 sudo apt install gcc g++ python python-dev 
@@ -98,22 +98,22 @@ sudo apt install openmpi-bin openmpi-common openmpi-doc libopenmpi-dev
 </div>
 </div>
 
-<div id="outline-container-orgd3e2d33" class="outline-2">
-<h2 id="orgd3e2d33">下载ns-3</h2>
-<div class="outline-text-2" id="text-orgd3e2d33">
+<div id="outline-container-orgaa95a6a" class="outline-2">
+<h2 id="orgaa95a6a">下载ns-3</h2>
+<div class="outline-text-2" id="text-orgaa95a6a">
 </div>
-<div id="outline-container-orgcbea978" class="outline-3">
-<h3 id="orgcbea978">使用mercurial</h3>
-<div class="outline-text-3" id="text-orgcbea978">
+<div id="outline-container-org958afb2" class="outline-3">
+<h3 id="org958afb2">使用mercurial</h3>
+<div class="outline-text-3" id="text-org958afb2">
 <p>
 mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现, 易于学习和使用, 扩展性强. 此处不使用mercurial来下载ns-3.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgf189413" class="outline-3">
-<h3 id="orgf189413">直接下载tar压缩包</h3>
-<div class="outline-text-3" id="text-orgf189413">
+<div id="outline-container-org0d2a438" class="outline-3">
+<h3 id="org0d2a438">直接下载tar压缩包</h3>
+<div class="outline-text-3" id="text-org0d2a438">
 <div class="org-src-container">
 <pre class="src src-Shell">wget http://www.nsnam.org/release/ns-allinone-3.24.tar.bz2
 </pre>
@@ -130,17 +130,17 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 </div>
 </div>
 
-<div id="outline-container-org35fb202" class="outline-2">
-<h2 id="org35fb202">编译安装</h2>
-<div class="outline-text-2" id="text-org35fb202">
+<div id="outline-container-orgc334a15" class="outline-2">
+<h2 id="orgc334a15">编译安装</h2>
+<div class="outline-text-2" id="text-orgc334a15">
 <p>
 使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.24的目录, 输入 <code>./build.py</code>.
 </p>
 </div>
 
-<div id="outline-container-org88880ef" class="outline-3">
-<h3 id="org88880ef">使用waf进行配置</h3>
-<div class="outline-text-3" id="text-org88880ef">
+<div id="outline-container-orgec0cf61" class="outline-3">
+<h3 id="orgec0cf61">使用waf进行配置</h3>
+<div class="outline-text-3" id="text-orgec0cf61">
 <p>
 使用waf进行配置和编译ns-3工程, 因为工程一旦已经编译过, 就不能再使用build.py脚本 了, 这时如果读者想改变原有ns-3的配置, 就需要使用交互式的waf命令, 进行重新配置和编译. 如果使用make来编译ns-3这样的庞大工程是一件痛苦的事, waf是一个基于Python语言的开源编译系统, 使用它将会轻松不少.
 </p>
@@ -180,9 +180,9 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 </div>
 </div>
 
-<div id="outline-container-org7ceb46b" class="outline-3">
-<h3 id="org7ceb46b">测试</h3>
-<div class="outline-text-3" id="text-org7ceb46b">
+<div id="outline-container-org0f0043d" class="outline-3">
+<h3 id="org0f0043d">测试</h3>
+<div class="outline-text-3" id="text-org0f0043d">
 <p>
 测试ns-3发行版是否编译正确:
 </p>
@@ -204,9 +204,9 @@ sudo ./waf --run scratch-simulator
 </div>
 </div>
 
-<div id="outline-container-orgb976b50" class="outline-3">
-<h3 id="orgb976b50">目录结构</h3>
-<div class="outline-text-3" id="text-orgb976b50">
+<div id="outline-container-org89e828f" class="outline-3">
+<h3 id="org89e828f">目录结构</h3>
+<div class="outline-text-3" id="text-org89e828f">
 <p>
 waf是基于Python开发的编译工具, ns-3系统本身和将要写的仿真代码都由waf负责编译运行.
 </p>
@@ -233,9 +233,9 @@ src是ns-3源代码目录, 里面的文件基本和ns-3模块相对应. 打开�
 </div>
 </div>
 
-<div id="outline-container-org1c82fb3" class="outline-3">
-<h3 id="org1c82fb3">ns-3模块</h3>
-<div class="outline-text-3" id="text-org1c82fb3">
+<div id="outline-container-orgf5cabc2" class="outline-3">
+<h3 id="orgf5cabc2">ns-3模块</h3>
+<div class="outline-text-3" id="text-orgf5cabc2">
 <p>
 core: ns-3的内核模块, 实现了ns-3的基本机制, 如智能指针, 属性, 回调, 随机变量, 日志, 追踪, 事件调度等内容.
 </p>
@@ -254,9 +254,9 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org082a642" class="outline-3">
-<h3 id="org082a642">ns-3模块基本流程</h3>
-<div class="outline-text-3" id="text-org082a642">
+<div id="outline-container-orgc52201c" class="outline-3">
+<h3 id="orgc52201c">ns-3模块基本流程</h3>
+<div class="outline-text-3" id="text-orgc52201c">
 <ol class="org-ol">
 <li>选择或开发相应模块</li>
 <li>编写网络仿真脚本(C++或Python): 生成节点, 安装网络设备, 安装协议栈, 安装应用层协议, 其他配置, 启动仿真.</li>
@@ -266,13 +266,13 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-orgfb5a88b" class="outline-3">
-<h3 id="orgfb5a88b">代码简单介绍</h3>
-<div class="outline-text-3" id="text-orgfb5a88b">
+<div id="outline-container-org0ae9524" class="outline-3">
+<h3 id="org0ae9524">代码简单介绍</h3>
+<div class="outline-text-3" id="text-org0ae9524">
 </div>
-<div id="outline-container-orgbab0e8f" class="outline-4">
-<h4 id="orgbab0e8f">头文件</h4>
-<div class="outline-text-4" id="text-orgbab0e8f">
+<div id="outline-container-orge99685f" class="outline-4">
+<h4 id="orge99685f">头文件</h4>
+<div class="outline-text-4" id="text-orge99685f">
 <p>
 为了帮助高层的用户脚本处理大量系统中的include文件, 会把所有的文件根据模块功能进行大致的分类, 提供了按大致功能分类的一组include文件, 在使用时只需选择包含几个头文件即可. 如:
 </p>
@@ -289,9 +289,9 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org78b91cd" class="outline-4">
-<h4 id="org78b91cd">命名空间</h4>
-<div class="outline-text-4" id="text-org78b91cd">
+<div id="outline-container-org0eadfb6" class="outline-4">
+<h4 id="org0eadfb6">命名空间</h4>
+<div class="outline-text-4" id="text-org0eadfb6">
 <div class="org-src-container">
 <pre class="src src-C++">using namespace ns3;
 </pre>
@@ -302,9 +302,9 @@ C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用�
 </div>
 </div>
 
-<div id="outline-container-org040cbab" class="outline-4">
-<h4 id="org040cbab">日志</h4>
-<div class="outline-text-4" id="text-org040cbab">
+<div id="outline-container-org031bfde" class="outline-4">
+<h4 id="org031bfde">日志</h4>
+<div class="outline-text-4" id="text-org031bfde">
 <p>
 日志要定义之后才能使用, 日志定义很简单:
 </p>
@@ -323,9 +323,9 @@ C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用�
 </div>
 </div>
 
-<div id="outline-container-orgd102b81" class="outline-4">
-<h4 id="orgd102b81">main()</h4>
-<div class="outline-text-4" id="text-orgd102b81">
+<div id="outline-container-org3c0db76" class="outline-4">
+<h4 id="org3c0db76">main()</h4>
+<div class="outline-text-4" id="text-org3c0db76">
 <div class="org-src-container">
 <pre class="src src-C++">LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
 LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
@@ -337,9 +337,9 @@ LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
 </div>
 </div>
 
-<div id="outline-container-orga2bd6d6" class="outline-4">
-<h4 id="orga2bd6d6">生成网络节点</h4>
-<div class="outline-text-4" id="text-orga2bd6d6">
+<div id="outline-container-org40a0673" class="outline-4">
+<h4 id="org40a0673">生成网络节点</h4>
+<div class="outline-text-4" id="text-org40a0673">
 <div class="org-src-container">
 <pre class="src src-C++">NodeContainer nodes;
 nodes.Create(2);
@@ -348,9 +348,9 @@ nodes.Create(2);
 </div>
 </div>
 
-<div id="outline-container-orgc349fdd" class="outline-4">
-<h4 id="orgc349fdd">物理连接计算机</h4>
-<div class="outline-text-4" id="text-orgc349fdd">
+<div id="outline-container-orgaaece42" class="outline-4">
+<h4 id="orgaaece42">物理连接计算机</h4>
+<div class="outline-text-4" id="text-orgaaece42">
 <p>
 现实中连接两台计算机需要使用网卡和网线, ns-3中将对应的物理实体抽象为网络设备和信道2个概念, 使用下面的语句实现网络节点物理连接:
 </p>

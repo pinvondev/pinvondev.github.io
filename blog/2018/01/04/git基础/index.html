@@ -35,15 +35,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc79e6fa">从远程更新到本地(多分支)</a></li>
-<li><a href="#org179eb75">撤销</a></li>
+<li><a href="#orgeb84cd2">从远程更新到本地(多分支)</a></li>
+<li><a href="#org1cdfcb9">撤销</a></li>
+<li><a href="#orgba732be">添加远程库</a>
+<ul>
+<li><a href="#org48693a0">创建SSH Key</a></li>
+<li><a href="#org45529fa">创建仓库</a></li>
+<li><a href="#org8951853">关联仓库</a></li>
+<li><a href="#org38911ca">一台电脑, 多个Github账号</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc79e6fa" class="outline-2">
-<h2 id="orgc79e6fa">从远程更新到本地(多分支)</h2>
-<div class="outline-text-2" id="text-orgc79e6fa">
+<div id="outline-container-orgeb84cd2" class="outline-2">
+<h2 id="orgeb84cd2">从远程更新到本地(多分支)</h2>
+<div class="outline-text-2" id="text-orgeb84cd2">
 <div class="org-src-container">
 <pre class="src src-shell">  git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
 git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
@@ -64,13 +72,127 @@ git merge origin/source # 将origin/source合并到当前分支
 </div>
 </div>
 
-<div id="outline-container-org179eb75" class="outline-2">
-<h2 id="org179eb75">撤销</h2>
-<div class="outline-text-2" id="text-org179eb75">
+<div id="outline-container-org1cdfcb9" class="outline-2">
+<h2 id="org1cdfcb9">撤销</h2>
+<div class="outline-text-2" id="text-org1cdfcb9">
 <div class="org-src-container">
 <pre class="src src-shell">git reflog source # 查看source的历史
 git reset --hard commid_id
 </pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba732be" class="outline-2">
+<h2 id="orgba732be">添加远程库</h2>
+<div class="outline-text-2" id="text-orgba732be">
+</div>
+<div id="outline-container-org48693a0" class="outline-3">
+<h3 id="org48693a0">创建SSH Key</h3>
+<div class="outline-text-3" id="text-org48693a0">
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -t rsa -C "your@email.com"
+</pre>
+</div>
+<p>
+将公钥的内容复制到<a href="https://www.github.com">Github</a>的SSH Keys里面.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org45529fa" class="outline-3">
+<h3 id="org45529fa">创建仓库</h3>
+<div class="outline-text-3" id="text-org45529fa">
+<p>
+到<a href="https://www.github.com">Github</a>创建一个远程仓库. 然后在本地创建一个本地仓库.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8951853" class="outline-3">
+<h3 id="org8951853">关联仓库</h3>
+<div class="outline-text-3" id="text-org8951853">
+<p>
+将本地仓库与远程仓库关联: <code>git remote add origin git@github.com:path/to/repo.git</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org38911ca" class="outline-3">
+<h3 id="org38911ca">一台电脑, 多个Github账号</h3>
+<div class="outline-text-3" id="text-org38911ca">
+<ol class="org-ol">
+<li>生成两对私钥/公钥, 并且密钥文件名不能重复.</li>
+</ol>
+
+<p>
+此处假设已有一对密钥, 再生成另一对密钥.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -t rsa -f ~/.ssh/id_rsa_x -C "your@email.com"
+</pre>
+</div>
+<p>
+这样就会生成 <code>id_rsa_x</code> 和 <code>id_rsa_x.pub</code> 两个文件.
+</p>
+
+<ol class="org-ol">
+<li>推送到远程时, 区分不同Github账号, 推送到相应的仓库.</li>
+
+<li>在 <code>~/.ssh/</code> 下创建一个 <code>config</code> 文件并编辑:</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell"># 第一个账号
+Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa
+
+# 第二个账号
+Host second.github.com  # second为前缀名, 可任意设置
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa_x
+</pre>
+</div>
+<p>
+注: <code>@</code> 前的 <code>git</code> 是User, <code>@</code> 后的 <code>github.com</code> 是Host. 如果User和Host都一样, 则无法区分多个账号, 所以要分别配置每个User和Host, 再对Host解析到HostName.
+</p>
+
+<ul class="org-ul">
+<li>清空本地的SSH缓存, 添加新的SSH密钥到SSH agent中:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-add -D
+ssh-add id_rsa
+ssh-add id_rsa_x
+ssh-add -l  #  确认新密钥是否添加成功
+
+#  测试
+ssh -T git@github.com
+ssh -T git@second.github.com
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>配置完成后, 取消git全局设置:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Shell">git config --global --unset user.name
+git config --global --unset user.email
+
+# 单独设置
+git config user.email "your@email"
+git config user.name "name"
+
+# 查看git项目的配置
+git config --list
+</pre>
+</div>
+
+<p>
+如果要关联到第2个账号, 使用 <code>git remote add origin git@second.github.com:path/to/repo.git</code>. 
+</p>
 </div>
 </div>
 </div>
@@ -80,7 +202,7 @@ git reset --hard commid_id
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-01-04</span>
-        <span title="last modification date" class="post-info">2018-01-04</span>
+        <span title="last modification date" class="post-info">2018-03-05</span>
         <span title="tags" class="post-info"><a href="/tags/git/">Git</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
