@@ -191,3 +191,70 @@ PointToPointHelper类负责设置网络设备和信道属性, 并通过Install�
 第一行初始化了一个PointToPointHelper的对象pointToPoint, 然后设置数据速率和传输延迟值. 然后完成设备和信道的配置, 首先声明一个设备容器, 再使用Install()完成主要工作. 
 
 对于在NodeContainer对象中的每一个节点(对于一个点到点链路必须明确有2个节点), 1个PointToPointNetDevice被创建和保存在设备容器内, 1个PointToPointChannel对象被创建, 2个PointToPointNetDevices与之连接.
+
+调用Install(nodes)后, 会有2个节点, 每一个节点安装了点到点网络设备, 在它们之间是一个点到点信道. 2个设备会被配置在一个有2ms传输延迟的信道上以5Mbit/s的速率传输数据.
+
+*** 为计算机安装协议栈
+
+#+BEGIN_SRC C
+InternetStackHelper stack;
+stack.Install (nodes);
+Ipv4AddressHelper address;
+address.SetBase ("10.1.1.0", "255.255.255.0");
+Ipv4InterfaceContainer interfaces = address.Assign (devices);
+#+END_SRC
+InternetStackHelper会为每一个节点容器中的节点安装一个网络协议栈, 主要是IP层.
+
+地址从10.1.1.0开始, 以子网掩码为255.255.255.0分配地址.
+
+Ipv4Interface对象将一个IP地址同一个设备关联起来.
+
+现在有一个安装了协议栈, 配置了IP地址类的点到点的网络.
+
+*** 安装应用层
+
+#+BEGIN_SRC C
+UdpEchoServerHelper echoServer (9);
+ApplicationContainer serverApps = echoServer.Install (nodes.Get (1));
+#+END_SRC
+首先声明一个UdpEchoServerHelper对象, 该对象用来创建真正的应用, 端口号为9.
+echoServer.Install()方法初始化回显服务器应用, 在索引号为1的节点上安装一个UdpEchoServerApplication.
+
+#+BEGIN_SRC C++
+serverApps.Start (Seconds (1.0));
+serverApps.Stop (Seconds (10.0));
+#+END_SRC
+使echoServer应用在1s时开始产生数据通信, 在10s时停止.
+
+#+BEGIN_SRC C++
+UdpEchoClientHelper echoClient (interfaces.GetAddress (1), 9);
+echoClient.SetAttribute ("MaxPackets", UintegerValue (1));
+echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
+echoClient.SetAttribute ("PacketSize", UintegerValue (1024));
+ApplicationContainer clientApps = echoClient.Install (nodes.Get (0));
+clientApps.Start (Seconds (2.0));
+clientApps.Stop (Seconds (10.0));
+#+END_SRC
+echo客户端需要多设置几个属性. UdpEchoClientHelper的构造函数有两个参数, 分别是RemoteAddress和RemotePort, 在这边, RemoteAddress即为服务器的地址, 服务器是索引为1的节点, RemotePort为9.
+
+MaxPackets: 模拟期间能发送的最大数据包个数.
+
+Interval: 两个数据包的相隔时间.
+
+PacketSize: 数据包大小.
+
+本例中, 让客户端发送一个1024byte的数据包.
+
+*** 启动模拟器
+
+#+BEGIN_SRC C++
+Simulator::Run ();
+Simulator::Destroy ();
+#+END_SRC
+
+*** 运行
+
+把 =first.cc= 放到 =scratch= 目录, 执行命令 =./waf --run scratch/first=.
+#+CAPTION: first.cc运行结果
+#+ATTR_HTML: :width 500
+[[./0.png]]
