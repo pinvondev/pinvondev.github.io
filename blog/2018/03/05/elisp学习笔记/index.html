@@ -35,49 +35,55 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd4de727">Elisp基础</a>
+<li><a href="#org3f1dc56">Elisp基础</a>
 <ul>
-<li><a href="#orgb4e4181">程序的执行方法</a></li>
-<li><a href="#org05a10ad">打印</a></li>
-<li><a href="#org4275754">算术表达式</a></li>
-<li><a href="#orge75ce87">布尔</a>
+<li><a href="#org45e87eb">程序的执行方法</a></li>
+<li><a href="#orgfab0bb8">打印</a></li>
+<li><a href="#org7c6cbe3">算术表达式</a></li>
+<li><a href="#org3af3ae8">布尔</a>
 <ul>
-<li><a href="#org1e4f36a">布尔函数</a></li>
+<li><a href="#org4989c1f">布尔函数</a></li>
 </ul>
 </li>
-<li><a href="#org23a5611">变量</a>
+<li><a href="#org51c78ce">变量</a>
 <ul>
-<li><a href="#orgbcf33c2">全局变量</a></li>
-<li><a href="#orga8f2722">局部变量</a></li>
+<li><a href="#org07d2edd">全局变量</a></li>
+<li><a href="#org8a9c880">局部变量</a></li>
 </ul>
 </li>
-<li><a href="#orgeb1cf0b">程序控制</a>
+<li><a href="#org44b8e93">程序控制</a>
 <ul>
-<li><a href="#org1f48de9">if-else</a></li>
-<li><a href="#orgc3f2421">loop</a></li>
+<li><a href="#orga13b85c">if-else</a></li>
+<li><a href="#org12a3700">loop</a></li>
 </ul>
 </li>
-<li><a href="#org35935ee">语句块</a></li>
-<li><a href="#orgb8046c4">函数</a></li>
-<li><a href="#org9e58162">命令</a></li>
+<li><a href="#org93b8cd5">语句块</a></li>
+<li><a href="#orgd1fac54">函数</a></li>
+<li><a href="#org3af9d36">命令</a></li>
 </ul>
 </li>
-<li><a href="#org54aae0e">Elisp文本操作</a>
+<li><a href="#org9f41545">Elisp文本操作</a>
 <ul>
-<li><a href="#orgad3f1de">光标位置</a></li>
+<li><a href="#org123295d">光标位置</a></li>
+<li><a href="#orgda7cd74">移动光标</a></li>
+<li><a href="#orgcc13941">删除、插入、修改文本</a></li>
+<li><a href="#orgf4a9f4f">String</a></li>
+<li><a href="#org552bdbf">Buffer</a></li>
+<li><a href="#org605b3d0">File</a></li>
+<li><a href="#org8e8c2a8">例子</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd4de727" class="outline-2">
-<h2 id="orgd4de727">Elisp基础</h2>
-<div class="outline-text-2" id="text-orgd4de727">
+<div id="outline-container-org3f1dc56" class="outline-2">
+<h2 id="org3f1dc56">Elisp基础</h2>
+<div class="outline-text-2" id="text-org3f1dc56">
 </div>
-<div id="outline-container-orgb4e4181" class="outline-3">
-<h3 id="orgb4e4181">程序的执行方法</h3>
-<div class="outline-text-3" id="text-orgb4e4181">
+<div id="outline-container-org45e87eb" class="outline-3">
+<h3 id="org45e87eb">程序的执行方法</h3>
+<div class="outline-text-3" id="text-org45e87eb">
 <ul class="org-ul">
 <li>写完代码后, 将光标停在右括号后面, 键入 <code>C-x C-e</code>.</li>
 <li>在 <code>*scratch*</code> 里写完代码后, 将光标停在右括号后面, 键入 <code>C-j</code>.</li>
@@ -85,9 +91,9 @@
 </div>
 </div>
 
-<div id="outline-container-org05a10ad" class="outline-3">
-<h3 id="org05a10ad">打印</h3>
-<div class="outline-text-3" id="text-org05a10ad">
+<div id="outline-container-orgfab0bb8" class="outline-3">
+<h3 id="orgfab0bb8">打印</h3>
+<div class="outline-text-3" id="text-orgfab0bb8">
 <div class="org-src-container">
 <pre class="src src-Elisp">(message "hi")
 (message "Her age is: %d" 16)
@@ -96,9 +102,9 @@
 </div>
 </div>
 
-<div id="outline-container-org4275754" class="outline-3">
-<h3 id="org4275754">算术表达式</h3>
-<div class="outline-text-3" id="text-org4275754">
+<div id="outline-container-org7c6cbe3" class="outline-3">
+<h3 id="org7c6cbe3">算术表达式</h3>
+<div class="outline-text-3" id="text-org7c6cbe3">
 <p>
 Elisp使用前缀表达式.
 </p>
@@ -127,17 +133,17 @@ Elisp使用前缀表达式.
 </div>
 </div>
 
-<div id="outline-container-orge75ce87" class="outline-3">
-<h3 id="orge75ce87">布尔</h3>
-<div class="outline-text-3" id="text-orge75ce87">
+<div id="outline-container-org3af3ae8" class="outline-3">
+<h3 id="org3af3ae8">布尔</h3>
+<div class="outline-text-3" id="text-org3af3ae8">
 <p>
 nil和空括号()为False, 其余都是t(也就是True). 
 </p>
 </div>
 
-<div id="outline-container-org1e4f36a" class="outline-4">
-<h4 id="org1e4f36a">布尔函数</h4>
-<div class="outline-text-4" id="text-org1e4f36a">
+<div id="outline-container-org4989c1f" class="outline-4">
+<h4 id="org4989c1f">布尔函数</h4>
+<div class="outline-text-4" id="text-org4989c1f">
 <div class="org-src-container">
 <pre class="src src-Elisp">(and t nil)
 (or t nil)
@@ -156,13 +162,13 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org23a5611" class="outline-3">
-<h3 id="org23a5611">变量</h3>
-<div class="outline-text-3" id="text-org23a5611">
+<div id="outline-container-org51c78ce" class="outline-3">
+<h3 id="org51c78ce">变量</h3>
+<div class="outline-text-3" id="text-org51c78ce">
 </div>
-<div id="outline-container-orgbcf33c2" class="outline-4">
-<h4 id="orgbcf33c2">全局变量</h4>
-<div class="outline-text-4" id="text-orgbcf33c2">
+<div id="outline-container-org07d2edd" class="outline-4">
+<h4 id="org07d2edd">全局变量</h4>
+<div class="outline-text-4" id="text-org07d2edd">
 <div class="org-src-container">
 <pre class="src src-Elisp">(setq x 1)
 </pre>
@@ -170,9 +176,9 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-orga8f2722" class="outline-4">
-<h4 id="orga8f2722">局部变量</h4>
-<div class="outline-text-4" id="text-orga8f2722">
+<div id="outline-container-org8a9c880" class="outline-4">
+<h4 id="org8a9c880">局部变量</h4>
+<div class="outline-text-4" id="text-org8a9c880">
 <div class="org-src-container">
 <pre class="src src-Elisp">(let (a b)
   (setq a 3)
@@ -196,13 +202,13 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-orgeb1cf0b" class="outline-3">
-<h3 id="orgeb1cf0b">程序控制</h3>
-<div class="outline-text-3" id="text-orgeb1cf0b">
+<div id="outline-container-org44b8e93" class="outline-3">
+<h3 id="org44b8e93">程序控制</h3>
+<div class="outline-text-3" id="text-org44b8e93">
 </div>
-<div id="outline-container-org1f48de9" class="outline-4">
-<h4 id="org1f48de9">if-else</h4>
-<div class="outline-text-4" id="text-org1f48de9">
+<div id="outline-container-orga13b85c" class="outline-4">
+<h4 id="orga13b85c">if-else</h4>
+<div class="outline-text-4" id="text-orga13b85c">
 <p>
 (if test body)
 (if test true_body false_body)
@@ -215,9 +221,9 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-orgc3f2421" class="outline-4">
-<h4 id="orgc3f2421">loop</h4>
-<div class="outline-text-4" id="text-orgc3f2421">
+<div id="outline-container-org12a3700" class="outline-4">
+<h4 id="org12a3700">loop</h4>
+<div class="outline-text-4" id="text-org12a3700">
 <p>
 (while test body)
 </p>
@@ -233,9 +239,9 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org35935ee" class="outline-3">
-<h3 id="org35935ee">语句块</h3>
-<div class="outline-text-3" id="text-org35935ee">
+<div id="outline-container-org93b8cd5" class="outline-3">
+<h3 id="org93b8cd5">语句块</h3>
+<div class="outline-text-3" id="text-org93b8cd5">
 <p>
 (progn (body1) (body2) ...)
 </p>
@@ -246,9 +252,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-orgb8046c4" class="outline-3">
-<h3 id="orgb8046c4">函数</h3>
-<div class="outline-text-3" id="text-orgb8046c4">
+<div id="outline-container-orgd1fac54" class="outline-3">
+<h3 id="orgd1fac54">函数</h3>
+<div class="outline-text-3" id="text-orgd1fac54">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun myFun ()
     "test"
@@ -258,9 +264,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org9e58162" class="outline-3">
-<h3 id="org9e58162">命令</h3>
-<div class="outline-text-3" id="text-org9e58162">
+<div id="outline-container-org3af9d36" class="outline-3">
+<h3 id="org3af9d36">命令</h3>
+<div class="outline-text-3" id="text-org3af9d36">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun myCom ()
     "test command"
@@ -271,13 +277,13 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 </div>
-<div id="outline-container-org54aae0e" class="outline-2">
-<h2 id="org54aae0e">Elisp文本操作</h2>
-<div class="outline-text-2" id="text-org54aae0e">
+<div id="outline-container-org9f41545" class="outline-2">
+<h2 id="org9f41545">Elisp文本操作</h2>
+<div class="outline-text-2" id="text-org9f41545">
 </div>
-<div id="outline-container-orgad3f1de" class="outline-3">
-<h3 id="orgad3f1de">光标位置</h3>
-<div class="outline-text-3" id="text-orgad3f1de">
+<div id="outline-container-org123295d" class="outline-3">
+<h3 id="org123295d">光标位置</h3>
+<div class="outline-text-3" id="text-org123295d">
 <div class="org-src-container">
 <pre class="src src-Elisp">(point)  ;;  返回当前光标的位置, 从1开始.
 
@@ -291,6 +297,104 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 (point-max)
 </pre>
 </div>
+</div>
+</div>
+
+<div id="outline-container-orgda7cd74" class="outline-3">
+<h3 id="orgda7cd74">移动光标</h3>
+<div class="outline-text-3" id="text-orgda7cd74">
+<div class="org-src-container">
+<pre class="src src-Elisp">(goto-char 39)  ;;  跳到第39个位置
+
+(forward-char 4)  ;;  前进4个位置
+(backward-char 4)
+
+(search-forward "some")  ;;  如果该代码后面有some这个单词, 则返回some结束后的位置
+(search-backward "some")  ;;  如果该代码后面有some这个单词, 则返回some开始时的位置
+
+(re-search-forward "[0-9]")  ;;  正则表达式查找
+(re-search-backward "[0-9]")
+
+(skip-chars-forward "a-z")  ;;  不查找a-z之间的字符
+(skip-chars-backward "a-z")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcc13941" class="outline-3">
+<h3 id="orgcc13941">删除、插入、修改文本</h3>
+<div class="outline-text-3" id="text-orgcc13941">
+<div class="org-src-container">
+<pre class="src src-Elisp">(delete-char 9)
+(delete-region 3 10)
+(insert "i love cates")
+(setq x (buffer-substring 71 300))  ;;  获取从71-300之间的字符
+(capitalize-region 70-300)  ;;  将指定区域的首字母大写
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf4a9f4f" class="outline-3">
+<h3 id="orgf4a9f4f">String</h3>
+<div class="outline-text-3" id="text-orgf4a9f4f">
+<div class="org-src-container">
+<pre class="src src-Elisp">(length "abc")  ;;  返回字符串长度
+(substring "abcdefg" 3 4)  ;;  截取字符串
+(replace-regexp-in-string "[0-9]" "X" "abc123")  ;;  将第3个参数中, 符合第1个参数情况的, 替换成第2个参数
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org552bdbf" class="outline-3">
+<h3 id="org552bdbf">Buffer</h3>
+<div class="outline-text-3" id="text-org552bdbf">
+<div class="org-src-container">
+<pre class="src src-Elisp">(buffer-name)  ;;  返回当前buffer名称
+(buffer-file-name)  ;;  返回当前文件的完整路径
+(set-buffer "xyz")  ;;  如果有xyz这个buffer, 则跳转到该buffer
+(save-buffer)
+(kill-buffer "xyz")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org605b3d0" class="outline-3">
+<h3 id="org605b3d0">File</h3>
+<div class="outline-text-3" id="text-org605b3d0">
+<pre class="example">
+(find-file "~/")  ;;  打开指定文件
+(write-file path)  ;;  相当于save as
+(insert-file-contents path)  ;;  插入path指定文件到当前光标位置
+(append-to-file start-pos end-pos path)  ;;  将[start-pos, end-pos]指定的文本块插入path指定的文件中
+(rename-file file-name new-name)
+(copy-file old-name new-name)
+(delete-file file-name)
+(file-name-directory full-path)
+(file-name-nondirectory full-path)
+(file-name-extension "personal-conclude.org")  ;;  获取文件名的后缀(.org)
+(file-name-sans-extension "personal-conclude.org")  ;;  获取文件名的前缀(.org前面的名字)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org8e8c2a8" class="outline-3">
+<h3 id="org8e8c2a8">例子</h3>
+<div class="outline-text-3" id="text-org8e8c2a8">
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun insert-p-tag ()
+  "Insert &lt;p&gt;&lt;/p&gt; at cursor point."
+  (interactive)
+  (insert "&lt;p&gt;&lt;/p&gt;")
+  (backward-char 4))
+</pre>
+</div>
+<p>
+该代码插入&lt;p&gt;&lt;/p&gt;, 然后将光标放在中间.
+</p>
 </div>
 </div>
 </div>
