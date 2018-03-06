@@ -35,28 +35,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org39c8f28">需要的安装包</a></li>
-<li><a href="#orgaa95a6a">下载ns-3</a>
+<li><a href="#orged701e6">需要的安装包</a></li>
+<li><a href="#orge372064">下载ns-3</a>
 <ul>
-<li><a href="#org958afb2">使用mercurial</a></li>
-<li><a href="#org0d2a438">直接下载tar压缩包</a></li>
+<li><a href="#orgf3b2adb">使用mercurial</a></li>
+<li><a href="#orgb3e8d48">直接下载tar压缩包</a></li>
 </ul>
 </li>
-<li><a href="#orgc334a15">编译安装</a>
+<li><a href="#org195712a">编译安装</a>
 <ul>
-<li><a href="#orgec0cf61">使用waf进行配置</a></li>
-<li><a href="#org0f0043d">测试</a></li>
-<li><a href="#org89e828f">目录结构</a></li>
-<li><a href="#orgf5cabc2">ns-3模块</a></li>
-<li><a href="#orgc52201c">ns-3模块基本流程</a></li>
-<li><a href="#org0ae9524">代码简单介绍</a>
+<li><a href="#org8197183">使用waf进行配置</a></li>
+<li><a href="#orgae9bf5e">测试</a></li>
+<li><a href="#org085b834">目录结构</a></li>
+<li><a href="#org034d8a7">ns-3模块</a></li>
+<li><a href="#org1659135">ns-3模块基本流程</a></li>
+<li><a href="#orgf021b6c">代码简单介绍</a>
 <ul>
-<li><a href="#orge99685f">头文件</a></li>
-<li><a href="#org0eadfb6">命名空间</a></li>
-<li><a href="#org031bfde">日志</a></li>
-<li><a href="#org3c0db76">main()</a></li>
-<li><a href="#org40a0673">生成网络节点</a></li>
-<li><a href="#orgaaece42">物理连接计算机</a></li>
+<li><a href="#org02b39bd">头文件</a></li>
+<li><a href="#orgf7b6396">命名空间</a></li>
+<li><a href="#org22e4e7a">日志</a></li>
+<li><a href="#orgeb2e380">main()</a></li>
+<li><a href="#org33b30e4">生成网络节点</a></li>
+<li><a href="#orgf43489f">物理连接计算机</a></li>
+<li><a href="#org3f07e35">为计算机安装协议栈</a></li>
+<li><a href="#orgaf59939">安装应用层</a></li>
+<li><a href="#org64aa345">启动模拟器</a></li>
+<li><a href="#org0dccd70">运行</a></li>
 </ul>
 </li>
 </ul>
@@ -65,9 +69,9 @@
 </div>
 </div>
 
-<div id="outline-container-org39c8f28" class="outline-2">
-<h2 id="org39c8f28">需要的安装包</h2>
-<div class="outline-text-2" id="text-org39c8f28">
+<div id="outline-container-orged701e6" class="outline-2">
+<h2 id="orged701e6">需要的安装包</h2>
+<div class="outline-text-2" id="text-orged701e6">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install gcc g++ python 
 sudo apt install gcc g++ python python-dev 
@@ -98,22 +102,22 @@ sudo apt install openmpi-bin openmpi-common openmpi-doc libopenmpi-dev
 </div>
 </div>
 
-<div id="outline-container-orgaa95a6a" class="outline-2">
-<h2 id="orgaa95a6a">下载ns-3</h2>
-<div class="outline-text-2" id="text-orgaa95a6a">
+<div id="outline-container-orge372064" class="outline-2">
+<h2 id="orge372064">下载ns-3</h2>
+<div class="outline-text-2" id="text-orge372064">
 </div>
-<div id="outline-container-org958afb2" class="outline-3">
-<h3 id="org958afb2">使用mercurial</h3>
-<div class="outline-text-3" id="text-org958afb2">
+<div id="outline-container-orgf3b2adb" class="outline-3">
+<h3 id="orgf3b2adb">使用mercurial</h3>
+<div class="outline-text-3" id="text-orgf3b2adb">
 <p>
 mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现, 易于学习和使用, 扩展性强. 此处不使用mercurial来下载ns-3.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0d2a438" class="outline-3">
-<h3 id="org0d2a438">直接下载tar压缩包</h3>
-<div class="outline-text-3" id="text-org0d2a438">
+<div id="outline-container-orgb3e8d48" class="outline-3">
+<h3 id="orgb3e8d48">直接下载tar压缩包</h3>
+<div class="outline-text-3" id="text-orgb3e8d48">
 <div class="org-src-container">
 <pre class="src src-Shell">wget http://www.nsnam.org/release/ns-allinone-3.24.tar.bz2
 </pre>
@@ -130,17 +134,17 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 </div>
 </div>
 
-<div id="outline-container-orgc334a15" class="outline-2">
-<h2 id="orgc334a15">编译安装</h2>
-<div class="outline-text-2" id="text-orgc334a15">
+<div id="outline-container-org195712a" class="outline-2">
+<h2 id="org195712a">编译安装</h2>
+<div class="outline-text-2" id="text-org195712a">
 <p>
 使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.24的目录, 输入 <code>./build.py</code>.
 </p>
 </div>
 
-<div id="outline-container-orgec0cf61" class="outline-3">
-<h3 id="orgec0cf61">使用waf进行配置</h3>
-<div class="outline-text-3" id="text-orgec0cf61">
+<div id="outline-container-org8197183" class="outline-3">
+<h3 id="org8197183">使用waf进行配置</h3>
+<div class="outline-text-3" id="text-org8197183">
 <p>
 使用waf进行配置和编译ns-3工程, 因为工程一旦已经编译过, 就不能再使用build.py脚本 了, 这时如果读者想改变原有ns-3的配置, 就需要使用交互式的waf命令, 进行重新配置和编译. 如果使用make来编译ns-3这样的庞大工程是一件痛苦的事, waf是一个基于Python语言的开源编译系统, 使用它将会轻松不少.
 </p>
@@ -180,9 +184,9 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 </div>
 </div>
 
-<div id="outline-container-org0f0043d" class="outline-3">
-<h3 id="org0f0043d">测试</h3>
-<div class="outline-text-3" id="text-org0f0043d">
+<div id="outline-container-orgae9bf5e" class="outline-3">
+<h3 id="orgae9bf5e">测试</h3>
+<div class="outline-text-3" id="text-orgae9bf5e">
 <p>
 测试ns-3发行版是否编译正确:
 </p>
@@ -204,9 +208,9 @@ sudo ./waf --run scratch-simulator
 </div>
 </div>
 
-<div id="outline-container-org89e828f" class="outline-3">
-<h3 id="org89e828f">目录结构</h3>
-<div class="outline-text-3" id="text-org89e828f">
+<div id="outline-container-org085b834" class="outline-3">
+<h3 id="org085b834">目录结构</h3>
+<div class="outline-text-3" id="text-org085b834">
 <p>
 waf是基于Python开发的编译工具, ns-3系统本身和将要写的仿真代码都由waf负责编译运行.
 </p>
@@ -233,9 +237,9 @@ src是ns-3源代码目录, 里面的文件基本和ns-3模块相对应. 打开�
 </div>
 </div>
 
-<div id="outline-container-orgf5cabc2" class="outline-3">
-<h3 id="orgf5cabc2">ns-3模块</h3>
-<div class="outline-text-3" id="text-orgf5cabc2">
+<div id="outline-container-org034d8a7" class="outline-3">
+<h3 id="org034d8a7">ns-3模块</h3>
+<div class="outline-text-3" id="text-org034d8a7">
 <p>
 core: ns-3的内核模块, 实现了ns-3的基本机制, 如智能指针, 属性, 回调, 随机变量, 日志, 追踪, 事件调度等内容.
 </p>
@@ -254,9 +258,9 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-orgc52201c" class="outline-3">
-<h3 id="orgc52201c">ns-3模块基本流程</h3>
-<div class="outline-text-3" id="text-orgc52201c">
+<div id="outline-container-org1659135" class="outline-3">
+<h3 id="org1659135">ns-3模块基本流程</h3>
+<div class="outline-text-3" id="text-org1659135">
 <ol class="org-ol">
 <li>选择或开发相应模块</li>
 <li>编写网络仿真脚本(C++或Python): 生成节点, 安装网络设备, 安装协议栈, 安装应用层协议, 其他配置, 启动仿真.</li>
@@ -266,13 +270,13 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org0ae9524" class="outline-3">
-<h3 id="org0ae9524">代码简单介绍</h3>
-<div class="outline-text-3" id="text-org0ae9524">
+<div id="outline-container-orgf021b6c" class="outline-3">
+<h3 id="orgf021b6c">代码简单介绍</h3>
+<div class="outline-text-3" id="text-orgf021b6c">
 </div>
-<div id="outline-container-orge99685f" class="outline-4">
-<h4 id="orge99685f">头文件</h4>
-<div class="outline-text-4" id="text-orge99685f">
+<div id="outline-container-org02b39bd" class="outline-4">
+<h4 id="org02b39bd">头文件</h4>
+<div class="outline-text-4" id="text-org02b39bd">
 <p>
 为了帮助高层的用户脚本处理大量系统中的include文件, 会把所有的文件根据模块功能进行大致的分类, 提供了按大致功能分类的一组include文件, 在使用时只需选择包含几个头文件即可. 如:
 </p>
@@ -289,9 +293,9 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org0eadfb6" class="outline-4">
-<h4 id="org0eadfb6">命名空间</h4>
-<div class="outline-text-4" id="text-org0eadfb6">
+<div id="outline-container-orgf7b6396" class="outline-4">
+<h4 id="orgf7b6396">命名空间</h4>
+<div class="outline-text-4" id="text-orgf7b6396">
 <div class="org-src-container">
 <pre class="src src-C++">using namespace ns3;
 </pre>
@@ -302,9 +306,9 @@ C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用�
 </div>
 </div>
 
-<div id="outline-container-org031bfde" class="outline-4">
-<h4 id="org031bfde">日志</h4>
-<div class="outline-text-4" id="text-org031bfde">
+<div id="outline-container-org22e4e7a" class="outline-4">
+<h4 id="org22e4e7a">日志</h4>
+<div class="outline-text-4" id="text-org22e4e7a">
 <p>
 日志要定义之后才能使用, 日志定义很简单:
 </p>
@@ -323,9 +327,9 @@ C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用�
 </div>
 </div>
 
-<div id="outline-container-org3c0db76" class="outline-4">
-<h4 id="org3c0db76">main()</h4>
-<div class="outline-text-4" id="text-org3c0db76">
+<div id="outline-container-orgeb2e380" class="outline-4">
+<h4 id="orgeb2e380">main()</h4>
+<div class="outline-text-4" id="text-orgeb2e380">
 <div class="org-src-container">
 <pre class="src src-C++">LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
 LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
@@ -337,9 +341,9 @@ LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
 </div>
 </div>
 
-<div id="outline-container-org40a0673" class="outline-4">
-<h4 id="org40a0673">生成网络节点</h4>
-<div class="outline-text-4" id="text-org40a0673">
+<div id="outline-container-org33b30e4" class="outline-4">
+<h4 id="org33b30e4">生成网络节点</h4>
+<div class="outline-text-4" id="text-org33b30e4">
 <div class="org-src-container">
 <pre class="src src-C++">NodeContainer nodes;
 nodes.Create(2);
@@ -348,9 +352,9 @@ nodes.Create(2);
 </div>
 </div>
 
-<div id="outline-container-orgaaece42" class="outline-4">
-<h4 id="orgaaece42">物理连接计算机</h4>
-<div class="outline-text-4" id="text-orgaaece42">
+<div id="outline-container-orgf43489f" class="outline-4">
+<h4 id="orgf43489f">物理连接计算机</h4>
+<div class="outline-text-4" id="text-orgf43489f">
 <p>
 现实中连接两台计算机需要使用网卡和网线, ns-3中将对应的物理实体抽象为网络设备和信道2个概念, 使用下面的语句实现网络节点物理连接:
 </p>
@@ -377,6 +381,119 @@ PointToPointHelper类负责设置网络设备和信道属性, 并通过Install�
 <p>
 对于在NodeContainer对象中的每一个节点(对于一个点到点链路必须明确有2个节点), 1个PointToPointNetDevice被创建和保存在设备容器内, 1个PointToPointChannel对象被创建, 2个PointToPointNetDevices与之连接.
 </p>
+
+<p>
+调用Install(nodes)后, 会有2个节点, 每一个节点安装了点到点网络设备, 在它们之间是一个点到点信道. 2个设备会被配置在一个有2ms传输延迟的信道上以5Mbit/s的速率传输数据.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3f07e35" class="outline-4">
+<h4 id="org3f07e35">为计算机安装协议栈</h4>
+<div class="outline-text-4" id="text-org3f07e35">
+<div class="org-src-container">
+<pre class="src src-C">InternetStackHelper stack;
+stack.Install (nodes);
+Ipv4AddressHelper address;
+address.SetBase ("10.1.1.0", "255.255.255.0");
+Ipv4InterfaceContainer interfaces = address.Assign (devices);
+</pre>
+</div>
+<p>
+InternetStackHelper会为每一个节点容器中的节点安装一个网络协议栈, 主要是IP层.
+</p>
+
+<p>
+地址从10.1.1.0开始, 以子网掩码为255.255.255.0分配地址.
+</p>
+
+<p>
+Ipv4Interface对象将一个IP地址同一个设备关联起来.
+</p>
+
+<p>
+现在有一个安装了协议栈, 配置了IP地址类的点到点的网络.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaf59939" class="outline-4">
+<h4 id="orgaf59939">安装应用层</h4>
+<div class="outline-text-4" id="text-orgaf59939">
+<div class="org-src-container">
+<pre class="src src-C">UdpEchoServerHelper echoServer (9);
+ApplicationContainer serverApps = echoServer.Install (nodes.Get (1));
+</pre>
+</div>
+<p>
+首先声明一个UdpEchoServerHelper对象, 该对象用来创建真正的应用, 端口号为9.
+echoServer.Install()方法初始化回显服务器应用, 在索引号为1的节点上安装一个UdpEchoServerApplication.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++">serverApps.Start (Seconds (1.0));
+serverApps.Stop (Seconds (10.0));
+</pre>
+</div>
+<p>
+使echoServer应用在1s时开始产生数据通信, 在10s时停止.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++">UdpEchoClientHelper echoClient (interfaces.GetAddress (1), 9);
+echoClient.SetAttribute ("MaxPackets", UintegerValue (1));
+echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
+echoClient.SetAttribute ("PacketSize", UintegerValue (1024));
+ApplicationContainer clientApps = echoClient.Install (nodes.Get (0));
+clientApps.Start (Seconds (2.0));
+clientApps.Stop (Seconds (10.0));
+</pre>
+</div>
+<p>
+echo客户端需要多设置几个属性. UdpEchoClientHelper的构造函数有两个参数, 分别是RemoteAddress和RemotePort, 在这边, RemoteAddress即为服务器的地址, 服务器是索引为1的节点, RemotePort为9.
+</p>
+
+<p>
+MaxPackets: 模拟期间能发送的最大数据包个数.
+</p>
+
+<p>
+Interval: 两个数据包的相隔时间.
+</p>
+
+<p>
+PacketSize: 数据包大小.
+</p>
+
+<p>
+本例中, 让客户端发送一个1024byte的数据包.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org64aa345" class="outline-4">
+<h4 id="org64aa345">启动模拟器</h4>
+<div class="outline-text-4" id="text-org64aa345">
+<div class="org-src-container">
+<pre class="src src-C++">Simulator::Run ();
+Simulator::Destroy ();
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0dccd70" class="outline-4">
+<h4 id="org0dccd70">运行</h4>
+<div class="outline-text-4" id="text-org0dccd70">
+<p>
+把 <code>first.cc</code> 放到 <code>scratch</code> 目录, 执行命令 <code>./waf --run scratch/first</code>.
+</p>
+
+<div class="figure">
+<p><img src="/assets/blog/2018/02/06/ns-3快速上手/0.png" alt="0.png" width="500" />
+</p>
+<p><span class="figure-number">Figure 1: </span>first.cc运行结果</p>
+</div>
 </div>
 </div>
 </div>
@@ -387,7 +504,7 @@ PointToPointHelper类负责设置网络设备和信道属性, 并通过Install�
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-02-06</span>
-        <span title="last modification date" class="post-info">2018-03-05</span>
+        <span title="last modification date" class="post-info">2018-03-06</span>
         <span title="tags" class="post-info"><a href="/tags/ns3/">NS3</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
