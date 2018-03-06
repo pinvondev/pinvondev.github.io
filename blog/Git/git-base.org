@@ -29,3 +29,74 @@ git pull --rebase origin source:source
 git reflog source # 查看source的历史
 git reset --hard commid_id
 #+END_SRC
+
+* 添加远程库
+
+** 创建SSH Key
+#+BEGIN_SRC Shell
+ssh-keygen -t rsa -C "your@email.com"
+#+END_SRC
+将公钥的内容复制到[[https://www.github.com][Github]]的SSH Keys里面.
+
+** 创建仓库
+
+到[[https://www.github.com][Github]]创建一个远程仓库. 然后在本地创建一个本地仓库.
+
+** 关联仓库
+
+将本地仓库与远程仓库关联: =git remote add origin git@github.com:path/to/repo.git=.
+
+** 一台电脑, 多个Github账号
+
+1. 生成两对私钥/公钥, 并且密钥文件名不能重复. 
+
+此处假设已有一对密钥, 再生成另一对密钥.
+#+BEGIN_SRC Shell
+ssh-keygen -t rsa -f ~/.ssh/id_rsa_x -C "your@email.com"
+#+END_SRC
+这样就会生成 =id_rsa_x= 和 =id_rsa_x.pub= 两个文件.
+
+2. 推送到远程时, 区分不同Github账号, 推送到相应的仓库.
+
+- 在 =~/.ssh/= 下创建一个 =config= 文件并编辑:
+#+BEGIN_SRC Shell
+# 第一个账号
+Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa
+
+# 第二个账号
+Host second.github.com  # second为前缀名, 可任意设置
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa_x
+#+END_SRC
+注: =@= 前的 =git= 是User, =@= 后的 =github.com= 是Host. 如果User和Host都一样, 则无法区分多个账号, 所以要分别配置每个User和Host, 再对Host解析到HostName.
+
+- 清空本地的SSH缓存, 添加新的SSH密钥到SSH agent中:
+#+BEGIN_SRC Shell
+ssh-add -D
+ssh-add id_rsa
+ssh-add id_rsa_x
+ssh-add -l  #  确认新密钥是否添加成功
+
+#  测试
+ssh -T git@github.com
+ssh -T git@second.github.com
+#+END_SRC
+
+- 配置完成后, 取消git全局设置:
+#+BEGIN_SRC Shell
+git config --global --unset user.name
+git config --global --unset user.email
+
+# 单独设置
+git config user.email "your@email"
+git config user.name "name"
+
+# 查看git项目的配置
+git config --list
+#+END_SRC
+
+如果要关联到第2个账号, 使用 =git remote add origin git@second.github.com:path/to/repo.git=. 
