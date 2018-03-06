@@ -128,7 +128,7 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 
 ** 光标位置
 
-#+BEGIN_SRC Elisp
+   #+BEGIN_SRC Elisp
 (point)  ;;  返回当前光标的位置, 从1开始.
 
 (region-beginning)
@@ -139,4 +139,77 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 
 (point-min)  ;;  buffer的开始位置
 (point-max)
+   #+END_SRC
+
+** 移动光标
+
+#+BEGIN_SRC Elisp
+(goto-char 39)  ;;  跳到第39个位置
+
+(forward-char 4)  ;;  前进4个位置
+(backward-char 4)
+
+(search-forward "some")  ;;  如果该代码后面有some这个单词, 则返回some结束后的位置
+(search-backward "some")  ;;  如果该代码后面有some这个单词, 则返回some开始时的位置
+
+(re-search-forward "[0-9]")  ;;  正则表达式查找
+(re-search-backward "[0-9]")
+
+(skip-chars-forward "a-z")  ;;  不查找a-z之间的字符
+(skip-chars-backward "a-z")
 #+END_SRC
+
+** 删除、插入、修改文本
+
+#+BEGIN_SRC Elisp
+(delete-char 9)
+(delete-region 3 10)
+(insert "i love cates")
+(setq x (buffer-substring 71 300))  ;;  获取从71-300之间的字符
+(capitalize-region 70-300)  ;;  将指定区域的首字母大写
+#+END_SRC
+
+** String
+
+#+BEGIN_SRC Elisp
+(length "abc")  ;;  返回字符串长度
+(substring "abcdefg" 3 4)  ;;  截取字符串
+(replace-regexp-in-string "[0-9]" "X" "abc123")  ;;  将第3个参数中, 符合第1个参数情况的, 替换成第2个参数
+#+END_SRC
+
+** Buffer
+
+#+BEGIN_SRC Elisp
+(buffer-name)  ;;  返回当前buffer名称
+(buffer-file-name)  ;;  返回当前文件的完整路径
+(set-buffer "xyz")  ;;  如果有xyz这个buffer, 则跳转到该buffer
+(save-buffer)
+(kill-buffer "xyz")
+#+END_SRC
+
+** File
+
+#+BEGIN_SRC 
+(find-file "~/")  ;;  打开指定文件
+(write-file path)  ;;  相当于save as
+(insert-file-contents path)  ;;  插入path指定文件到当前光标位置
+(append-to-file start-pos end-pos path)  ;;  将[start-pos, end-pos]指定的文本块插入path指定的文件中
+(rename-file file-name new-name)
+(copy-file old-name new-name)
+(delete-file file-name)
+(file-name-directory full-path)
+(file-name-nondirectory full-path)
+(file-name-extension "personal-conclude.org")  ;;  获取文件名的后缀(.org)
+(file-name-sans-extension "personal-conclude.org")  ;;  获取文件名的前缀(.org前面的名字)
+#+END_SRC
+
+** 例子
+
+#+BEGIN_SRC Elisp
+(defun insert-p-tag ()
+  "Insert <p></p> at cursor point."
+  (interactive)
+  (insert "<p></p>")
+  (backward-char 4))
+#+END_SRC
+该代码插入<p></p>, 然后将光标放在中间.
