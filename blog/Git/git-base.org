@@ -100,3 +100,24 @@ git config --list
 #+END_SRC
 
 如果要关联到第2个账号, 使用 =git remote add origin git@second.github.com:path/to/repo.git=. 
+* 暂存
+
+场景: 在项目上的某个分支工作了一段时间, 但是并未完成, 此时需要切换到另一分支, 而我们又不想仅因为过会儿回到这一点而为做了一半的工作创建一次提交. 此时, 就需要用到命令 =git stash=.
+
+=git stash= 会将未完成的修改保存到一个栈上, 我们可以在任何时候重新应用这些改动.
+
+*** 暂存
+
+#+BEGIN_SRC Shell
+git stash
+#+END_SRC
+此时, 如果使用 =git status= 命令查看, 会发现工作目录是干净的.
+
+=git stash list= 可以查看有哪些东西被暂存了.
+
+*** 取出
+
+#+BEGIN_SRC Shell
+git stash apply  #  取出最近被暂存的内容
+git stash apply stash@{2}  #  取出指定的更旧的暂存内容
+#+END_SRC
