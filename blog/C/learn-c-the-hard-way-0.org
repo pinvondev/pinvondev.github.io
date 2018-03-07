@@ -1,0 +1,117 @@
+#+TITLE:       笨方法学C--0
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-06 二
+#+URI:         /blog/%y/%m/%d/笨方法学c--0
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        笨方法学C-读书笔记
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 练习1: 启用编译器
+
+编译使用命令:
+#+BEGIN_SRC Shell
+make ex1
+# 或者
+CFLAGS="-Wall" make ex1
+#+END_SRC
+第一条命令表示要用make创建名为ex1的文件, 这条命令只适用于.c的文件名与要生成的文件名相同的情况. 如果要创建其他名字的文件, 需要在命令中指定相应的参数.
+
+第二条命令向make命令传递了参数, 表示 =cc= 编译器在编译时要报告警告. 该命令也可以使用 export CFLAGS="-Wall" 这条命令来代替, 提前设置好环境变量.
+
+* 练习2: 用Make来代替Python
+
+创建 =Makefile= 文件, 编辑内容:
+#+BEGIN_SRC Makefile
+CFLAGS=-Wall -g
+clean:
+	rm -f ex1
+#+END_SRC
+=-g=: 获取调试信息.
+=clean=: 告诉make如何清理小项目.
+
+保存Makefile后, 执行:
+#+BEGIN_SRC Shell
+make clean  #  执行clean目标
+make ex1  # 编译
+#+END_SRC
+
+** 附加题
+
+添加目标 =all:ex1= , 可以直接使用命令 =make=, 而不用 =make ex1=.
+#+BEGIN_SRC Makefile
+CFLAGS=-Wall -g
+all: ex1
+clean:
+	rm -f ex1
+#+END_SRC
+
+* 练习3: 格式化输出
+
+了解占位符和转义符.
+
+* 练习4: Valgrind介绍
+
+Valgrind可以运行我们的程序, 随后报告所有我们犯下的错误.
+
+** 安装Valgrind
+
+[[http://valgrind.org/downloads/current.html][官网]]下载Valgrind.
+
+#+BEGIN_SRC Shell
+# 校验 确保下载没有出错
+md5sum valgrind-3.13.0.tar.bz2
+# 解压
+tar -xjvf valgrind-3.13.0.tar.bz2
+# 进入目录并编译安装
+cd valgrind-3.13.0/
+./configure
+make
+sudo make install
+#+END_SRC
+
+** 使用Valgrind
+
+使用方法: =valgrind program_name=. 
+
+在 =ex4.c= 中, 我们修改程序, 故意使其崩溃.
+#+BEGIN_SRC C
+#include <stdio.h>
+int main() {
+    int age = 10;
+    int height;  //  未初始化
+    printf("I am %d years old.\n");  //  缺少参数
+    printf("I am %d inches tall.\n", height);
+    return 0;
+}
+#+END_SRC
+
+#+BEGIN_SRC Shell
+make ex4  #  像往常一样构建
+valgrind ./ex4  #  使用valgrind运行程序
+#+END_SRC
+
+确保 =make ex4= 构建时, =cc= 命令带有 =-g= 选项, 否则Valgrind的输出不会带上行号. 如果没有 =-g= 选项, 则新建 =Makefile= 文件, 编辑如下:
+#+BEGIN_SRC Makefile
+CFLAGS=-Wall -g
+all:ex4
+clean:
+	rm -f ex4
+#+END_SRC
+
+如果用Valgrind运行程序时, 出现类似于 =by 0x4052112: (bellow main) (libc-start.c:226)= 的语句, 则命令要改成:
+#+BEGIN_SRC Shell
+valgrind --track-origins=yes ./ex4
+#+END_SRC
+
+其中一个错误如下图所示:
+[[./0.png]]
+解释:
+=main(ex4.c:7)= (为了方便, 直接在ex3.c的基础上修改了源代码): 表示在 =ex3.c= 文件的第7行中, 使用了未初始化的值, 占用的空间大小为8, 剩下的几行是栈踪迹.
+
+剩下的错误大同小异, 因为这个未初始化的值还在继续使用.
+
+最后Valgrind会显示一份摘要, 告诉你程序有多烂, 并且会告诉你内存分配情况以及是否有内存泄露. 如下所示:
+[[./1.png]]

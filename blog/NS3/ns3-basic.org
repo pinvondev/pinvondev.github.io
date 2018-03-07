@@ -1,0 +1,56 @@
+#+TITLE:       ns-3基础
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-07 三
+#+URI:         /blog/%y/%m/%d/ns-3基础
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        NS3
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 关键概念
+
+** 节点
+
+在ns-3中, 基本计算设备被抽象为节点.
+
+可将其设想成是一台可添加各种功能的计算机, 为了使一台计算机有效工作, 可以给它添加应用程序, 协议栈, 外设卡, 驱动程序等.
+
+如果使用C++开发, 则节点使用Node类来表示. NodeContainer类用于追踪一组节点指针.
+
+** 应用
+
+在ns-3中, 需要被仿真的用户程序被抽象为应用.
+
+如果使用C++开发, 则应用使用Application类来表示. 这个类提供了管理仿真时用户层应用的各种方法. UdpEchoClientApplication和UdpEchoServerApplication是Application类的两个实例. 这两个类包含了一个C/S应用来发送和响应仿真网络中的数据分组. XX应用一般由XXHelper类管理, 该类的执行才初始化了XX应用. 应用对象需要一个时间参数来"开始"和"结束"数据通信.
+
+** 信道
+
+在现实中, 通常把网络中数据流流过的媒介称为信道. 在ns-3中, 基本的通信子网被抽象成信道.
+
+如果使用C++开发, 则信道使用Channel类来表示. Channel类提供了管理通信子网对象和把节点连接至它们的各种方法. 
+
+CsmaChannel信道模拟了一个可以用于实现载波侦听多路访问通信子网中的媒介, 这个信道具有和以太网相似的功能. PointToPointChannel信道模拟一个简单的点对点信道.
+
+** 网络设备
+
+在ns-3中, 通常把硬件设备和软件驱动的总和抽象成网络设备. 一个节点可以通过多个网络设备同时连接到多条信道上.
+
+如果使用C++开发, 则网络设备使用NetDevice类来描述. NetDevice类提供了管理连接其他节点和信道对象的各种方法. CsmaNetDevice被设计成在CSMA信道中工作, PointToPointNetDevice在PointToPoint信道中工作.
+
+** 拓扑帮助
+
+在大型仿真网络中, 我们需要在节点, 网络设备和信道之间部署许多连接. 既然把网络设备连接到节点、信道、配置IP地址等在ns-3中是很普遍的任务, 于是ns-3直接提供了一个叫"拓扑帮助"的东西来使这项工作变得尽可能容易. 
+
+如TopologyReaderHelper类, 可以让我们更容易配置和使用通用的TopologyReader. InternetStackHelper类是一个安装PointToPointHelper对象和点到点网络设备的网络协议栈的拓扑生成器类, 它会为每一个节点容器中的节点安装一个网络协议栈.
+
+* 优化技术
+
+** Logging系统
+
+** 命令行参数
+
+** Tracing系统
+
+* 编写脚本
