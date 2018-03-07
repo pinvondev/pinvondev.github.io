@@ -203,7 +203,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 (file-name-sans-extension "personal-conclude.org")  ;;  获取文件名的前缀(.org前面的名字)
 #+END_SRC
 
-** 例子
+* 例子
+
+** 插入文本
 
 #+BEGIN_SRC Elisp
 (defun insert-p-tag ()
@@ -213,3 +215,53 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
   (backward-char 4))
 #+END_SRC
 该代码插入<p></p>, 然后将光标放在中间.
+
+** 在指定区域插入文本
+
+#+BEGIN_SRC Elisp
+(defun wrap-makup-region (start end)
+  "Insert a markup <b></b> around a region."
+  (interactive "r")
+  (save-excursion
+    (goto-char end) (insert "</b>")
+    (goto-char start) (insert "<b>")))
+#+END_SRC
+
+** 选中指定区域
+
+选中当前单词:
+#+BEGIN_SRC Elisp
+(transient-mark-mode 1)
+(defun select-current-word ()
+  "Select the word under cursor. ``word`` here is considered any alphanumeric sequence with ``_`` or ``-``."
+  (interactive)
+  (let (pt)
+    (skip-chars-backward "-_A-Za-z0-9")
+    (setq pt (point))
+    (skip-chars-forward "-_A-Za-z0-9")
+    (set-mark pt)))
+#+END_SRC
+
+选中当前行:
+#+BEGIN_SRC Elisp
+(transient-mark-mode 1)
+(defun select-current-line ()
+  "Select the current line"
+  (interactive)
+  (end-of-line)  ;;  move to end of line
+  (set-mark (line-beginning-position)))
+#+END_SRC
+
+** 替换区域内的文字
+
+ #+BEGIN_SRC Elisp
+ (defun replace-greek-region (start end)
+   "Replace specific words to other words in current region."
+   (interactive "r")
+   (save-restriction
+     (narrow-to-region start end)
+     (goto-char (point-min))
+     (while (search-forward "hello" nil t) (replace-match "hi" nil t))
+     (goto-char (point-min))))
+ #+END_SRC
+
