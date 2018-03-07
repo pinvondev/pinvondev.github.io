@@ -35,23 +35,33 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1cc5d67">从远程更新到本地(多分支)</a></li>
-<li><a href="#org8ba0320">撤销</a></li>
-<li><a href="#orge3b3e05">添加远程库</a>
+<li><a href="#org86f92e3">从远程更新到本地(多分支)</a></li>
+<li><a href="#org5408cfa">撤销</a></li>
+<li><a href="#orgf3637d4">添加远程库</a>
 <ul>
-<li><a href="#org6d12a25">创建SSH Key</a></li>
-<li><a href="#org530000e">创建仓库</a></li>
-<li><a href="#org84e4b5b">关联仓库</a></li>
-<li><a href="#org4fdc720">一台电脑, 多个Github账号</a></li>
+<li><a href="#org1717dca">创建SSH Key</a></li>
+<li><a href="#orgfbb4576">创建仓库</a></li>
+<li><a href="#org8b447a9">关联仓库</a></li>
+<li><a href="#org425fcb2">一台电脑, 多个Github账号</a></li>
+</ul>
+</li>
+<li><a href="#org7c6aa9a">暂存</a>
+<ul>
+<li>
+<ul>
+<li><a href="#orgc0d38b2">暂存</a></li>
+<li><a href="#orgde3d199">取出</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1cc5d67" class="outline-2">
-<h2 id="org1cc5d67">从远程更新到本地(多分支)</h2>
-<div class="outline-text-2" id="text-org1cc5d67">
+<div id="outline-container-org86f92e3" class="outline-2">
+<h2 id="org86f92e3">从远程更新到本地(多分支)</h2>
+<div class="outline-text-2" id="text-org86f92e3">
 <div class="org-src-container">
 <pre class="src src-shell">  git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
 git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
@@ -72,9 +82,9 @@ git merge origin/source # 将origin/source合并到当前分支
 </div>
 </div>
 
-<div id="outline-container-org8ba0320" class="outline-2">
-<h2 id="org8ba0320">撤销</h2>
-<div class="outline-text-2" id="text-org8ba0320">
+<div id="outline-container-org5408cfa" class="outline-2">
+<h2 id="org5408cfa">撤销</h2>
+<div class="outline-text-2" id="text-org5408cfa">
 <div class="org-src-container">
 <pre class="src src-shell">git reflog source # 查看source的历史
 git reset --hard commid_id
@@ -83,13 +93,13 @@ git reset --hard commid_id
 </div>
 </div>
 
-<div id="outline-container-orge3b3e05" class="outline-2">
-<h2 id="orge3b3e05">添加远程库</h2>
-<div class="outline-text-2" id="text-orge3b3e05">
+<div id="outline-container-orgf3637d4" class="outline-2">
+<h2 id="orgf3637d4">添加远程库</h2>
+<div class="outline-text-2" id="text-orgf3637d4">
 </div>
-<div id="outline-container-org6d12a25" class="outline-3">
-<h3 id="org6d12a25">创建SSH Key</h3>
-<div class="outline-text-3" id="text-org6d12a25">
+<div id="outline-container-org1717dca" class="outline-3">
+<h3 id="org1717dca">创建SSH Key</h3>
+<div class="outline-text-3" id="text-org1717dca">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh-keygen -t rsa -C "your@email.com"
 </pre>
@@ -100,27 +110,27 @@ git reset --hard commid_id
 </div>
 </div>
 
-<div id="outline-container-org530000e" class="outline-3">
-<h3 id="org530000e">创建仓库</h3>
-<div class="outline-text-3" id="text-org530000e">
+<div id="outline-container-orgfbb4576" class="outline-3">
+<h3 id="orgfbb4576">创建仓库</h3>
+<div class="outline-text-3" id="text-orgfbb4576">
 <p>
 到<a href="https://www.github.com">Github</a>创建一个远程仓库. 然后在本地创建一个本地仓库.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org84e4b5b" class="outline-3">
-<h3 id="org84e4b5b">关联仓库</h3>
-<div class="outline-text-3" id="text-org84e4b5b">
+<div id="outline-container-org8b447a9" class="outline-3">
+<h3 id="org8b447a9">关联仓库</h3>
+<div class="outline-text-3" id="text-org8b447a9">
 <p>
 将本地仓库与远程仓库关联: <code>git remote add origin git@github.com:path/to/repo.git</code>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4fdc720" class="outline-3">
-<h3 id="org4fdc720">一台电脑, 多个Github账号</h3>
-<div class="outline-text-3" id="text-org4fdc720">
+<div id="outline-container-org425fcb2" class="outline-3">
+<h3 id="org425fcb2">一台电脑, 多个Github账号</h3>
+<div class="outline-text-3" id="text-org425fcb2">
 <ol class="org-ol">
 <li>生成两对私钥/公钥, 并且密钥文件名不能重复.</li>
 </ol>
@@ -196,13 +206,53 @@ git config --list
 </div>
 </div>
 </div>
+<div id="outline-container-org7c6aa9a" class="outline-2">
+<h2 id="org7c6aa9a">暂存</h2>
+<div class="outline-text-2" id="text-org7c6aa9a">
+<p>
+场景: 在项目上的某个分支工作了一段时间, 但是并未完成, 此时需要切换到另一分支, 而我们又不想仅因为过会儿回到这一点而为做了一半的工作创建一次提交. 此时, 就需要用到命令 <code>git stash</code>.
+</p>
+
+<p>
+<code>git stash</code> 会将未完成的修改保存到一个栈上, 我们可以在任何时候重新应用这些改动.
+</p>
+</div>
+
+<div id="outline-container-orgc0d38b2" class="outline-4">
+<h4 id="orgc0d38b2">暂存</h4>
+<div class="outline-text-4" id="text-orgc0d38b2">
+<div class="org-src-container">
+<pre class="src src-Shell">git stash
+</pre>
+</div>
+<p>
+此时, 如果使用 <code>git status</code> 命令查看, 会发现工作目录是干净的.
+</p>
+
+<p>
+<code>git stash list</code> 可以查看有哪些东西被暂存了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgde3d199" class="outline-4">
+<h4 id="orgde3d199">取出</h4>
+<div class="outline-text-4" id="text-orgde3d199">
+<div class="org-src-container">
+<pre class="src src-Shell">git stash apply  #  取出最近被暂存的内容
+git stash apply stash@{2}  #  取出指定的更旧的暂存内容
+</pre>
+</div>
+</div>
+</div>
+</div>
 
 </div>
 </div>
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-01-04</span>
-        <span title="last modification date" class="post-info">2018-03-05</span>
+        <span title="last modification date" class="post-info">2018-03-06</span>
         <span title="tags" class="post-info"><a href="/tags/git/">Git</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
