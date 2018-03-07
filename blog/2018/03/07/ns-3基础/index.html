@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>ns-3基础 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>ns-3基础</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2ea16c5">关键概念</a>
+<ul>
+<li><a href="#orgde776d4">节点</a></li>
+<li><a href="#org840d04b">应用</a></li>
+<li><a href="#org62d003e">信道</a></li>
+<li><a href="#org6759d7c">网络设备</a></li>
+<li><a href="#org4f2357c">拓扑帮助</a></li>
+</ul>
+</li>
+<li><a href="#orga9297b9">优化技术</a>
+<ul>
+<li><a href="#orgd2f4ceb">Logging系统</a></li>
+<li><a href="#org31a1125">命令行参数</a></li>
+<li><a href="#orgcdd3272">Tracing系统</a></li>
+</ul>
+</li>
+<li><a href="#org9012c24">编写脚本</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2ea16c5" class="outline-2">
+<h2 id="org2ea16c5">关键概念</h2>
+<div class="outline-text-2" id="text-org2ea16c5">
+</div>
+<div id="outline-container-orgde776d4" class="outline-3">
+<h3 id="orgde776d4">节点</h3>
+<div class="outline-text-3" id="text-orgde776d4">
+<p>
+在ns-3中, 基本计算设备被抽象为节点.
+</p>
+
+<p>
+可将其设想成是一台可添加各种功能的计算机, 为了使一台计算机有效工作, 可以给它添加应用程序, 协议栈, 外设卡, 驱动程序等.
+</p>
+
+<p>
+如果使用C++开发, 则节点使用Node类来表示. NodeContainer类用于追踪一组节点指针.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org840d04b" class="outline-3">
+<h3 id="org840d04b">应用</h3>
+<div class="outline-text-3" id="text-org840d04b">
+<p>
+在ns-3中, 需要被仿真的用户程序被抽象为应用.
+</p>
+
+<p>
+如果使用C++开发, 则应用使用Application类来表示. 这个类提供了管理仿真时用户层应用的各种方法. UdpEchoClientApplication和UdpEchoServerApplication是Application类的两个实例. 这两个类包含了一个C/S应用来发送和响应仿真网络中的数据分组. XX应用一般由XXHelper类管理, 该类的执行才初始化了XX应用. 应用对象需要一个时间参数来"开始"和"结束"数据通信.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org62d003e" class="outline-3">
+<h3 id="org62d003e">信道</h3>
+<div class="outline-text-3" id="text-org62d003e">
+<p>
+在现实中, 通常把网络中数据流流过的媒介称为信道. 在ns-3中, 基本的通信子网被抽象成信道.
+</p>
+
+<p>
+如果使用C++开发, 则信道使用Channel类来表示. Channel类提供了管理通信子网对象和把节点连接至它们的各种方法. 
+</p>
+
+<p>
+CsmaChannel信道模拟了一个可以用于实现载波侦听多路访问通信子网中的媒介, 这个信道具有和以太网相似的功能. PointToPointChannel信道模拟一个简单的点对点信道.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6759d7c" class="outline-3">
+<h3 id="org6759d7c">网络设备</h3>
+<div class="outline-text-3" id="text-org6759d7c">
+<p>
+在ns-3中, 通常把硬件设备和软件驱动的总和抽象成网络设备. 一个节点可以通过多个网络设备同时连接到多条信道上.
+</p>
+
+<p>
+如果使用C++开发, 则网络设备使用NetDevice类来描述. NetDevice类提供了管理连接其他节点和信道对象的各种方法. CsmaNetDevice被设计成在CSMA信道中工作, PointToPointNetDevice在PointToPoint信道中工作.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4f2357c" class="outline-3">
+<h3 id="org4f2357c">拓扑帮助</h3>
+<div class="outline-text-3" id="text-org4f2357c">
+<p>
+在大型仿真网络中, 我们需要在节点, 网络设备和信道之间部署许多连接. 既然把网络设备连接到节点、信道、配置IP地址等在ns-3中是很普遍的任务, 于是ns-3直接提供了一个叫"拓扑帮助"的东西来使这项工作变得尽可能容易. 
+</p>
+
+<p>
+如TopologyReaderHelper类, 可以让我们更容易配置和使用通用的TopologyReader. InternetStackHelper类是一个安装PointToPointHelper对象和点到点网络设备的网络协议栈的拓扑生成器类, 它会为每一个节点容器中的节点安装一个网络协议栈.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9297b9" class="outline-2">
+<h2 id="orga9297b9">优化技术</h2>
+<div class="outline-text-2" id="text-orga9297b9">
+</div>
+<div id="outline-container-orgd2f4ceb" class="outline-3">
+<h3 id="orgd2f4ceb">Logging系统</h3>
+</div>
+
+<div id="outline-container-org31a1125" class="outline-3">
+<h3 id="org31a1125">命令行参数</h3>
+</div>
+
+<div id="outline-container-orgcdd3272" class="outline-3">
+<h3 id="orgcdd3272">Tracing系统</h3>
+</div>
+</div>
+
+<div id="outline-container-org9012c24" class="outline-2">
+<h2 id="org9012c24">编写脚本</h2>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-03-07</span>
+        <span title="last modification date" class="post-info">2018-03-07</span>
+        <span title="tags" class="post-info"><a href="/tags/ns3/">NS3</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/03/07/ns-3基础";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/07/ns-3基础";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>

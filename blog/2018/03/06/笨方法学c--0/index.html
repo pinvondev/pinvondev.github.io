@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>笨方法学C--0 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>笨方法学C--0</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf247370">练习1: 启用编译器</a></li>
+<li><a href="#org8184ff3">练习2: 用Make来代替Python</a>
+<ul>
+<li><a href="#org27288a4">附加题</a></li>
+</ul>
+</li>
+<li><a href="#org0be3878">练习3: 格式化输出</a></li>
+<li><a href="#org8b630f6">练习4: Valgrind介绍</a>
+<ul>
+<li><a href="#orgacaa833">安装Valgrind</a></li>
+<li><a href="#org55528ca">使用Valgrind</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf247370" class="outline-2">
+<h2 id="orgf247370">练习1: 启用编译器</h2>
+<div class="outline-text-2" id="text-orgf247370">
+<p>
+编译使用命令:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make ex1
+# 或者
+CFLAGS="-Wall" make ex1
+</pre>
+</div>
+<p>
+第一条命令表示要用make创建名为ex1的文件, 这条命令只适用于.c的文件名与要生成的文件名相同的情况. 如果要创建其他名字的文件, 需要在命令中指定相应的参数.
+</p>
+
+<p>
+第二条命令向make命令传递了参数, 表示 <code>cc</code> 编译器在编译时要报告警告. 该命令也可以使用 export CFLAGS="-Wall" 这条命令来代替, 提前设置好环境变量.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8184ff3" class="outline-2">
+<h2 id="org8184ff3">练习2: 用Make来代替Python</h2>
+<div class="outline-text-2" id="text-org8184ff3">
+<p>
+创建 <code>Makefile</code> 文件, 编辑内容:
+</p>
+<div class="org-src-container">
+<pre class="src src-Makefile">CFLAGS=-Wall -g
+clean:
+    rm -f ex1
+</pre>
+</div>
+<p>
+<code>-g</code>: 获取调试信息.
+<code>clean</code>: 告诉make如何清理小项目.
+</p>
+
+<p>
+保存Makefile后, 执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make clean  #  执行clean目标
+make ex1  # 编译
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org27288a4" class="outline-3">
+<h3 id="org27288a4">附加题</h3>
+<div class="outline-text-3" id="text-org27288a4">
+<p>
+添加目标 <code>all:ex1</code> , 可以直接使用命令 <code>make</code>, 而不用 <code>make ex1</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-Makefile">CFLAGS=-Wall -g
+all: ex1
+clean:
+    rm -f ex1
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0be3878" class="outline-2">
+<h2 id="org0be3878">练习3: 格式化输出</h2>
+<div class="outline-text-2" id="text-org0be3878">
+<p>
+了解占位符和转义符.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b630f6" class="outline-2">
+<h2 id="org8b630f6">练习4: Valgrind介绍</h2>
+<div class="outline-text-2" id="text-org8b630f6">
+<p>
+Valgrind可以运行我们的程序, 随后报告所有我们犯下的错误.
+</p>
+</div>
+
+<div id="outline-container-orgacaa833" class="outline-3">
+<h3 id="orgacaa833">安装Valgrind</h3>
+<div class="outline-text-3" id="text-orgacaa833">
+<p>
+<a href="http://valgrind.org/downloads/current.html">官网</a>下载Valgrind.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 校验 确保下载没有出错
+md5sum valgrind-3.13.0.tar.bz2
+# 解压
+tar -xjvf valgrind-3.13.0.tar.bz2
+# 进入目录并编译安装
+cd valgrind-3.13.0/
+./configure
+make
+sudo make install
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org55528ca" class="outline-3">
+<h3 id="org55528ca">使用Valgrind</h3>
+<div class="outline-text-3" id="text-org55528ca">
+<p>
+使用方法: <code>valgrind program_name</code>. 
+</p>
+
+<p>
+在 <code>ex4.c</code> 中, 我们修改程序, 故意使其崩溃.
+</p>
+<div class="org-src-container">
+<pre class="src src-C">#include &lt;stdio.h&gt;
+int main() {
+    int age = 10;
+    int height;  //  未初始化
+    printf("I am %d years old.\n");  //  缺少参数
+    printf("I am %d inches tall.\n", height);
+    return 0;
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-Shell">make ex4  #  像往常一样构建
+valgrind ./ex4  #  使用valgrind运行程序
+</pre>
+</div>
+
+<p>
+确保 <code>make ex4</code> 构建时, <code>cc</code> 命令带有 <code>-g</code> 选项, 否则Valgrind的输出不会带上行号. 如果没有 <code>-g</code> 选项, 则新建 <code>Makefile</code> 文件, 编辑如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Makefile">CFLAGS=-Wall -g
+all:ex4
+clean:
+    rm -f ex4
+</pre>
+</div>
+
+<p>
+如果用Valgrind运行程序时, 出现类似于 <code>by 0x4052112: (bellow main) (libc-start.c:226)</code> 的语句, 则命令要改成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">valgrind --track-origins=yes ./ex4
+</pre>
+</div>
+
+<p>
+其中一个错误如下图所示:
+<img src="/assets/blog/2018/03/06/笨方法学c--0/0.png" alt="0.png" />
+解释:
+<code>main(ex4.c:7)</code> (为了方便, 直接在ex3.c的基础上修改了源代码): 表示在 <code>ex3.c</code> 文件的第7行中, 使用了未初始化的值, 占用的空间大小为8, 剩下的几行是栈踪迹.
+</p>
+
+<p>
+剩下的错误大同小异, 因为这个未初始化的值还在继续使用.
+</p>
+
+<p>
+最后Valgrind会显示一份摘要, 告诉你程序有多烂, 并且会告诉你内存分配情况以及是否有内存泄露. 如下所示:
+<img src="/assets/blog/2018/03/06/笨方法学c--0/1.png" alt="1.png" />
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-03-06</span>
+        <span title="last modification date" class="post-info">2018-03-07</span>
+        <span title="tags" class="post-info"><a href="/tags/笨方法学c-读书笔记/">笨方法学C-读书笔记</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/03/06/笨方法学c--0";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/笨方法学c--0";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
