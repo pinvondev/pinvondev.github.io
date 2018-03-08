@@ -1,4 +1,4 @@
-#+TITLE:       C++风格字符串-名称空间-引用
+#+TITLE:       C++基础-C++风格字符串-名称空间-引用
 #+AUTHOR:      Pinvon
 #+EMAIL:       pinvon@Inspiron
 #+DATE:        2018-03-07 三
@@ -9,3 +9,55 @@
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
+* 笔记
+
+1. 编译
+#+BEGIN_SRC Shell
+# 编译
+g++ -c xxx.cpp  # 生成xxx.o文件
+
+# 链接
+g++ xxx.o  # 生成a.out文件
+g++ xxx.o -o newname  # 给a.out取一个新名字
+
+# 编译链接
+g++ xxx.cpp -o newname
+#+END_SRC
+
+2. 头文件不加 =.h=.
+
+3. namespace(避免名字冲突). 在C中没有这个概念, 大型项目中, 有时会有函数名冲突的情况, 在C++中引入namespace来解决这个问题. 内部使用可不加名字空间, 外部调用需要加名字空间.
+
+4. C中需要先定义所有变量, 再来使用(但后来的标准也修改了这一项). 而C++则是在使用的时候再定义.
+
+5. 如果认为 =std= 名字空间中有很多用不上的名字, 可以直接在开头将 =using namespace std= 改成 =using std::cout=, =using std::cin=, =using std::endl=, 还可以直接不用 =using ...=, 而是在程序中, 需要用 =cout= 时, 改成 =std::cout=. 有什么好处?
+
+6. namespace例子:
+#+BEGIN_SRC C++
+#include <iostream>
+#include <string>
+using namespace std;
+namespace nameA{
+  string name = "Pinvon";
+  int age = 10;
+}
+namespace nameB{
+  char name[20] = "pwlin";
+}
+using namespace nameB;
+char name[20] = "global";
+
+int main() {
+  // cout << "my name is " << name << endl;  //  编译出错, 因为未指明是哪个namespace的name
+  // cout << "age is " << age << endl;  //  编译出错, 即使名字没冲突, 也要指明是哪个域的, 应改成 nameA::age
+  cout << "my name is " << nameA::name << endl;  // 正确; Pinvon
+  cout << "his name is " << name << endl;  // 正确; pwlin
+  string name = "test";
+  cout << name << endl;  // 正确, 局部优先, 会输出test
+  // 注释pwlin那行后添加以下语句
+  cout << ::name << endl;  // 正确, ::表示全局范围, 会输出global
+  return 0;
+}
+#+END_SRC
+
+7. 记录-1:27:00
