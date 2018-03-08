@@ -1,0 +1,53 @@
+#+TITLE:       GTD
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-08 四
+#+URI:         /blog/%y/%m/%d/gtd
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Emacs
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 待办事项
+
+** 使用TODO状态
+
+如果标题以 =TODO= 开关时, 就表示它是一个TODO项.
+
+| S-RIGHT/LEFT | 在 =TODO= 状态, =DONE= 状态, =标题= 状态之间切换 |
+|--------------+--------------------------------------------------|
+| S-M-RET      | 在当前项下插入一个新的TODO项                     |
+
+** 多状态工作流程
+
+** 进度日志
+
+TODO项标记为 =DONE= 状态时, 插入截止时间.
+#+BEGIN_SRC Elisp
+(setq org-log-done 'time)
+#+END_SRC
+
+TODO项标记为 =DONE= 状态时, 插入截止时间和备注.
+#+BEGIN_SRC Elisp
+(setq org-log-done 'note)
+#+END_SRC
+
+** 优先级
+
+| S-UP   | 增加当前 =TODO= 项的优先级 |
+|--------+----------------------------|
+| S-DOWN | 减少当前 =TODO= 项的优先级 |
+
+** 任务细分
+
+在标题的任务地方插入 =[/]= 或者 =[%]=, 当每个子任务的状态变化时, 标记状态也会随之更新.
+
+** 复选框
+
+当纯文本中的项以"[ ]"开头时, 就会变成一个复选框. 它适合用来做细分任务的再细分.
+
+| C-c C-c | 更改复选框状态                     |
+|---------+------------------------------------|
+| M-S-RET | 在复选框下面增加一个带有复选框的项 |
+
