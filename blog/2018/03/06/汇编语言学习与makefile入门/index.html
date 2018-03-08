@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>1 从计算机结构到汇编程序入门 - Pinvon&#39;s Blog</title>
+    <title>汇编语言学习与Makefile入门 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,52 +30,99 @@
 
 <div>
 <div class="post">
-<h1>1 从计算机结构到汇编程序入门</h1>
+<h1>汇编语言学习与Makefile入门</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb81abb3">CPU</a></li>
-<li><a href="#org566d38f">术语介绍</a></li>
+<li><a href="#org59f20b1">汇编语言</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb81abb3" class="outline-2">
-<h2 id="orgb81abb3">CPU</h2>
-<div class="outline-text-2" id="text-orgb81abb3">
+<div id="outline-container-org59f20b1" class="outline-2">
+<h2 id="org59f20b1">汇编语言</h2>
+<div class="outline-text-2" id="text-org59f20b1">
+<pre class="example">
+; hello-os 分号是注释
+; TAB=4 
+
+        ORG		0x7c00			; 指明程序的装载地址
+
+; 以下的描述用于标准FAT12格式的软盘
+
+        JMP		entry
+        DB		0x90
+        DB		"HELLOIPL"		; 启动区的名称可以是任意的字符串(8字节)
+        DW		512				; 每个扇区（sector）的大小（必须为512字节）
+        DB		1				; 簇（cluster）的大小（必须为1个扇区）
+        DW		1				; FAT的起始位置（一般从第一个扇区开始）
+        DB		2				; FAT的个数（必须为2）
+        DW		224				; 根目录的大小（一半设成224项）
+        DW		2880			; 该磁盘的大小（必须是2880扇区）
+        DB		0xf0			; 磁盘的种类（必须是0xf0）
+        DW		9				; FAT的长度（必须是9扇区）
+        DW		18				; 1个磁道（track）有几个扇区（必须是18）
+        DW		2				; 磁头数（必须是2）
+        DD		0				; 不是用分区，必须是0
+        DD		2880			; 重写一次磁盘大小
+        DB		0,0,0x29		; 作者也不知道什么意思
+        DD		0xffffffff		; 可能是卷的序列号
+        DB		"HELLO-OS   "	; 磁盘名称（11字节）
+        DB		"FAT12   "		; 磁盘格式名称（8字节）
+        RESB	18				; 先空出18字节
+
+; 核心程序
+
+entry:
+        MOV		AX,0			; 初始化程序
+        MOV		SS,AX
+        MOV		SP,0x7c00
+        MOV		DS,AX
+        MOV		ES,AX
+
+        MOV		SI,msg
+putloop:
+        MOV		AL,[SI]
+        ADD		SI,1			; 给SL加1
+        CMP		AL,0
+        JE		fin
+        MOV		AH,0x0e			; 显示一个文字
+        MOV		BX,15			; 指定字符颜色
+        INT		0x10			; 调用显卡BIOS
+        JMP		putloop
+fin:
+        HLT						; 让CPU停止，等待指令
+        JMP		fin				; 无限循环
+
+msg:
+        DB		0x0a, 0x0a		; 换行2次
+        DB		"hello!world!"
+        DB		0x0a			; 换行
+        DB		0
+
+        RESB	0x7dfe-$		; 0x7dfe到0x00来填补命令
+
+        DB		0x55, 0xaa
+
+; 以下是引导扇区以外的部分记述
+
+        DB		0xf0, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00
+        RESB	4600
+        DB		0xf0, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00
+        RESB	1469432
+</pre>
+
 <p>
-CPU是个集成电路板, 仅执行电信号给它的指令, 输出相应的电信号. 电信号只有开、关两种状态. CPU只会机械地进行电信号的交换. 那么, CPU是如何通过两种状态来做众多的事情的呢?
+ORG指令: 告诉系统, 在开始执行的时候, 把这些机器语言指令装载到内存中的哪个地址. 指令名称来源于英文origin.
 </p>
 
 <p>
-例子: 如果用1来表示电信号开状态, 0表示电信号关状态, 则可以用 \(32 \times 16 = 512\) 个开和关的集合, 来显示一个人的头像. 如下所示:
-<img src="/assets/blog/2018/03/06/从计算机结构到汇编程序入门/0.png" alt="0.png" />
+entry: 声明标签, 用于指定JMP指令的跳转目的地.
 </p>
 
 <p>
-再如, BOOK这个单词在电脑内部保存时, 是使用 <code>0100 1011 0100 1111 0100 1111 0100 0010</code> 这32个电信号的.
-</p>
-
-<p>
-一开始, 人们发明CPU只是为了处理电信号, 后来发现电信号可以用数字0和1对应, 于是可以将二进制数转换为电信号, 同时电信号也能转换为二进制数, 由于二进制数与十进制数可以转换, 所以发明了普通的计算机. 
-</p>
-
-<p>
-后来, 人们发现只要给每个文字都编上号(文字编码), 就可以建立文字与数字的对应关系, 从而文字也可以与电信号互相转换. 依此类推, 人们又找到了将图像音乐等转换成电信号的方法, 使CPU的应用范围越来越广. 具体, 可以看计算机组成原理中的外围设备的介绍.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org566d38f" class="outline-2">
-<h2 id="org566d38f">术语介绍</h2>
-<div class="outline-text-2" id="text-org566d38f">
-<p>
-启动区: 软盘的第一个扇区. 计算机读写软盘的时候, 不是一字节一字节读写的, 而是以512字节为一个单位进行读写的, 这512B就称为一个扇区. 计算机首先从最初的一个扇区开始读软盘, 然后检查这个扇区最后2个字节的内容, 如果最后2个字节不是55AA, 则计算机会认为这张盘上没有所需的启动程序, 就会报一个不能启动的错误.
-</p>
-
-<p>
-IPL(initial program loader): 启动程序加载器. 由于第一个扇区只有512B, 几乎所有OS都不会这么小, 所以他们把加载OS的程序放在启动区里, OS本身放在后面. 所以, 有时也把启动区称为IPL.
+MOV: 赋值. 
 </p>
 </div>
 </div>
@@ -85,7 +132,7 @@ IPL(initial program loader): 启动程序加载器. 由于第一个扇区只有5
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-03-06</span>
-        <span title="last modification date" class="post-info">2018-03-06</span>
+        <span title="last modification date" class="post-info">2018-03-07</span>
         <span title="tags" class="post-info"><a href="/tags/30天自制操作系统-读书笔记/">30天自制操作系统-读书笔记</a></span>
         <span title="author" class="post-info">pinvon</span>
       </div>
@@ -94,8 +141,8 @@ IPL(initial program loader): 启动程序加载器. 由于第一个扇区只有5
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/06/从计算机结构到汇编程序入门";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/从计算机结构到汇编程序入门";
+          var disqus_identifier = "/blog/2018/03/06/汇编语言学习与makefile入门";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/汇编语言学习与makefile入门";
           var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>C++风格字符串-名称空间-引用 - Pinvon&#39;s Blog</title>
+    <title>C++基础-C++风格字符串-名称空间-引用 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,8 +30,79 @@
 
 <div>
 <div class="post">
-<h1>C++风格字符串-名称空间-引用</h1>
+<h1>C++基础-C++风格字符串-名称空间-引用</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge8f34e7">笔记</a></li>
+</ul>
+</div>
+</div>
 
+<div id="outline-container-orge8f34e7" class="outline-2">
+<h2 id="orge8f34e7">笔记</h2>
+<div class="outline-text-2" id="text-orge8f34e7">
+<ol class="org-ol">
+<li>编译</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell"># 编译
+g++ -c xxx.cpp  # 生成xxx.o文件
+
+# 链接
+g++ xxx.o  # 生成a.out文件
+g++ xxx.o -o newname  # 给a.out取一个新名字
+
+# 编译链接
+g++ xxx.cpp -o newname
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>头文件不加 <code>.h</code>.</li>
+
+<li>namespace(避免名字冲突). 在C中没有这个概念, 大型项目中, 有时会有函数名冲突的情况, 在C++中引入namespace来解决这个问题. 内部使用可不加名字空间, 外部调用需要加名字空间.</li>
+
+<li>C中需要先定义所有变量, 再来使用(但后来的标准也修改了这一项). 而C++则是在使用的时候再定义.</li>
+
+<li>如果认为 <code>std</code> 名字空间中有很多用不上的名字, 可以直接在开头将 <code>using namespace std</code> 改成 <code>using std::cout</code>, <code>using std::cin</code>, <code>using std::endl</code>, 还可以直接不用 <code>using ...</code>, 而是在程序中, 需要用 <code>cout</code> 时, 改成 <code>std::cout</code>. 有什么好处?</li>
+
+<li>namespace例子:</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-C++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+namespace nameA{
+  string name = "Pinvon";
+  int age = 10;
+}
+namespace nameB{
+  char name[20] = "pwlin";
+}
+using namespace nameB;
+char name[20] = "global";
+
+int main() {
+  // cout &lt;&lt; "my name is " &lt;&lt; name &lt;&lt; endl;  //  编译出错, 因为未指明是哪个namespace的name
+  // cout &lt;&lt; "age is " &lt;&lt; age &lt;&lt; endl;  //  编译出错, 即使名字没冲突, 也要指明是哪个域的, 应改成 nameA::age
+  cout &lt;&lt; "my name is " &lt;&lt; nameA::name &lt;&lt; endl;  // 正确; Pinvon
+  cout &lt;&lt; "his name is " &lt;&lt; name &lt;&lt; endl;  // 正确; pwlin
+  string name = "test";
+  cout &lt;&lt; name &lt;&lt; endl;  // 正确, 局部优先, 会输出test
+  // 注释pwlin那行后添加以下语句
+  cout &lt;&lt; ::name &lt;&lt; endl;  // 正确, ::表示全局范围, 会输出global
+  return 0;
+}
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>记录-1:27:00</li>
+</ol>
+</div>
+</div>
 
 </div>
 </div>
@@ -49,7 +120,7 @@
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/03/07/c++风格字符串-名称空间-引用";
           var disqus_url = "http://pinvondev.github.io/blog/2018/03/07/c++风格字符串-名称空间-引用";
-          var disqus_shortname = 'pinvon';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
