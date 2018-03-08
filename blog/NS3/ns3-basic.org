@@ -47,10 +47,91 @@ CsmaChannel信道模拟了一个可以用于实现载波侦听多路访问通信
 
 * 优化技术
 
+在模拟过程中, 数据跟踪与采集的方法有很多, 大体上可以分为两类: 直接将执行过程显示在命令行中(Logging系统); 将采集到的数据直接存放在一个文件中, 以便后期的处理与分析(Tracing系统). 后者更为常用.
+
 ** Logging系统
+
+该系统用来向用户及时反馈命令的执行情况或者系统的运行状况. Logging系统包括7个等级:
+- LOG_ERROR: 错误, 等价于LOG_LEVEL_ERROR, 下同
+- LOG_WARN: 警告
+- LOG_DEBUG: 调试
+- LOG_INFO: 程序相关信息
+- LOG_FUNCTION: 函数调用信息
+- LOG_LOGIC: 对于整体逻辑的描述
+- LOG_ALL: 包含以上所有
+
+#+BEGIN_SRC C++
+LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
+LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
+#+END_SRC
+=LogComponentEnable()= 函数的作用是使记录模块有用, 第一个参数是类名称, 第二个参数为显示等级, 等级越高, 得到的信息越详细, 如果把等级改成 =LOG_LEVEL_FUNCTION=, 则除了显示 =LOG_LEVEL_INFO= 会显示的信息外, 还会显示函数调用等信息. 但不是等级越高就越好, 因为等级越高, 信息越多, 处理起来越复杂, 较难找到所需信息.
+
+*** 通过环境变量修改记录系统等级
+
+如果每次调整Logging等级都要修改代码则比较繁琐, ns-3可以通过修改环境变量的方法来修改记录系统等级. 如:
+#+BEGIN_SRC Shell
+export 'NS_LOG=UdpEchoClientApplication=level_all:
+							   =UdpEchoServerApplication=level_all'
+#+END_SRC
+注: 建议使用超级权限修改环境变量.
+
+*** 添加附加前缀
+
+**** prefix_func
+
+可以为每一条信息显示其产生函数:
+#+BEGIN_SRC Shell
+export 'NS_LOG=UdpEchoClientApplication=level_all|prefix_func:
+							   =UdpEchoServerApplication=level_all|prefix_func'
+#+END_SRC
+
+**** prefix_time
+
+可以为每一条信息显示其产生时间:
+#+BEGIN_SRC Shell
+export 'NS_LOG=UdpEchoClientApplication=level_all|prefix_time:
+							   =UdpEchoServerApplication=level_all|prefix_time'
+#+END_SRC
+
+*** 自定义Logging代码
+
+在 =first.cc= 文件中, 有一句代码如下:
+#+BEGIN_SRC C++
+NS_LOG_COMPONENT_DEFINE("FirstScriptExample")
+#+END_SRC
+作用是向ns-3系统注册一个名为 =FirstScriptExample= 的记录组件, 只有定义了记录组件, 都能在仿真脚本中使用Logging系统来自定义输出语句.
+
+然后如果要使用自定义Logging代码, 还要先激活它:
+#+BEGIN_SRC C++
+LogComponentEnable("FirstScriptExample", LOG_LEVEL_INFO);
+// 或
+export NS_LOG=FirstScriptExample=info
+#+END_SRC
+
+最后都能使用:
+#+BEGIN_SRC C++
+NS_LOG_INFO("Creating Topology");
+#+END_SRC
 
 ** 命令行参数
 
 ** Tracing系统
+
+*** ASCII Tracing
+
+ASCII Tracing的意思就是以ASCII格式的信息输出.
+
+在 =first.cc= 文件的 =Simulator::Run()= 前添加如下代码:
+#+BEGIN_SRC C++
+AsciiTraceHelper ascii;
+pointTOPoint.EnableAsciiAll(ascii.CreateFileStream("myfirst.tr"));
+#+END_SRC
+=EnableAsciiAll()= 函数的作用是通知helper将所有的关于point-to-point设备的仿真信息都打印成ASCII Tracing格式.
+
+*** PCAP Tracing
+
+#+BEGIN_SRC C++
+pointToPoint.EnablePcapAll("myfirst");
+#+END_SRC
 
 * 编写脚本
