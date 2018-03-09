@@ -11,7 +11,7 @@
 
 * C++基础 C++风格字符串 名称空间 引用
 
-1.  编译
+** 编译
 #+BEGIN_SRC Shell
 # 编译
 g++ -c xxx.cpp  # 生成xxx.o文件
@@ -24,15 +24,17 @@ g++ xxx.o -o newname  # 给a.out取一个新名字
 g++ xxx.cpp -o newname
 #+END_SRC
 
-2. 头文件不加 =.h=.
+** 头文件
+C++头文件不加 =.h=.
 
-3. namespace(避免名字冲突). 在C中没有这个概念, 大型项目中, 有时会有函数名冲突的情况, 在C++中引入namespace来解决这个问题. 内部使用可不加名字空间, 外部调用需要加名字空间.
+** namespace(避免名字冲突)
+在C中没有这个概念, 大型项目中, 有时会有函数名冲突的情况, 在C++中引入namespace来解决这个问题. 内部使用可不加名字空间, 外部调用需要加名字空间.
 
-4. C中需要先定义所有变量, 再来使用(但后来的标准也修改了这一项). 而C++则是在使用的时候再定义.
+C中需要先定义所有变量, 再来使用(但后来的标准也修改了这一项). 而C++则是在使用的时候再定义.
 
-5. 如果认为 =std= 名字空间中有很多用不上的名字, 可以直接在开头将 =using namespace std= 改成 =using std::cout=, =using std::cin=, =using std::endl=, 还可以直接不用 =using ...=, 而是在程序中, 需要用 =cout= 时, 改成 =std::cout=. 有什么好处?
+如果认为 =std= 名字空间中有很多用不上的名字, 可以直接在开头将 =using namespace std= 改成 =using std::cout=, =using std::cin=, =using std::endl=, 还可以直接不用 =using ...=, 而是在程序中, 需要用 =cout= 时, 改成 =std::cout=. 有什么好处?
 
-6. namespace例子:
+namespace例子:
 #+BEGIN_SRC C++
 #include <iostream>
 #include <string>
@@ -59,7 +61,7 @@ int main() {
 }
 #+END_SRC
 
-7. string s1与char s2[100]的对比.
+** string s1与char s2[100]的对比.
 - s2称为C风格字符串, 以'\0'结束; s2称为C++风格字符串;
 - s1保存的字符串没有限制(实际上为1G); s2保存的字符串有长度限制;
 - 初始化后, 不能再给s2赋值, 即s2=xxx是不对的, 要用strcpy(); 
@@ -71,7 +73,8 @@ int main() {
 - C风格字符串可自动转成C++字符串, 如s1="xxx"; 或if(s1>=s2);
 - C++风格字符串转成C风格字符串: s1.c_str();
 
-8. 严格类型检查. 如enum类型, 其成员在C中当成是整型, 而C++则不是. 
+** 严格类型检查 
+如enum类型, 其成员在C中当成是整型, 而C++则不是.
 #+BEGIN_SRC C++
 #include <iostream>
 enum Course{UNIX, C, CPP, UC, VC};
@@ -90,7 +93,7 @@ int main() {
 
 只要记住一点, C++中类型严格, 是什么类型就是什么类型(可变参数例外).
 
-9. 在C++中, 自定义的类型, 在使用时不需要再声明该类型的关键字, 而C则需要. 如:
+在C++中, 自定义的类型, 在使用时不需要再声明该类型的关键字, 而C则需要. 如:
 #+BEGIN_SRC C++
 enum Course{UNIX, C, CPP, UC, VC};
 int main(){
@@ -99,9 +102,10 @@ int main(){
 }
 #+END_SRC
 
-10. C里没有bool类型.
+** bool
+C里没有bool类型.
 
-11. 引用(给变量起别名).
+** 引用(给变量起别名)
 - 在C里, 参数的传递都是使用复制的方式.
 - 引用必须初始化. 用谁初始化, 它就是谁的别名. double a = 123.45; double& b = a; (a和b的地址相同).
 - 不加const的引用只能用变量来初始化.
@@ -111,7 +115,7 @@ const double& b = 1.1;  //  OK
 const double& c = d+5;  //  引用一个临时值
 #+END_SRC
 
-12. 查看进程的内存使用情况
+** 查看进程的内存使用情况
 #+BEGIN_SRC Shell
 ps  # 找到想看的进程id
 cd /proc/进程id  # 可以
