@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>Ubuntu+VPN - Pinvon&#39;s Blog</title>
+    <title>线程安全的对象生命期管理 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,62 +30,118 @@
 
 <div>
 <div class="post">
-<h1>Ubuntu+VPN</h1>
+<h1>线程安全的对象生命期管理</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf3333b4">SSR</a></li>
+<li><a href="#org87eca0b">背景知识</a>
+<ul>
+<li><a href="#orgd7579be">C++多线程编程</a>
+<ul>
+<li><a href="#org04eec64">例子</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4ac0ab7">当析构函数遇到多线程</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf3333b4" class="outline-2">
-<h2 id="orgf3333b4">SSR</h2>
-<div class="outline-text-2" id="text-orgf3333b4">
-<p>
-下载ssr: <a href="https://github.com/shadowsocksr-backup/shadowsocksr">https://github.com/shadowsocksr-backup/shadowsocksr</a>
-</p>
-
-<p>
-进入配置文件, 路径为: <code>./shadowsocks/json/config.json</code>
-</p>
-
-<p>
-编辑配置文件, 格式大致为: 
-</p>
+<div id="outline-container-org87eca0b" class="outline-2">
+<h2 id="org87eca0b">背景知识</h2>
+<div class="outline-text-2" id="text-org87eca0b">
+</div>
+<div id="outline-container-orgd7579be" class="outline-3">
+<h3 id="orgd7579be">C++多线程编程</h3>
+<div class="outline-text-3" id="text-orgd7579be">
 <div class="org-src-container">
-<pre class="src src-Shell">{
-    "server": "your.ip.address",
-    "server_port": 1234,
-    "local_address": "127.0.0.1",
-    "local_port": 1080,
-    "password": "password",
-    "timeout": 600,
-    "udp_timeout": 60,
-    "method":  "chacha20",
-    "protocol": "auth_sha1_v4",
-    "protocol_param": "",
-    "obfs": "http_simple",
-    "obfs_param": "cloudflare.com",
-    "dns_ipv6": false,
-    "connect_verbose_info": 0,
-    "redirect": "",
-    "fast_open": false
+<pre class="src src-C++">#include &lt;pthread.h&gt;
+// 创建线程
+pthread_create(thread, attr, start_routine, arg);
+// 终止线程
+pthread_exit(status);
+</pre>
+</div>
+<p>
+<code>pthread_create()</code> 的参数: thread为线程指针; attr一般为NULL; start_routine为函数起始地址; arg一般为NULL.
+</p>
+</div>
+
+<div id="outline-container-org04eec64" class="outline-4">
+<h4 id="org04eec64">例子</h4>
+<div class="outline-text-4" id="text-org04eec64">
+<div class="org-src-container">
+<pre class="src src-C++">/* Copyright 2018-3-8 Pinvon*/
+#include &lt;iostream&gt;
+#include &lt;pthread.h&gt;
+using namespace std;
+#define NUM_THREADS 5
+
+void* say_hello(void *args) {
+    cout &lt;&lt; "Hello World" &lt;&lt; endl;
+    return 0;
+}
+
+int main() {
+    pthread_t tids[NUM_THREADS];
+    for (int i = 0; i &lt; NUM_THREADS; ++i) {
+        int ret = pthread_create(&amp;tids[i], NULL, say_hello, NULL);
+        if (ret != 0) {
+            cout &lt;&lt; "pthread_create error: error_code=" &lt;&lt; ret &lt;&lt; endl;
+        }
+    }
+    pthread_exit(NULL);
 }
 </pre>
 </div>
 
 <p>
-开启与关闭, 使用如下脚本, 放在用户目录, 每次开机直接启动:
+编译链接:
 </p>
 <div class="org-src-container">
-<pre class="src src-Shell">#!/bin/bash
-cd /usr/local/opt/ssr/shadowsocksr/shadowsocks/json/
-sudo python ../local.py -c config.json -d start
-# sudo python ../local.py -c config.json -d stop
+<pre class="src src-Shell">g++ myThread.cpp -lpthread
+./a.out
 </pre>
 </div>
+
+<p>
+向线程传递参数:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">struct thread_arg{
+    int thread_id;
+    char *message;
+};
+void *printHello(void *threadarg){
+    struct thread_arg *my_arg;
+    my_arg = (struct thread_arg *)threadarg;
+    cout &lt;&lt; "Thread ID: " &lt;&lt; my_arg-&gt;thread_id;
+    cout &lt;&lt; " Message: " &lt;&lt; my_arg-&gt;message &lt;&lt; endl;
+}
+...
+pthread_t threads[5];
+struct thread_arg ta[5];
+pthread_create(&amp;threads[1], NULL, printHello, (void *)&amp;ta[i]);
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4ac0ab7" class="outline-2">
+<h2 id="org4ac0ab7">当析构函数遇到多线程</h2>
+<div class="outline-text-2" id="text-org4ac0ab7">
+<p>
+由于C++要求程序员自己管理对象的生命周期, 所以当一个对象能被多个线程同时看到时, 那么对象的销毁时机就会变得模糊不清, 可能出现多种竞态条件:
+</p>
+<ul class="org-ul">
+<li>当要析构一个对象时, 如何得知有没有其他线程正在使用该对象?</li>
+<li>在执行成员函数时, 如何保证对象不会在另一线程中被析构?</li>
+<li>在调用对象的某个成员函数时, 该对象会不会已被析构了, 或者正在被析构?</li>
+</ul>
 </div>
 </div>
 
@@ -93,9 +149,9 @@ sudo python ../local.py -c config.json -d start
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-05</span>
-        <span title="last modification date" class="post-info">2018-03-05</span>
-        <span title="tags" class="post-info"><a href="/tags/vpn/">VPN</a></span>
+        <span title="post date" class="post-info">2018-03-08</span>
+        <span title="last modification date" class="post-info">2018-03-09</span>
+        <span title="tags" class="post-info"><a href="/tags/linux多线程服务端编程-读书笔记/">Linux多线程服务端编程-读书笔记</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -103,8 +159,8 @@ sudo python ../local.py -c config.json -d start
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/05/ubuntu+vpn";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/05/ubuntu+vpn";
+          var disqus_identifier = "/blog/2018/03/08/线程安全的对象生命期管理";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/08/线程安全的对象生命期管理";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
