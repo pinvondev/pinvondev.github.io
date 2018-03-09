@@ -1,0 +1,48 @@
+#+TITLE:       编译Hadoop的Elipse-Plugin
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@ubuntu
+#+DATE:        2018-03-08 四
+#+URI:         /blog/%y/%m/%d/编译hadoop的elipse-plugin
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Hadoop
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 下载
+
+https://github.com/winghc/hadoop2x-eclipse-plugin
+
+下载文件。
+
+* 配置
+
+进入 =ivy/libraries.properties= 进行编辑。修改相应的版本信息。
+
+=src/contrib/eclipse-plugin/build.xml= 里的内容，看情况要不要去修改。如果有需要的jar没有写进来，则自己添加。Hadoop2.7.1的不需要修改该文件。
+
+* 编译
+
+#+BEGIN_SRC Shell
+ant jar -Dversion=2.7.1 -Dhadoop.version=2.7.1 -Declipse.home=/usr/local/eclipse/ -Dhadoop.home=/usr/local/hadoop/  -debug
+#+END_SRC
+
+目录根据自己的情况进行相应的修改。
+
+如果编译报错，根据报错信息，到 =ivy/libraries.properties= 里面去修改版本信息。正确的版本信息位于：/usr/local/hadoop/share/commons/lib/
+
+* 安装
+
+将编译好的插件放在 eclipse/plugin/目录下。
+
+打开 eclipse，Window-Preferences-Hadoop Map/Reduce-添加Hadoop安装目录。
+
+右击Map/Reduce Locations，选择New Hadoop Location。
+
+Map/Reduce Master中，填mapred-site.xml中的ip和port。
+
+DFS Master中，填core-site.xml中fs.default.name里面的信息。
+
+Use M/R Master Host如果选了，就默认和M/R Master中一样，表示Namenode和Datanode都是一样的。
+
+User name：Hadoop的用户名
