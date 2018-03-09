@@ -1,0 +1,79 @@
+#+TITLE:       线程安全的对象生命期管理
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-08 四
+#+URI:         /blog/%y/%m/%d/线程安全的对象生命期管理
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Linux多线程服务端编程-读书笔记
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 背景知识
+
+** C++多线程编程
+
+#+BEGIN_SRC C++
+#include <pthread.h>
+// 创建线程
+pthread_create(thread, attr, start_routine, arg);
+// 终止线程
+pthread_exit(status);
+#+END_SRC
+=pthread_create()= 的参数: thread为线程指针; attr一般为NULL; start_routine为函数起始地址; arg一般为NULL.
+
+*** 例子
+#+BEGIN_SRC C++
+/* Copyright 2018-3-8 Pinvon*/
+#include <iostream>
+#include <pthread.h>
+using namespace std;
+#define NUM_THREADS 5
+
+void* say_hello(void *args) {
+    cout << "Hello World" << endl;
+    return 0;
+}
+
+int main() {
+    pthread_t tids[NUM_THREADS];
+    for (int i = 0; i < NUM_THREADS; ++i) {
+        int ret = pthread_create(&tids[i], NULL, say_hello, NULL);
+        if (ret != 0) {
+            cout << "pthread_create error: error_code=" << ret << endl;
+        }
+    }
+    pthread_exit(NULL);
+}
+#+END_SRC
+
+编译链接:
+#+BEGIN_SRC Shell
+g++ myThread.cpp -lpthread
+./a.out
+#+END_SRC
+
+向线程传递参数:
+#+BEGIN_SRC C++
+struct thread_arg{
+	int thread_id;
+	char *message;
+};
+void *printHello(void *threadarg){
+	struct thread_arg *my_arg;
+	my_arg = (struct thread_arg *)threadarg;
+	cout << "Thread ID: " << my_arg->thread_id;
+	cout << " Message: " << my_arg->message << endl;
+}
+...
+pthread_t threads[5];
+struct thread_arg ta[5];
+pthread_create(&threads[1], NULL, printHello, (void *)&ta[i]);
+#+END_SRC
+
+* 当析构函数遇到多线程
+
+由于C++要求程序员自己管理对象的生命周期, 所以当一个对象能被多个线程同时看到时, 那么对象的销毁时机就会变得模糊不清, 可能出现多种竞态条件:
+- 当要析构一个对象时, 如何得知有没有其他线程正在使用该对象?
+- 在执行成员函数时, 如何保证对象不会在另一线程中被析构?
+- 在调用对象的某个成员函数时, 该对象会不会已被析构了, 或者正在被析构?
