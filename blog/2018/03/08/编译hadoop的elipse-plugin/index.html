@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>1 从计算机结构到汇编程序入门 - Pinvon&#39;s Blog</title>
+    <title>编译Hadoop的Elipse-Plugin - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,52 +30,92 @@
 
 <div>
 <div class="post">
-<h1>1 从计算机结构到汇编程序入门</h1>
+<h1>编译Hadoop的Elipse-Plugin</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2cbdb74">CPU</a></li>
-<li><a href="#org7aa1794">术语介绍</a></li>
+<li><a href="#orgf06ba7d">下载</a></li>
+<li><a href="#org30841ef">配置</a></li>
+<li><a href="#org74f81c0">编译</a></li>
+<li><a href="#orge30e9ae">安装</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2cbdb74" class="outline-2">
-<h2 id="org2cbdb74">CPU</h2>
-<div class="outline-text-2" id="text-org2cbdb74">
+<div id="outline-container-orgf06ba7d" class="outline-2">
+<h2 id="orgf06ba7d">下载</h2>
+<div class="outline-text-2" id="text-orgf06ba7d">
 <p>
-CPU是个集成电路板, 仅执行电信号给它的指令, 输出相应的电信号. 电信号只有开、关两种状态. CPU只会机械地进行电信号的交换. 那么, CPU是如何通过两种状态来做众多的事情的呢?
+<a href="https://github.com/winghc/hadoop2x-eclipse-plugin">https://github.com/winghc/hadoop2x-eclipse-plugin</a>
 </p>
 
 <p>
-例子: 如果用1来表示电信号开状态, 0表示电信号关状态, 则可以用 \(32 \times 16 = 512\) 个开和关的集合, 来显示一个人的头像. 如下所示:
-<img src="/assets/blog/2018/03/06/从计算机结构到汇编程序入门/0.png" alt="0.png" />
-</p>
-
-<p>
-再如, BOOK这个单词在电脑内部保存时, 是使用 <code>0100 1011 0100 1111 0100 1111 0100 0010</code> 这32个电信号的.
-</p>
-
-<p>
-一开始, 人们发明CPU只是为了处理电信号, 后来发现电信号可以用数字0和1对应, 于是可以将二进制数转换为电信号, 同时电信号也能转换为二进制数, 由于二进制数与十进制数可以转换, 所以发明了普通的计算机. 
-</p>
-
-<p>
-后来, 人们发现只要给每个文字都编上号(文字编码), 就可以建立文字与数字的对应关系, 从而文字也可以与电信号互相转换. 依此类推, 人们又找到了将图像音乐等转换成电信号的方法, 使CPU的应用范围越来越广. 具体, 可以看计算机组成原理中的外围设备的介绍.
+下载文件。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org7aa1794" class="outline-2">
-<h2 id="org7aa1794">术语介绍</h2>
-<div class="outline-text-2" id="text-org7aa1794">
+<div id="outline-container-org30841ef" class="outline-2">
+<h2 id="org30841ef">配置</h2>
+<div class="outline-text-2" id="text-org30841ef">
 <p>
-启动区: 软盘的第一个扇区. 计算机读写软盘的时候, 不是一字节一字节读写的, 而是以512字节为一个单位进行读写的, 这512B就称为一个扇区. 计算机首先从最初的一个扇区开始读软盘, 然后检查这个扇区最后2个字节的内容, 如果最后2个字节不是55AA, 则计算机会认为这张盘上没有所需的启动程序, 就会报一个不能启动的错误.
+进入 <code>ivy/libraries.properties</code> 进行编辑。修改相应的版本信息。
 </p>
 
 <p>
-IPL(initial program loader): 启动程序加载器. 由于第一个扇区只有512B, 几乎所有OS都不会这么小, 所以他们把加载OS的程序放在启动区里, OS本身放在后面. 所以, 有时也把启动区称为IPL.
+<code>src/contrib/eclipse-plugin/build.xml</code> 里的内容，看情况要不要去修改。如果有需要的jar没有写进来，则自己添加。Hadoop2.7.1的不需要修改该文件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org74f81c0" class="outline-2">
+<h2 id="org74f81c0">编译</h2>
+<div class="outline-text-2" id="text-org74f81c0">
+<div class="org-src-container">
+<pre class="src src-Shell">ant jar -Dversion=2.7.1 -Dhadoop.version=2.7.1 -Declipse.home=/usr/local/eclipse/ -Dhadoop.home=/usr/local/hadoop/  -debug
+</pre>
+</div>
+
+<p>
+目录根据自己的情况进行相应的修改。
+</p>
+
+<p>
+如果编译报错，根据报错信息，到 <code>ivy/libraries.properties</code> 里面去修改版本信息。正确的版本信息位于：/usr/local/hadoop/share/commons/lib/
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge30e9ae" class="outline-2">
+<h2 id="orge30e9ae">安装</h2>
+<div class="outline-text-2" id="text-orge30e9ae">
+<p>
+将编译好的插件放在 eclipse/plugin/目录下。
+</p>
+
+<p>
+打开 eclipse，Window-Preferences-Hadoop Map/Reduce-添加Hadoop安装目录。
+</p>
+
+<p>
+右击Map/Reduce Locations，选择New Hadoop Location。
+</p>
+
+<p>
+Map/Reduce Master中，填mapred-site.xml中的ip和port。
+</p>
+
+<p>
+DFS Master中，填core-site.xml中fs.default.name里面的信息。
+</p>
+
+<p>
+Use M/R Master Host如果选了，就默认和M/R Master中一样，表示Namenode和Datanode都是一样的。
+</p>
+
+<p>
+User name：Hadoop的用户名
 </p>
 </div>
 </div>
@@ -84,9 +124,9 @@ IPL(initial program loader): 启动程序加载器. 由于第一个扇区只有5
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-06</span>
-        <span title="last modification date" class="post-info">2018-03-06</span>
-        <span title="tags" class="post-info"><a href="/tags/30天自制操作系统-读书笔记/">30天自制操作系统-读书笔记</a></span>
+        <span title="post date" class="post-info">2018-03-08</span>
+        <span title="last modification date" class="post-info">2018-03-08</span>
+        <span title="tags" class="post-info"><a href="/tags/hadoop/">Hadoop</a></span>
         <span title="author" class="post-info">pinvon</span>
       </div>
       <section>
@@ -94,8 +134,8 @@ IPL(initial program loader): 启动程序加载器. 由于第一个扇区只有5
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/06/从计算机结构到汇编程序入门";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/从计算机结构到汇编程序入门";
+          var disqus_identifier = "/blog/2018/03/08/编译hadoop的elipse-plugin";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/08/编译hadoop的elipse-plugin";
           var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
