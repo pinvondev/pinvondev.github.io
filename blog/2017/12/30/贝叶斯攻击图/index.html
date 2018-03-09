@@ -35,27 +35,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2e1b640">攻击行为预测</a>
+<li><a href="#orgcb41b93">攻击行为预测</a>
 <ul>
-<li><a href="#org27792d9">攻击图</a>
+<li><a href="#org15f6179">攻击图</a>
 <ul>
-<li><a href="#orgaffb450">攻击图生成</a></li>
-<li><a href="#orga7d651b">攻击图分析方法</a></li>
+<li><a href="#orgf54f8f7">攻击图生成</a></li>
+<li><a href="#org7459ddd">攻击图分析方法</a></li>
 </ul>
 </li>
-<li><a href="#org13b8133">攻击图转贝叶斯网</a>
+<li><a href="#orge6445a4">攻击图转贝叶斯网</a>
 <ul>
-<li><a href="#org6c44d4e">贝叶斯网与网络安全态势感知</a></li>
+<li><a href="#org5a9694f">贝叶斯网与网络安全态势感知</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org3d5713d">网络安全态势感知</a>
+<li><a href="#org5182d85">网络安全态势感知</a>
 <ul>
-<li><a href="#org2182482">网络攻击建模</a>
+<li><a href="#orgcf79171">网络攻击建模</a>
 <ul>
-<li><a href="#orgc200981">定义</a></li>
-<li><a href="#org9b81a64">建模</a></li>
+<li><a href="#org4246f24">定义</a></li>
+<li><a href="#org3f3c737">建模</a></li>
 </ul>
 </li>
 </ul>
@@ -64,30 +64,30 @@
 </div>
 </div>
 
-<div id="outline-container-org2e1b640" class="outline-2">
-<h2 id="org2e1b640">攻击行为预测</h2>
-<div class="outline-text-2" id="text-org2e1b640">
+<div id="outline-container-orgcb41b93" class="outline-2">
+<h2 id="orgcb41b93">攻击行为预测</h2>
+<div class="outline-text-2" id="text-orgcb41b93">
 </div>
-<div id="outline-container-org27792d9" class="outline-3">
-<h3 id="org27792d9">攻击图</h3>
-<div class="outline-text-3" id="text-org27792d9">
+<div id="outline-container-org15f6179" class="outline-3">
+<h3 id="org15f6179">攻击图</h3>
+<div class="outline-text-3" id="text-org15f6179">
 <p>
 攻击图模型目前是网络安全风险评估中，用于表达网络或信息系统中存在的脆弱点，以及脆弱点之间的关联关系的最有效的模型之一。攻击图以有向图的方式来表达攻击者利用存在的脆弱性对网络或信息系统进行攻击的所有可能的攻击路径，全面地反映了网络或信息系统中脆弱点利用之间的依赖关系。
 </p>
 </div>
 
-<div id="outline-container-orgaffb450" class="outline-4">
-<h4 id="orgaffb450">攻击图生成</h4>
-<div class="outline-text-4" id="text-orgaffb450">
+<div id="outline-container-orgf54f8f7" class="outline-4">
+<h4 id="orgf54f8f7">攻击图生成</h4>
+<div class="outline-text-4" id="text-orgf54f8f7">
 <p>
 工具：MulVAL
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga7d651b" class="outline-4">
-<h4 id="orga7d651b">攻击图分析方法</h4>
-<div class="outline-text-4" id="text-orga7d651b">
+<div id="outline-container-org7459ddd" class="outline-4">
+<h4 id="org7459ddd">攻击图分析方法</h4>
+<div class="outline-text-4" id="text-org7459ddd">
 <p>
 攻击图表示了被评估的网络或信息系统中存在的脆弱点以及攻击者利用这些脆弱点进行一步或多步攻击的各种可能的攻击路径。学术界对攻击图的自动化生成方法进行了充分的研究，并且得到了有效的研究成果和实际应用的工具，使得攻击图的生成复杂度以及攻击图的规模能够控制在 \(O(n^2)\) 之内，因此，攻击图模型相对其他脆弱性评估模型而言，有巨大的优势。
 </p>
@@ -107,25 +107,25 @@
 </div>
 </div>
 
-<div id="outline-container-org13b8133" class="outline-3">
-<h3 id="org13b8133">攻击图转贝叶斯网</h3>
-<div class="outline-text-3" id="text-org13b8133">
+<div id="outline-container-orge6445a4" class="outline-3">
+<h3 id="orge6445a4">攻击图转贝叶斯网</h3>
+<div class="outline-text-3" id="text-orge6445a4">
 <p>
 属性攻击图是一种有向无环图，它含有2种节点：属性节点和原子攻击节点。而贝叶斯网络是一个有向无环图，具有因果关系和概率主义，可以根据已知的信息对未知的结果或原因进行推理和预测。在贝叶斯网络中，节点的状态及发生概率只与父节点有关，在攻击图中网络脆弱点是否被利用也只与攻击路径中的父节点有关，这种节点关系在贝叶斯网络和攻击图中相对应。由于贝叶斯网络和攻击图都是一种有向无环图，并且有向边表示一种因果关系，因此可以将贝叶斯网络和攻击图进行结合，对网络安全态势进行预测<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
 </p>
 </div>
 
-<div id="outline-container-org6c44d4e" class="outline-4">
-<h4 id="org6c44d4e">贝叶斯网与网络安全态势感知</h4>
-<div class="outline-text-4" id="text-org6c44d4e">
+<div id="outline-container-org5a9694f" class="outline-4">
+<h4 id="org5a9694f">贝叶斯网与网络安全态势感知</h4>
+<div class="outline-text-4" id="text-org5a9694f">
 <p>
 由于基于贝叶斯网络的方法能够充分利用攻击图的结构和脆弱点利用复杂度等信息，从而不需要对结构和参数进行学习，加上贝叶斯网络在概率逻辑关系推理方面的优势，使其适用于网络安全态势感知。
 </p>
 </div>
 
 <ul class="org-ul">
-<li><a id="org85e5d62"></a>现有的方法<br />
-<div class="outline-text-5" id="text-org85e5d62">
+<li><a id="orgd64849c"></a>现有的方法<br />
+<div class="outline-text-5" id="text-orgd64849c">
 <p>
 Xie等人<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>在攻击图的基础上构建贝叶斯网络，然后建立报警节点作为证据节点；Poolsappasit等人<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>也是在攻击图的基础上构建贝叶斯网络，然后根据警报将相应的原子攻击节点设为证据节点。每个节点的攻击发生概率是这些证据的后验概率。
 </p>
@@ -140,21 +140,21 @@ Xie等人<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>在攻击图
 </div>
 </div>
 
-<div id="outline-container-org3d5713d" class="outline-2">
-<h2 id="org3d5713d">网络安全态势感知</h2>
-<div class="outline-text-2" id="text-org3d5713d">
+<div id="outline-container-org5182d85" class="outline-2">
+<h2 id="org5182d85">网络安全态势感知</h2>
+<div class="outline-text-2" id="text-org5182d85">
 </div>
-<div id="outline-container-org2182482" class="outline-3">
-<h3 id="org2182482">网络攻击建模</h3>
-<div class="outline-text-3" id="text-org2182482">
+<div id="outline-container-orgcf79171" class="outline-3">
+<h3 id="orgcf79171">网络攻击建模</h3>
+<div class="outline-text-3" id="text-orgcf79171">
 <p>
 对于攻击者来说，发动一次攻击可能需要具备一些前提条件，而攻击成功后，往往又会获得一些新的后置条件。
 </p>
 </div>
 
-<div id="outline-container-orgc200981" class="outline-4">
-<h4 id="orgc200981">定义</h4>
-<div class="outline-text-4" id="text-orgc200981">
+<div id="outline-container-org4246f24" class="outline-4">
+<h4 id="org4246f24">定义</h4>
+<div class="outline-text-4" id="text-org4246f24">
 <ol class="org-ol">
 <li>攻击条件 \(S\)</li>
 </ol>
@@ -205,9 +205,9 @@ Xie等人<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>在攻击图
 </div>
 </div>
 
-<div id="outline-container-org9b81a64" class="outline-4">
-<h4 id="org9b81a64">建模</h4>
-<div class="outline-text-4" id="text-org9b81a64">
+<div id="outline-container-org3f3c737" class="outline-4">
+<h4 id="org3f3c737">建模</h4>
+<div class="outline-text-4" id="text-org3f3c737">
 <p>
 \(BAG=(S, A, E, P)\)
 </p>
@@ -258,7 +258,7 @@ Poolsappasit N, Dewri R, Ray I. Dynamic security risk management using bayesian 
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2017/12/30/贝叶斯攻击图";
           var disqus_url = "http://pinvondev.github.io/blog/2017/12/30/贝叶斯攻击图";
-          var disqus_shortname = 'pinvon';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
