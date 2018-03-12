@@ -34,6 +34,29 @@ cat ./id_rsa.pub >> ./authorized_keys  #  加入授权
 #+END_SRC
 注: 如果之前安装过 =Git=, 则已经有 =id_rsa.pub= 文件, 可直接使用.
 
+
+* 设置Linux环境变量的方法和区别
+
+** 通过文件设置
+
+*** 全局环境变量(对所有用户生效)
+
+=/etc/profile=: 为系统的每个用户设置环境信息. 当用户登录时, 该文件被执行一次, 从 =/etc/profile.d= 目录的配置文件中搜集 =shell= 的设置.
+
+=/etc/bashrc=: 当 =bash shell= 被打开时, 该文件被读取.
+
+=/etc/environment=: 设置整个系统的环境, 而 =/etc/profile= 是设置所有用户的环境, 因为有些数据与用户无关, 与系统相关. 如果两个文件中的设置有冲突, 以 =/etc/profile= 为准.
+
+*** 局部环境变量(对单个用户生效)
+
+=~/.bash_profile= 或 =~/.bash_login= 或 =~/.profile=: 当用户登录时, 该文件执行一次.
+
+=~/.bashrc=: 当用户登录且每次打开新的 =shell= 时, 该文件被读取.
+
+** 通过export设置
+
+使用 =export= 设置的变量, 只对当前终端Shell有效, 如果此时新开一个终端, 则无法读取之前通过 =export= 设置的变量. 适合设置一些临时变量.
+
 * 安装Java环境
 
 #+BEGIN_SRC Shell
@@ -62,4 +85,229 @@ sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_16
 # 选择合适的JDK
 sudo update-alternatives --config java
 # 输入编号
+#+END_SRC
+
+* Hadoop 2.7.1单机安装
+
+#+BEGIN_SRC Shell
+# 解压到指定目录
+tar -zxf ~/下载/hadoop-2.7.1.tar.gz -C ~
+cd ~
+
+# 将文件夹改名为hadoop
+mv ./hadoop-2.7.1/ ./hadoop
+
+# 查看文件权限
+ls -l
+
+# 修改文件权限
+sudo chown -R pinvon:pinvon ./hadoop/
+
+# 测试hadoop是否可用
+cd hadoop
+./bin/hadoop version
+#+END_SRC
+
+** 试跑例子
+
+#+BEGIN_SRC Shell
+# 查看所有例子
+./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar 
+
+# 运行grep例子
+mkdir ./input  # 创建输入文件夹
+cp ./etc/hadoop/*.xml ./input  # 将配置文件作为输入文件
+
+./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar grep ./input/ ./output 'dfs[a-z.]+'
+
+# 查看结果
+cat ./output/*
+
+# 删除输出
+rm -r ./output
+#+END_SRC
+
+* Hadoop2.7.1伪分布式安装
+
+** 配置
+
+伪分布式的意思是, 我们可以在单节点上, 将Hadoop进程以分离的Java进程来运行, 节点既作为NameNode也作为DataNode, 同时, 读取的是HDFS中的文件.
+
+Hadoop的配置文件位于 =hadoop/etc/hadoop/= 中.
+
+伪分布式需要修改 =core-site.xml= 和 =hdfs-site.xml=.
+
+=core-site.xml= 修改为:
+#+BEGIN_SRC XML
+<configuration>
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>file:/home/pinvon/hadoop/tmp</value>
+    <description>Abase for other temporary directories.</description>
+  </property>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://localhost:9000</value>
+  </property>
+</configuration>
+#+END_SRC
+
+=hdfs-site.xml= 修改为:
+#+BEGIN_SRC XML
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:/home/pinvon/hadoop/tmp/dfs/name</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:/home/pinvon/hadoop/tmp/dfs/data</value>
+  </property>
+</configuration>
+#+END_SRC
+
+如果要恢复到单机模式, 则把 =core-site.xml= 中的配置删除即可.
+
+=hadoop.tmp.dir= 是临时目录. =fs.defaultFS= 是默认文件系统的名称, 通过其可确定文件系统的主机和端口等.
+
+=dfs.namenode.name.dir= 是本地磁盘目录, NameNode存储fsimage文件的地方. =dfs.datanode.data.dir= 是HDFS数据应该存储Block的地方.
+
+更具体的, 可进hadoop文档查看其Configuration内容.
+http://hadoop.apache.org/docs/current/
+
+** 设置HADOOP_HOME
+
+这一步不是必须的, 但是不设置, 在启动Hadoop时有可能会出错. 打开 =~/.bashrc=
+#+BEGIN_SRC Shell
+export HADOOP_HOME=/home/pinvon/hadoop
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/nativeexport 
+#+END_SRC
+
+=source ~/.bashrc=
+
+** 格式化NameNode
+
+#+BEGIN_SRC Shell
+./bin/hdfs namenode -format
+#+END_SRC
+
+如果显示 =Exiting with status 0=, 则表示格式化成功.
+
+** 启动/关闭 Hadoop
+
+*** 启动
+
+#+BEGIN_SRC Shell
+./sbin/start-dfs.sh
+#+END_SRC
+
+如果提示找不到JAVA_HOME, 且确定JAVA_HOME已设置过, 则修改配置文件: =etc/hadoop/hadoop-env.sh=, 修改其中的JAVA_HOME的值:
+#+BEGIN_SRC Shell
+# 原来的
+JAVA_HOME=${JAVA_HOME}
+# 修改为
+JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
+#+END_SRC
+
+如果启动成功, 输入 =jps= 命令后, 会显示有 =NameNode=, =DataNode=, =SecondaryNameNode= 这些进程.
+
+成功启动后, 还可以通过Web界面(浏览器中输入http://localhost:50070)NameNode, DataNode, HDFS等信息.
+
+*** 关闭
+
+#+BEGIN_SRC Shell
+./sbin/stop-dfs.sh
+#+END_SRC
+
+** 运行例子
+
+在单机模式中读取的是本地数据, 伪分布式则使用HDFS上的数据.
+
+在HDFS中创建用户目录:
+#+BEGIN_SRC Shell
+./bin/hdfs dfs -mkdir -p /user/pinvon
+#+END_SRC
+
+当Ubuntu的用户名和HDFS上创建的用户目录名称相同时, 输入时可省略这些信息. 如要在HDFS中创建input目录, 直接输入以下命令即可:
+#+BEGIN_SRC Shell
+./bin/hdfs dfs -mkdir input
+#+END_SRC
+此时, input目录在HDFS中的绝对路径就是: /user/pinvon/input
+
+将hadoop的配置文件上传到HDFS作为输入:
+#+BEGIN_SRC Shell
+./bin/hdfs dfs -put ./etc/hadoop/*.xml input
+
+# 查看文件列表
+./bin/hdfs dfs -ls input
+
+# 运行例子
+./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar grep input output 'dfs[a-z.]+'
+
+# 查看结果
+./bin/hdfs dfs -cat output/*
+
+# 删除输出目录
+./bin/hdfs dfs -rm -r output
+#+END_SRC
+
+** 启动YARN
+
+YARN是从MapReduce中分离出来的, 负责资源管理与任务调度. YARN运行于MapReduce之上, 提供了高可用性和高扩展性.
+
+之前启动Hadoop, 仅仅是启动了MapReduce环境.
+
+要启动YARN, 首先要修改配置文件.
+
+mapred-site.xml:
+#+BEGIN_SRC Shell
+cd ./etc/hadoop
+
+# 重命名
+mv mapred-site.xml.template mapred-site.xml
+#+END_SRC
+
+编辑 =mapred-site.xml=:
+#+BEGIN_SRC Shell
+<configuration>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+</configuration>
+#+END_SRC
+
+编辑 =yarn-site.xml=:
+#+BEGIN_SRC Shell
+<configuration>
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+</configuration>
+#+END_SRC
+
+启动YARN:
+#+BEGIN_SRC Shell
+./sbin/start-dfs.sh
+./sbin/start-yarn.sh
+./sbin/mr-jobhistory-daemon.sh start historyserver
+#+END_SRC
+运行jps命令, 如果成功的话, 应该会多 =NodeManager= 和 =ResourceManager=.
+
+开启YARN之后, 可以在Web界面查看任务的运行情况: http://localhost:8088/cluster
+
+YARN主要是为集群提供更好的资源管理与任务调度, 但在单机上体现不出价值, 反而会使程序更慢, 因此在单机上是否开启YARN可根据自己的实际情况来.
+
+如果不想启动YARN, 就要把 =mapred-site.xml= 重命名成 =mapred-site.xml.template=.
+
+关闭:
+#+BEGIN_SRC Shell
+./sbin/mr-jobhistory-daemon.sh stop historyserver
+./sbin/stop-dfs.sh
+./sbin/stop-yarn.sh
 #+END_SRC
