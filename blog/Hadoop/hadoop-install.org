@@ -1,0 +1,65 @@
+#+TITLE:       Hadoop2.7.1+Ubuntu16.04安装
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-10 六
+#+URI:         /blog/%y/%m/%d/hadoop271+ubuntu1604安装
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Hadoop
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 安装SSH 配置SSH免密码登陆
+
+** 安装SSH
+
+无论是集群模式还是单节点模式, 都要用到SSH登陆, Ubuntu默认已安装 =SSH client=, 还需要自己再安装 =SSH server=.
+#+BEGIN_SRC Shell
+sudo apt install openssh-server
+
+# 测试 首次登陆要输yes 接着要输密码
+ssh localhost
+
+# 退出
+exit
+#+END_SRC
+
+** 配置SSH免密码登陆
+
+进入终端, 利用 =ssh-keygen= 生成密钥, 并将密钥加入到授权中.
+#+BEGIN_SRC Shell
+cd ~/.ssh/
+ssh-keygen -t rsa  #  一路回车
+cat ./id_rsa.pub >> ./authorized_keys  #  加入授权
+#+END_SRC
+注: 如果之前安装过 =Git=, 则已经有 =id_rsa.pub= 文件, 可直接使用.
+
+* 安装Java环境
+
+#+BEGIN_SRC Shell
+sudo tar -zxvf jdk-8u161-linux-x64.tar.gz -C /usr/lib/jvm
+
+# 修改环境变量
+export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:$PATH
+#+END_SRC
+
+** 修改系统默认JDK
+
+Ubuntu中默认安装了 =openJDK=, 我们又安装了 =jdk1.8.0_161=. 修改系统默认JDK的方式如下:
+#+BEGIN_SRC Shell
+sudo update-alternatives --display java  # 可看到openjdk的优先级
+
+# 将jdk1.8.0_161的优先级设置成比openjdk的更高
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_161/bin/java 300
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.8.0_161/bin/javac 300
+sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.8.0_161/bin/jar 300
+sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk1.8.0_161/bin/javah 300
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_161/bin/javap 300
+
+# 选择合适的JDK
+sudo update-alternatives --config java
+# 输入编号
+#+END_SRC
