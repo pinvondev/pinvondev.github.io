@@ -1,0 +1,112 @@
+#+TITLE:       Express入门
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-12 一
+#+URI:         /blog/%y/%m/%d/express入门
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Web
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 安装
+
+假设 =node.js= 已安装. 接下来创建一个目录, 然后进入此目录并将其作为当前工作目录.
+#+BEGIN_SRC Shell
+mkdir myapp
+cd myapp
+#+END_SRC
+
+每个项目的根目录下面, 一般都有一个 =package.json= 文件, 定义了这个项目所需要的各种模块, 以及项目的配置信息(比如名称, 版本, 许可证等元数据). =npm install= 命令根据这个配置文件, 自动下载所需的模块, 也就是配置项目所需的运行和开发环境.
+#+BEGIN_SRC Shell
+npm init
+#+END_SRC
+一路回车, 以 =index.js= 为入口文件.
+
+#+BEGIN_SRC Shell
+npm install express --save
+npm install express
+#+END_SRC
+
+* Hello World
+
+进入 =myapp= 目录, 创建一个名为 =app.js= 的文件, 然后将下列代码复制进去:
+#+BEGIN_SRC JavaScript
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+    res.send('Hello World!');
+});
+
+var server = app.listen(3000, function () {
+    var host = server.address().address;
+    var port = server.address().port;
+    console.log('Example app listening at http://%s:%s', host, port);
+});
+#+END_SRC
+该代码启动一个服务并监听从3000端口进入的所有连接请求. 他将所有(/)路由返回"Hello World!"字符串. 而其他路径全部返回 404 Not Found.
+
+#+BEGIN_SRC Shell
+node app.js
+#+END_SRC
+然后在浏览器中打开 http://localhost:3000 查看结果.
+
+* Express应用生成器
+
+可能通过应用生成器工具 express 快速创建一个应用的骨架.
+#+BEGIN_SRC Shell
+# 安装应用生成器
+npm install express-generator -g
+
+# 创建工作目录
+express myapp
+
+# 安装依赖包
+cd myapp
+npm install
+#+END_SRC
+
+启动应用:
+#+BEGIN_SRC Shell
+DEBUG=myapp npm start  # Linux或MacOS
+set DEBUG=myapp & npm start  # Windows
+#+END_SRC
+
+浏览器中输入 http://localhost:3000 即可.
+
+* 一个简单的Express路由
+
+路由(routing)是由一个URI(路径)和一个特定的HTTP方法(GET, POST等)组成的, 涉及到应用如何响应客户端对某个网站节点的访问.
+
+路由的定义: app.METHOD(PATH, HANDLER); 其中, METHOD为HTTP方法. 如:
+#+BEGIN_SRC JavaScript
+app.get('/', function (req, res) {
+	res.send('Hello World!');
+});
+
+app.post('/', function (req, res) {
+	res.send('Got a POST request');
+});
+
+app.post('/user', function (req, res) {
+	res.send('Got a PUT request at /user');
+});
+#+END_SRC
+
+* 利用Express托管静态文件
+
+将静态资源文件所在的目录作为参数传递给 =express.static= 就可以提供静态资源文件的访问了. 如, 在 =public= 目录放置了图片, CSS和JavaScript文件, 就可以:
+#+BEGIN_SRC JavaScript
+app.use(express.static('public'));
+#+END_SRC
+
+如果静态文件存放在多个目录中, 则可以多次调用 =express.static=. =express.static= 会根据目录添加的顺序查找所需的文件.
+
+还可以创建一个虚拟目录, 挂载实际目录:
+#+BEGIN_SRC JavaScript
+app.use('/static', express.static('public'));
+
+# 访问方式: 不再需要指定public路径
+http://localhost:3000/static/images/kitten.jpn
+#+END_SRC
