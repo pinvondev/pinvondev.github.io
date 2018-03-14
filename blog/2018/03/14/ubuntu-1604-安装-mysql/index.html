@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>k-近邻算法 - Pinvon&#39;s Blog</title>
+    <title>Ubuntu 16.04 安装 MySQL - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,42 +30,101 @@
 
 <div>
 <div class="post">
-<h1>k-近邻算法</h1>
+<h1>Ubuntu 16.04 安装 MySQL</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org56a2d1d">k-近邻算法概述</a></li>
+<li><a href="#org42ddf9c">安装MySQL</a></li>
+<li><a href="#org5cbdec3">配置</a></li>
+<li><a href="#org4e17a91">启动和停止MySQL</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org56a2d1d" class="outline-2">
-<h2 id="org56a2d1d">k-近邻算法概述</h2>
-<div class="outline-text-2" id="text-org56a2d1d">
-<p>
-\(k\) -近邻算法是监督学习算法，用于解决分类问题。
-</p>
+<div id="outline-container-org42ddf9c" class="outline-2">
+<h2 id="org42ddf9c">安装MySQL</h2>
+<div class="outline-text-2" id="text-org42ddf9c">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt update
+sudo apt install mysql-server
+</pre>
+</div>
 
 <p>
-对于训练集中的每个数据，其所属分类已知。输入新数据后，根据新数据的特征与训练集中的特征进行比较，得出新数据最接近的分类。而 \(k\)  这个名字的来源，是因为一般只与前 \(k\) 个最相似的数据比较，其中， \(k \leq 20\) 。
+这一步会让我们设置MySQL的root密码. 如果这一步不设置, 则留空. 然后安装完了, 运行 <code>mysql_secure_installation</code> 来设置root密码.
 </p>
+</div>
+</div>
+
+<div id="outline-container-org5cbdec3" class="outline-2">
+<h2 id="org5cbdec3">配置</h2>
+<div class="outline-text-2" id="text-org5cbdec3">
+<p>
+编辑MySQL的配置文件, 把数据库默认的编码全部改为UTF-8.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo emacs /etc/mysql/my.cnf
+</pre>
+</div>
 
 <p>
-思考：如果 \(k\) 太大，有很多相似度较低的数据也参与了比较，在结果中与相似度较高的数据有同等的权重决定分类结果，会使得结果不准确。当然，也可以为这些相似度低的数据分配较低的权重，但这样也增加了复杂的复杂度。
+内容编辑如下:
 </p>
+<div class="org-src-container">
+<pre class="src src-Shell">[client]
+default-character-set = utf8
+
+[mysqld]
+default-storage-engine = INNODB
+character-set-server = utf8
+collation-server = utf8_general_ci
+</pre>
+</div>
 
 <p>
-使用欧氏距离公式来计算距离。然后对距离进行排序，确定前 \(k\) 个距离的元素所在的主要分类。
+重启MySQL后, 可以通过MySQL的客户端命令检查编码:
 </p>
+<div class="org-src-container">
+<pre class="src src-Shell">mysql -u root -p
+# 输入密码
+show variables like '%char%';
+# 如果看到utf8字样, 就表示编码设置正确
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/14/ubuntu-1604-安装-mysql/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4e17a91" class="outline-2">
+<h2 id="org4e17a91">启动和停止MySQL</h2>
+<div class="outline-text-2" id="text-org4e17a91">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo service mysql status  # 检查MySQL服务器状态
+sudo service mysql stop  # 关闭MySQL服务器
+sudo service mysql start  # 启动MySQL服务器
+</pre>
+</div>
 
 <p>
-使用数值归一化的情况：假如结果由两个特征决定，由于特征1的数值很大，所以特征1对结果造成的影响很大，而实际上，特征1和特征2的权重是相同的，这时候，需要对特征进行数值归一化。方法： \(new=\frac{old-min}{max-min}\) 。
+服务启动后查询端口:
 </p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo netstat -anp | grep mysql  # 一般查询得知是3306
 
-<p>
-\(k\) -近邻算法是分类数据最简单最有效的方法，它是基于实例的学习，使用算法时我们必须有接近实际数据的训练样本数据。 \(k\) -近邻算法必须保存全部数据集，如果训练数据集很大，必须使用大量的存储空间。此外，必须对数据集中的每个数据计算距离值，实际使用时可能非常耗时。
-</p>
+# 连接数据库
+mysql -h 127.0.0.1 -P 3306 -u root -p
+# 或者
+mysql -u root -p 
+
+# 输入密码
+</pre>
+</div>
 </div>
 </div>
 
@@ -73,9 +132,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-01</span>
-        <span title="last modification date" class="post-info">2018-01-09</span>
-        <span title="tags" class="post-info"><a href="/tags/机器学习实战-读书笔记/">机器学习实战-读书笔记</a></span>
+        <span title="post date" class="post-info">2018-03-14</span>
+        <span title="last modification date" class="post-info">2018-03-14</span>
+        <span title="tags" class="post-info"><a href="/tags/sql/">SQL</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -83,8 +142,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/01/k-近邻算法";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/01/k-近邻算法";
+          var disqus_identifier = "/blog/2018/03/14/ubuntu-1604-安装-mysql";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/14/ubuntu-1604-安装-mysql";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
