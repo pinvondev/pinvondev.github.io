@@ -1,0 +1,87 @@
+#+TITLE:       项目说明
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-14 三
+#+URI:         /blog/%y/%m/%d/项目说明
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Web
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 安装
+
+#+BEGIN_SRC Shell
+mkdir healthy
+cd healthy
+npm init  # 一路回车
+npm install express --save
+npm install hbs --save-dev  # 安装模板引擎
+#+END_SRC
+
+* 目录结构
+
+** routes子目录
+
+该目录用于存放路由.
+
+#+BEGIN_SRC JavaScript
+module.exports = function (app) {
+    app.route('/').get(function (req, res) {
+        res.send('this is the login form');
+    });
+    app.route('/about').get(function (req, res) {
+        res.render('about', {title:"关于智慧医疗", author:'HQU'});
+    });
+};
+#+END_SRC
+
+** 启动文件
+
+#+BEGIN_SRC JavaScript
+var express = require('express');
+var hbs = require('hbs');
+var app = express();
+
+app.set('view engine', 'html');
+app.engine('html', hbs.__express);
+app.use(express.static('public'));
+var routes = require('./routes/router.js')(app);
+
+app.listen(3000);
+#+END_SRC
+
+** views子目录
+
+该目录用于存放动态网页模板.
+
+about.html
+#+BEGIN_SRC HTML
+<h1>智慧医疗</h1>
+
+<p>{{author}}</p>
+
+<img src="about.jpg" height="800" />
+#+END_SRC
+
+layout.html
+#+BEGIN_SRC HTML
+<html>
+  <head>
+    <title>{{title}}</title>
+  </head>
+
+  <body>
+    {{{body}}}
+    <footer>
+      <p>
+        <a href="/">首页</a> - <a href="/about">关于</a>
+      </p>
+    </footer>
+  </body>
+</html>
+#+END_SRC
+
+** 静态文件目录
+
+=public子目录= 用于存放静态文件, 如图片, 样式表等.
