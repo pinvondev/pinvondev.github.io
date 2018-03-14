@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>Ubuntu+VPN - Pinvon&#39;s Blog</title>
+    <title>项目说明 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,61 +30,130 @@
 
 <div>
 <div class="post">
-<h1>Ubuntu+VPN</h1>
+<h1>项目说明</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge4d298e">SSR</a></li>
+<li><a href="#orga9d26be">安装</a></li>
+<li><a href="#orgc099353">目录结构</a>
+<ul>
+<li><a href="#orgce84f07">routes子目录</a></li>
+<li><a href="#org5f7b268">启动文件</a></li>
+<li><a href="#orgbe98a28">views子目录</a></li>
+<li><a href="#org1eb7f98">静态文件目录</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge4d298e" class="outline-2">
-<h2 id="orge4d298e">SSR</h2>
-<div class="outline-text-2" id="text-orge4d298e">
+<div id="outline-container-orga9d26be" class="outline-2">
+<h2 id="orga9d26be">安装</h2>
+<div class="outline-text-2" id="text-orga9d26be">
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir healthy
+cd healthy
+npm init  # 一路回车
+npm install express --save
+npm install hbs --save-dev  # 安装模板引擎
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc099353" class="outline-2">
+<h2 id="orgc099353">目录结构</h2>
+<div class="outline-text-2" id="text-orgc099353">
+</div>
+<div id="outline-container-orgce84f07" class="outline-3">
+<h3 id="orgce84f07">routes子目录</h3>
+<div class="outline-text-3" id="text-orgce84f07">
 <p>
-下载ssr: <a href="https://github.com/shadowsocksr-backup/shadowsocksr">https://github.com/shadowsocksr-backup/shadowsocksr</a>
+该目录用于存放路由.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">module.exports = function (app) {
+    app.route('/').get(function (req, res) {
+        res.send('this is the login form');
+    });
+    app.route('/about').get(function (req, res) {
+        res.render('about', {title:"关于智慧医疗", author:'HQU'});
+    });
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5f7b268" class="outline-3">
+<h3 id="org5f7b268">启动文件</h3>
+<div class="outline-text-3" id="text-org5f7b268">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var hbs = require('hbs');
+var app = express();
+
+app.set('view engine', 'html');
+app.engine('html', hbs.__express);
+app.use(express.static('public'));
+var routes = require('./routes/router.js')(app);
+
+app.listen(3000);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbe98a28" class="outline-3">
+<h3 id="orgbe98a28">views子目录</h3>
+<div class="outline-text-3" id="text-orgbe98a28">
+<p>
+该目录用于存放动态网页模板.
 </p>
 
 <p>
-进入配置文件, 路径为: <code>./shadowsocks/json/config.json</code>
-</p>
-
-<p>
-编辑配置文件, 格式大致为: 
+about.html
 </p>
 <div class="org-src-container">
-<pre class="src src-Shell">{
-    "server": "your.ip.address",
-    "server_port": 1234,
-    "local_address": "127.0.0.1",
-    "local_port": 1080,
-    "password": "password",
-    "timeout": 600,
-    "udp_timeout": 60,
-    "method":  "chacha20",
-    "protocol": "auth_sha1_v4",
-    "protocol_param": "",
-    "obfs": "http_simple",
-    "obfs_param": "cloudflare.com",
-    "dns_ipv6": false,
-    "connect_verbose_info": 0,
-    "redirect": "",
-    "fast_open": false
-}
+<pre class="src src-HTML">&lt;h1&gt;智慧医疗&lt;/h1&gt;
+
+&lt;p&gt;{{author}}&lt;/p&gt;
+
+&lt;img src="about.jpg" height="800" /&gt;
 </pre>
 </div>
 
 <p>
-开启与关闭, 使用如下脚本, 放在用户目录, 每次开机直接启动:
+layout.html
 </p>
 <div class="org-src-container">
-<pre class="src src-Shell">#!/bin/bash
-cd /usr/local/opt/ssr/shadowsocksr/shadowsocks/json/
-sudo python ../local.py -c config.json -d start
-# sudo python ../local.py -c config.json -d stop
+<pre class="src src-HTML">&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;{{title}}&lt;/title&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    {{{body}}}
+    &lt;footer&gt;
+      &lt;p&gt;
+        &lt;a href="/"&gt;首页&lt;/a&gt; - &lt;a href="/about"&gt;关于&lt;/a&gt;
+      &lt;/p&gt;
+    &lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
 </pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1eb7f98" class="outline-3">
+<h3 id="org1eb7f98">静态文件目录</h3>
+<div class="outline-text-3" id="text-org1eb7f98">
+<p>
+<code>public子目录</code> 用于存放静态文件, 如图片, 样式表等.
+</p>
 </div>
 </div>
 </div>
@@ -93,9 +162,9 @@ sudo python ../local.py -c config.json -d start
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-05</span>
-        <span title="last modification date" class="post-info">2018-03-05</span>
-        <span title="tags" class="post-info"><a href="/tags/vpn/">VPN</a></span>
+        <span title="post date" class="post-info">2018-03-14</span>
+        <span title="last modification date" class="post-info">2018-03-14</span>
+        <span title="tags" class="post-info"><a href="/tags/web/">Web</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -103,8 +172,8 @@ sudo python ../local.py -c config.json -d start
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/05/ubuntu+vpn";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/05/ubuntu+vpn";
+          var disqus_identifier = "/blog/2018/03/14/项目说明";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/14/项目说明";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
