@@ -1,0 +1,531 @@
+#+TITLE:       JavaScript教程--语法
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-13 二
+#+URI:         /blog/%y/%m/%d/javascript教程--语法
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Web
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 声明
+
+本系列的笔记来自于: [[http://javascript.ruanyifeng.com/introduction/intro.html][阮一峰老师的JavaScript教程]]
+
+* 基本语法
+
+** 变量
+
+变量的声明与赋值:
+#+BEGIN_SRC JavaScript
+var a = 1;
+a = 'hello';
+#+END_SRC
+如果不写 =var=, 程序也有效, 但这种做法会在不知不觉中创建全局变量.
+
+** 注释
+
+单行注释: //
+多行注释: /* ...  */
+
+** 区块
+
+对于 =var= 命令来说, JavaScript的区块不构成单独的作用域. 如:
+#+BEGIN_SRC JavaScript
+{
+	var a = 1;
+}
+console.log(a); // 1
+#+END_SRC
+
+** if语句
+
+与C++/Java相同.
+
+** switch语句
+
+与C++/Java相同.
+
+** 三目运算符
+
+JavaScript中存在三目运算符.
+
+** 循环
+
+for, while, do...while 使用方法与C++/Java一样.
+
+JavaScript有关键字 =break= 和 =continue=.
+
+* 数据类型
+
+JavaScript的数据类型有6种.
+- 数值(number): 整数和小数
+- 字符串(string): 文本
+- 布尔值(boolean)
+- undefined: 表示未定义
+- null: 空值
+- 对象(object): 各种值组成的集合
+
+** typeof运算符
+
+JavaScript有三种方法可以确定一个值是什么类型: typedef运算符, instanceof运算符, Object.prototype.toString方法. 这边先介绍typeof运算符.
+#+BEGIN_SRC JavaScript
+typeof 123;  //  "number"
+typeof '123';  //  "string"
+typeof false  //  "boolean"
+
+function f() {}
+typeof f  //  "function"
+#+END_SRC
+
+应用:
+#+BEGIN_SRC JavaScript
+if (typeof v === "undefined") { ... }
+#+END_SRC
+
+** 布尔值
+
+以下六个值在转换为布尔值时, 被转为false:
+- undefined
+- null
+- false
+- 0
+- NaN
+- ""或''
+
+* 数值
+
+** 整数和浮点数
+
+在JavaScript内部, 所有数字都是以64位浮点数形式储存, 即使整数也是如此. 因此, 1和1.0是相同的:
+#+BEGIN_SRC JavaScript
+1 === 1.0  // true
+#+END_SRC
+
+由于浮点数不是精确的值, 所以涉及小数的比较和运算, 需要特别小心:
+#+BEGIN_SRC JavaScript
+0.1 + 0.2 === 0.3  //  false
+#+END_SRC
+
+** 数值精度
+
+首先介绍 =IEEE 754标准=, 在64位的情况下:
+- 第1位: 符号位
+- 第2~12位(共11位): 指数部分
+- 第13~64位(共52位): 小数部分(即有效数字)
+符号位决定一个数的正负, 指数部分决定数值大小, 小数部分决定数值精度.
+
+指数部分共11个二进制位, 大小范围在0~2047之间. =IEEE 754= 规定, 如果指数部分的值在区间(0, 2047), 则小数部分的第1位默认是1, 且不保存在64位浮点数中. 所以, JavaScript提供的有效数字最长为53个二进制位. 即:
+$$(-1)^{符号位} \times 1.xx...xx \times 2^{指数部分}$$
+
+精度最多只能到53位二进制位, 这意味着, 绝对值小于等于2的53次方的整数, 都可以精确表示. 大于2的53次方的数值, 无法保持精度.
+
+** 数值范围
+
+指数部分为11个二进制位, 可以表示的最大值是2047, 还要分一半表示负数, 因此, JavaScript能够表示的数值范围为 $2^{1024}$ 到 $2^{-1023}$ 之间(开区间), 超出这个范围的数无法表示.
+
+** 数值表示法
+
+十进制, 十六进制(0xFF), 科学计数法(123e3)
+
+** 与数值相关的全局方法
+
+- parseInt(): 将字符串转成整数
+- parseFloat(): 将字符串转成浮点数
+- isNaN(): 判断是否为NaN
+- isFinite(): 判断是否为正常数值
+* 字符串
+
+字符串就是0个或多个排在一起的字符, 放在单引号或双引号之中.
+
+单引号字符串内部, 可使用双引号; 双引号字符串内部, 可使用单引号.
+
+字符串拼接使用+.
+
+** 字符串与数组
+
+字符串可以看成是数组, 因此可以使用数组的方括号运算符, 用来返回某个位置的字符, 索引从0开始. 无法改变字符串之中的单个字符. =length= 属性返回字符串长度.
+#+BEGIN_SRC JavaScript
+var s = 'hello';
+s[0]  //  "h"
+
+s[1] = 'a';
+s  //  "hello"
+
+s.length  //  5
+#+END_SRC
+
+* 对象
+
+简单说, 对象就是一组"键值对"的集合, 是一种无序的复合数据集合.
+#+BEGIN_SRC JavaScript
+var obj = {
+	foo: 'Hello',
+	bar: 'World'
+};
+#+END_SRC
+
+对象的每一个键名又称为"属性", 它的"键值"可以是任何数据类型. 如果一个属性的值为函数, 通常把这个属性称为"方法", 它可以像函数那样调用.
+#+BEGIN_SRC JavaScript
+var obj = {
+	p: function (x) {
+		return 2 * x;
+	}
+};
+obj.p(1)  // 2
+#+END_SRC
+
+如果属性的值是另一个对象, 就形成了链式引用:
+#+BEGIN_SRC JavaScript
+var o1 = {};
+var o2 = {bar: 'hello'};
+o1.foo = o2;
+o1.foo.bar  // "hello"
+#+END_SRC
+该例子还说明, 属性可以动态创建, 不必在对象声明时就指定.
+
+** 对象的引用
+
+如果把一个变量赋值为一个对象, 则它们都是这个对象的引用, 指向同一个内存地址, 修改其中一个变量, 会影响到其他所有变量. 如果把该变量又赋值为另一个值, 不会对原有对象造成影响.
+
+** 属性的操作
+
+*** 读取属性
+
+两种方法, 点运算符, 或方括号运算符.
+#+BEGIN_SRC JavaScript
+var obj = {
+	p: 'Hello World'
+};
+obj.p
+obj['p']
+#+END_SRC
+注意: 属性名必须放在引号中间.
+
+*** 属性的赋值
+#+BEGIN_SRC JavaScript
+var obj = {};
+obj.foo = 'Hello';
+obj['bar'] = 'World';
+#+END_SRC
+
+*** 查看所有属性
+
+Object.keys(obj);
+
+*** delete命令
+
+delete obj.p
+
+*** in运算符
+
+用于检查对象是否包含某个属性.
+
+*** for ... in 循环
+
+用来遍历一个对象的全部属性. 但有些属性是不可遍历的, 如toString在对象创建之初就存在, 但是不可遍历.
+
+* 数组
+
+数组是按次序排列的一组值, 下标从0开始. 数组的赋值方法:
+#+BEGIN_SRC JavaScript
+// 法1
+var arr = ['a', 'b', 'c'];
+
+// 法2
+var arr = [];
+arr[0] = 'a';
+#+END_SRC
+
+任何类型的数据都可以放入数组:
+#+BEGIN_SRC JavaScript
+var arr = [
+	{a: 1},
+	[1, 2, 3],
+	function () { return true; }
+];
+#+END_SRC
+
+** 数组的本质
+
+数组本质上是一种特殊的对象. =typeof= 运算符会返回数组的类型是 =object=. 数组的特殊性在于, 它的键名(属性)是按次序排列的一组整数(0, 1, 2, ...). 如:
+#+BEGIN_SRC JavaScript
+var arr = ['a', 'b', 'c'];
+Object.keys(arr)  // ["0", "1", "2"]
+#+END_SRC
+=Object.keys()= 返回数组的所有键名.
+
+JavaScript规定, 对象的键名一律为字符串, 所以, 数组的键名其实也是字符串, 之所以可以用数值读取, 是因为非字符串的键名会被转为字符串.
+
+对象读取成员有两种方法: 点结构(object.key)和方括号结构(object[key]). 但是, 对于数值的键名, 不能使用点结构:
+#+BEGIN_SRC JavaScript
+var arr = [1, 2, 3];
+arr.0  // SyntaxError
+#+END_SRC
+
+** length属性
+
+数组的 =length= 属性, 返回数组的成员数量.
+
+数组的 =length= 属性是动态可变的, 如果你想清空一个数组, 就把 =length= 属性设为0.
+
+有一点需要注意, 数组的 =length= 属性是键名最大的数字加1, 这就需要数组的键名是整数. 如果我们把数组的键名改成字符串或小数, 则 =length= 属性保持不变:
+#+BEGIN_SRC JavaScript
+var arr = [];
+
+arr['p'] = 'abc';
+a.length  // 0
+
+a[2.1] = 'abc';
+a.length  // 0
+#+END_SRC
+
+使用 =delete= 命令删除一个数组成员, 会形成空位, 不影响 =length= 的值:
+#+BEGIN_SRC JavaScript
+var a = [1, 2, 3];
+delete a[1];
+a[1]  // undefined
+a.length  // 3
+#+END_SRC
+
+** 遍历数组
+
+遍历数组的键名, 使用: in
+
+遍历数组的值, 使用: for ... in(不推荐), while, for, forEach
+
+* 函数
+
+** 函数声明
+
+声明函数有三种方法.
+
+*** function命令
+
+#+BEGIN_SRC JavaScript
+function print (s) {
+	console.log(s);
+}
+#+END_SRC
+
+*** 函数表达式
+
+#+BEGIN_SRC JavaScript
+var print = function (s) {
+	console.log(s);
+};
+print(1)
+#+END_SRC
+注意, 这种写法在函数表达式后面有分号结尾.
+
+也可以在采用函数表达式声明函数时, =function= 命令后面带上函数名. 但是这个函数名只在函数内部有效, 在函数外部无效. 建议加上函数名, 因为这样可以在程序出错时, 通过函数调用栈定位.
+#+BEGIN_SRC JavaScript
+var print = function x () {
+	console.log(typeof x);
+};
+print()
+#+END_SRC
+
+*** Function构造函数
+
+#+BEGIN_SRC JavaScript
+var add = new Function (
+	'x',
+	'y',
+	'return x + y'
+);
+//  等同于
+function add (x, y) {
+	return x + y;
+}
+#+END_SRC
+不推荐这种方法.
+
+** 函数的重复声明
+
+后面的声明会覆盖前面的声明.
+
+** 函数作为参数
+
+#+BEGIN_SRC JavaScript
+function add(x, y) {
+	return x + y;
+}
+function a(op) {
+	return op;
+}
+a(add)(1, 1)  // 2
+#+END_SRC
+
+** 函数的属性和方法
+
+- name: 返回函数的名字  (f1.name)
+- length: 返回参数个数  (f1.length)
+- toString(): 返回函数内部代码  (f1.toString())
+
+** 参数
+
+如果在定义时提供了两个参数, 而调用时使用了更多或更少参数, 都不会报错.
+
+*** 参数的传递方式
+
+如果参数是原始数据类型(数值, 字符串, 布尔值), 则采用值传递, 这意味着, 在函数体内修改参数值, 不会影响到函数外部.
+#+BEGIN_SRC JavaScript
+var p = 2;
+function f(p) {
+	p = 3;
+}
+f(p);
+p  // 2
+#+END_SRC
+
+如果参数是复合类型的值(数组, 对象, 其他函数), 则采用地址传递, 也就是说, 传入函数的原始值的地址, 因此, 在函数内部修改参数, 会影响到原始值.
+#+BEGIN_SRC JavaScript
+var obj = { p:1 };
+function f(o) { o.p = 2; }
+f(obj);
+obj.p  // 2
+#+END_SRC
+
+注意, 如果函数内部修改的, 是不参数对象的某个属性, 而是替换掉整个参数, 则不会影响到原始值.
+#+BEGIN_SRC JavaScript
+var obj = [1, 2, 3];
+function f(o) { o = [2, 3, 4]; }
+f(obj);
+obj  // [1, 2, 3]
+#+END_SRC
+解析: 形式参数 =o= 的值一开始是参数 =obj= 的地址, 重新对 =o= 赋值, 会导致 =o= 指向另一个地址, 保存在原地址上的值当然不受影响.
+
+*** arguments对象(可变参数个数)
+
+=arguments= 对象包含了函数运行时的所有参数. 使用方法: =arguments[index]=.
+
+#+BEGIN_SRC JavaScript
+function f() {
+	return arguments.length;
+}
+f(1, 2, 3)  // 3
+f(1)  // 1
+#+END_SRC
+
+** 闭包
+
+闭包的由来: 由于变量存在作用域, 所以函数内部可以直接读取全局变量, 而函数外部无法读取函数内部声明的变量. 要想在函数外部获得函数内部的局部变量, 正常情况下是办不到的, 但可以变通方法.
+#+BEGIN_SRC JavaScript
+function f1() {
+	var n = 999;
+	function f2() {
+		console.log(n);
+	}
+	return f2;
+}
+
+var result = f1();
+result();  // 999
+#+END_SRC
+
+在上面的代码中, 函数 =f1= 的返回值就是函数 =f2=, 由于 =f2= 可以读取 =f1= 的内部变量, 所以就可以在外部获得 =f1= 的内部变量了.
+
+闭包就是函数 =f2=, 即能够读取其他函数内部变量的函数. 在本质上, 闭包是把函数内部和外部连接起来的一座桥梁.
+
+闭包的最大用处有两个, 一是可读取函数内部的变量, 二是让这些变量始终保持在内存中, 即闭包可以使它诞生环境一直存在. 如:
+#+BEGIN_SRC JavaScript
+function createIncrementor(start) {
+	return function() {
+		return start++;
+	};
+}
+
+var inc = createIncrementor(5);
+
+inc()  // 5
+inc()  // 6
+inc()  // 7
+#+END_SRC
+通过闭包, =start= 的状态被保留了, 每一次调用都是在上一次调用的基础上进行计算.
+
+因为 =inc= 始终在内存中, 而 =inc= 的存在依赖于 =createIncrementor=, 因此也始终在内存中, 不会在调用结束后, 被垃圾回收机制回收.
+
+* 数据类型转换
+
+** 强制转换
+
+- Number(): 强制转换为数值, 比 =parseInt()= 严格
+- String(): 将任意类型的值转化成字符串
+- Boolean(): 将任意类型的值转化为布尔值
+
+* 错误处理机制
+
+** Error实例对象
+
+JavaScript解析或运行时, 一旦发生错误, 引擎就会抛出一个错误对象. JavaScript原生提供Error构造函数, 所有抛出的错误都是这个构造函数的实例.
+#+BEGIN_SRC JavaScript
+var err = new Error('出错了');
+err.message  //  "出错了"
+#+END_SRC
+抛出Error实例对象后, 整个程序就中断在发生错误的地方, 不再往下执行.
+
+** 原生错误类型
+
+- SyntaxError: 解析代码时发生的语法错误
+- ReferenceError: 引用一个不存在的变量时发生的错误
+- RangeError: 一个值超出有效范围时发生的错误
+- TypeError: 变量或参数不是预期类型时发生的错误
+- URIError: URI相关函数的参数不正确时抛出的错误
+- EvalError: eval函数没有被正确执行时抛出的错误
+
+** 自定义错误
+
+#+BEGIN_SRC JavaSript
+function UserError(message) {
+	this.message = message || '默认信息';
+	this.name = 'UserError';
+}
+UserError.prototype = new Error();  //  继承自Error对象
+UserError.prototype.constructor = UserError;
+
+// 用法
+new UserError('这是自定义的错误');
+#+END_SRC
+
+** throw语句
+
+=throw= 的作用是手动中断程序执行, 抛出一个错误.
+#+BEGIN_SRC JavaScript
+if(x < 0) {
+	throw new Error('x 必须为正数');
+}
+#+END_SRC
+对于JavaScript引擎来说, 遇到 =throw= 语句, 程序就中止了.
+
+** try ... catch 结构
+
+=try ... catch= 结构允许对错误进行处理, 选择是否往下执行.
+#+BEGIN_SRC JavaScript
+try {
+	throw "出错了";
+} catch(e) {
+	console.log(111);
+}
+console.log(222);
+#+END_SRC
+=try= 代码块抛出的错误, 如果被 =catch= 代码块捕获后, 程序就会继续向下执行.
+
+可以捕获不同类型的错误:
+#+BEGIN_SRC JavaScript
+try {
+	foo.bar();
+} catch(e) {
+	if(e instanceof EvalError) {
+		console.log(e.name + ":" + e.message);
+	} else if(e instanceof RangeError) {
+		console.log(e.name + ":" + e.message);
+	}
+	// ...
+}
+#+END_SRC
+
+** finally 代码块
+
+=try ... catch= 结构允许在最后添加一个 =finally= 代码块, 表示不管是否出现错误, 都必须在最后运行的语句, 即使在 =try= 代码块中有 =return= 语句, 也还会去执行 =finally=.
