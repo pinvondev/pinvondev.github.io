@@ -1,0 +1,67 @@
+#+TITLE:       Ubuntu 16.04 安装 MySQL
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-14 三
+#+URI:         /blog/%y/%m/%d/ubuntu-1604-安装-mysql
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        SQL
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 安装MySQL
+
+#+BEGIN_SRC Shell
+sudo apt update
+sudo apt install mysql-server
+#+END_SRC
+
+这一步会让我们设置MySQL的root密码. 如果这一步不设置, 则留空. 然后安装完了, 运行 =mysql_secure_installation= 来设置root密码.
+
+* 配置
+
+编辑MySQL的配置文件, 把数据库默认的编码全部改为UTF-8.
+#+BEGIN_SRC Shell
+sudo emacs /etc/mysql/my.cnf
+#+END_SRC
+
+内容编辑如下:
+#+BEGIN_SRC Shell
+[client]
+default-character-set = utf8
+
+[mysqld]
+default-storage-engine = INNODB
+character-set-server = utf8
+collation-server = utf8_general_ci
+#+END_SRC
+
+重启MySQL后, 可以通过MySQL的客户端命令检查编码:
+#+BEGIN_SRC Shell
+mysql -u root -p
+# 输入密码
+show variables like '%char%';
+# 如果看到utf8字样, 就表示编码设置正确
+#+END_SRC
+
+[[./0.png]]
+
+* 启动和停止MySQL
+
+#+BEGIN_SRC Shell
+sudo service mysql status  # 检查MySQL服务器状态
+sudo service mysql stop  # 关闭MySQL服务器
+sudo service mysql start  # 启动MySQL服务器
+#+END_SRC
+
+服务启动后查询端口:
+#+BEGIN_SRC Shell
+sudo netstat -anp | grep mysql  # 一般查询得知是3306
+
+# 连接数据库
+mysql -h 127.0.0.1 -P 3306 -u root -p
+# 或者
+mysql -u root -p 
+
+# 输入密码
+#+END_SRC
