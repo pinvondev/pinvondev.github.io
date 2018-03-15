@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>k-近邻算法 - Pinvon&#39;s Blog</title>
+    <title>MySQL的一些常用操作 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,42 +30,61 @@
 
 <div>
 <div class="post">
-<h1>k-近邻算法</h1>
+<h1>MySQL的一些常用操作</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0ef13f8">k-近邻算法概述</a></li>
+<li><a href="#org904a32e">创建数据库</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0ef13f8" class="outline-2">
-<h2 id="org0ef13f8">k-近邻算法概述</h2>
-<div class="outline-text-2" id="text-org0ef13f8">
+<div id="outline-container-org904a32e" class="outline-2">
+<h2 id="org904a32e">创建数据库</h2>
+<div class="outline-text-2" id="text-org904a32e">
 <p>
-\(k\) -近邻算法是监督学习算法，用于解决分类问题。
+假设要创建数据库: Healthy
 </p>
+<div class="org-src-container">
+<pre class="src src-MySQL">CREATE DATABASE Healthy;
+
+# 给本自localhost的用户root分配对Healthy数据库的所有表进行所有操作的权限, 并设定口令为123456
+GRANT ALL PRIVILEGES ON Healthy.* TO root@localhost IDENTIFIED BY '123456';
+
+FLUSH PRIVILEGES;
+
+# 查看数据库
+SHOW DATABASES;
+
+# 使用Healthy数据库
+USE Healthy;
+
+# 查看表
+SHOW TABLES;
+
+# 创建表
+create table user( id int(11) not null primary key auto_increment, name varchar(50), age tinyint(4) );
+
+# 查看表结构
+SHOW COLUMNS FROM user;  # 或者 DESC 表名
+</pre>
+</div>
 
 <p>
-对于训练集中的每个数据，其所属分类已知。输入新数据后，根据新数据的特征与训练集中的特征进行比较，得出新数据最接近的分类。而 \(k\)  这个名字的来源，是因为一般只与前 \(k\) 个最相似的数据比较，其中， \(k \leq 20\) 。
+如果在 <code>GRANT...</code> 时, MySQL提示密码强度不符合当前的策略, 则可这样修改:
 </p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 登陆到服务器
+mysql -u root -p
 
-<p>
-思考：如果 \(k\) 太大，有很多相似度较低的数据也参与了比较，在结果中与相似度较高的数据有同等的权重决定分类结果，会使得结果不准确。当然，也可以为这些相似度低的数据分配较低的权重，但这样也增加了复杂的复杂度。
-</p>
+# 设置validate_password_policy
+mysql&gt; set global validate_password_policy=0;
 
-<p>
-使用欧氏距离公式来计算距离。然后对距离进行排序，确定前 \(k\) 个距离的元素所在的主要分类。
-</p>
-
-<p>
-使用数值归一化的情况：假如结果由两个特征决定，由于特征1的数值很大，所以特征1对结果造成的影响很大，而实际上，特征1和特征2的权重是相同的，这时候，需要对特征进行数值归一化。方法： \(new=\frac{old-min}{max-min}\) 。
-</p>
-
-<p>
-\(k\) -近邻算法是分类数据最简单最有效的方法，它是基于实例的学习，使用算法时我们必须有接近实际数据的训练样本数据。 \(k\) -近邻算法必须保存全部数据集，如果训练数据集很大，必须使用大量的存储空间。此外，必须对数据集中的每个数据计算距离值，实际使用时可能非常耗时。
-</p>
+# 设置validate_password_length
+mysql&gt; set global validate_password_length=4;
+</pre>
+</div>
 </div>
 </div>
 
@@ -73,9 +92,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-01</span>
-        <span title="last modification date" class="post-info">2018-01-09</span>
-        <span title="tags" class="post-info"><a href="/tags/机器学习实战-读书笔记/">机器学习实战-读书笔记</a></span>
+        <span title="post date" class="post-info">2018-03-14</span>
+        <span title="last modification date" class="post-info">2018-03-15</span>
+        <span title="tags" class="post-info"><a href="/tags/sql/">SQL</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -83,8 +102,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/01/k-近邻算法";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/01/k-近邻算法";
+          var disqus_identifier = "/blog/2018/03/14/mysql的一些常用操作";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/14/mysql的一些常用操作";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {

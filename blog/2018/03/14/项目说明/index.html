@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>项目说明 - Pinvon&#39;s Blog</title>
+    <title>项目记录 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,131 +30,350 @@
 
 <div>
 <div class="post">
-<h1>项目说明</h1>
+<h1>项目记录</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3c32a4b">安装</a></li>
-<li><a href="#org216c44f">目录结构</a>
+<li><a href="#org03cdabf">生成Express项目</a></li>
+<li><a href="#org3511c63">目录结构</a></li>
+<li><a href="#org7a08f60">模板引擎</a></li>
+<li><a href="#org07b7047">MySQL</a>
 <ul>
-<li><a href="#orga948d98">routes子目录</a></li>
-<li><a href="#org432c1b1">启动文件</a></li>
-<li><a href="#orgd6098f1">views子目录</a></li>
-<li><a href="#orgc623eee">静态文件目录</a></li>
+<li><a href="#org98e674e">创建表</a></li>
+<li><a href="#orgc4d3cd3">MySQL模块</a></li>
+<li><a href="#org28c3e00">目录结构</a>
+<ul>
+<li><a href="#org7da81ba">conf目录</a></li>
+<li><a href="#orgf1d5f25">dao目录</a></li>
+<li><a href="#orgf662027">util目录</a></li>
+<li><a href="#org5e73650">添加路由</a></li>
+<li><a href="#org7c4ba7e">测试</a></li>
 </ul>
 </li>
 </ul>
+</li>
+<li><a href="#orgebbe72b">代码组织</a></li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-org3c32a4b" class="outline-2">
-<h2 id="org3c32a4b">安装</h2>
-<div class="outline-text-2" id="text-org3c32a4b">
-<div class="org-src-container">
-<pre class="src src-Shell">mkdir healthy
-cd healthy
-npm init  # 一路回车
-npm install express --save
-npm install hbs --save-dev  # 安装模板引擎
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org216c44f" class="outline-2">
-<h2 id="org216c44f">目录结构</h2>
-<div class="outline-text-2" id="text-org216c44f">
-</div>
-<div id="outline-container-orga948d98" class="outline-3">
-<h3 id="orga948d98">routes子目录</h3>
-<div class="outline-text-3" id="text-orga948d98">
+<div id="outline-container-org03cdabf" class="outline-2">
+<h2 id="org03cdabf">生成Express项目</h2>
+<div class="outline-text-2" id="text-org03cdabf">
 <p>
-该目录用于存放路由.
+Node.js的安装在此跳过. 本项目在Node.js的基础上开始.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-JavaScript">module.exports = function (app) {
-    app.route('/').get(function (req, res) {
-        res.send('this is the login form');
-    });
-    app.route('/about').get(function (req, res) {
-        res.render('about', {title:"关于智慧医疗", author:'HQU'});
-    });
+<pre class="src src-Shell"># 安装express
+npm install express-generator -g
+
+# 查看express命令选项
+express -h
+
+# 创建项目
+express --view=hbs healthy
+
+# 安装依赖
+cd myapp
+npm install
+
+# 运行
+npm start
+# 或者
+DEBUG=healthy:* npm start  # Linux, MacOS
+set DEBUG=healthy:* &amp; npm start  # Windows
+</pre>
+</div>
+<p>
+此时可在浏览器中输入 <a href="http://localhost:3000">http://localhost:3000</a> 访问该应用.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3511c63" class="outline-2">
+<h2 id="org3511c63">目录结构</h2>
+<div class="outline-text-2" id="text-org3511c63">
+<p>
+/bin: 用于应用的启动.
+/public: 放置静态资源.
+/routes: 放置路由.
+/views: 放置模板文件(html).
+app.js: 程序的入口文件
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7a08f60" class="outline-2">
+<h2 id="org7a08f60">模板引擎</h2>
+<div class="outline-text-2" id="text-org7a08f60">
+<p>
+本项目使用 <code>handlebars</code> 模板引擎, 该模板引擎默认使用的模板文件的后缀名是 <code>hbs</code>, 因此 <code>views子目录</code> 中的文件全是 <code>hbs</code> 结尾的. 这边我们进行修改, 使模板引擎使用后缀名为 <code>html</code> 的文件作为模板文件.
+</p>
+
+<p>
+修改根目录下的 <code>app.js</code> 文件, 加入以下几句话:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// 在开头添加如下代码
+var hbs = require('hbs');
+
+// 将 app.set('view engine', 'hbs'); 改成如下代码
+app.set('view engine', 'html');
+
+// 紧接上面一句, 添加如下代码
+app.engine('html', hbs.__express);
+</pre>
+</div>
+
+<p>
+并将 <code>views</code> 目录下的文件后缀名直接改成 <code>html</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07b7047" class="outline-2">
+<h2 id="org07b7047">MySQL</h2>
+<div class="outline-text-2" id="text-org07b7047">
+<p>
+<a href="https://pinvondev.github.io/blog/2018/03/14/ubuntu-1604-%E5%AE%89%E8%A3%85-mysql/">安装MySQL</a>
+</p>
+
+<p>
+以下通过一个简单的例子来说明如何将Express与MySQL整合起来.
+</p>
+</div>
+
+<div id="outline-container-org98e674e" class="outline-3">
+<h3 id="org98e674e">创建表</h3>
+<div class="outline-text-3" id="text-org98e674e">
+<p>
+创建一个简单的表, 表结构如下:
+<img src="/assets/blog/2018/03/14/项目说明/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc4d3cd3" class="outline-3">
+<h3 id="orgc4d3cd3">MySQL模块</h3>
+<div class="outline-text-3" id="text-orgc4d3cd3">
+<p>
+在 <code>package.json</code> 的 <code>dependencies</code> 中新增以下配置:
+</p>
+<div class="org-src-container">
+<pre class="src src-JSON">"mysql":"latest"
+</pre>
+</div>
+<p>
+执行 <code>npm install</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org28c3e00" class="outline-3">
+<h3 id="org28c3e00">目录结构</h3>
+<div class="outline-text-3" id="text-org28c3e00">
+<p>
+根据需要的功能, 在根目录再新建三个目录, 分别管理.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir util  # 工具
+mkdir conf  # 配置
+mkdir dao  # 与数据库交互(Data Access Object)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org7da81ba" class="outline-4">
+<h4 id="org7da81ba">conf目录</h4>
+<div class="outline-text-4" id="text-org7da81ba">
+<p>
+新建配置文件, 编定MySQL数据库连接配置. <code>emacs conf/db.js</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// MySQL数据库联接配置
+module.exports = {
+    mysql: {
+        host: '127.0.0.1', 
+        user: 'root',
+        password: '123456',
+        database:'healthy', // 前面建的user表位于这个数据库中
+        port: 3306
+    }
 };
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org432c1b1" class="outline-3">
-<h3 id="org432c1b1">启动文件</h3>
-<div class="outline-text-3" id="text-org432c1b1">
+<div id="outline-container-orgf1d5f25" class="outline-4">
+<h4 id="orgf1d5f25">dao目录</h4>
+<div class="outline-text-4" id="text-orgf1d5f25">
+<p>
+该目录下需要新建两个文件. 第一个(userSqlMapping.js)的内容是对数据库中某个表进行操作的SQL语句. 第二个(userDao.js)的内容是获取前端传过来的数据, 通过SQL语句存到MySQL中.
+</p>
+
+<p>
+<code>emacs dao/userSqlMapping.js</code>:
+</p>
 <div class="org-src-container">
-<pre class="src src-JavaScript">var express = require('express');
-var hbs = require('hbs');
-var app = express();
+<pre class="src src-JavaScript">// CRUD SQL语句
+var user = {
+    insert:'INSERT INTO user(id, name, age) VALUES(0,?,?)',
+    update:'update user set name=?, age=? where id=?',
+    delete: 'delete from user where id=?',
+    queryById: 'select * from user where id=?',
+    queryAll: 'select * from user'
+};
 
-app.set('view engine', 'html');
-app.engine('html', hbs.__express);
-app.use(express.static('public'));
-var routes = require('./routes/router.js')(app);
+module.exports = user;
+</pre>
+</div>
 
-app.listen(3000);
+<p>
+<code>emacs dao/userDao.js</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// 实现与MySQL交互
+var mysql = require('mysql');
+var $conf = require('../conf/db');
+var $util = require('../util/util');
+var $sql = require('./userSqlMapping');
+
+// 使用连接池，提升性能
+var pool  = mysql.createPool($util.extend({}, $conf.mysql));
+
+// 向前台返回JSON方法的简单封装
+var jsonWrite = function (res, ret) {
+    if(typeof ret === 'undefined') {
+        res.json({
+            code:'1',
+            msg: '操作失败'
+        });
+    } else {
+        res.json(ret);
+    }
+};
+
+module.exports = {
+    add: function (req, res, next) {
+        pool.getConnection(function(err, connection) {
+            // 获取前台页面传过来的参数
+            var param = req.query || req.params;
+
+            // 建立连接，向表中插入值
+            // 'INSERT INTO user(id, name, age) VALUES(0,?,?)',
+            connection.query($sql.insert, [param.name, param.age], function(err, result) {
+                if(result) {
+                    result = {
+                        code: 200,
+                        msg:'增加成功'
+                    };    
+                }
+
+                // 以json形式，把操作结果返回给前台页面
+                jsonWrite(res, result);
+
+                // 释放连接 
+                connection.release();
+            });
+        });
+    }
+};
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd6098f1" class="outline-3">
-<h3 id="orgd6098f1">views子目录</h3>
-<div class="outline-text-3" id="text-orgd6098f1">
+<div id="outline-container-orgf662027" class="outline-4">
+<h4 id="orgf662027">util目录</h4>
+<div class="outline-text-4" id="text-orgf662027">
 <p>
-该目录用于存放动态网页模板.
-</p>
-
-<p>
-about.html
+<code>emacs util/util.js</code>:
 </p>
 <div class="org-src-container">
-<pre class="src src-HTML">&lt;h1&gt;智慧医疗&lt;/h1&gt;
-
-&lt;p&gt;{{author}}&lt;/p&gt;
-
-&lt;img src="about.jpg" height="800" /&gt;
-</pre>
-</div>
-
-<p>
-layout.html
-</p>
-<div class="org-src-container">
-<pre class="src src-HTML">&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;{{title}}&lt;/title&gt;
-  &lt;/head&gt;
-
-  &lt;body&gt;
-    {{{body}}}
-    &lt;footer&gt;
-      &lt;p&gt;
-        &lt;a href="/"&gt;首页&lt;/a&gt; - &lt;a href="/about"&gt;关于&lt;/a&gt;
-      &lt;/p&gt;
-    &lt;/footer&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+<pre class="src src-JavaScript">// 提升性能
+module.exports = {
+  extend: function(target, source, flag) {
+    for(var key in source) {
+      if(source.hasOwnProperty(key)){
+        flag ? (target[key] = source[key]) : (target[key] === void 0 &amp;&amp; (target[key] = source[key]));
+      }
+    }
+    return target;
+  }
+};
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc623eee" class="outline-3">
-<h3 id="orgc623eee">静态文件目录</h3>
-<div class="outline-text-3" id="text-orgc623eee">
+<div id="outline-container-org5e73650" class="outline-4">
+<h4 id="org5e73650">添加路由</h4>
+<div class="outline-text-4" id="text-org5e73650">
 <p>
-<code>public子目录</code> 用于存放静态文件, 如图片, 样式表等.
+<code>emacs routes/users.js</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// 在文件开头添加以下代码
+var userDao = require('../dao/userDao');
+
+// 添加以下路由
+// 增加用户
+router.get('/addUser', function(req, res, next) {
+    userDao.add(req, res, next);
+});
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7c4ba7e" class="outline-4">
+<h4 id="org7c4ba7e">测试</h4>
+<div class="outline-text-4" id="text-org7c4ba7e">
+<p>
+为了方便, 前面实现的是get请求的add方法, 所以可以直接在浏览器中使用地址添加数据到数据库. <a href="http://localhost:3000/users/addUser?name=xyz&amp;age=18">http://localhost:3000/users/addUser?name=xyz&amp;age=18</a>
+</p>
+
+<p>
+根据返回的内容, 判断是否成功. 如果成功, 在数据库中应该可以看到添加了一条新数据.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/14/项目说明/1.png" alt="1.png" />
 </p>
 </div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/14/项目说明/2.png" alt="2.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgebbe72b" class="outline-2">
+<h2 id="orgebbe72b">代码组织</h2>
+<div class="outline-text-2" id="text-orgebbe72b">
+<p>
+路由都写在 <code>routes</code> 目录下, 然后通过 module.exports = router 将里面的处理方法导出.
+</p>
+
+<p>
+在入口文件 <code>app.js</code> 中, 使用 var users = require('./routes/users') 这种语句, 将处理方法赋给 <code>app.js</code> 中的变量, 再使用 app.use('/path', middle) 将路径与处理方法绑定.
+</p>
+
+<p>
+以后, 一级路径(如'/users'), 就在 <code>app.js</code> 中与相应的模块进行绑定, 而二级或者更高级的路径(如'/users/pinvon'), 就在路由 <code>routes/users.js</code> 中, 将具体的路径与相应的中间件进行绑定.
+</p>
+
+<p>
+关于数据库, 对于数据库中的每一个表, 有一个相应的文件(如'dao/userSqlMapping.js')来编写所需要用到的SQL语句, 然后再有一个相应的文件(如'dao/userDao.js')来作为数据库和前端的中间处理程序. 即, 一个表会有两个对应的文件, 来实现对数据库的操作.
+</p>
 </div>
 </div>
 
@@ -163,7 +382,7 @@ layout.html
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-03-14</span>
-        <span title="last modification date" class="post-info">2018-03-14</span>
+        <span title="last modification date" class="post-info">2018-03-15</span>
         <span title="tags" class="post-info"><a href="/tags/web/">Web</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
