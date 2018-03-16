@@ -31,31 +31,89 @@
 <div>
 <div class="post">
 <h1>钓鱼网站+机器学习</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org6f11850">数据集</a></li>
+<li><a href="#org0e60855">特征</a>
+<ul>
+<li><a href="#org553eaf4">基于地址栏的特征</a>
+<ul>
+<li><a href="#org11ea9f1">IP地址</a></li>
+<li><a href="#orgd222774">长网址</a></li>
+<li><a href="#org85023e1">使用缩略网址服务</a></li>
+<li><a href="#org7475424">@字符</a></li>
+<li><a href="#org6cbeffe">使用//重定向</a></li>
+<li><a href="#org87d47e0">域名中带"-"</a></li>
+<li><a href="#orgd880e9c">子域名或多子域名</a></li>
+<li><a href="#orged27420">HTTPS</a></li>
+<li><a href="#orgfb1377c">域名注册时间</a></li>
+<li><a href="#orgb77adae">favicon图标</a></li>
+<li><a href="#org23b9db8">使用非标准端口</a></li>
+<li><a href="#orgec2dda9">域名中含有HTTPS或HTTP</a></li>
+</ul>
+</li>
+<li><a href="#orgd6188e3">基于异常</a>
+<ul>
+<li><a href="#org295986e">检查Request请求</a></li>
+<li><a href="#orgac5c550">URL的锚点</a></li>
+<li><a href="#org0ad0ae0">&lt;Meta&gt;, &lt;Script&gt;和&lt;Link&gt;标记中的链接</a></li>
+<li><a href="#orgd083b9c">服务器表单处理程序(SFH)</a></li>
+<li><a href="#org7097463">提交信息到电子邮件</a></li>
+<li><a href="#orgd08014f">异常URL</a></li>
+</ul>
+</li>
+<li><a href="#org6993cb0">基于HTML和JavaScript</a>
+<ul>
+<li><a href="#org3a89d81">网站转发</a></li>
+<li><a href="#orgdb1df0a">自定义状态栏</a></li>
+<li><a href="#orga24af9a">禁止右键单击</a></li>
+<li><a href="#org0012175">使用弹窗</a></li>
+<li><a href="#org13a73ed">IFrame重定向</a></li>
+</ul>
+</li>
+<li><a href="#orgbda6a26">基于域名</a>
+<ul>
+<li><a href="#org2d5f735">域名年龄</a></li>
+<li><a href="#org0c456f1">DNS记录</a></li>
+<li><a href="#org1b00085">网站流量</a></li>
+<li><a href="#orgce21a06">PageRank</a></li>
+<li><a href="#org1dcaa65">谷歌索引</a></li>
+<li><a href="#orgb1da8e8">指向页面的链接数量</a></li>
+<li><a href="#org66438d4">基于统计报告的特征</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 
-<div id="outline-container-orgb5af9a8" class="outline-2">
-<h2 id="orgb5af9a8">数据集</h2>
-<div class="outline-text-2" id="text-orgb5af9a8">
+<div id="outline-container-org6f11850" class="outline-2">
+<h2 id="org6f11850">数据集</h2>
+<div class="outline-text-2" id="text-org6f11850">
 <p>
 <a href="https://archive.ics.uci.edu/ml/datasets/Phishing+Websites">Phishing Websites Data Set</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6f4e4d2" class="outline-2">
-<h2 id="org6f4e4d2">特征</h2>
-<div class="outline-text-2" id="text-org6f4e4d2">
+<div id="outline-container-org0e60855" class="outline-2">
+<h2 id="org0e60855">特征</h2>
+<div class="outline-text-2" id="text-org0e60855">
 <p>
 这边给出的关于钓鱼网站的重要特征, 已经被证明是合理有效的.
 </p>
 </div>
 
-<div id="outline-container-orgc9ab216" class="outline-3">
-<h3 id="orgc9ab216">基于地址栏的特征</h3>
-<div class="outline-text-3" id="text-orgc9ab216">
+<div id="outline-container-org553eaf4" class="outline-3">
+<h3 id="org553eaf4">基于地址栏的特征</h3>
+<div class="outline-text-3" id="text-org553eaf4">
 </div>
-<div id="outline-container-orgb6bf6b8" class="outline-4">
-<h4 id="orgb6bf6b8">IP地址</h4>
-<div class="outline-text-4" id="text-orgb6bf6b8">
+<div id="outline-container-org11ea9f1" class="outline-4">
+<h4 id="org11ea9f1">IP地址</h4>
+<div class="outline-text-4" id="text-org11ea9f1">
 <p>
 如果一个网址, 在URL中使用IP地址来替代域名, 如: "<a href="http://125.98.3.123/fake.html">http://125.98.3.123/fake.html</a>", 那么该网址有很大的概率是一个钓鱼网站, 试图窃取用户的个人信息. 这边的IP地址除了 IPv4 的, 也可能有 IPv6 的, 如: "<a href="http://0x58.0xcc.0xca.0x62/2/paypal.ca/index.html">http://0x58.0xcc.0xca.0x62/2/paypal.ca/index.html</a>".
 </p>
@@ -73,9 +131,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgdc8793a" class="outline-4">
-<h4 id="orgdc8793a">长网址</h4>
-<div class="outline-text-4" id="text-orgdc8793a">
+<div id="outline-container-orgd222774" class="outline-4">
+<h4 id="orgd222774">长网址</h4>
+<div class="outline-text-4" id="text-orgd222774">
 <p>
 钓鱼网站可能会使用较长的URL, 以达到隐藏其中可疑部分的目的. 如:
 <a href="http://federmacedoadv.com.br/3f/aze/ab51e2e319e51502f416dbe46b773a5e/?cmd=_home&amp;amp;dispatch=11004d58f5b74f8dc1e7c2e8dd4105e811004d58f5b74f8dc1e7c2e8dd4105e8@phishing.website.html">http://federmacedoadv.com.br/3f/aze/ab51e2e319e51502f416dbe46b773a5e/?cmd=_home&amp;amp;dispatch=11004d58f5b74f8dc1e7c2e8dd4105e811004d58f5b74f8dc1e7c2e8dd4105e8@phishing.website.html</a>
@@ -101,9 +159,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org69e1c0a" class="outline-4">
-<h4 id="org69e1c0a">使用缩略网址服务</h4>
-<div class="outline-text-4" id="text-org69e1c0a">
+<div id="outline-container-org85023e1" class="outline-4">
+<h4 id="org85023e1">使用缩略网址服务</h4>
+<div class="outline-text-4" id="text-org85023e1">
 <p>
 缩址, 指的是一种互联网上的技术与服务, 此服务可以提供一个非常短小的URL来代替原来的可能较长的URL, 将长的URL地址缩短. 当用户访问缩短后的URL时, 会被重定向到原来的URL.
 </p>
@@ -133,9 +191,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgbbeb2bc" class="outline-4">
-<h4 id="orgbbeb2bc">@字符</h4>
-<div class="outline-text-4" id="text-orgbbeb2bc">
+<div id="outline-container-org7475424" class="outline-4">
+<h4 id="org7475424">@字符</h4>
+<div class="outline-text-4" id="text-org7475424">
 <p>
 在URL中使用@字符, 会导致浏览器忽略@字符前的所有内容, 而实际地址通常跟在@字符后面.
 </p>
@@ -153,9 +211,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgf7a626a" class="outline-4">
-<h4 id="orgf7a626a">使用//重定向</h4>
-<div class="outline-text-4" id="text-orgf7a626a">
+<div id="outline-container-org6cbeffe" class="outline-4">
+<h4 id="org6cbeffe">使用//重定向</h4>
+<div class="outline-text-4" id="text-org6cbeffe">
 <p>
 如果在URL中存在"<i><i>", 则用户将被重定向到其他网站. 如: "<a href="http://www.legitimate.com//http://www.phishing.com">http://www.legitimate.com//http://www.phishing.com</a>". 可以检查"</i></i>"出现的位置, 如果URL以"HTTP"开头, 则"<i><i>"应该出现在第6位, 如果URL以"HTTPS"开头, 则"</i></i>"应该出现在第7位.
 </p>
@@ -173,9 +231,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org5928220" class="outline-4">
-<h4 id="org5928220">域名中带"-"</h4>
-<div class="outline-text-4" id="text-org5928220">
+<div id="outline-container-org87d47e0" class="outline-4">
+<h4 id="org87d47e0">域名中带"-"</h4>
+<div class="outline-text-4" id="text-org87d47e0">
 <p>
 "-"字符很少用在合法的URL中. 钓鱼者通常会添加以"-"来分隔域名, 使用户感觉他们正在处理合法的网页. 如: "<a href="http://www.confirme-paypal.com">http://www.confirme-paypal.com</a>".
 </p>
@@ -193,9 +251,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgbd35447" class="outline-4">
-<h4 id="orgbd35447">子域名或多子域名</h4>
-<div class="outline-text-4" id="text-orgbd35447">
+<div id="outline-container-orgd880e9c" class="outline-4">
+<h4 id="orgd880e9c">子域名或多子域名</h4>
+<div class="outline-text-4" id="text-orgd880e9c">
 <p>
 如果有链接: "<a href="http://www.hud.ac.uk/students/">http://www.hud.ac.uk/students/</a>". 一个域名可能包含国家代码顶级域名(在这个链接中是英国:uk). "ac"是"学术"的缩写, 组合的"ac.uk"被称为二级域, "hud"是域的实际名称.
 </p>
@@ -219,9 +277,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org66c6557" class="outline-4">
-<h4 id="org66c6557">HTTPS</h4>
-<div class="outline-text-4" id="text-org66c6557">
+<div id="outline-container-orged27420" class="outline-4">
+<h4 id="orged27420">HTTPS</h4>
+<div class="outline-text-4" id="text-orged27420">
 <p>
 检查HTTPS证书的颁发机构及证书的年龄. 值得信赖的证书颁发机构包括:"GeoTrust, GoDaddy, Network Solutions, Thawte, Comodo, Doster, VeriSign". 另外, 通过测试数据集, 可以发现, 有信誉证书的最低年龄为2年. 
 </p>
@@ -241,9 +299,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgbb230e7" class="outline-4">
-<h4 id="orgbb230e7">域名注册时间</h4>
-<div class="outline-text-4" id="text-orgbb230e7">
+<div id="outline-container-orgfb1377c" class="outline-4">
+<h4 id="orgfb1377c">域名注册时间</h4>
+<div class="outline-text-4" id="text-orgfb1377c">
 <p>
 钓鱼网站的域名一般不会注册太长时间, 而可信域名一般会提前支付几年的费用. 在数据集中, 可以发现钓鱼网站的域名最长使用时间仅1年.
 </p>
@@ -261,9 +319,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgdfd0983" class="outline-4">
-<h4 id="orgdfd0983">favicon图标</h4>
-<div class="outline-text-4" id="text-orgdfd0983">
+<div id="outline-container-orgb77adae" class="outline-4">
+<h4 id="orgb77adae">favicon图标</h4>
+<div class="outline-text-4" id="text-orgb77adae">
 <p>
 favicon是网站的缩略图(也称为收藏夹图标), 一般在地址栏会显示出来. 如图所示:
 <img src="/assets/blog/2018/03/15/钓鱼网站+机器学习/0.png" alt="0.png" />
@@ -286,9 +344,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org9e980ab" class="outline-4">
-<h4 id="org9e980ab">使用非标准端口</h4>
-<div class="outline-text-4" id="text-org9e980ab">
+<div id="outline-container-org23b9db8" class="outline-4">
+<h4 id="org23b9db8">使用非标准端口</h4>
+<div class="outline-text-4" id="text-org23b9db8">
 <p>
 有些钓鱼网站使用了非80端口, 因此, 从URL中获取的网站商品号是作为识别钓鱼网站的一个重要依据.
 </p>
@@ -306,9 +364,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org1c6cb7c" class="outline-4">
-<h4 id="org1c6cb7c">域名中含有HTTPS或HTTP</h4>
-<div class="outline-text-4" id="text-org1c6cb7c">
+<div id="outline-container-orgec2dda9" class="outline-4">
+<h4 id="orgec2dda9">域名中含有HTTPS或HTTP</h4>
+<div class="outline-text-4" id="text-orgec2dda9">
 <p>
 如: <a href="http://https-www-paypal-it-webapps-mpp-home.soft-hair.com/">http://https-www-paypal-it-webapps-mpp-home.soft-hair.com/</a>
 </p>
@@ -327,13 +385,13 @@ else
 </div>
 </div>
 
-<div id="outline-container-org5d82f60" class="outline-3">
-<h3 id="org5d82f60">基于异常</h3>
-<div class="outline-text-3" id="text-org5d82f60">
+<div id="outline-container-orgd6188e3" class="outline-3">
+<h3 id="orgd6188e3">基于异常</h3>
+<div class="outline-text-3" id="text-orgd6188e3">
 </div>
-<div id="outline-container-org15fe2f7" class="outline-4">
-<h4 id="org15fe2f7">检查Request请求</h4>
-<div class="outline-text-4" id="text-org15fe2f7">
+<div id="outline-container-org295986e" class="outline-4">
+<h4 id="org295986e">检查Request请求</h4>
+<div class="outline-text-4" id="text-org295986e">
 <p>
 合法的网页中, 网页地址和网页中嵌入的大部分对象共用相同的域. 通过检查Request请求占所有请求的频率, 来判断是否为钓鱼网站.
 </p>
@@ -353,9 +411,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org53252a9" class="outline-4">
-<h4 id="org53252a9">URL的锚点</h4>
-<div class="outline-text-4" id="text-org53252a9">
+<div id="outline-container-orgac5c550" class="outline-4">
+<h4 id="orgac5c550">URL的锚点</h4>
+<div class="outline-text-4" id="text-orgac5c550">
 <p>
 锚点是指&lt;a&gt;标记的元素. &lt;a&gt;元素一般就是Request请求.
 </p>
@@ -379,9 +437,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org66cca27" class="outline-4">
-<h4 id="org66cca27">&lt;Meta&gt;, &lt;Script&gt;和&lt;Link&gt;标记中的链接</h4>
-<div class="outline-text-4" id="text-org66cca27">
+<div id="outline-container-org0ad0ae0" class="outline-4">
+<h4 id="org0ad0ae0">&lt;Meta&gt;, &lt;Script&gt;和&lt;Link&gt;标记中的链接</h4>
+<div class="outline-text-4" id="text-org0ad0ae0">
 <p>
 正常网页中, &lt;Meta&gt;标签提供与HTML文档相关的元数据; &lt;Script&gt;标签用于创建客户端脚本; &lt;Link&gt;标签用于获取其他网络资源.
 </p>
@@ -401,9 +459,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org4bb92ea" class="outline-4">
-<h4 id="org4bb92ea">服务器表单处理程序(SFH)</h4>
-<div class="outline-text-4" id="text-org4bb92ea">
+<div id="outline-container-orgd083b9c" class="outline-4">
+<h4 id="orgd083b9c">服务器表单处理程序(SFH)</h4>
+<div class="outline-text-4" id="text-orgd083b9c">
 <p>
 如果SFH中包含空字符或"about: blank", 则被认为是可疑的, 因为一般来说, 需要对提交的信息进行处理. 
 </p>
@@ -427,9 +485,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org83f0b70" class="outline-4">
-<h4 id="org83f0b70">提交信息到电子邮件</h4>
-<div class="outline-text-4" id="text-org83f0b70">
+<div id="outline-container-org7097463" class="outline-4">
+<h4 id="org7097463">提交信息到电子邮件</h4>
+<div class="outline-text-4" id="text-org7097463">
 <p>
 一般提交的信息直接在域内处理, 如果要将用户提交的信息重定向到个人电子邮件, 则很可能是钓鱼网站. 这种情况在脚本中, 会用到类似于mail()或mailto()这样的函数.
 </p>
@@ -447,9 +505,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org44c1dff" class="outline-4">
-<h4 id="org44c1dff">异常URL</h4>
-<div class="outline-text-4" id="text-org44c1dff">
+<div id="outline-container-orgd08014f" class="outline-4">
+<h4 id="orgd08014f">异常URL</h4>
+<div class="outline-text-4" id="text-orgd08014f">
 <p>
 可以通过whois来获取信息. 对于合法网站, 身份通常是URL的一部分.
 </p>
@@ -468,13 +526,13 @@ else
 </div>
 </div>
 
-<div id="outline-container-org47abce5" class="outline-3">
-<h3 id="org47abce5">基于HTML和JavaScript</h3>
-<div class="outline-text-3" id="text-org47abce5">
+<div id="outline-container-org6993cb0" class="outline-3">
+<h3 id="org6993cb0">基于HTML和JavaScript</h3>
+<div class="outline-text-3" id="text-org6993cb0">
 </div>
-<div id="outline-container-org6728784" class="outline-4">
-<h4 id="org6728784">网站转发</h4>
-<div class="outline-text-4" id="text-org6728784">
+<div id="outline-container-org3a89d81" class="outline-4">
+<h4 id="org3a89d81">网站转发</h4>
+<div class="outline-text-4" id="text-org3a89d81">
 <p>
 通过网站被重定向的次数, 可以判断是否为钓鱼网站.
 </p>
@@ -494,9 +552,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgf0aab67" class="outline-4">
-<h4 id="orgf0aab67">自定义状态栏</h4>
-<div class="outline-text-4" id="text-orgf0aab67">
+<div id="outline-container-orgdb1df0a" class="outline-4">
+<h4 id="orgdb1df0a">自定义状态栏</h4>
+<div class="outline-text-4" id="text-orgdb1df0a">
 <p>
 钓鱼者可以使用JavaScript在状态栏中向用户显示一个伪造的URL. 要提取此功能, 必须挖掘网页源代码, 尤其是"onMouseOver"事件, 并检查它是否在状态栏上进行任何更改.
 </p>
@@ -514,9 +572,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orge808bc2" class="outline-4">
-<h4 id="orge808bc2">禁止右键单击</h4>
-<div class="outline-text-4" id="text-orge808bc2">
+<div id="outline-container-orga24af9a" class="outline-4">
+<h4 id="orga24af9a">禁止右键单击</h4>
+<div class="outline-text-4" id="text-orga24af9a">
 <p>
 钓鱼者使用JavaScript来禁用右键单击功能, 使用户无法查看和保存网页源代码. 通过在网页源代码中搜索事件"event.button == 2", 并检查是否禁用了右键单击.
 </p>
@@ -534,9 +592,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org49d6591" class="outline-4">
-<h4 id="org49d6591">使用弹窗</h4>
-<div class="outline-text-4" id="text-org49d6591">
+<div id="outline-container-org0012175" class="outline-4">
+<h4 id="org0012175">使用弹窗</h4>
+<div class="outline-text-4" id="text-org0012175">
 <p>
 通过弹窗来让用户提交个人信息是不寻常的. 当然, 也有一些合法网址有弹窗, 但一般用作提醒, 而不是让用户输入信息.
 </p>
@@ -554,9 +612,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org5455776" class="outline-4">
-<h4 id="org5455776">IFrame重定向</h4>
-<div class="outline-text-4" id="text-org5455776">
+<div id="outline-container-org13a73ed" class="outline-4">
+<h4 id="org13a73ed">IFrame重定向</h4>
+<div class="outline-text-4" id="text-org13a73ed">
 <p>
 IFrame是一个HTML标签, 可以将其他网页的内容在当前页面中显示. 钓鱼者可以将IFrame的边框隐藏, 使用户辨认不出这边显示的内容是其他网页的内容, 然后将其他域内的网页内容嵌入进来.
 </p>
@@ -575,13 +633,13 @@ else
 </div>
 </div>
 
-<div id="outline-container-org50191de" class="outline-3">
-<h3 id="org50191de">基于域名</h3>
-<div class="outline-text-3" id="text-org50191de">
+<div id="outline-container-orgbda6a26" class="outline-3">
+<h3 id="orgbda6a26">基于域名</h3>
+<div class="outline-text-3" id="text-orgbda6a26">
 </div>
-<div id="outline-container-org07007f8" class="outline-4">
-<h4 id="org07007f8">域名年龄</h4>
-<div class="outline-text-4" id="text-org07007f8">
+<div id="outline-container-org2d5f735" class="outline-4">
+<h4 id="org2d5f735">域名年龄</h4>
+<div class="outline-text-4" id="text-org2d5f735">
 <p>
 可以从WHOIS数据库中提取该信息. 大多数钓鱼网站不会存在太久. 通过查看数据集, 可以得知合法域的最短年龄为6个月.
 </p>
@@ -599,9 +657,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orga94e055" class="outline-4">
-<h4 id="orga94e055">DNS记录</h4>
-<div class="outline-text-4" id="text-orga94e055">
+<div id="outline-container-org0c456f1" class="outline-4">
+<h4 id="org0c456f1">DNS记录</h4>
+<div class="outline-text-4" id="text-org0c456f1">
 <p>
 对于钓鱼网站, WHOIS数据库无法识别其身份, 也没有该主机名的记录.
 </p>
@@ -619,9 +677,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgbc28f24" class="outline-4">
-<h4 id="orgbc28f24">网站流量</h4>
-<div class="outline-text-4" id="text-orgbc28f24">
+<div id="outline-container-org1b00085" class="outline-4">
+<h4 id="org1b00085">网站流量</h4>
+<div class="outline-text-4" id="text-org1b00085">
 <p>
 通过确定访问者的数量和访问的页面数量来衡量网站的受欢迎程度. 由于钓鱼网站的存在时间较短, 因此它们可能无法被Alexa数据库识别. 通过测试数据集, 发现在最糟糕的情况下, 合法网站能排进前10万.
 </p>
@@ -645,9 +703,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orgff36584" class="outline-4">
-<h4 id="orgff36584">PageRank</h4>
-<div class="outline-text-4" id="text-orgff36584">
+<div id="outline-container-orgce21a06" class="outline-4">
+<h4 id="orgce21a06">PageRank</h4>
+<div class="outline-text-4" id="text-orgce21a06">
 <p>
 PageRank用于衡量一个网页在互联网上的重要程度. PageRank值(在0到1之间)越大, 网页越重要. 通过测试数据集, 发现大约95%的钓鱼网页没有PageRank, 剩下的5%的PageRank可能会达到0.2.
 </p>
@@ -665,9 +723,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org2832ada" class="outline-4">
-<h4 id="org2832ada">谷歌索引</h4>
-<div class="outline-text-4" id="text-org2832ada">
+<div id="outline-container-org1dcaa65" class="outline-4">
+<h4 id="org1dcaa65">谷歌索引</h4>
+<div class="outline-text-4" id="text-org1dcaa65">
 <p>
 由于钓鱼网站只能在短时间内访问, 所以很多钓鱼网页无法在Google索引中找到.
 </p>
@@ -685,9 +743,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-orga87fe38" class="outline-4">
-<h4 id="orga87fe38">指向页面的链接数量</h4>
-<div class="outline-text-4" id="text-orga87fe38">
+<div id="outline-container-orgb1da8e8" class="outline-4">
+<h4 id="orgb1da8e8">指向页面的链接数量</h4>
+<div class="outline-text-4" id="text-orgb1da8e8">
 <p>
 由于钓鱼网页存在时间短, 所以基本上没有其他网页会指向钓鱼网页(98%). 另外, 如果一个网站是合法网站, 至少有2个指向它们的外部链接.
 </p>
@@ -707,9 +765,9 @@ else
 </div>
 </div>
 
-<div id="outline-container-org9d1ebca" class="outline-4">
-<h4 id="org9d1ebca">基于统计报告的特征</h4>
-<div class="outline-text-4" id="text-org9d1ebca">
+<div id="outline-container-org66438d4" class="outline-4">
+<h4 id="org66438d4">基于统计报告的特征</h4>
+<div class="outline-text-4" id="text-org66438d4">
 <p>
 有些机构(如PhishTank和StopBadware)会在每个给定的时间段内, 为钓鱼网站制定大量统计报告. 根据PshishTank, 我们认为前10个域名和前10个IP都是钓鱼网站, 根据StopBadware, 我们认为前50个IP都是钓鱼网站.
 </p>
