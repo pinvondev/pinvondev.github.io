@@ -35,38 +35,38 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org81330bf">安装</a></li>
-<li><a href="#orgf777de3">Hello World</a></li>
-<li><a href="#org755c1e8">完整的Web应用程序</a>
+<li><a href="#org4804d21">安装</a></li>
+<li><a href="#org5e7c521">Hello World</a></li>
+<li><a href="#org970e292">完整的Web应用程序</a>
 <ul>
-<li><a href="#org379aba0">目标</a></li>
-<li><a href="#orgc964a42">分析</a></li>
-<li><a href="#orgeab76fa">HTTP服务器</a>
+<li><a href="#org1c5de71">目标</a></li>
+<li><a href="#org2218876">分析</a></li>
+<li><a href="#org27ffc73">HTTP服务器</a>
 <ul>
-<li><a href="#org27b84d9">回调函数</a></li>
-<li><a href="#org27f3a32">代码的组织</a></li>
+<li><a href="#org0e12803">回调函数</a></li>
+<li><a href="#orgb1544ab">代码的组织</a></li>
 </ul>
 </li>
-<li><a href="#orge59237e">路由</a></li>
-<li><a href="#org76c6c2f">真正的请求处理程序</a></li>
-<li><a href="#org05776ed">阻塞与非阻塞</a>
+<li><a href="#org7ce808b">路由</a></li>
+<li><a href="#org8ff27ea">真正的请求处理程序</a></li>
+<li><a href="#org7f1781a">阻塞与非阻塞</a>
 <ul>
-<li><a href="#org0a05481">阻塞</a></li>
-<li><a href="#org91e0516">非阻塞的错误用法</a></li>
-<li><a href="#org2b038ac">非阻塞的正确用法</a></li>
+<li><a href="#orge1981e5">阻塞</a></li>
+<li><a href="#orgc83c476">非阻塞的错误用法</a></li>
+<li><a href="#orga0c45fc">非阻塞的正确用法</a></li>
 </ul>
 </li>
-<li><a href="#org8ec0c87">处理POST请求</a></li>
-<li><a href="#orgcb0e230">处理文件上传</a></li>
+<li><a href="#orgf98e5e1">处理POST请求</a></li>
+<li><a href="#orga3392c6">处理文件上传</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org81330bf" class="outline-2">
-<h2 id="org81330bf">安装</h2>
-<div class="outline-text-2" id="text-org81330bf">
+<div id="outline-container-org4804d21" class="outline-2">
+<h2 id="org4804d21">安装</h2>
+<div class="outline-text-2" id="text-org4804d21">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install nodejs
 sudo apt install npm
@@ -79,9 +79,9 @@ npm是Node.js的包管理工具, 在Node.js上开发时，会用到很多别人�
 </div>
 </div>
 
-<div id="outline-container-orgf777de3" class="outline-2">
-<h2 id="orgf777de3">Hello World</h2>
-<div class="outline-text-2" id="text-orgf777de3">
+<div id="outline-container-org5e7c521" class="outline-2">
+<h2 id="org5e7c521">Hello World</h2>
+<div class="outline-text-2" id="text-org5e7c521">
 <p>
 创建名为helloworld.js的文件, 输入如下语句:
 </p>
@@ -109,22 +109,22 @@ console.log('Hello World');
 </div>
 </div>
 
-<div id="outline-container-org755c1e8" class="outline-2">
-<h2 id="org755c1e8">完整的Web应用程序</h2>
-<div class="outline-text-2" id="text-org755c1e8">
+<div id="outline-container-org970e292" class="outline-2">
+<h2 id="org970e292">完整的Web应用程序</h2>
+<div class="outline-text-2" id="text-org970e292">
 </div>
-<div id="outline-container-org379aba0" class="outline-3">
-<h3 id="org379aba0">目标</h3>
-<div class="outline-text-3" id="text-org379aba0">
+<div id="outline-container-org1c5de71" class="outline-3">
+<h3 id="org1c5de71">目标</h3>
+<div class="outline-text-3" id="text-org1c5de71">
 <p>
 用户请求某网址, 进入欢迎界面, 页面上有一个文件上传的表单, 用户可以选择一个图片并提交表单, 随后文件被上传, 上传完成后将图片显示在页面上.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc964a42" class="outline-3">
-<h3 id="orgc964a42">分析</h3>
-<div class="outline-text-3" id="text-orgc964a42">
+<div id="outline-container-org2218876" class="outline-3">
+<h3 id="org2218876">分析</h3>
+<div class="outline-text-3" id="text-org2218876">
 <ul class="org-ul">
 <li>需要Web页面, 因此要有一个HTTP服务器.</li>
 <li>对于不同的请求, 根据不同的URL, 服务器需要给予不同的响应, 因此需要一个路由, 把请求对应到请求处理程序.</li>
@@ -136,9 +136,9 @@ console.log('Hello World');
 </div>
 </div>
 
-<div id="outline-container-orgeab76fa" class="outline-3">
-<h3 id="orgeab76fa">HTTP服务器</h3>
-<div class="outline-text-3" id="text-orgeab76fa">
+<div id="outline-container-org27ffc73" class="outline-3">
+<h3 id="org27ffc73">HTTP服务器</h3>
+<div class="outline-text-3" id="text-org27ffc73">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var http = require("http");
 http.createServer(function(request, response){
@@ -164,18 +164,18 @@ node server.js
 </p>
 </div>
 
-<div id="outline-container-org27b84d9" class="outline-4">
-<h4 id="org27b84d9">回调函数</h4>
-<div class="outline-text-4" id="text-org27b84d9">
+<div id="outline-container-org0e12803" class="outline-4">
+<h4 id="org0e12803">回调函数</h4>
+<div class="outline-text-4" id="text-org0e12803">
 <p>
 我们给某个方法A传递了一个参数B, 该参数是一个函数名, 这个方法在有相应事件发生时调用这个函数来进行回调. 方法A是提前写好的, 而方法B是后期根据实际需求写的.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org27f3a32" class="outline-4">
-<h4 id="org27f3a32">代码的组织</h4>
-<div class="outline-text-4" id="text-org27f3a32">
+<div id="outline-container-orgb1544ab" class="outline-4">
+<h4 id="orgb1544ab">代码的组织</h4>
+<div class="outline-text-4" id="text-orgb1544ab">
 <p>
 通常使用index.js的文件来作为主模块, 调用其他的模块, 如server.js.
 </p>
@@ -223,9 +223,9 @@ server.start();
 </div>
 </div>
 
-<div id="outline-container-orge59237e" class="outline-3">
-<h3 id="orge59237e">路由</h3>
-<div class="outline-text-3" id="text-orge59237e">
+<div id="outline-container-org7ce808b" class="outline-3">
+<h3 id="org7ce808b">路由</h3>
+<div class="outline-text-3" id="text-org7ce808b">
 <p>
 对于不同的URL请求, 服务器应该有不同的反应.如果是非常简单的应用, 可以直接在回调函数onRequest()中做这件事. 但是对于稍微复杂一些的应用, 还是要有组织较好.
 </p>
@@ -322,9 +322,9 @@ server.start(router.route);
 </div>
 </div>
 
-<div id="outline-container-org76c6c2f" class="outline-3">
-<h3 id="org76c6c2f">真正的请求处理程序</h3>
-<div class="outline-text-3" id="text-org76c6c2f">
+<div id="outline-container-org8ff27ea" class="outline-3">
+<h3 id="org8ff27ea">真正的请求处理程序</h3>
+<div class="outline-text-3" id="text-org8ff27ea">
 <p>
 在将服务器模块与路由模块整合之后, 开始编写真正的请求处理程序.
 </p>
@@ -420,13 +420,13 @@ exports.route = route;
 </div>
 </div>
 
-<div id="outline-container-org05776ed" class="outline-3">
-<h3 id="org05776ed">阻塞与非阻塞</h3>
-<div class="outline-text-3" id="text-org05776ed">
+<div id="outline-container-org7f1781a" class="outline-3">
+<h3 id="org7f1781a">阻塞与非阻塞</h3>
+<div class="outline-text-3" id="text-org7f1781a">
 </div>
-<div id="outline-container-org0a05481" class="outline-4">
-<h4 id="org0a05481">阻塞</h4>
-<div class="outline-text-4" id="text-org0a05481">
+<div id="outline-container-orge1981e5" class="outline-4">
+<h4 id="orge1981e5">阻塞</h4>
+<div class="outline-text-4" id="text-orge1981e5">
 <p>
 在JavaScript中没有sleep()函数, 可以使用其他形式来实现.
 </p>
@@ -508,9 +508,9 @@ Node.js可以在不新增额外线程的情况下, 依然可以对任务进行�
 </div>
 </div>
 
-<div id="outline-container-org91e0516" class="outline-4">
-<h4 id="org91e0516">非阻塞的错误用法</h4>
-<div class="outline-text-4" id="text-org91e0516">
+<div id="outline-container-orgc83c476" class="outline-4">
+<h4 id="orgc83c476">非阻塞的错误用法</h4>
+<div class="outline-text-4" id="text-orgc83c476">
 <p>
 修改requestHandlers.js:
 </p>
@@ -549,9 +549,9 @@ child_process模块可以实现一个既简单又实用的非阻塞操作exec().
 </div>
 </div>
 
-<div id="outline-container-org2b038ac" class="outline-4">
-<h4 id="org2b038ac">非阻塞的正确用法</h4>
-<div class="outline-text-4" id="text-org2b038ac">
+<div id="outline-container-orga0c45fc" class="outline-4">
+<h4 id="orga0c45fc">非阻塞的正确用法</h4>
+<div class="outline-text-4" id="text-orga0c45fc">
 <p>
 正确的方式是函数传递.
 </p>
@@ -633,9 +633,9 @@ exports.upload = upload;
 </div>
 </div>
 
-<div id="outline-container-org8ec0c87" class="outline-3">
-<h3 id="org8ec0c87">处理POST请求</h3>
-<div class="outline-text-3" id="text-org8ec0c87">
+<div id="outline-container-orgf98e5e1" class="outline-3">
+<h3 id="orgf98e5e1">处理POST请求</h3>
+<div class="outline-text-3" id="text-orgf98e5e1">
 <p>
 显示一个文本区供用户输入内容, 然后通过POST请求提交给服务器. 服务器收到请求, 通过处理程序将输入的内容展示到浏览器.
 </p>
@@ -785,9 +785,9 @@ exports.upload = upload;
 </div>
 </div>
 
-<div id="outline-container-orgcb0e230" class="outline-3">
-<h3 id="orgcb0e230">处理文件上传</h3>
-<div class="outline-text-3" id="text-orgcb0e230">
+<div id="outline-container-orga3392c6" class="outline-3">
+<h3 id="orga3392c6">处理文件上传</h3>
+<div class="outline-text-3" id="text-orga3392c6">
 <p>
 允许用户上传图片, 并将图片在浏览器中显示出来.
 </p>
@@ -1040,7 +1040,7 @@ exports.show = show;
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/02/15/nodejs-学习";
           var disqus_url = "http://pinvondev.github.io/blog/2018/02/15/nodejs-学习";
-          var disqus_shortname = 'pinvon';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

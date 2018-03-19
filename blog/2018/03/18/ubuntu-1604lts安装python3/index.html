@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>安装Scala - Pinvon&#39;s Blog</title>
+    <title>Ubuntu 16.04LTS安装Python3 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,111 +30,109 @@
 
 <div>
 <div class="post">
-<h1>安装Scala</h1>
+<h1>Ubuntu 16.04LTS安装Python3</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9fcb797">下载Scala</a></li>
-<li><a href="#orga5b23c6">安装Scala</a></li>
-<li><a href="#org74f1241">使用</a></li>
-<li><a href="#orgd01a359">编程</a>
+<li><a href="#orgfe8c238">安装</a></li>
+<li><a href="#org01eb23a">配置默认python3</a></li>
+<li><a href="#orgd41022c">安装pip</a></li>
+<li><a href="#org5737a25">配置pip</a>
 <ul>
-<li><a href="#org874a404">创建文件</a></li>
-<li><a href="#orgd7fb6aa">编写代码</a></li>
-<li><a href="#org63a1351">编译执行</a></li>
+<li><a href="#orgda25870">手动指定安装源</a></li>
+<li><a href="#orge6bd196">配置pip.conf文件</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9fcb797" class="outline-2">
-<h2 id="org9fcb797">下载Scala</h2>
-<div class="outline-text-2" id="text-org9fcb797">
-<p>
-到<a href="http://www.scala-lang.org">官网</a>下载
-</p>
-</div>
-</div>
-
-<div id="outline-container-orga5b23c6" class="outline-2">
-<h2 id="orga5b23c6">安装Scala</h2>
-<div class="outline-text-2" id="text-orga5b23c6">
-<pre class="example">
-sudo tar -zxf scala-2.12.4.tgz -C /usr/local
-cd /usr/local
-sudo mv ./scala-2.12.4 ./scala
-sudo chown -R pinvon:pinvon ./scala
-
-emacs ~/.bashrc
-
-export PATH=$PATH:/usr/local/scala/bin
-
-source ~/.bashrc
-
-# 测试
-scala
-</pre>
-</div>
-</div>
-
-<div id="outline-container-org74f1241" class="outline-2">
-<h2 id="org74f1241">使用</h2>
-<div class="outline-text-2" id="text-org74f1241">
-<pre class="example">
-# 进入Scala环境
-scala
-
-scala&gt; 1+1
-res0: Int = 2
-
-# 退出Scala环境
-scala&gt;:quit
-</pre>
-</div>
-</div>
-
-<div id="outline-container-orgd01a359" class="outline-2">
-<h2 id="orgd01a359">编程</h2>
-<div class="outline-text-2" id="text-orgd01a359">
-</div>
-<div id="outline-container-org874a404" class="outline-3">
-<h3 id="org874a404">创建文件</h3>
-<div class="outline-text-3" id="text-org874a404">
-<pre class="example">
-cd /usr/local/scala
-mkdir mycode
-cd mycode
-emacs test.scala
-</pre>
-</div>
-</div>
-
-<div id="outline-container-orgd7fb6aa" class="outline-3">
-<h3 id="orgd7fb6aa">编写代码</h3>
-<div class="outline-text-3" id="text-orgd7fb6aa">
+<div id="outline-container-orgfe8c238" class="outline-2">
+<h2 id="orgfe8c238">安装</h2>
+<div class="outline-text-2" id="text-orgfe8c238">
 <div class="org-src-container">
-<pre class="src src-scala">object HelloWorld{
-    def main(args: Array[String]){
-        println("hello world")
-    }
-}
+<pre class="src src-Shell">sudo add-apt-repository ppa:jonathonf/python-3.6
+
+# 回车
+
+sudo apt-get update
+sudo apt-get install python3.6
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org63a1351" class="outline-3">
-<h3 id="org63a1351">编译执行</h3>
-<div class="outline-text-3" id="text-org63a1351">
-<pre class="example">
-scalac test.scala
-scala -classpath . HelloWorld
-</pre>
+<div id="outline-container-org01eb23a" class="outline-2">
+<h2 id="org01eb23a">配置默认python3</h2>
+<div class="outline-text-2" id="text-org01eb23a">
 <p>
-注意，执行的时候使用的是 <code>object</code> 后面的名称，而不是文件名。
+由于Ubuntu16.04TLS默认使用的Python3的版本为Python3.5, 此处将其修改成Python3.6.
 </p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
+sudo update-alternatives --config python3
+python3 -V  # 显示 Python 3.6.x
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd41022c" class="outline-2">
+<h2 id="orgd41022c">安装pip</h2>
+<div class="outline-text-2" id="text-orgd41022c">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt-get install python3-pip
+pip3 --version
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5737a25" class="outline-2">
+<h2 id="org5737a25">配置pip</h2>
+<div class="outline-text-2" id="text-org5737a25">
+<p>
+<code>pip</code> 默认从国外下载, 有时候下载速度较慢, 建议配置成国内源. 有两种方法从国内源下载.
+</p>
+</div>
+
+<div id="outline-container-orgda25870" class="outline-3">
+<h3 id="orgda25870">手动指定安装源</h3>
+<div class="outline-text-3" id="text-orgda25870">
+<div class="org-src-container">
+<pre class="src src-Shell">pip -i http://pypi.douban.com/simple install dnspython
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge6bd196" class="outline-3">
+<h3 id="orge6bd196">配置pip.conf文件</h3>
+<div class="outline-text-3" id="text-orge6bd196">
+<p>
+如果每次安装模块都要指定安装源, 则比较麻烦. 通过配置 <code>pip.conf</code> 文件, 每次都从该文件中读取安装源.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">cd ~
+mkdir .pip
+cd .pip
+emacs pip.conf
+</pre>
+</div>
+
+<p>
+编辑内容如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">#pip安装需要使用的https加密，所以在此需要添加trusted-host 
+[global]
+trusted-host = mirrors.ustc.edu.cn
+index-url = https://mirrors.ustc.edu.cn/pypi/web/simple
+</pre>
+</div>
 </div>
 </div>
 </div>
@@ -143,9 +141,9 @@ scala -classpath . HelloWorld
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-03</span>
-        <span title="last modification date" class="post-info">2018-01-03</span>
-        <span title="tags" class="post-info"><a href="/tags/spark/">Spark</a></span>
+        <span title="post date" class="post-info">2018-03-18</span>
+        <span title="last modification date" class="post-info">2018-03-18</span>
+        <span title="tags" class="post-info"><a href="/tags/python/">Python</a></span>
         <span title="author" class="post-info">pinvon</span>
       </div>
       <section>
@@ -153,8 +151,8 @@ scala -classpath . HelloWorld
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/03/安装scala";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/03/安装scala";
+          var disqus_identifier = "/blog/2018/03/18/ubuntu-1604lts安装python3";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/18/ubuntu-1604lts安装python3";
           var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
