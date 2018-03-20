@@ -1,0 +1,624 @@
+#+TITLE:       jQuery
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-20 二
+#+URI:         /blog/%y/%m/%d/jquery
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Web
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 声明
+
+学习自[[https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499993118b8173572625b4afe93a8b19dd707ea1d000][廖雪峰老师的JavaScript教程]]
+
+* 概述
+
+jQuery是JavaScript中使用最广泛的一个库. 使用jQuery的好处:
+
+- 消除浏览器差异: 不需要自己写冗长的代码来针对不同的浏览器来绑定事件, 编写AJAX等代码;
+- 简洁的操作DOM的方法: 写$('#test')肯定比document.getElementById('test')来得简洁;
+- 轻松实现动画、修改CSS等各种操作.
+
+可以从[[http://jquery.com/download/][jQuery官网下载]]最新版本. 
+
+使用jQuery只需要在页面的 =<head>= 引入jQuery文件即可:
+#+BEGIN_SRC HTML
+<html>
+<head>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    ...
+</head>
+<body>
+    ...
+</body>
+</html>
+#+END_SRC
+
+jQuery把所有功能全部封装在一个全局变量jQuery中, 而$也是一个合法的变量名, 它是变量jQuery的别名:
+#+BEGIN_SRC JavaScript
+window.jQuery; // jQuery(selector, context)
+window.$; // jQuery(selector, context)
+$ === jQuery; // true
+typeof($); // 'function'
+#+END_SRC
+=$= 本质就是一个函数, 但是函数也是对象, 所以 =$= 除了可以直接调用外, 也可以有很多其他属性.
+
+有时候, 别的变量也被命名成了 =$= (一般不建议这么命名), 就可以使用 =.jQuery.noConflict()= 让原本作为jQuery别名的 =$= 无效.
+#+BEGIN_SRC JavaScript
+$; // jQuery(selector, context)
+jQuery.noConflict();
+$; // undefined
+jQuery; // jQuery(selector, context)
+#+END_SRC
+
+* 选择器
+
+选择器是jQuery的核心, 一个选择器写出来类似 =$('#dom-id')=.
+
+jQuery使用选择器的原因是因为JavaScript的DOM操作中, 充斥着大量的 =getElementByXXX=, 不但写起来繁琐, 有时候定位到的节点还不止一个, 还要继续判断. 而jQuery的选择器可以帮我们 =快速定位= 到一个或多个节点.
+
+** 按ID查找
+
+#+BEGIN_SRC JavaScript
+// 查找<div id="abc">:
+var div = $('#abc');
+
+// 返回的对象类似于: [<div id="abc">...</div>]
+
+// jQuery对象和DOM对象可以互相转化
+var divDom = div.get(0); // 假设存在div，获取第1个DOM元素
+var another = $(divDom); // 重新把DOM包装为jQuery对象
+#+END_SRC
+
+** 按tag查找
+
+#+BEGIN_SRC JavaScript
+var ps = $('p'); // 返回所有<p>节点
+ps.length; // 数一数页面有多少个<p>节点
+#+END_SRC
+
+** 按class查找
+
+按class查找时, 在class名称前加一个 =.=:
+#+BEGIN_SRC JavaScript
+var a = $('.red.green'); // 注意.与其他字符之间没有空格！
+// 符合条件的节点：
+// <div class="red green">...</div>
+// <div class="blue green red">...</div>
+#+END_SRC
+
+** 按属性查找
+
+#+BEGIN_SRC JavaScript
+var email = $('[name=email]'); // 找出<??? name="email">
+var passwordInput = $('[type=password]'); // 找出<??? type="password">
+var a = $('[items="A B"]'); // 找出<??? items="A B">
+#+END_SRC
+
+按属性查找, 可以使用前缀查找或后缀查找:
+#+BEGIN_SRC JavaScript
+var icons = $('[name^=icon]'); // 找出所有name属性值以icon开头的DOM
+var names = $('[name$=with]'); // 找出所有name属性值以with结尾的DOM
+#+END_SRC
+
+** 组合查找
+
+如: 查找 =$('[name=email]')=, 可能会把表单外的name=email的标签也找出来, 如果只想查找 =<input>= 中的name属性为email的DOM, 则可以这么写:
+#+BEGIN_SRC JavaScript
+var emailInput = $('input[name=email]'); // 不会找出<div name="email">
+#+END_SRC
+
+** 多项选择器
+
+把多个选择器用 =,= 组合起来一块选:
+#+BEGIN_SRC JavaScript
+$('p,div'); // 把<p>和<div>都选出来
+$('p.red,p.green'); // 把<p class="red">和<p class="green">都选出来
+#+END_SRC
+
+** 层级选择器
+
+如果两个DOM元素具有层级关系, 就可以用 =$('祖先 后代')= 的写法来选择, 层级之间用空格隔开. 如:
+#+BEGIN_SRC HTML
+<!-- HTML结构 -->
+<div class="testing">
+    <ul class="lang">
+        <li class="lang-javascript">JavaScript</li>
+        <li class="lang-python">Python</li>
+        <li class="lang-lua">Lua</li>
+    </ul>
+</div>
+#+END_SRC
+
+要选出JavaScript, 可以用层级选择器:
+#+BEGIN_SRC JavaScript
+$('ul.lang li.lang-javascript'); // [<li class="lang-javascript">JavaScript</li>]
+$('div.testing li.lang-javascript'); // [<li class="lang-javascript">JavaScript</li>]
+#+END_SRC
+由于 =<div>= 和 =<ul>= 都是 =<li>= 的祖先节点, 所以这两种方式都可以选出相应的 =<li>= 节点.
+
+*** 子选择器
+
+与层级选择器类似, 但是限定了层级关系必须是父子关系. 写法为 =$('parent>child')=.
+
+以上面的HTML代码为例子:
+#+BEGIN_SRC JavaScript
+$('ul.lang>li.lang-javascript'); // 可以选出[<li class="lang-javascript">JavaScript</li>]
+$('div.testing>li.lang-javascript'); // [], 无法选出，因为<div>和<li>不构成父子关系
+#+END_SRC
+
+*** 过滤器
+
+不单独使用, 一般附加在选择器上, 更精确地定位元素. 效果如下:
+#+BEGIN_SRC JavaScript
+$('ul.lang li'); // 选出JavaScript、Python和Lua 3个节点
+
+$('ul.lang li:first-child'); // 仅选出JavaScript
+$('ul.lang li:last-child'); // 仅选出Lua
+$('ul.lang li:nth-child(2)'); // 选出第N个元素，N从1开始
+$('ul.lang li:nth-child(even)'); // 选出序号为偶数的元素
+$('ul.lang li:nth-child(odd)'); // 选出序号为奇数的元素
+#+END_SRC
+
+** 查找和过滤
+
+通过选择器, 我们一般就可以直接定位到想要的元素了. 另外, 我们也可以在拿到一个jQuery对象后, 以该对象为基准, 进行查找和过滤.
+
+*** 查找
+
+有如下HTML代码:
+#+BEGIN_SRC HTML
+<!-- HTML结构 -->
+<ul class="lang">
+    <li class="js dy">JavaScript</li>
+    <li class="dy">Python</li>
+    <li id="swift">Swift</li>
+    <li class="dy">Scheme</li>
+    <li name="haskell">Haskell</li>
+</ul>
+#+END_SRC
+
+通过 =find()= 查找:
+#+BEGIN_SRC JavaScript
+var ul = $('ul.lang'); // 获得<ul>
+var dy = ul.find('.dy'); // 获得JavaScript, Python, Scheme
+var swf = ul.find('#swift'); // 获得Swift
+var hsk = ul.find('[name=haskell]'); // 获得Haskell
+#+END_SRC
+
+=parent()=: 从当前节点开始向上查找, 可带参数.
+
+=next()=, =prev()=: 查找同一层级的节点, 可带参数.
+
+*** 过滤
+
+=filter()= 可以过滤掉不符合选择器条件的节点.
+#+BEGIN_SRC JavaScript
+var langs = $('ul.lang li'); // 拿到JavaScript, Python, Swift, Scheme和Haskell
+var a = langs.filter('.dy'); // 拿到JavaScript, Python, Scheme
+#+END_SRC
+
+* 操作DOM
+
+使用选择器拿到jQuery对象后, 可以对相应的DOM节点进行操作.
+
+** 修改Text和HTML
+
+=text()=: 获取节点的文本.
+=html()=: 获取节点的原始HTML文本.
+
+假设有如下HTML结构:
+#+BEGIN_SRC HTML
+<!-- HTML结构 -->
+<ul id="test-ul">
+    <li class="js">JavaScript</li>
+    <li name="book">Java &amp; JavaScript</li>
+</ul>
+#+END_SRC
+
+分别获取文本和HTML:
+#+BEGIN_SRC JavaScript
+$('#test-ul li[name=book]').text(); // 'Java & JavaScript'
+$('#test-ul li[name=book]').html(); // 'Java &amp; JavaScript'
+#+END_SRC
+
+这两个方法如果没有参数, 就是获取信息, 如果有参数, 就是设置信息.
+#+BEGIN_SRC JavaScript
+j1.html('<span style="color: red">JavaScript</span>');
+j2.text('JavaScript & ECMAScript');
+#+END_SRC
+
+一个jQuery对象可以包含0个或任意多个DOM对象, 它的方法会作用在对应的每个DOM节点上. 如:
+#+BEGIN_SRC JavaScript
+$('#test-ul li').text('JS'); // 两个节点都变成了JS
+#+END_SRC
+
+** 修改CSS
+
+由于jQuery对象可以批量操作, 所以修改CSS时比较方便.
+
+=css('name', 'value')=. 如: 
+#+BEGIN_SRC JavaScript
+$('#test-css li.dy>span').css('background-color', '#ffd351').css('color', 'red');
+#+END_SRC
+
+css('name'): 获取CSS属性
+css('name', 'value'): 设置CSS属性
+css('name', ''): 清除CSS属性
+
+** 显示和隐藏DOM
+
+=show()= 和 =hide()=.
+
+** 获取DOM信息
+
+#+BEGIN_SRC JavaScript
+// 浏览器可视窗口大小:
+$(window).width(); // 800
+$(window).height(); // 600
+
+// HTML文档大小:
+$(document).width(); // 800
+$(document).height(); // 3500
+
+// 某个div的大小:
+var div = $('#test-div');
+div.width(); // 600
+div.height(); // 300
+div.width(400); // 设置CSS属性 width: 400px，是否生效要看CSS是否有效
+div.height('200px'); // 设置CSS属性 height: 200px，是否生效要看CSS是否有效
+#+END_SRC
+
+#+BEGIN_SRC JavaScript
+// <div id="test-div" name="Test" start="1">...</div>
+var div = $('#test-div');
+div.attr('data'); // undefined, 属性不存在
+div.attr('name'); // 'Test'
+div.attr('name', 'Hello'); // div的name属性变为'Hello'
+div.removeAttr('name'); // 删除name属性
+div.attr('name'); // undefined
+#+END_SRC
+
+** 操作表单
+
+对于表单元素, jQuery对象统一提供 =val()= 方法获取和设置对应的 =value= 属性.
+#+BEGIN_SRC JavaScript
+/*
+    <input id="test-input" name="email" value="">
+    <select id="test-select" name="city">
+        <option value="BJ" selected>Beijing</option>
+        <option value="SH">Shanghai</option>
+        <option value="SZ">Shenzhen</option>
+    </select>
+    <textarea id="test-textarea">Hello</textarea>
+*/
+var
+    input = $('#test-input'),
+    select = $('#test-select'),
+    textarea = $('#test-textarea');
+
+input.val(); // 'test'
+input.val('abc@example.com'); // 文本框的内容已变为abc@example.com
+
+select.val(); // 'BJ'
+select.val('SH'); // 选择框已变为Shanghai
+
+textarea.val(); // 'Hello'
+textarea.val('Hi'); // 文本区域已更新为'Hi'
+#+END_SRC
+
+** 修改DOM
+
+*** 添加DOM
+
+要添加新的DOM节点, 除了通过jQuery的 =html()= 这种暴力方法外, 还可以用 =append()=.
+
+HTML结构:
+#+BEGIN_SRC HTML
+<div id="test-div">
+    <ul>
+        <li><span>JavaScript</span></li>
+        <li><span>Python</span></li>
+        <li><span>Swift</span></li>
+    </ul>
+</div>
+#+END_SRC
+
+向列表新增一个语言:
+#+BEGIN_SRC JavaScript
+var ul = $('#test-div>ul');  // 拿到ul节点
+ul.append('<li><span>Haskell</span></li>');
+#+END_SRC
+
+=append()= 把DOM添加到最后, =prepend()= 把DOM添加到最前.
+
+对于同级节点, 可以使用 =after()= 或 =before()= 方法添加DOM.
+
+*** 删除节点
+
+要删除DOM节点，拿到jQuery对象后直接调用 =remove()= 方法就可以了.
+
+* 事件
+
+因为JavaScript在浏览器中以单线程模式运行, 页面加载后, 一旦页面上所有的JavaScript代码被执行完后, 就只能依赖触发事件来执行JavaScript代码.
+
+浏览器在接收到用户的鼠标或键盘输入后, 会自动在对应的DOM节点上触发相应的事件. 如果该节点已经绑定了对应的JavaScript处理函数, 该函数就会自动调用.
+
+由于不同的浏览器绑定事件的代码都不太一样, 所以用jQuery来写代码, 就屏蔽了不同浏览器的差异, 我们总是编写相同的代码.
+
+例子:
+#+BEGIN_SRC JavaScript
+/* HTML:
+ *
+ * <a id="test-link" href="#0">点我试试</a>
+ *
+ */
+
+// 获取超链接的jQuery对象:
+var a = $('#test-link');
+a.on('click', function () {
+    alert('Hello!');
+});
+#+END_SRC
+
+=on()= 方法用来绑定一个事件, 参数为事件名称和处理函数.
+
+也可以写成(推荐这种写法):
+#+BEGIN_SRC JavaScript
+a.click(function (){
+	alert('Hello!');
+});
+#+END_SRC
+
+jQuery能够绑定的事件主要有:
+
+=鼠标事件=:
+click: 鼠标单击时触发；
+dblclick：鼠标双击时触发；
+mouseenter：鼠标进入时触发；
+mouseleave：鼠标移出时触发；
+mousemove：鼠标在DOM内部移动时触发；
+hover：鼠标进入和退出时触发两个函数，相当于mouseenter加上mouseleave。
+
+=键盘事件=:
+keydown：键盘按下时触发；
+keyup：键盘松开时触发；
+keypress：按一次键后触发。
+
+=其他事件=:
+focus：当DOM获得焦点时触发；
+blur：当DOM失去焦点时触发；
+change：当<input>、<select>或<textarea>的内容改变时触发；
+submit：当<form>提交时触发；
+ready：当页面被载入并且DOM树完成初始化后触发。
+
+其中, ready仅作用于document对象, 该事件在DOM完成初始化后触发, 且只触发一次,  非常常用.
+
+如果想给<form>表单绑定submit事件, 先看一个错误写法:
+#+BEGIN_SRC JavaScript
+<html>
+<head>
+    <script>
+        // 代码有误:
+        $('#testForm).on('submit', function () {
+            alert('submit!');
+        });
+    </script>
+</head>
+<body>
+    <form id="testForm">
+        ...
+    </form>
+</body>
+#+END_SRC
+错误原因是JavaScript在执行的时候, <form>尚未载入浏览器, 所以 =$('#testForm')= 返回 =[]=, 并没有绑定事件到任何DOM上.
+
+正确的做法是把自己的初始化代码放到document对象的ready事件中, 保证DOM已完成初始化.
+#+BEGIN_SRC JavaScript
+<html>
+<head>
+    <script>
+        $(document).on('ready', function () {
+            $('#testForm).on('submit', function () {
+                alert('submit!');
+            });
+        });
+    </script>
+</head>
+<body>
+    <form id="testForm">
+        ...
+    </form>
+</body>
+#+END_SRC
+
+由于ready事件非常普遍, 可以简化成:
+#+BEGIN_SRC JavaScript
+$(function () {
+    // init...
+});
+#+END_SRC
+
+** 事件参数
+
+有些事件, 如mousemove和keypress, 我们需要获取鼠标位置和按键的值, 否则监听这些事件就没什么意义了. 所有事件都会传入Event对象作为参数, 可以从Event对象上获取到更多的信息:
+#+BEGIN_SRC JavaScript
+$(function () {
+    $('#testMouseMoveDiv').mousemove(function (e) {
+        $('#testMouseMoveSpan').text('pageX = ' + e.pageX + ', pageY = ' + e.pageY);
+    });
+});
+#+END_SRC
+
+** 取消绑定
+
+通过 =off('click', function)= 实现.
+
+#+BEGIN_SRC JavaScript
+function hello() {
+    alert('hello!');
+}
+
+a.click(hello); // 绑定事件
+
+// 10秒钟后解除绑定:
+setTimeout(function () {
+    a.off('click', hello);
+}, 10000);
+#+END_SRC
+
+** 事件触发条件
+
+事件的触发问题由用户操作引起的. 如监控文本框的内容改动:
+#+BEGIN_SRC JavaScript
+var input = $('#test-input');
+input.change(function () {
+    console.log('changed...');
+});
+#+END_SRC
+当用户在文本框中输入时, 就会触发change事件. 但是, 如果用JavaScript代码去改动文本框的值, 将不会触发change事件. 如果要用代码触发change事件, 可以直接调用无参数的change()来触发该事件.
+#+BEGIN_SRC JavaScript
+var input = $('#test-input');
+input.val('change it!');
+input.change(); // 触发change事件
+#+END_SRC
+
+* 动画
+
+用JavaScript实现动画, 原理非常简单: 我们只需要以固定的时间间隔(例如0.1秒), 每次把DOM元素的CSS样式修改一点(例如高宽各增加10%), 看起来就像动画了.
+
+但是要用JavaScript手动实现动画效果, 需要编写非常复杂的代码. 如果想要把动画效果用函数封装起来便于复用, 那考虑的事情就更多了.
+
+使用jQuery实现动画, 代码已经简单得不能再简化了: 只需要一行代码!
+
+** show()/hide()
+
+直接以无参数形式调用show()和hide(), 会显示和隐藏DOM元素. 但是, 只要传递一个时间参数进去, 就变成了动画:
+#+BEGIN_SRC JavaScript
+var div = $('#test-show-hide');
+div.hide(3000); // 在3秒钟内逐渐消失
+#+END_SRC
+
+** slideUp()/slideDown()
+
+show()和hide()是从左上角逐渐展开或收缩的, 而slideUp()和slideDown()则是在垂直方向逐渐展开或收缩的.
+
+** fadeIn()/fadeOut()
+
+淡入淡出.
+
+** 自定义动画
+
+=animate()=: 它可以实现任意动画效果, 我们需要传入的参数就是DOM元素最终的CSS状态和时间, jQuery在时间段内不断调整CSS直到达到我们设定的值.
+#+BEGIN_SRC JavaScript
+var div = $('#test-animate');
+div.animate({
+    opacity: 0.25,
+    width: '256px',
+    height: '256px'
+}, 3000); // 在3秒钟内CSS过渡到设定值
+#+END_SRC
+
+=animate()= 还可以再传入一个函数作为参数, 当动画结束时, 该函数被调用.
+#+BEGIN_SRC JavaScript
+var div = $('#test-animate');
+div.animate({
+    opacity: 0.25,
+    width: '256px',
+    height: '256px'
+}, 3000, function () {
+    console.log('动画已结束');
+    // 恢复至初始状态:
+    $(this).css('opacity', '1.0').css('width', '128px').css('height', '128px');
+});
+#+END_SRC
+
+** 串行动画
+
+jQuery的动画效果还可以串行执行, 通过delay()方法还可以实现暂停, 这样, 我们可以实现更复杂的动画效果, 而代码却相当简单:
+#+BEGIN_SRC JavaScript
+var div = $('#test-animates');
+// 动画效果：slideDown - 暂停 - 放大 - 暂停 - 缩小
+div.slideDown(2000)
+   .delay(1000)
+   .animate({
+       width: '256px',
+       height: '256px'
+   }, 2000)
+   .delay(1000)
+   .animate({
+       width: '128px',
+       height: '128px'
+   }, 2000);
+}
+</script>
+#+END_SRC
+
+* AJAX
+
+用jQuery的相关对象来处理AJAX, 可以不需要考虑浏览器的问题, 代码也能大大简化.
+
+*** ajax
+
+jQuery在全局对象jQuery(即$)绑定了 =ajax()= 函数, 可以处理AJAX请求. 写法为: =$.ajax(url, settings)=, 其中, =settings= 是可选的, 有如下选项:
+- async: 是否异步执行AJAX请求, 默认为true, 千万不要指定为false;
+- method: 发送的Method, 缺省为'GET', 可指定为'POST'、'PUT'等;
+- contentType: 发送POST请求的格式, 默认值为'application/x-www-form-urlencoded; charset=UTF-8', 也可以指定为text/plain、application/json;
+- data: 发送的数据, 可以是字符串、数组或object. 如果是GET请求, data将被转换成query附加到URL上, 如果是POST请求, 根据contentType把data序列化成合适的格式;
+- headers: 发送的额外的HTTP头, 必须是一个object;
+- dataType: 接收的数据格式, 可以指定为'html'、'xml'、'json'、'text'等, 缺省情况下根据响应的Content-Type猜测.
+
+如发送一个GET请求, 返回一个JSON格式的数据:
+#+BEGIN_SRC 
+var jqxhr = $.ajax('/api/categories', {
+    dataType: 'json'
+});
+// 请求已经发送了
+#+END_SRC
+
+处理返回的数据的方法:
+#+BEGIN_SRC JavaScript
+var jqxhr = $.ajax('/api/categories', {
+    dataType: 'json'
+}).done(function (data) {
+    ajaxLog('成功, 收到的数据: ' + JSON.stringify(data));
+}).fail(function (xhr, status) {
+    ajaxLog('失败: ' + xhr.status + ', 原因: ' + status);
+}).always(function () {
+    ajaxLog('请求完成: 无论成功或失败都会调用');
+});
+#+END_SRC
+
+对于常用的AJAX操作, jQuery提供了一些辅助方法.
+
+** get
+
+#+BEGIN_SRC JavaScript
+var jqxhr = $.get('/path/to/resource', {
+    name: 'Bob Lee',
+    check: 1
+});
+#+END_SRC
+
+** post
+
+#+BEGIN_SRC JavaScript
+var jqxhr = $.post('/path/to/resource', {
+    name: 'Bob Lee',
+    check: 1
+});
+#+END_SRC
+
+** getJson
+
+由于JSON用得越来越普遍, 所以jQuery也提供了getJSON()方法来快速通过GET获取一个JSON对象:
+#+BEGIN_SRC JavaScript
+var jqxhr = $.getJSON('/path/to/resource', {
+    name: 'Bob Lee',
+    check: 1
+}).done(function (data) {
+    // data已经被解析为JSON对象了
+});
+#+END_SRC
