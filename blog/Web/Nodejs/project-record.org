@@ -223,3 +223,40 @@ router.get('/addUser', function(req, res, next) {
 以后, 一级路径(如'/users'), 就在 =app.js= 中与相应的模块进行绑定, 而二级或者更高级的路径(如'/users/pinvon'), 就在路由 =routes/users.js= 中, 将具体的路径与相应的中间件进行绑定.
 
 关于数据库, 对于数据库中的每一个表, 有一个相应的文件(如'dao/userSqlMapping.js')来编写所需要用到的SQL语句, 然后再有一个相应的文件(如'dao/userDao.js')来作为数据库和前端的中间处理程序. 即, 一个表会有两个对应的文件, 来实现对数据库的操作.
+
+* 前后端数据传递
+
+后端:
+#+BEGIN_SRC JavaScript
+result = {
+	code: 200,
+	msg:'增加成功'
+};
+res.json(result);
+#+END_SRC
+
+前端:
+#+BEGIN_SRC JavaScript
+success: function (data, status) {
+					if (status == 'success') {
+						console.log(data);
+						layer.msg('注册成功');
+						setTimeout(function () {
+							location.href = 'login';
+						}, 2000);
+					}
+				},
+error: function (data, err) {
+					console.log(data);
+					alert('fail');
+				}
+#+END_SRC
+
+打印结果如下图所示:
+[[./3.png]]
+
+可以根据 =code= 的值, 来判断下一步该怎么处理.
+
+* 问题记录
+
+1. 注册时使用post方法提交数据, 在后台进入post对应的中间件处理, 将数据存储到数据库, 存储完成后回到post方法继续执行, 会进入到get方法, 而代码中没在post方法里面写明会渲染或重定向到get. 目前的方案是在get()中判断参数, 如果路径中带参数, 则不让渲染注册页面.
