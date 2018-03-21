@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>Ubuntu 16.04 安装 MySQL - Pinvon&#39;s Blog</title>
+    <title>Layer学习笔记 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,101 +30,32 @@
 
 <div>
 <div class="post">
-<h1>Ubuntu 16.04 安装 MySQL</h1>
+<h1>Layer学习笔记</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga9e40b8">安装MySQL</a></li>
-<li><a href="#org77dc864">配置</a></li>
-<li><a href="#orgfb783c7">启动和停止MySQL</a></li>
+<li><a href="#orgacc141a">下载</a></li>
+<li><a href="#orgd3935db">快速上手</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga9e40b8" class="outline-2">
-<h2 id="orga9e40b8">安装MySQL</h2>
-<div class="outline-text-2" id="text-orga9e40b8">
-<div class="org-src-container">
-<pre class="src src-Shell">sudo apt update
-sudo apt install mysql-server
-</pre>
-</div>
-
+<div id="outline-container-orgacc141a" class="outline-2">
+<h2 id="orgacc141a">下载</h2>
+<div class="outline-text-2" id="text-orgacc141a">
 <p>
-这一步会让我们设置MySQL的root密码. 如果这一步不设置, 则留空. 然后安装完了, 运行 <code>mysql_secure_installation</code> 来设置root密码.
+进入<a href="http://layer.layui.com/">layer官网</a>下载. 解压后, 放到项目的目录中, 如果使用Express框架, 就放在public目录里.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org77dc864" class="outline-2">
-<h2 id="org77dc864">配置</h2>
-<div class="outline-text-2" id="text-org77dc864">
+<div id="outline-container-orgd3935db" class="outline-2">
+<h2 id="orgd3935db">快速上手</h2>
+<div class="outline-text-2" id="text-orgd3935db">
 <p>
-编辑MySQL的配置文件, 把数据库默认的编码全部改为UTF-8.
+快速上手可参考链接: <a href="http://layer.layui.com/hello.html">快速上手</a>
 </p>
-<div class="org-src-container">
-<pre class="src src-Shell">sudo emacs /etc/mysql/my.cnf
-</pre>
-</div>
-
-<p>
-内容编辑如下:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">[client]
-default-character-set = utf8
-
-[mysqld]
-default-storage-engine = INNODB
-character-set-server = utf8
-collation-server = utf8_general_ci
-</pre>
-</div>
-
-<p>
-重启MySQL后, 可以通过MySQL的客户端命令检查编码:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">mysql -u root -p
-# 输入密码
-show variables like '%char%';
-# 如果看到utf8字样, 就表示编码设置正确
-</pre>
-</div>
-
-
-<div class="figure">
-<p><img src="/assets/blog/2018/03/14/ubuntu-1604-安装-mysql/0.png" alt="0.png" />
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgfb783c7" class="outline-2">
-<h2 id="orgfb783c7">启动和停止MySQL</h2>
-<div class="outline-text-2" id="text-orgfb783c7">
-<div class="org-src-container">
-<pre class="src src-Shell">sudo service mysql status  # 检查MySQL服务器状态
-sudo service mysql stop  # 关闭MySQL服务器
-sudo service mysql start  # 启动MySQL服务器
-</pre>
-</div>
-
-<p>
-服务启动后查询端口:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">sudo netstat -anp | grep mysql  # 一般查询得知是3306
-
-# 连接数据库
-mysql -h 127.0.0.1 -P 3306 -u root -p
-# 或者
-mysql -u root -p 
-
-# 输入密码
-</pre>
-</div>
 </div>
 </div>
 
@@ -132,9 +63,9 @@ mysql -u root -p
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-14</span>
-        <span title="last modification date" class="post-info">2018-03-14</span>
-        <span title="tags" class="post-info"><a href="/tags/sql/">SQL</a></span>
+        <span title="post date" class="post-info">2018-03-20</span>
+        <span title="last modification date" class="post-info">2018-03-21</span>
+        <span title="tags" class="post-info"><a href="/tags/web/">Web</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -142,8 +73,8 @@ mysql -u root -p
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/14/ubuntu-1604-安装-mysql";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/14/ubuntu-1604-安装-mysql";
+          var disqus_identifier = "/blog/2018/03/20/layui学习笔记";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/20/layui学习笔记";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
