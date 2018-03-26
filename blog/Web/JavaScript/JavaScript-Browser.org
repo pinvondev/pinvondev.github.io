@@ -232,6 +232,55 @@ alert(): 只有"确定"按钮, 一般用来通知用户某些信息.
 prompt(): 可以让用户输入信息, 有"确定"和"取消"按钮.
 confirm(): 有"确定"和"取消"按钮, 一般用来征询用户的意见.
 
+* history对象
+
+=window= 有一个 =history= 对象, 用来保存浏览历史.
+history.length: 当前窗口访问的网址数
+history.back(): 返回
+history.forward(): 前进
+history.go(): 移动到指定的页面. history.go(-1)相当于后退一步, history.go(1) 相当于history.forward()
+
+返回上一页时, 页面通常是从浏览器缓存中加载, 而不是要求服务器发送新的网页.
+
+** history.pushState()
+
+该方法可以添加历史记录. 新加的历史记录必须与当前网址处于同一个域.
+
+** history.replaceState()
+
+该方法可以修改历史记录, 将当前的网址修改成另一个网址, 但必须与当前网址处于同一个域.
+
+** history.state属性
+
+返回当前页面的 =state= 对象.
+
+如 www.example.com/page=1, state对象就是 page=1.
+
+** popstate事件
+
+当同一个窗口的history对象发生变化时, 就会触发该事件.
+
+但是, 仅仅调用 =pushState()= 或 =replaceState()= 并不会触发该事件, 只有点击了浏览器的后退或前进按钮, 或调用了 =back(), forward(), go()= 时, 都会触发该事件.
+
+页面第一次加载时, 不会触发该事件.
+
+* Cookie
+
+=Cookie= 是服务器保存在浏览器上的一小段文本信息, 大小不超过4KB, 每次浏览器向服务器发出请求, 都会自动附上这段信息.
+
+作用: 分辨两个请求是否来自同一浏览器; 保存信息.
+
+适用场景: 保存登录, 购物车等需要记录的信息, 保存用户的偏好设置, 记录和分析用户行为.
+
+不推荐用Cookie作为客户端的存储, 推荐使用Web storage API和IndexedDB.
+
+Cookie包含的信息: 名字, 值, 到期时间, 所属域名(默认当前域名), 生效路径(默认当前网址)
+
+如, 用户访问网址www.example.com, 服务器在浏览器写入一个 Cookie. 这个Cookie 就会包含www.example.com这个域名, 以及根路径/. 这意味着, 这个Cookie对该域名的根路径和它的所有子路径都有效. 如果路径设为/forums, 那么这个Cookie只有在访问www.example.com/forums及其子路径时才有效. 以后, 浏览器一旦访问这个路径, 浏览器就会附上这段Cookie发送给服务器.
+
+window.navigator.cookieEnabled: 浏览器是否接受Cookie
+document.cookie: 当前网页的Cookie
+
 * AJAX
 
 ** 概述
