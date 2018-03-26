@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Hyperledger - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Hyperledger</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org47dac7a">词汇表</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org47dac7a" class="outline-2">
+<h2 id="org47dac7a">词汇表</h2>
+<div class="outline-text-2" id="text-org47dac7a">
+</div>
+<ul class="org-ul">
+<li><a id="org7728cc1"></a>Anchor Peer(锚节点)<br />
+<div class="outline-text-6" id="text-org7728cc1">
+<p>
+锚节点是通道中能被所有对等节点探测, 并能与之进行通信的一种对等节点. 通道中的每个成员都有一个(或多个, 以防单点故障)锚节点, 允许属于不同成员身份的节点来发现通道中存在的其他节点.
+</p>
+
+<p>
+注: 网络中的节点.
+</p>
+</div>
+</li>
+
+<li><a id="orgf9ca2e8"></a>Block(区块)<br />
+<div class="outline-text-6" id="text-orgf9ca2e8">
+<p>
+在一个通道上, 区块是一组有序交易的集合. 区块往往通过密码学手段(Hash)连接到前一个区块.
+</p>
+</div>
+</li>
+
+<li><a id="orge68f24d"></a>Chain(链)<br />
+<div class="outline-text-6" id="text-orge68f24d">
+<p>
+链就是区块经过"哈希连接"结构化的交易日志. 对等节点(peer)从共识服务(order service)接收区块, 并根据背书策略和并发冲突标记区块的交易是否有效, 然后将该区块追加到对等节点文件系统的哈希链上.
+</p>
+</div>
+</li>
+
+<li><a id="orgcfbe0b1"></a>Chaincode(链码)<br />
+<div class="outline-text-6" id="text-orgcfbe0b1">
+<p>
+链码是一个运行在账本上的软件, 可以对资产进行编码, 其中的交易指令(或业务逻辑)也可以用来修改资产.
+</p>
+</div>
+</li>
+
+<li><a id="org4fac25d"></a>Channel(通道)<br />
+<div class="outline-text-6" id="text-org4fac25d">
+<p>
+通道是构建在"Fabric"网络上的私有区块链, 实现了数据的隔离和保密. 通道特定的账本在通道中是与所有对等节点共享的, 并且交易方必须通过该通道的正确验证才能与账本进行交互. 通道是由一个配置块来定义的.
+</p>
+
+<p>
+注: 有点像局部网络.
+</p>
+</div>
+</li>
+
+<li><a id="orgf64fd95"></a>Commitment(提交)<br />
+<div class="outline-text-6" id="text-orgf64fd95">
+<p>
+一个通道中的每个对等节点都会验证交易的有序区块, 然后将区块提交(写或追加)到该通道上账本的各个副本, 对等节点也会标记每个区块中的每笔交易的状态是有效还是无效.
+</p>
+
+<p>
+注: 采矿成功后, 增加新区块.
+</p>
+</div>
+</li>
+
+<li><a id="org1f4de9b"></a>Concurrency Control Version Check(并发控制版本检查CCVC)<br />
+<div class="outline-text-6" id="text-org1f4de9b">
+<p>
+CCVC是保持通道中各对等节点状态同步的一种方法.
+</p>
+
+<p>
+对等节点并行执行交易, 在交易提交到账本之前(将交易打包成区块添加到区块链之前), 对等节点会检查交易在执行期间读到的数据是否被修改. 执行后要提交, 在这两个事件之间如果数据被改动, 就会引发CCVC冲突, 该交易会被账本中标记为无效, 不会被写入区块链中.
+</p>
+</div>
+</li>
+
+<li><a id="org2c2e521"></a>Configuration Block(配置区块)<br />
+<div class="outline-text-6" id="text-org2c2e521">
+<p>
+为系统链或通道定义成员和策略的配置数据. 对某个通道或整个网络的配置修改都将导致生成一个新的配置区块, 并追加到适当的链上.
+</p>
+</div>
+</li>
+
+<li><a id="org4650b32"></a>Consensus(共识)<br />
+<div class="outline-text-6" id="text-org4650b32">
+<p>
+共识是贯穿整个交易流程的广义术语, 用于产生一个对于排序的同意书和确认构成区块的交易集的正确性.
+</p>
+</div>
+</li>
+
+<li><a id="org438dad8"></a>Current State(当前状态)<br />
+<div class="outline-text-6" id="text-org438dad8">
+<p>
+ledger的当前状态表示其chain交易log中所有key的最新值.
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-03-25</span>
+        <span title="last modification date" class="post-info">2018-03-25</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/03/25/hyperledger";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/25/hyperledger";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; ubuntu">pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
