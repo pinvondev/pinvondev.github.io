@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>IBM区块链 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>IBM区块链</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2976d5c">区块链技术基础: 分布式账本简介</a>
+<ul>
+<li><a href="#org1fa77fa">分布式账本</a></li>
+<li><a href="#orga8bc10a">区块链</a></li>
+<li><a href="#org73d78ae">是否需要区块链</a></li>
+<li><a href="#orgdb2c6de">Hyperledger</a></li>
+<li><a href="#orgb9c5056">企业区块链需求</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2976d5c" class="outline-2">
+<h2 id="org2976d5c">区块链技术基础: 分布式账本简介</h2>
+<div class="outline-text-2" id="text-org2976d5c">
+</div>
+<div id="outline-container-org1fa77fa" class="outline-3">
+<h3 id="org1fa77fa">分布式账本</h3>
+<div class="outline-text-3" id="text-org1fa77fa">
+<p>
+<code>分布式账本</code> 是一种在网络成员之间共享, 复制和同步的 <code>数据库</code>. 分布式账本记录网络参与者之间的交易, 比如资产或数据的交换.
+</p>
+
+<p>
+网络中的参与者根据共识原则来制约和协商对账本中的记录的更新, 没有中间的第三方仲裁机构参与.
+</p>
+
+<p>
+分布式账本中的每条记录都有一个时间戳和唯一的密码签名, 这使得账本成为网络中所有交易的可审计历史记录. Hyperledger Fabric区块链是分布式账本技术的一种实现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga8bc10a" class="outline-3">
+<h3 id="orga8bc10a">区块链</h3>
+<div class="outline-text-3" id="text-orga8bc10a">
+<p>
+<code>区块链</code> 是一种防篡改的, 共享的数字化账本, <code>用于记录公有或私有对等网络中的交易</code>. 账本分发给网络中的所有成员节点, 在通过哈希密码算法链接的区块的顺序链中, 永久记录网络中对等节点之间发生资产交易的历史记录.
+</p>
+
+<p>
+区块链可以充当事实的来源, 而且区块链网络中的成员只能查看与他们相关的交易.
+</p>
+
+<p>
+区块链使用共识协议来降低欺诈的风险: 因为想要篡改账本内容, 需要同时在所有的节点上执行, 由于哈希的计算非常耗时, 短时间内修改多个区块几乎不可能实现, 除非他拥有整个网络超过一半的计算能力. 否则, 只篡改少数账本, 以多数账本的内容为准.
+</p>
+
+<p>
+哈希加密算法可确保交易输入的任何改动都会计算出一个不同的哈希值, 表明交易输入可能被损坏.
+</p>
+
+<p>
+数字签名可确保交易源自发送方(已使用私钥签名), 而不是冒名顶替者.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org73d78ae" class="outline-3">
+<h3 id="org73d78ae">是否需要区块链</h3>
+<div class="outline-text-3" id="text-org73d78ae">
+<p>
+要确定我们的用例是否适合区块链, 要回答以下几个问题:
+</p>
+<ol class="org-ol">
+<li>是否涉及业务网络?</li>
+<li>是否使用共识性来验证交易?</li>
+<li>是否需要审计线索或来源?</li>
+<li>交易记录是否必须不可变或防篡改?</li>
+<li>争议的解决方法是否会是最终解决方法?</li>
+</ol>
+
+<p>
+如果第一个问题和其他问题中的至少一个问题的答案为"是", 则适合区块链技术.
+</p>
+
+<p>
+要成为合适的解决方案, 区块链必须涉及一个网络, 但该网络可以具有多种形式. 该网络可位于企业之间, 如供应链; 在企业内, 可以使用区块链网络在部门之间共享参考数据, 或者创建审计和合规性网络. 该网络也可存在于个人之间, 比如需要在区块链上存储数据, 数字资产或合约的人.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdb2c6de" class="outline-3">
+<h3 id="orgdb2c6de">Hyperledger</h3>
+<div class="outline-text-3" id="text-orgdb2c6de">
+<p>
+Hyperledger是一个开源的, 协作完成的项目, 旨在完善跨行业区块链技术.
+</p>
+
+<p>
+Hyperledger Fabric是一种区块链架构实现. 它使用模块化架构, 使共识服务和成员服务等组件可以即插即用, 保证商业区块链解决方案的机密性, 灾备能力, 灵活性和可扩展性.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb9c5056" class="outline-3">
+<h3 id="orgb9c5056">企业区块链需求</h3>
+<div class="outline-text-3" id="text-orgb9c5056">
+<p>
+共享的许可制账本: 是仅可附加的记录系统和单一事实来源, 对业务网络的所有参与成员均可见.
+</p>
+
+<p>
+共识协议: 是业务网络的所有参与成员都赞同的协议, 可确保仅使用经过网络验证的交易来更新账本.
+</p>
+
+<p>
+加密: 可确保交易的防篡改安全性, 身份验证和完整性.
+</p>
+
+<p>
+智能合约: 封装在网络上发生的交易的参与者协议条款; 它们存储在区块链中的验证节点上并通过交易触发.
+</p>
+
+<p>
+除了这些属性之外, 企业区块链技术还需要支持关键的行业要求, 比如性能, 经过验证的身份, 以及私下和机密的交易. Hyperledger Fabric就是为满足这些需求而设计的, 它还设计了一种可插拔的共识协议, 允许企业为其网络选择最佳算法.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-03-25</span>
+        <span title="last modification date" class="post-info">2018-03-25</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/03/25/ibm";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/25/ibm";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; ubuntu">pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
