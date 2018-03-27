@@ -107,9 +107,9 @@ Hyperledger Fabric需要登录才能加入网络.
 
 本平台为Ubuntu 16.04LTS. 如果是其他系统, 请查看[[http://hyperledger-fabric.readthedocs.io/en/latest/dev-setup/devenv.html][官网的环境搭建]]
 
-**** Git安装
+*** Git安装
 
-**** Go语言
+*** Go语言
 
 安装 Go 1.9 或者更后的版本.
 
@@ -152,7 +152,7 @@ go run test.go
 如果出现"hello world", 则说明安装成功.
 
 
-**** Docker
+*** Docker
 
 Docker是一个容器, 在这个容器中, 我们可以运行我们的实例. 可以把Docker大致当成一个虚拟机, 但是Docker不需要占用那么多空间.
 
@@ -164,7 +164,7 @@ docker-engine: 基础包, 它使得docker容器需要的所有必须的文件正
 
 docker-compose: 用于配置Docker.
 
-***** 添加Docker的APT源
+**** 添加Docker的APT源
 
 #+BEGIN_SRC Shell
 # 将官方Docker资源库的GPG密钥添加到系统
@@ -180,7 +180,7 @@ sudo apt-get update
 apt-cache policy docker-engine
 #+END_SRC
 
-***** 安装Docker
+**** 安装Docker
 
 #+BEGIN_SRC Shell
 sudo apt-get install -y docker-engine
@@ -208,10 +208,10 @@ sudo pip install docker-compose
 sudo usermod -aG docker username
 #+END_SRC
 
-**** 安装Pip
+*** 安装Pip
 ** 安装Hyperledger Fabric
 
-**** 创建GOPATH
+*** 创建GOPATH
 
 #+BEGIN_SRC Shell
 mkdir -p $GOPATH
@@ -225,16 +225,15 @@ mkdir hyperledger
 cd hyperledger
 #+END_SRC
 
-**** 获取Fabric源码
+*** 获取Fabric源码
 
 在hyperledger目录下, 执行如下命令:
 #+BEGIN_SRC Shell
 git clone https://github.com/hyperledger/fabric.git
 #+END_SRC
+*** 编译
 
-**** 编译
-
-***** 编译Fabric工具
+**** 编译Fabric工具
 
 configtxgen工具用来配置Fabric的通道. 它的配置参数主要由 =configtx.yaml= 文件提供.
 
@@ -268,7 +267,7 @@ cd examples/e2e_cli
 成功后会有类似如下的输出:
 [[./4.png]]
 
-******* 弯路
+***** 弯路
 
 这一小节的东西是我编译时走的弯路, 直接使用 =make docker= 碰到了许多错误. 如果和我一样遇到错误了, 先跳到本小节的最后, 先手动安装 go tools.
 
@@ -375,7 +374,7 @@ CouchDB做状态数据库, Kafka做共识, Zookeeper做Kafka的高可用支持. 
 make docker
 #+END_SRC
 
-**** 运行
+*** 运行
 
 configtxgen工具会生成两个内容: Orderer的bootstrap block和Fabric的channel configuration transaction.
 
@@ -424,7 +423,7 @@ rm ./ channel-artifacts/channel.tx
 # 该命令会自动删除启动网络时生成的镜像文件和配置文件
 #+END_SRC
 
-**** 手动运行
+*** 手动运行
 
 之前是使用脚本一键启动, 关闭. 我们可以手动来做一遍, 这样就明白背后发生了什么事.
 
@@ -436,13 +435,13 @@ rm ./ channel-artifacts/channel.tx
     # command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME}; sleep $TIMEOUT'
 #+END_SRC
 
-***** 启动网络
+**** 启动网络
 
-#+BEGIN_SRC Shell
-docker-compose -f docker-compose-cli.yaml up
-#+END_SRC
+ #+BEGIN_SRC Shell
+ docker-compose -f docker-compose-cli.yaml up
+ #+END_SRC
 
-***** 创建Channel
+**** 创建Channel
 
 Channel在逻辑上将我们自己编写的Chaincode与其他的Chaincode区分开来.
 
