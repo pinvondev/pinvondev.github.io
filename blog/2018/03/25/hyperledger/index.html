@@ -35,18 +35,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org780faec">词汇表</a></li>
+<li><a href="#orga0b1f78">词汇表</a></li>
+<li><a href="#org16f80e6">简介</a>
+<ul>
+<li><a href="#org6ebe94c">分布式账本</a></li>
+<li><a href="#org3ca039c">智能合约</a></li>
+<li><a href="#org5f18bba">共识</a></li>
+<li><a href="#org429f8fe">Hyperledger Fabric</a></li>
+</ul>
+</li>
+<li><a href="#org01dde12">快速入门</a>
+<ul>
+<li><a href="#orgf4bb4ad">先决条件</a></li>
+<li><a href="#orgcee5727">安装Hyperledger Fabric</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org780faec" class="outline-2">
-<h2 id="org780faec">词汇表</h2>
-<div class="outline-text-2" id="text-org780faec">
+<div id="outline-container-orga0b1f78" class="outline-2">
+<h2 id="orga0b1f78">词汇表</h2>
+<div class="outline-text-2" id="text-orga0b1f78">
 </div>
 <ul class="org-ul">
-<li><a id="org3ba6e7b"></a>Anchor Peer(锚节点)<br />
-<div class="outline-text-6" id="text-org3ba6e7b">
+<li><a id="org724ba9e"></a>Anchor Peer(锚节点)<br />
+<div class="outline-text-6" id="text-org724ba9e">
 <p>
 锚节点是通道中能被所有对等节点探测, 并能与之进行通信的一种对等节点. 通道中的每个成员都有一个(或多个, 以防单点故障)锚节点, 允许属于不同成员身份的节点来发现通道中存在的其他节点.
 </p>
@@ -57,32 +71,32 @@
 </div>
 </li>
 
-<li><a id="orgd853649"></a>Block(区块)<br />
-<div class="outline-text-6" id="text-orgd853649">
+<li><a id="org3712a73"></a>Block(区块)<br />
+<div class="outline-text-6" id="text-org3712a73">
 <p>
 在一个通道上, 区块是一组有序交易的集合. 区块往往通过密码学手段(Hash)连接到前一个区块.
 </p>
 </div>
 </li>
 
-<li><a id="orgb8818a8"></a>Chain(链)<br />
-<div class="outline-text-6" id="text-orgb8818a8">
+<li><a id="orgbcc1010"></a>Chain(链)<br />
+<div class="outline-text-6" id="text-orgbcc1010">
 <p>
 链就是区块经过"哈希连接"结构化的交易日志. 对等节点(peer)从共识服务(order service)接收区块, 并根据背书策略和并发冲突标记区块的交易是否有效, 然后将该区块追加到对等节点文件系统的哈希链上.
 </p>
 </div>
 </li>
 
-<li><a id="orge6650a0"></a>Chaincode(链码)<br />
-<div class="outline-text-6" id="text-orge6650a0">
+<li><a id="orgae7bda3"></a>Chaincode(链码)<br />
+<div class="outline-text-6" id="text-orgae7bda3">
 <p>
 链码是一个运行在账本上的软件, 可以对资产进行编码, 其中的交易指令(或业务逻辑)也可以用来修改资产.
 </p>
 </div>
 </li>
 
-<li><a id="orgbd1193b"></a>Channel(通道)<br />
-<div class="outline-text-6" id="text-orgbd1193b">
+<li><a id="org0ccd0e1"></a>Channel(通道)<br />
+<div class="outline-text-6" id="text-org0ccd0e1">
 <p>
 通道是构建在"Fabric"网络上的私有区块链, 实现了数据的隔离和保密. 通道特定的账本在通道中是与所有对等节点共享的, 并且交易方必须通过该通道的正确验证才能与账本进行交互. 通道是由一个配置块来定义的.
 </p>
@@ -93,8 +107,8 @@
 </div>
 </li>
 
-<li><a id="org74a8e38"></a>Commitment(提交)<br />
-<div class="outline-text-6" id="text-org74a8e38">
+<li><a id="org41f41de"></a>Commitment(提交)<br />
+<div class="outline-text-6" id="text-org41f41de">
 <p>
 一个通道中的每个对等节点都会验证交易的有序区块, 然后将区块提交(写或追加)到该通道上账本的各个副本, 对等节点也会标记每个区块中的每笔交易的状态是有效还是无效.
 </p>
@@ -105,8 +119,8 @@
 </div>
 </li>
 
-<li><a id="org679541b"></a>Concurrency Control Version Check(并发控制版本检查CCVC)<br />
-<div class="outline-text-6" id="text-org679541b">
+<li><a id="org2fa2918"></a>Concurrency Control Version Check(并发控制版本检查CCVC)<br />
+<div class="outline-text-6" id="text-org2fa2918">
 <p>
 CCVC是保持通道中各对等节点状态同步的一种方法.
 </p>
@@ -117,30 +131,679 @@ CCVC是保持通道中各对等节点状态同步的一种方法.
 </div>
 </li>
 
-<li><a id="orgd457d79"></a>Configuration Block(配置区块)<br />
-<div class="outline-text-6" id="text-orgd457d79">
+<li><a id="org0a4ab3b"></a>Configuration Block(配置区块)<br />
+<div class="outline-text-6" id="text-org0a4ab3b">
 <p>
 为系统链或通道定义成员和策略的配置数据. 对某个通道或整个网络的配置修改都将导致生成一个新的配置区块, 并追加到适当的链上.
 </p>
 </div>
 </li>
 
-<li><a id="orgd398c65"></a>Consensus(共识)<br />
-<div class="outline-text-6" id="text-orgd398c65">
+<li><a id="org9574d24"></a>Consensus(共识)<br />
+<div class="outline-text-6" id="text-org9574d24">
 <p>
 共识是贯穿整个交易流程的广义术语, 用于产生一个对于排序的同意书和确认构成区块的交易集的正确性.
 </p>
 </div>
 </li>
 
-<li><a id="org30b1482"></a>Current State(当前状态)<br />
-<div class="outline-text-6" id="text-org30b1482">
+<li><a id="org44f4f11"></a>Current State(当前状态)<br />
+<div class="outline-text-6" id="text-org44f4f11">
 <p>
 ledger的当前状态表示其chain交易log中所有key的最新值.
 </p>
 </div>
 </li>
+
+<li><a id="orgaa42b0d"></a>Ordering Service(排序服务或共识服务)<br />
+<div class="outline-text-6" id="text-orgaa42b0d">
+<p>
+Ordering Service独立于Peer, 以先到先得的方式为网络上所有的channel做交易排序, 包含与每个Member相关的加密材料.
+</p>
+
+<p>
+Orderer为区块链写入操作提供时序保证, 具体实现可以是共识算法或分布式的消息订阅消费系统(kafka).
+</p>
+</div>
+</li>
 </ul>
+</div>
+
+<div id="outline-container-org16f80e6" class="outline-2">
+<h2 id="org16f80e6">简介</h2>
+<div class="outline-text-2" id="text-org16f80e6">
+</div>
+<div id="outline-container-org6ebe94c" class="outline-3">
+<h3 id="org6ebe94c">分布式账本</h3>
+<div class="outline-text-3" id="text-org6ebe94c">
+<p>
+去中心化: 在整个区块链网络中, 每个参与者都保存着一个区块链账本的副本.
+</p>
+
+<p>
+协作: 所有参与者共同维护着账本.
+</p>
+
+<p>
+不可篡改: 加密技术保证交易一旦写入账本, 就无法篡改. 不可篡改性使得信息来源的确认变得容易.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ca039c" class="outline-3">
+<h3 id="org3ca039c">智能合约</h3>
+<div class="outline-text-3" id="text-org3ca039c">
+<p>
+区块链网络使用智能合约来实现对账本的访问和控制.
+</p>
+
+<p>
+智能合约不仅可用于在区块链网络中打包信息, 还可以用于自动执行参与者定义的特定交易操作. 如, 买卖双方可以定义一个智能合约, 以保证当卖方发货的商品运送到达时, 买方支付的货款会自动转账给卖方.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5f18bba" class="outline-3">
+<h3 id="org5f18bba">共识</h3>
+<div class="outline-text-3" id="text-org5f18bba">
+<p>
+共识就是保持网络中所有账本交易的同步流程. 它保证了账本只会在交易双方都确认后才进行更新. 同时在账本更新时, 交易双方能够在账本中的相同位置, 更新一个相同的交易信息.
+</p>
+
+<p>
+目前, 我们只需把区块链理解为一个共享的, 通过智能合约更新的多副本交易系统, 同时这个系统通过协作共识机制保证了网络中所有账本副本的同步.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org429f8fe" class="outline-3">
+<h3 id="org429f8fe">Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-org429f8fe">
+<p>
+2015年, Linux基金会启动了Hyperledger项目, 目标是发展跨行业的区块链技术. Hyperledger Fabric是Hyperledger的一个区块链项目.
+</p>
+
+<p>
+Hyperledger Fabric需要登录才能加入网络.
+</p>
+
+<p>
+通道功能: 允许参与者为交易新建一个单独的账本. 当网络中的一些参与者是竞争对手时, 这个功能尤为重要. 因为这些参与者并不希望所有的交易信息(如给部分客户优惠)都对网络中所有参与者公开. 只有在同一个通道中的参与者, 才会拥有该通道中的账本.
+</p>
+
+<p>
+共享账本: Hyperledger Fabric的账本子系统包含世界状态和交易记录. 世界状态组件描述了账本在特定时间点的状态, 它是账本的数据库; 交易记录组件记录了产生世界状态当前值的所有交易, 它是世界状态的更新历史.
+</p>
+
+<p>
+智能合约: 在Hyperledger Fabric中称为chaincode. 当一个区块链外部的应用程序需要访问账本时, 就会调用chaincode. 一般情况下, chaincode只会访问账本的世界状态, 不会查询交易记录. 目前使用Go编写chaincode.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org01dde12" class="outline-2">
+<h2 id="org01dde12">快速入门</h2>
+<div class="outline-text-2" id="text-org01dde12">
+</div>
+<div id="outline-container-orgf4bb4ad" class="outline-3">
+<h3 id="orgf4bb4ad">先决条件</h3>
+<div class="outline-text-3" id="text-orgf4bb4ad">
+<p>
+在v1.0.0发行之前, 使用Ubuntu的Vagrant来作为开发环境. 而Docker容器可以为MacOS, Windows, Linux三个平台的开发人员提供一致的体验, 因此, 现在更推荐使用Docker容器进行开发环境的搭建.
+</p>
+
+<p>
+本平台为Ubuntu 16.04LTS. 如果是其他系统, 请查看<a href="http://hyperledger-fabric.readthedocs.io/en/latest/dev-setup/devenv.html">官网的环境搭建</a>
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org2864a42"></a>Git安装<br /></li>
+
+<li><a id="org71a2cff"></a>Go语言<br />
+<div class="outline-text-5" id="text-org71a2cff">
+<p>
+安装 Go 1.9 或者更后的版本.
+</p>
+
+<p>
+首先到<a href="https://golang.org/dl/">官网</a>下载压缩包. 最好选择稳定版本.
+</p>
+
+<p>
+仅介绍Ubuntu 16.04TLS的安装, 其他环境的安装, 请参考<a href="https://golang.org/doc/install">官网的安装教程</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 解压至/usr/local目录
+sudo tar -C /usr/local -xzf go1.9.4.linux-amd64.tar.gz
+
+# 打开配置
+emacs ~/.bashrc
+
+# 将 /usr/local/go/bin 添加到环境变量
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go # 配置GOPATH是为了后面需要
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# 使配置生效
+source ~/.bashrc
+</pre>
+</div>
+
+<p>
+测试直接输入 <code>go</code>, 会有一些go命令的说明. 如果有异常, 说明没安装成功. 
+</p>
+
+<p>
+也可以直接测试文件: 新建文件 test.go, 输入代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-GO">package main
+import "fmt"
+func main() {
+    fmt.Println("hello world")
+}
+</pre>
+</div>
+
+<p>
+运行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">go run test.go
+</pre>
+</div>
+
+<p>
+如果出现"hello world", 则说明安装成功.
+</p>
+</div>
+</li>
+
+
+<li><a id="org16e330a"></a>Docker<br />
+<div class="outline-text-5" id="text-org16e330a">
+<p>
+Docker是一个容器, 在这个容器中, 我们可以运行我们的实例. 可以把Docker大致当成一个虚拟机, 但是Docker不需要占用那么多空间.
+</p>
+
+<p>
+每个Docker将在本地运行一个与Hyperledger网络相关的服务.
+</p>
+
+<p>
+可以使用CLI或终端来安装Docker, 这边我们需要安装两个包: docker-engine和docker-compose.
+</p>
+
+<p>
+docker-engine: 基础包, 它使得docker容器需要的所有必须的文件正常运行.
+</p>
+
+<p>
+docker-compose: 用于配置Docker.
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgf3683f4"></a>添加Docker的APT源<br />
+<div class="outline-text-6" id="text-orgf3683f4">
+<div class="org-src-container">
+<pre class="src src-Shell"># 将官方Docker资源库的GPG密钥添加到系统
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+# 将Docker存储库添加到APT源
+echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
+
+# 更新软件包数据库
+sudo apt-get update
+
+# 确保从Docker repo中安装
+apt-cache policy docker-engine
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org3ee7f1f"></a>安装Docker<br />
+<div class="outline-text-6" id="text-org3ee7f1f">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt-get install -y docker-engine
+
+# 开启docker服务
+sudo service docker start
+
+# 让docker服务开机自启动
+sudo systemctl enable docker
+
+# 如果要取消开机自动启动, 则输入
+sudo systemctl disable docker
+
+# 测试docker是否在运行
+docker
+
+# 使用pip安装docker-compose
+sudo pip install docker-compose
+</pre>
+</div>
+
+<p>
+关于Docker的安装, 到此结束.
+</p>
+
+<p>
+默认情况下, 运行docker需要root权限, 也可以用安装docker的用户运行. 但是如果其他用户想要运行docker, 则会出错. 可以通过如下命令, 使用户有权限运行docker:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo usermod -aG docker username
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org7bd77e6"></a>安装Pip<br /></li>
+</ul>
+</div>
+<div id="outline-container-orgcee5727" class="outline-3">
+<h3 id="orgcee5727">安装Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-orgcee5727">
+</div>
+<ul class="org-ul">
+<li><a id="orgcddc760"></a>创建GOPATH<br />
+<div class="outline-text-5" id="text-orgcddc760">
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir -p $GOPATH
+
+cd $GOPATH
+mkdir src
+cd src
+mkdir github.com
+cd github.com
+mkdir hyperledger
+cd hyperledger
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgff522b1"></a>获取Fabric源码<br />
+<div class="outline-text-5" id="text-orgff522b1">
+<p>
+在hyperledger目录下, 执行如下命令:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">git clone https://github.com/hyperledger/fabric.git
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgc6b3a0d"></a>编译<br />
+<ul class="org-ul">
+<li><a id="orgba9f7ff"></a>编译Fabric工具<br />
+<div class="outline-text-6" id="text-orgba9f7ff">
+<p>
+configtxgen工具用来配置Fabric的通道. 它的配置参数主要由 <code>configtx.yaml</code> 文件提供.
+</p>
+
+<p>
+cryptogen工具可以快速地根据配置自动批量生成所需要的密钥及证书文件. 它的配置参数主要由 <code>crypto-config.yaml</code> 文件提供.
+</p>
+
+<p>
+在 <code>fabric</code> 目录下, 编译 <code>configtxgen</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install libtool libltdl-dev
+make configtxgen
+</pre>
+</div>
+
+<p>
+如果出现下图所示的提示, 说明编译成功.
+<img src="/assets/blog/2018/03/25/hyperledger/3.png" alt="3.png" />
+</p>
+
+<p>
+编译后的执行文件放在 <code>fabric/build/bin/configtxgen</code>.
+</p>
+
+<p>
+如果出现 <code>find: `/src/github.com/hyperledger/fabric/core/chaincode/shim': 没有那个文件或目录</code>, 说明 <code>GOPATH</code> 没有配置好, 或者配置了之后没有 <code>source ~/.bashrc</code>.
+</p>
+
+<p>
+cryptogen工具的编译方式也一样:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make cryptogen
+</pre>
+</div>
+
+
+<p>
+使用configtxgen工具, 生成通道的区块并配置.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cd examples/e2e_cli
+./generateArtifacts.sh 
+</pre>
+</div>
+
+<p>
+成功后会有类似如下的输出:
+<img src="/assets/blog/2018/03/25/hyperledger/4.png" alt="4.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org5982ad4"></a>弯路<br />
+<div class="outline-text-8" id="text-org5982ad4">
+<p>
+这一小节的东西是我编译时走的弯路, 直接使用 <code>make docker</code> 碰到了许多错误. 如果和我一样遇到错误了, 先跳到本小节的最后, 先手动安装 go tools.
+</p>
+
+<p>
+我们有了初始块, 需要容器来运行区块链网络. Hyperledger Fabric建议使用容器来做这些工作, 以便将其与主机任务分离, 并实现定制和调整. 因此, 需要下载相应的镜像文件. 回到 <code>fabric</code> 目录, 执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make docker
+</pre>
+</div>
+<p>
+如果成功, 则如下图所示, 正在下载镜像文件:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/25/hyperledger/6.png" alt="6.png" />
+</p>
+</div>
+
+<p>
+如果出现如下问题:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/25/hyperledger/5.png" alt="5.png" />
+</p>
+</div>
+
+<p>
+说明当前用户没有权限来运行docker. 执行以下语句:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo usermod -aG docker $USER
+# 重启
+</pre>
+</div>
+
+<p>
+如果编译golint时报错, 一般是因为下载超时, hyperledger fabric是使用go语言编写的, 需要依赖一些工具或者第三方库, 但是因为谷歌有些东西被墙了, 所以要自己手动下载并安装.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir -p $GOPATH/src/golang.org/x
+cd $GOPATH/src/golang.org/x
+git clone https://github.com/golang/tools.git
+
+# 下载完成后执行以下命令
+go get github.com/kardianos/govendor
+go get github.com/golang/lint/golint
+go get golang.org/x/tools/cmd/goimports
+go get github.com/onsi/ginkgo/ginkgo
+go get github.com/axw/gocov/...
+go get github.com/client9/misspell/cmd/misspell
+go get github.com/AlekSi/gocov-xml
+go get github.com/golang/protobuf/protoc-gen-go
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="orgb5e8b28"></a>Orderer节点的编译<br />
+<div class="outline-text-6" id="text-orgb5e8b28">
+<p>
+Orderer节点容器里面运行的是Orderer服务, 要想生成Orderer镜像, 就需要先编译出Orderer程序.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make orderer
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org72177ca"></a>Peer节点的编译<br />
+<div class="outline-text-6" id="text-org72177ca">
+<p>
+Chaincode运行在Peer所在的机器上, 需要给Chaincode准备运行的基础环境, 即ccenv和javaenv两个镜像. 由于被墙, 需要先将之前go的工具拷贝进来.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">cp $GOPATH/src/bin/* ./build/docker/gotools/bin/
+make peer
+</pre>
+</div>
+
+<p>
+成功之后显示如下:
+<img src="/assets/blog/2018/03/25/hyperledger/7.png" alt="7.png" />
+</p>
+
+
+<p>
+使用命令 <code>docker image</code> 可查看已安装的镜像文件.
+</p>
+
+<p>
+现在, 可以进入 <code>example/e2e_cli</code>, 使用脚本, 一键启动程序.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 开启
+./network_setup.sh up [channel-id is optional]
+
+# 关闭
+./network_setup.sh down
+</pre>
+</div>
+
+<p>
+为了加快部署过程, hyperledger提供了一个脚本来执行所有任务. 该脚本会生成配置结果, 本地网络, Chaincode测试.
+</p>
+
+<p>
+进入 <code>examples/e2e_cli</code> 目录, 从Docker Hub获取镜像:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 使脚本可执行
+chmod +x download-dockerimages.sh
+
+# 执行脚本
+./download-dockerimages.sh
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgefa115b"></a>Docker镜像<br />
+<div class="outline-text-6" id="text-orgefa115b">
+<p>
+前面只是生成了Fabric的二进制文件, 不能直接使用. 需要将这些文件打包到Docker镜像中.
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 生成Orderer镜像
+make orderer-docker
+
+# 生成Peer镜像
+make peer-docker
+
+# fabric-tools镜像
+make tools-docker
+
+# 查看docker镜像文件
+docker images
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org3997f63"></a>其他Docker镜像<br />
+<div class="outline-text-6" id="text-org3997f63">
+<p>
+CouchDB做状态数据库, Kafka做共识, Zookeeper做Kafka的高可用支持. 直接使用以下命令生成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make docker
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org9b3f127"></a>运行<br />
+<div class="outline-text-5" id="text-org9b3f127">
+<p>
+configtxgen工具会生成两个内容: Orderer的bootstrap block和Fabric的channel configuration transaction.
+</p>
+
+<p>
+orderer block: ordering服务的创世区块(第一个区块).
+</p>
+
+<p>
+channel transaction: 在 create channel 时会被广播给orderer.
+</p>
+
+<p>
+configtx.yaml: 给出网络的定义, 拓扑结构.
+</p>
+
+<p>
+crypto-config目录: 包含每个实体的admin证书, ca证书, 签名证书, 私钥等.
+</p>
+
+<p>
+generateArtifacts.sh: 该脚本自动为我们生成启动网络所需的配置及创世区块. 如果之前使用过 <code>network_setup.sh</code>, 则先将 <code>channel-artifact目录</code> 里的可见文件都删除, 隐藏文件不用删, 再将 <code>crypto-config</code> 目录直接删除.
+</p>
+
+
+<p>
+启动网络:
+</p>
+<pre class="example">
+cd examples/e2e_cli
+./network_setup.sh up [channel-id-optional]
+</pre>
+
+<p>
+出现如下界面, 说明网络启动运行, 并测试成功:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/25/hyperledger/8.png" alt="8.png" />
+</p>
+</div>
+
+<p>
+停止网络有两种方法:
+</p>
+
+<p>
+第一种:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 新开一个终端, 进入examples/e2e_cli
+rm -f $(docker ps -aq)
+
+# 查看镜像
+docker images
+
+# 将dev-peerx.orgx.example字样的镜像文件删除
+# 输入其image id的前6位
+docker rmi -f 07032a eb54b1 a9ad47
+
+# 删除配置结果
+rm ./ channel-artifacts/channel.tx
+</pre>
+</div>
+
+<p>
+第二种:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network_setup.sh down
+# 该命令会自动删除启动网络时生成的镜像文件和配置文件
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgc2a6608"></a>手动运行<br />
+<div class="outline-text-5" id="text-orgc2a6608">
+<p>
+之前是使用脚本一键启动, 关闭. 我们可以手动来做一遍, 这样就明白背后发生了什么事.
+</p>
+
+<p>
+进入 <code>examples/e2e_cli</code> 目录.
+</p>
+
+<p>
+打开 <code>docker-compose-cli.yaml</code>, 找到启动 <code>script.sh</code> 的语句, 注释掉.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+# command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME}; sleep $TIMEOUT'
+</pre>
+</div>
+</div>
+
+<ul class="org-ul">
+<li><a id="org2bef2ce"></a>启动网络<br />
+<div class="outline-text-6" id="text-org2bef2ce">
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-cli.yaml up
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org25736ec"></a>创建Channel<br />
+<div class="outline-text-6" id="text-org25736ec">
+<p>
+Channel在逻辑上将我们自己编写的Chaincode与其他的Chaincode区分开来.
+</p>
+
+<p>
+进入Cli镜像:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it cli bash
+</pre>
+</div>
+
+<p>
+仅以peer0节点为例, 修改环境变量:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 </div>
@@ -148,7 +811,7 @@ ledger的当前状态表示其chain交易log中所有key的最新值.
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-03-25</span>
-        <span title="last modification date" class="post-info">2018-03-25</span>
+        <span title="last modification date" class="post-info">2018-03-27</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">pinvon</span>
       </div>
