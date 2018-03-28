@@ -1,0 +1,27 @@
+#+TITLE:       Docker常用操作
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-28 三
+#+URI:         /blog/%y/%m/%d/docker常用操作
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Docker
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+*** 查看在使用的容器
+
+#+BEGIN_SRC Shell
+docker ps -a
+#+END_SRC
+
+*** 关掉所有在使用的容器
+
+#+BEGIN_SRC Shell
+docker ps -qa | xargs docker rm
+# 或
+docker rm $(docker ps -qa)
+
+# 如果无法删除成功
+docker rm --force $(docker ps -qa)
+#+END_SRC

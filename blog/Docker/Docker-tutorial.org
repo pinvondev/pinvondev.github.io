@@ -1,0 +1,311 @@
+#+TITLE:       Docker从入门到实践-笔记
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-28 三
+#+URI:         /blog/%y/%m/%d/docker从入门到实践-笔记
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Docker
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* Docker简介
+
+*** 什么是Docker
+
+传统虚拟机技术: 虚拟出一套硬件后, 在其上运行一个完整操作系统, 在该系统上再运行所需应用进程.
+
+Docker: 容器内的应用进程直接运行在宿主的内核上, 容器内没有自己的内核, 也没有进行硬件虚拟, 比传统虚拟机更为轻便.
+
+如图所示:
+
+[[./0.png]]
+
+*** Docker的好处
+
+更高效的利用系统资源: 不需要进行硬件虚拟及运行完整操作系统等额外开销.
+
+更快速的启动时间: 秒级.
+
+一致的运行环境: 提供了除内核外一致的运行时环境.
+
+更轻松的迁移
+
+更轻松的维护和扩展: Docker团队和许多开源项目团队一起维护了一大批高质量的[[https://store.docker.com/search?q=&source=verified&type=image][官方镜像]], 既可直接在生产环境使用, 又可以作为基础进一步定制.
+
+* 基本概念
+
+*** 镜像
+
+操作系统分为内核和用户空间, 对于Linux而言, 内核启动后会挂载root文件系统为其提供用户空间支持.
+
+Docker镜像就相当于是一个root文件系统. 如官方镜像 ubuntu:16.04 就包含了完整的一套Ubuntu16.04最小系统的root文件系统.
+
+Docker镜像就是一个特殊的文件系统, 提供了容器运行时所需的文件与配置参数.
+
+*** 容器
+
+镜像和容器的关系, 就像是面向对象程序设计中的类和实例的关系一样. 镜像是静态的定义, 容器是镜像运行时的实体, 容器可以被创建, 启动, 停止, 删除, 暂停等.
+
+*** 仓库(Docker Registry)
+
+镜像构建完成后, 可以很容易地在当前宿主机器上运行, 而如果需要在其他主机上使用该镜像, 就需要一个集中的存储, 分发镜像的服务, Docker Registry就是这样的服务.
+
+一个Docker Registry中可以包含多个仓库(Repository), 每个仓库可包含多个标签(Tag), 每个标签对应一个镜像. 一般Repository对应一个软件, Tag对应该软件的版本.
+
+我们可以通过 =<Repository>:<Tag>= 来指定具体使用该软件的哪个版本. 如果不给出标签, 将以 =latest= 作为默认标签. 如: =ubuntu:16.04=. 如果只写 =ubuntu=, 则被当成 =ubuntu:latest=.
+
+Docker Registry公开服务是开放给用户使用, 允许用户管理镜像的Registry服务, 如[[https://hub.docker.com/][Docker Hub]].
+
+国内访问这些服务可能会比较慢. 国内有些云服务商提供了针对Docker Hub的镜像服务, 这些镜像服务常被称为加速器, 如[[https://cr.console.aliyun.com/#/accelerator][阿里云加速器]], [[https://www.daocloud.io/mirror#accelerator-doc][DaoCloud加速器]].
+
+除了公开服务, 也可以自己搭建私有服务.
+
+
+
+* 安装Docker
+
+以Ubuntu为例.
+
+*** 卸载旧版本
+
+#+BEGIN_SRC Shell
+sudo apt-get remove docker docker-engine docker.io
+#+END_SRC
+
+*** 安装
+
+#+BEGIN_SRC Shell
+# 将官方Docker资源库的GPG密钥添加到系统
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+# 将Docker存储库添加到APT源
+echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
+
+# 更新软件包数据库
+sudo apt-get update
+
+# 确保从Docker repo中安装
+apt-cache policy docker-engine
+
+sudo apt-get install -y docker-engine
+
+# 开启docker服务
+sudo service docker start
+
+# 让docker服务开机自启动
+sudo systemctl enable docker
+
+# 如果要取消开机自动启动, 则输入
+sudo systemctl disable docker
+
+# 使用pip安装docker-compose
+sudo pip install docker-compose
+
+# 将当前用户加入docker组
+sudo usermod -aG docker $USER
+
+# 注销 重新登录
+
+# 测试docker是否在运行
+docker
+#+END_SRC
+
+*** 使用镜像加速器
+
+对于Ubuntu 16.04LTS, 在 =/etc/docker/daemon.json= 中写入如下内容(若文件不存在则新建):
+#+BEGIN_SRC JSON
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com"
+  ]
+}
+#+END_SRC
+
+重启服务:
+#+BEGIN_SRC Shell
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+#+END_SRC
+
+检查加速器是否生效, 输入 =docker info=, 如果有如下内容, 说明生效(由于我用的是阿里云加速器, 所以显示的是阿里云的网址):
+#+BEGIN_SRC Shell
+Registry Mirrors:
+ https://obou6wyb.mirror.aliyuncs.com/
+#+END_SRC
+
+* 使用镜像
+
+*** 获取镜像
+
+从Docker镜像仓库获取镜像的命令是 =docker pull [选项] [Docker Registry地址[:端口号]/]仓库名[:标签]=.
+
+Docker Registry地址[:端口号]中的地址一般是 <域名/IP>[:端口号], 默认地址是Docker Hub.
+
+仓库名: <用户名>/<软件名>, 对于Docker Hub, 可以不给出用户名.
+
+如: =docker pull ubuntu:16.04=.
+
+当然, 如果配置了加速器, 则默认是从加速器下载, 而不是Docker Hub.
+
+运行: =docker run -it --rm ubuntu:16.04 bash=.
+再如: =docker run -it --rm hyperledger/fabric-peer:latest bash=.
+
+-it: i表示交互式操作, t表示终端.
+-rm: 退出容器后将其删除. 如果不想删除, 这个参数可以不加, 最后在需要删除时使用命令docker rm.
+bash: 表示使用bash shell.
+
+*** 列出镜像
+
+=docker images=.
+
+体积与Docker Hub上显示的不同, 是因为Docker Hub显示的是压缩后的体积.
+
+总体积并非所有镜像文件的总和, 因为Docker镜像是多层存储结构, 可以继承复用.
+
+如果有镜像的仓库名和标签都是<none>, 说明这是虚悬镜像, 主要是因为新旧镜像同名, 旧镜像名称会被取消. 一般来说可以随意删除. 删除命令: =docker image prune=.
+
+只列出部分镜像: =docker images ls ubuntu=.
+
+*** 删除本地镜像
+
+#+BEGIN_SRC Shell
+docker image rmi [image-id]
+#+END_SRC
+=image-id= 是前几位, 而不需要所有都输入.
+
+*** 使用Dockerfile定制镜像
+
+镜像的定制, 实际上是定制每一层所添加的配置和文件.
+
+Dockerfile 是一个文本文件, 其内包含了一条条的指令, 每一条指令构建一层, 因此每一条指令的内容, 就是描述该层应当如何构建.
+
+创建文件夹, 新建Dockerfile文件:
+#+BEGIN_SRC Shell
+mkdir mynginx
+cd mynginx
+touch Dockerfile
+#+END_SRC
+
+内容为:
+#+BEGIN_SRC Dockerfile
+FROM nginx
+RUN echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
+#+END_SRC
+
+定制镜像, 意思是以一个镜像为基础进行定制. =FROM= 就是指定基础镜像. 这在Dockerfile中是必备指令, 并且是第一条指令.
+
+如果以 =FROM scratch= 开头, 说明不以任何镜像为基础.
+
+=RUN= 指令用来执行命令行命令, 就像是直接在命令行中输入的命令一样.
+
+Dockerfile会为每一条指令建立一层.
+
+构建镜像: 在Dockerfile目录中执行 =docker build -t nginx:v3 .=. =-t= 参数指定镜像名称.
+
+关于Dockerfile的具体内容, 有时间再继续学习.
+
+* 操作容器
+
+*** 启动
+
+#+BEGIN_SRC Shell
+docker run -it ubuntu:16.04 bash
+#+END_SRC
+
+*** 后台运行
+
+后台运行使用 =-d= 参数.
+
+后台运行时, 如果有相关的输出信息, 并不会输出到宿主机器.
+
+#+BEGIN_SRC Shell
+docker run -d ubuntu:17.10 /bin/sh -c "while true; do echo hello world; sleep 1; done"
+
+# 查看输出信息
+docker container logs
+#+END_SRC
+
+*** 终止容器
+
+#+BEGIN_SRC Shell
+docker container stop [container name]
+
+# 终止状态的窗口可以用以下命令查看
+docker container ls -a
+
+# 处于终止状态的容器的启动
+docker container start [container name]
+
+# 重启
+docker container restart [container name]
+#+END_SRC
+
+*** 进入容器
+
+#+BEGIN_SRC Shell
+docker exec -it [container name] bash
+#+END_SRC
+
+*** 导入导出
+
+导出:
+#+BEGIN_SRC Shell
+docker container ls -a
+
+# 记住要导出的容器id
+
+docker export 7691a814370e > ubuntu.tar
+#+END_SRC
+
+导入:
+#+BEGIN_SRC Shell
+cat ubuntu | docker import - test/ubuntu:v1.0
+#+END_SRC
+
+*** 删除容器
+
+#+BEGIN_SRC Shell
+# 删除一个处于终止状态的容器
+docker container rm test
+
+# 清理所有处于终止状态的容器
+docker container ls -a
+docker container prune
+#+END_SRC
+
+* 访问仓库
+
+仓库(Repository)是集中存放镜像的地方.
+
+注册服务器(Registry)是管理仓库的具体服务器. 每个服务器上有许多仓库, 每个仓库里有许多镜像.
+
+如 dl.dockerpool.com/ubuntu, dl.dockerpool.com是注册服务器地址, ubuntu是仓库名.
+
+*** Docker Hub
+
+注册: [[https://cloud.docker.com/][注册Docker账号]]
+
+登录: docker login
+
+退出: docker logout
+
+查找镜像: docker search
+
+拉取镜像: docker pull
+
+如:
+#+BEGIN_SRC Shell
+docker search centos
+
+# 返回很多centos相关镜像
+
+# 选择其中一个拉取
+docker pull centos
+#+END_SRC
+
+推送: 
+#+BEGIN_SRC Shell
+docker username/ubuntu:17.10
+docker search username
+#+END_SRC
