@@ -1,0 +1,95 @@
+#+TITLE:       Fabric官方安全first-network
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-28 三
+#+URI:         /blog/%y/%m/%d/fabric官方安全first-network
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 准备
+
+*** 下载源代码
+
+#+BEGIN_SRC Shell
+git clone https://github.com/hyperledger/fabric-samples.git
+cd fabric-samples
+
+# 如果想切换到其他版本, 则输入以下命令. 我直接使用主分支的版本, 因此不切换
+git checkout {TAG}
+#+END_SRC
+
+** 下载工具
+
+想要运行这里的官方案例, 需要准备一些工具. 你可以使用脚本下载, 如果编译过Fabric的, 也可以选另一种方式, 因为如果编译过, 已经有很多镜像文件了, 不需要使用脚本重新下载.
+
+*** 使用脚本下载
+
+可以直接执行以下命令:
+#+BEGIN_SRC Shell
+# 能翻墙
+curl -sSL https://goo.gl/6wtTN5 | bash -s 1.1.0
+
+# 不能翻墙
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s 1.1.0
+#+END_SRC
+
+也可以直接到这个网站, 将脚本复制下来, 放在 =fabric-samples= 根目录下的 =bootstrap.sh= 中, 这个文件要自己创建.
+#+BEGIN_SRC Shell
+# 让其可执行
+chmod +x ./bootstrap.sh
+./bootstrap.sh
+#+END_SRC
+
+*** 编译过Fabric的
+
+如果有根据[[https://pinvondev.github.io/blog/2018/03/25/hyperledger/][编译]]所说的进行编译过, 可以先打开 =bootstrap.sh=, 在里面查找 =dockerFabricPull()= 方法, 将该方法以后(包括该方法)的内容全部注释. 添加两句:
+#+BEGIN_SRC Shell
+echo ${ARCH}
+echo ${VERSION}
+./bootstrap.sh
+#+END_SRC
+查看输出, 根据输出的信息用浏览器到以下两个网站去下载. (终端的curl太慢了)
+
+https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/
+
+https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/
+
+下载完后解压到 =fabric-samples/bin/= 目录下, 如果没有 =bin目录=, 则创建一个. 这里的工具, 有几个也可以在 =fabric/build/docker/bin= 里面找到, 直接复制过去也行.
+
+
+
+* 一键运行
+
+#+BEGIN_SRC Shell
+cd first-network
+
+# 生成配置
+./byfn.sh -m generate
+
+# 启动网络
+./byfn.sh -m up
+
+# 关闭网络
+./byfn.sh -m down
+#+END_SRC
+如果成功, 可以看到类似下面两个图中的内容.
+
+[[./9.png]]
+
+[[./10.png]]
+
+
+* 手动运行
+
+*** cryptogen工具
+
+cryptogen工具为我们生成各种网络实体的加密材料(x509证书). 这些证书是身份的代表, 它们使得我们可以在网络中交易时进行签名/验证身份.
+
+cryptogen工具根据 =crypto-config.yaml= 文件里的配置进行工具, 这个文件包含了网络拓扑, 并且使得我们可以为Organizations和属于Organizations的组件生成证书与密钥. 每个Organization都有唯一的根证书(ca-cert), 它将组件(peers, orders)绑定到Organization. 通过为每个Organization颁发唯一的CA证书, 我们可以模仿一个经典的网络, 这个网络中的成员将使用自己的证书颁发机构. Hyperledger Fabric中的交易和通信, 都是通过存储在 =keystore= 中的实体的私钥签名, 然后使用公钥进行身份验证.
+
+=crypto-config.yaml= 中的 =count= 表示Organization中的 =peer= 的数量.
+
+还要注意 OrdererOrgs 下的 Name, Domain, Specs 这些字段. 网络实体的命名规则为: {{.Hostname}}.{{.Domain}}
