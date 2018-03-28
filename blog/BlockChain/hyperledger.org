@@ -231,65 +231,16 @@ cd hyperledger
 #+BEGIN_SRC Shell
 git clone https://github.com/hyperledger/fabric.git
 #+END_SRC
-*** 编译
 
-**** 编译Fabric工具
 
-configtxgen工具用来配置Fabric的通道. 它的配置参数主要由 =configtx.yaml= 文件提供.
+*** 安装Go相关库
 
-cryptogen工具可以快速地根据配置自动批量生成所需要的密钥及证书文件. 它的配置参数主要由 =crypto-config.yaml= 文件提供.
-
-在 =fabric= 目录下, 编译 =configtxgen=:
+安装必要工具:
 #+BEGIN_SRC Shell
 sudo apt install libtool libltdl-dev
-make configtxgen
 #+END_SRC
 
-如果出现下图所示的提示, 说明编译成功.
-[[./3.png]]
-
-编译后的执行文件放在 =fabric/build/bin/configtxgen=.
-
-如果出现 =find: `/src/github.com/hyperledger/fabric/core/chaincode/shim': 没有那个文件或目录=, 说明 =GOPATH= 没有配置好, 或者配置了之后没有 =source ~/.bashrc=.
-
-cryptogen工具的编译方式也一样:
-#+BEGIN_SRC Shell
-make cryptogen
-#+END_SRC
-
-
-使用configtxgen工具, 生成通道的区块并配置.
-#+BEGIN_SRC Shell
-cd examples/e2e_cli
-./generateArtifacts.sh 
-#+END_SRC
-
-成功后会有类似如下的输出:
-[[./4.png]]
-
-***** 弯路
-
-这一小节的东西是我编译时走的弯路, 直接使用 =make docker= 碰到了许多错误. 如果和我一样遇到错误了, 先跳到本小节的最后, 先手动安装 go tools.
-
-我们有了初始块, 需要容器来运行区块链网络. Hyperledger Fabric建议使用容器来做这些工作, 以便将其与主机任务分离, 并实现定制和调整. 因此, 需要下载相应的镜像文件. 回到 =fabric= 目录, 执行:
-#+BEGIN_SRC Shell
-make docker
-#+END_SRC
-如果成功, 则如下图所示, 正在下载镜像文件:
-
-[[./6.png]]
-
-如果出现如下问题:
-
-[[./5.png]]
-
-说明当前用户没有权限来运行docker. 执行以下语句:
-#+BEGIN_SRC Shell
-sudo usermod -aG docker $USER
-# 重启
-#+END_SRC
-
-如果编译golint时报错, 一般是因为下载超时, hyperledger fabric是使用go语言编写的, 需要依赖一些工具或者第三方库, 但是因为谷歌有些东西被墙了, 所以要自己手动下载并安装.
+如果直接使用 =make docker=, 在国内会碰到许多错误, 比如编译golint时因为下载超时报错. 这是因为hyperledger fabric是使用go语言编写的, 需要依赖一些工具或者第三方库, 但是因为谷歌有些东西被墙了, 所以要自己手动下载并安装.
 #+BEGIN_SRC Shell
 mkdir -p $GOPATH/src/golang.org/x
 cd $GOPATH/src/golang.org/x
@@ -306,18 +257,29 @@ go get github.com/AlekSi/gocov-xml
 go get github.com/golang/protobuf/protoc-gen-go
 #+END_SRC
 
-***** Orderer节点的编译
+如果出现如下问题:
+
+[[./5.png]]
+
+说明当前用户没有权限来运行docker. 执行以下语句:
+#+BEGIN_SRC Shell
+sudo usermod -aG docker $USER
+# 重启
+#+END_SRC
+ 
+*** Orderer节点的编译
 
 Orderer节点容器里面运行的是Orderer服务, 要想生成Orderer镜像, 就需要先编译出Orderer程序.
 #+BEGIN_SRC Shell
 make orderer
 #+END_SRC
 
-***** Peer节点的编译
+*** Peer节点的编译
 
 Chaincode运行在Peer所在的机器上, 需要给Chaincode准备运行的基础环境, 即ccenv和javaenv两个镜像. 由于被墙, 需要先将之前go的工具拷贝进来.
 
 #+BEGIN_SRC Shell
+mkdir -p build/docker/gotools/bin/
 cp $GOPATH/src/bin/* ./build/docker/gotools/bin/
 make peer
 #+END_SRC
@@ -348,7 +310,35 @@ chmod +x download-dockerimages.sh
 ./download-dockerimages.sh
 #+END_SRC
 
-***** Docker镜像
+*** 编译Fabric工具
+
+configtxgen工具用来配置Fabric的通道. 它的配置参数主要由 =configtx.yaml= 文件提供.
+
+cryptogen工具可以快速地根据配置自动批量生成所需要的密钥及证书文件. 它的配置参数主要由 =crypto-config.yaml= 文件提供.
+
+在 =fabric= 目录下, 编译 =configtxgen=:
+#+BEGIN_SRC Shell
+make configtxgen
+#+END_SRC
+
+如果出现下图所示的提示, 说明编译成功.
+[[./3.png]]
+
+编译后的执行文件放在 =fabric/build/bin/configtxgen=.
+
+如果出现 =find: `/src/github.com/hyperledger/fabric/core/chaincode/shim': 没有那个文件或目录=, 说明 =GOPATH= 没有配置好, 或者配置了之后没有 =source ~/.bashrc=.
+
+cryptogen工具的编译方式也一样:
+#+BEGIN_SRC Shell
+make cryptogen
+#+END_SRC
+
+编译 configtxlator:
+#+BEGIN_SRC Shell
+make configxlator
+#+END_SRC
+
+*** Docker镜像
 
 前面只是生成了Fabric的二进制文件, 不能直接使用. 需要将这些文件打包到Docker镜像中.
 
@@ -367,14 +357,14 @@ make tools-docker
 docker images
 #+END_SRC
 
-***** 其他Docker镜像
+*** 其他Docker镜像
 
 CouchDB做状态数据库, Kafka做共识, Zookeeper做Kafka的高可用支持. 直接使用以下命令生成:
 #+BEGIN_SRC Shell
 make docker
 #+END_SRC
 
-*** 运行
+** 运行
 
 configtxgen工具会生成两个内容: Orderer的bootstrap block和Fabric的channel configuration transaction.
 
@@ -388,6 +378,14 @@ crypto-config目录: 包含每个实体的admin证书, ca证书, 签名证书, �
 
 generateArtifacts.sh: 该脚本自动为我们生成启动网络所需的配置及创世区块. 如果之前使用过 =network_setup.sh=, 则先将 =channel-artifact目录= 里的可见文件都删除, 隐藏文件不用删, 再将 =crypto-config= 目录直接删除.
 
+生成通道的区块和配置:
+#+BEGIN_SRC Shell
+cd examples/e2e_cli
+./generateArtifacts.sh 
+#+END_SRC
+
+成功后会有类似如下的输出:
+[[./4.png]]
 
 启动网络:
 #+BEGIN_SRC 
@@ -414,7 +412,8 @@ docker images
 docker rmi -f 07032a eb54b1 a9ad47
 
 # 删除配置结果
-rm ./ channel-artifacts/channel.tx
+rm ./ channel-artifacts/*.tx
+rm -rf crypto-config
 #+END_SRC
 
 第二种:
@@ -423,7 +422,7 @@ rm ./ channel-artifacts/channel.tx
 # 该命令会自动删除启动网络时生成的镜像文件和配置文件
 #+END_SRC
 
-*** 手动运行
+** 手动运行
 
 之前是使用脚本一键启动, 关闭. 我们可以手动来做一遍, 这样就明白背后发生了什么事.
 
