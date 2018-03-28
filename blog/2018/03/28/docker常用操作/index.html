@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>第2章 传输层: TCP和UDP - Pinvon&#39;s Blog</title>
+    <title>Docker常用操作 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,54 +30,38 @@
 
 <div>
 <div class="post">
-<h1>第2章 传输层: TCP和UDP</h1>
+<h1>Docker常用操作</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf02d9de">三次握手</a></li>
-<li><a href="#org7d528c5">四次挥手</a></li>
+<li><a href="#org8b40cfb">查看在使用的容器</a></li>
+<li><a href="#org06bcf38">关掉所有在使用的容器</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf02d9de" class="outline-2">
-<h2 id="orgf02d9de">三次握手</h2>
-<div class="outline-text-2" id="text-orgf02d9de">
-<ol class="org-ol">
-<li>服务器准备接受外来连接. 准备工作通过调用socket(), bind()和listen()函数来完成.</li>
-<li>客户端通过调用connect()主动连接服务器. 这引起客户端发送一个SYN分节(表示同步). 它告诉服务器将要发送的数据的初始序列号.</li>
-<li>服务器确认客户的SYN, 同时自己也发送一个SYN, 它含有服务器将在同一连接中发送的数据的初始序列号.</li>
-<li>客户端确认服务器的SYN.</li>
-</ol>
-
-
-<div class="figure">
-<p><img src="/assets/blog/2018/01/11/传输层-tcp和udp/fig2-2.png" alt="fig2-2.png" width="400" />
-</p>
-<p><span class="figure-number">Figure 1: </span>三次握手</p>
+<div id="outline-container-org8b40cfb" class="outline-2">
+<h2 id="org8b40cfb">查看在使用的容器</h2>
+<div class="outline-text-2" id="text-org8b40cfb">
+<div class="org-src-container">
+<pre class="src src-Shell">docker ps -a
+</pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7d528c5" class="outline-2">
-<h2 id="org7d528c5">四次挥手</h2>
-<div class="outline-text-2" id="text-org7d528c5">
-<ol class="org-ol">
-<li>某个应用进程首先调用close()主动关闭. 发送FIN.</li>
-<li>接收到FIN的一端执行被动关闭.</li>
-<li>一段时间后, 接收到文件结束符的应用进程调用close()关闭它的套接口. 发送FIN.</li>
-<li>接收到这个FIN的原发送方对它进行确认.</li>
-</ol>
+<div id="outline-container-org06bcf38" class="outline-2">
+<h2 id="org06bcf38">关掉所有在使用的容器</h2>
+<div class="outline-text-2" id="text-org06bcf38">
+<div class="org-src-container">
+<pre class="src src-Shell">docker ps -qa | xargs docker rm
+# 或
+docker rm $(docker ps -qa)
 
-<p>
-每个方向都需要有一个FIN和一个ACK, 所以需要四次.
-</p>
-
-<div class="figure">
-<p><img src="/assets/blog/2018/01/11/传输层-tcp和udp/fig2-3.png" alt="fig2-3.png" width="400" />
-</p>
-<p><span class="figure-number">Figure 2: </span>四次挥手</p>
+# 如果无法删除成功
+docker rm --force $(docker ps -qa)
+</pre>
 </div>
 </div>
 </div>
@@ -86,9 +70,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-11</span>
-        <span title="last modification date" class="post-info">2018-01-11</span>
-        <span title="tags" class="post-info"><a href="/tags/unp-读书笔记/">UNP-读书笔记</a></span>
+        <span title="post date" class="post-info">2018-03-28</span>
+        <span title="last modification date" class="post-info">2018-03-28</span>
+        <span title="tags" class="post-info"><a href="/tags/docker/">Docker</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -96,8 +80,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/11/传输层-tcp和udp";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/11/传输层-tcp和udp";
+          var disqus_identifier = "/blog/2018/03/28/docker常用操作";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/28/docker常用操作";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
