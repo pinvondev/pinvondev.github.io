@@ -86,10 +86,21 @@ cd first-network
 
 *** cryptogen工具
 
-cryptogen工具为我们生成各种网络实体的加密材料(x509证书). 这些证书是身份的代表, 它们使得我们可以在网络中交易时进行签名/验证身份.
+cryptogen工具为网络节点生成证书信息(x509证书). 这些证书是节点身份的代表, 它们使得我们可以在网络中交易时进行签名/验证身份.
 
-cryptogen工具根据 =crypto-config.yaml= 文件里的配置进行工具, 这个文件包含了网络拓扑, 并且使得我们可以为Organizations和属于Organizations的组件生成证书与密钥. 每个Organization都有唯一的根证书(ca-cert), 它将组件(peers, orders)绑定到Organization. 通过为每个Organization颁发唯一的CA证书, 我们可以模仿一个经典的网络, 这个网络中的成员将使用自己的证书颁发机构. Hyperledger Fabric中的交易和通信, 都是通过存储在 =keystore= 中的实体的私钥签名, 然后使用公钥进行身份验证.
+cryptogen工具根据 =crypto-config.yaml= 文件里的配置进行工具, 这个文件包含了网络拓扑, 并且使得我们可以为Organizations和属于Organizations的节点生成证书与密钥. 每个Organization都有唯一的根证书(ca-cert), 它将组件(peers, orders)绑定到Organization. 通过为每个Organization颁发唯一的CA证书, 我们可以模仿一个典型的区块链网络, 这个网络中的成员将使用自己的数字证书获取授权. Hyperledger Fabric中的交易和通信, 都是通过存储在 =keystore= 中的实体的私钥签名, 然后使用公钥进行身份验证.
+
+去掉 =crypto-config.yaml= 中的注释部分, 可以清楚地看清其内容.
+#+BEGIN_SRC Shell
+sed '/#/d' crypto-config.yaml > cryp.yaml
+emacs cryp.yaml
+#+END_SRC
+可以看到, 里面的内容如下:
+
+[[./11.png]]
 
 =crypto-config.yaml= 中的 =count= 表示Organization中的 =peer= 的数量.
 
-还要注意 OrdererOrgs 下的 Name, Domain, Specs 这些字段. 网络实体的命名规则为: {{.Hostname}}.{{.Domain}}
+还要注意 OrdererOrgs 下的 Name, Domain, Specs 这些字段. 网络实体的命名规则为: {Hostname}.{Domain}
+
+因此, Orderer节点的命名为 orderer.example.com, MSP ID为Orderer.
