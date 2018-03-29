@@ -35,13 +35,13 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgaddaed8">概述</a>
+<li><a href="#org3d35403">概述</a>
 <ul>
-<li><a href="#org6e7cc6d">启动区块链网络</a>
+<li><a href="#orgc8579b7">启动区块链网络</a>
 <ul>
-<li><a href="#org939a9a7">Hyperledger Fabric组件</a></li>
-<li><a href="#org6a4790b">交易流程</a></li>
-<li><a href="#org34f19ed">peer节点</a></li>
+<li><a href="#org3c5bd79">Hyperledger Fabric组件</a></li>
+<li><a href="#orgee004b5">交易流程</a></li>
+<li><a href="#org69e86ea">peer节点</a></li>
 </ul>
 </li>
 </ul>
@@ -50,45 +50,45 @@
 </div>
 </div>
 
-<div id="outline-container-orgaddaed8" class="outline-2">
-<h2 id="orgaddaed8">概述</h2>
-<div class="outline-text-2" id="text-orgaddaed8">
+<div id="outline-container-org3d35403" class="outline-2">
+<h2 id="org3d35403">概述</h2>
+<div class="outline-text-2" id="text-org3d35403">
 <p>
 区块链网络应用程序, 首先要给用户提供查询账本(包含特定记录)及更新账本(添加记录)的功能.
 </p>
 </div>
 
-<div id="outline-container-org6e7cc6d" class="outline-3">
-<h3 id="org6e7cc6d">启动区块链网络</h3>
-<div class="outline-text-3" id="text-org6e7cc6d">
+<div id="outline-container-orgc8579b7" class="outline-3">
+<h3 id="orgc8579b7">启动区块链网络</h3>
+<div class="outline-text-3" id="text-orgc8579b7">
 <p>
 在这个网络中, 需要一些最基本的组件来查询和更新账本.
 </p>
 </div>
 
-<div id="outline-container-org939a9a7" class="outline-4">
-<h4 id="org939a9a7">Hyperledger Fabric组件</h4>
-<div class="outline-text-4" id="text-org939a9a7">
+<div id="outline-container-org3c5bd79" class="outline-4">
+<h4 id="org3c5bd79">Hyperledger Fabric组件</h4>
+<div class="outline-text-4" id="text-org3c5bd79">
 </div>
 <ul class="org-ul">
-<li><a id="org6b80e47"></a>Peer<br />
-<div class="outline-text-5" id="text-org6b80e47">
+<li><a id="org3eac69b"></a>Peer<br />
+<div class="outline-text-5" id="text-org3eac69b">
 <p>
 Fabric网络中的节点(Peer), 表现为一个运行着的Docker容器. Peer可分两种:
 </p>
 </div>
 
 <ul class="org-ul">
-<li><a id="orgb9698c0"></a>endorsing peer/endoser<br />
-<div class="outline-text-6" id="text-orgb9698c0">
+<li><a id="orgfea4e52"></a>endorsing peer/endoser<br />
+<div class="outline-text-6" id="text-orgfea4e52">
 <p>
 安装和执行chaincode等一系列操作都离不开peer, 通常会说: chaincode安装在某个peer上. channel内同一个chaincode可以安装到多个peer上, 但只能实例化一次.
 </p>
 </div>
 </li>
 
-<li><a id="org62e448e"></a>anchor peer<br />
-<div class="outline-text-6" id="text-org62e448e">
+<li><a id="orgfd604b7"></a>anchor peer<br />
+<div class="outline-text-6" id="text-orgfd604b7">
 <p>
 锚节点是一个channel或org的代表, 它从orderer获取信息, 并在组内广播给其他peer, 其他peer可以不直接跟orderer打交道.
 </p>
@@ -97,16 +97,16 @@ Fabric网络中的节点(Peer), 表现为一个运行着的Docker容器. Peer可
 </ul>
 </li>
 
-<li><a id="orgc9646c3"></a>Org<br />
-<div class="outline-text-5" id="text-orgc9646c3">
+<li><a id="orga0457a9"></a>Org<br />
+<div class="outline-text-5" id="text-orga0457a9">
 <p>
 Org由若干个Peer组成. 可在 <code>crypto-config.yaml</code> 中设置一个Block中的Peer数量.
 </p>
 </div>
 </li>
 
-<li><a id="org07af159"></a>Channel<br />
-<div class="outline-text-5" id="text-org07af159">
+<li><a id="orgf3fa0ef"></a>Channel<br />
+<div class="outline-text-5" id="text-orgf3fa0ef">
 <p>
 Channel有点像"子网", 可以作为两个或多个特定网络成员间的专门以机密交易为目的而建立的. 一个Channel可包含多个Org. 每个Channel拥有一个账本, 并共享给内部的Peer.
 </p>
@@ -119,17 +119,17 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 </ul>
 </div>
 
-<div id="outline-container-org6a4790b" class="outline-4">
-<h4 id="org6a4790b">交易流程</h4>
-<div class="outline-text-4" id="text-org6a4790b">
+<div id="outline-container-orgee004b5" class="outline-4">
+<h4 id="orgee004b5">交易流程</h4>
+<div class="outline-text-4" id="text-orgee004b5">
 <p>
 了解了一些组件之后, 介绍一下交易流程.
 </p>
 </div>
 
 <ul class="org-ul">
-<li><a id="orgeef9d4f"></a>Client发起交易<br />
-<div class="outline-text-5" id="text-orgeef9d4f">
+<li><a id="org507f309"></a>Client发起交易<br />
+<div class="outline-text-5" id="text-org507f309">
 <p>
 Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 不是随意选择的, 由Chaincode和该Chaincode定义的Endorsement Policy共同决定. 
 </p>
@@ -147,16 +147,16 @@ Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 
 </div>
 </li>
 
-<li><a id="orgfe631ee"></a>Endorser接收信息<br />
-<div class="outline-text-5" id="text-orgfe631ee">
+<li><a id="org1781ba4"></a>Endorser接收信息<br />
+<div class="outline-text-5" id="text-org1781ba4">
 <p>
 收到信息后, 首先用Client的公钥验证它的签名, 然后开始模拟交易(模拟的意思是还不写入账本), 并核实相关信息(如, 是否是篡改过的信息等), 根据Endorsement Policy选择是否为该交易背书, 然后把结果发回.
 </p>
 </div>
 </li>
 
-<li><a id="org11f445b"></a>Client收集信息<br />
-<div class="outline-text-5" id="text-org11f445b">
+<li><a id="orgdb71af2"></a>Client收集信息<br />
+<div class="outline-text-5" id="text-orgdb71af2">
 <p>
 提交交易的Client收集各个Endorser返回的信息, 如果有足够的背书信息后, 就说明这个交易通过了Endorsement阶段. 如果没有收集到足够信息, 交易废止, Client可选择重新发起交易.
 </p>
@@ -167,8 +167,8 @@ Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 
 </div>
 </li>
 
-<li><a id="org0fde1f0"></a>共识阶段<br />
-<div class="outline-text-5" id="text-org0fde1f0">
+<li><a id="org5a05bad"></a>共识阶段<br />
+<div class="outline-text-5" id="text-org5a05bad">
 <p>
 共识算法很多, 目的都是把有效的交易加入新生成的区块, 并通知所有节点, 使它们保持一致.
 </p>
@@ -177,8 +177,8 @@ Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 
 </ul>
 </div>
 
-<div id="outline-container-org34f19ed" class="outline-4">
-<h4 id="org34f19ed">peer节点</h4>
+<div id="outline-container-org69e86ea" class="outline-4">
+<h4 id="org69e86ea">peer节点</h4>
 </div>
 </div>
 </div>
