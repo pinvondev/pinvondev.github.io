@@ -35,27 +35,29 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf3a17b6">准备</a>
+<li><a href="#org86cdf02">准备</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org9749bbf">下载源代码</a></li>
+<li><a href="#org48f9a41">下载源代码</a></li>
 </ul>
 </li>
-<li><a href="#org62e2b7d">下载工具</a>
+<li><a href="#orgd33e35d">下载工具</a>
 <ul>
-<li><a href="#org8adc01c">使用脚本下载</a></li>
-<li><a href="#org568bd96">编译过Fabric的</a></li>
+<li><a href="#orgcced115">使用脚本下载</a></li>
+<li><a href="#org890cf42">编译过Fabric的</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org0ff50cd">一键运行</a></li>
-<li><a href="#orgc39eabf">手动运行</a>
+<li><a href="#org6819cad">一键运行</a></li>
+<li><a href="#org9fbb3ab">手动运行</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgf2ad5fc">cryptogen工具</a></li>
+<li><a href="#orgae0df86">cryptogen工具</a></li>
+<li><a href="#org5dffa49">configtxgen工具(配置交易生成器)</a></li>
+<li><a href="#orgdc0ea23">使用工具</a></li>
 </ul>
 </li>
 </ul>
@@ -64,13 +66,13 @@
 </div>
 </div>
 
-<div id="outline-container-orgf3a17b6" class="outline-2">
-<h2 id="orgf3a17b6">准备</h2>
-<div class="outline-text-2" id="text-orgf3a17b6">
+<div id="outline-container-org86cdf02" class="outline-2">
+<h2 id="org86cdf02">准备</h2>
+<div class="outline-text-2" id="text-org86cdf02">
 </div>
-<div id="outline-container-org9749bbf" class="outline-4">
-<h4 id="org9749bbf">下载源代码</h4>
-<div class="outline-text-4" id="text-org9749bbf">
+<div id="outline-container-org48f9a41" class="outline-4">
+<h4 id="org48f9a41">下载源代码</h4>
+<div class="outline-text-4" id="text-org48f9a41">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples.git
 cd fabric-samples
@@ -82,17 +84,17 @@ git checkout {TAG}
 </div>
 </div>
 
-<div id="outline-container-org62e2b7d" class="outline-3">
-<h3 id="org62e2b7d">下载工具</h3>
-<div class="outline-text-3" id="text-org62e2b7d">
+<div id="outline-container-orgd33e35d" class="outline-3">
+<h3 id="orgd33e35d">下载工具</h3>
+<div class="outline-text-3" id="text-orgd33e35d">
 <p>
 想要运行这里的官方案例, 需要准备一些工具. 你可以使用脚本下载, 如果编译过Fabric的, 也可以选另一种方式, 因为如果编译过, 已经有很多镜像文件了, 不需要使用脚本重新下载.
 </p>
 </div>
 
-<div id="outline-container-org8adc01c" class="outline-4">
-<h4 id="org8adc01c">使用脚本下载</h4>
-<div class="outline-text-4" id="text-org8adc01c">
+<div id="outline-container-orgcced115" class="outline-4">
+<h4 id="orgcced115">使用脚本下载</h4>
+<div class="outline-text-4" id="text-orgcced115">
 <p>
 可以直接执行以下命令:
 </p>
@@ -117,9 +119,9 @@ chmod +x ./bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-org568bd96" class="outline-4">
-<h4 id="org568bd96">编译过Fabric的</h4>
-<div class="outline-text-4" id="text-org568bd96">
+<div id="outline-container-org890cf42" class="outline-4">
+<h4 id="org890cf42">编译过Fabric的</h4>
+<div class="outline-text-4" id="text-org890cf42">
 <p>
 如果有根据<a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/">编译</a>所说的进行编译过, 可以先打开 <code>bootstrap.sh</code>, 在里面查找 <code>dockerFabricPull()</code> 方法, 将该方法以后(包括该方法)的内容全部注释. 添加两句:
 </p>
@@ -151,9 +153,9 @@ echo ${VERSION}
 
 
 
-<div id="outline-container-org0ff50cd" class="outline-2">
-<h2 id="org0ff50cd">一键运行</h2>
-<div class="outline-text-2" id="text-org0ff50cd">
+<div id="outline-container-org6819cad" class="outline-2">
+<h2 id="org6819cad">一键运行</h2>
+<div class="outline-text-2" id="text-org6819cad">
 <div class="org-src-container">
 <pre class="src src-Shell">cd first-network
 
@@ -186,27 +188,155 @@ echo ${VERSION}
 </div>
 
 
-<div id="outline-container-orgc39eabf" class="outline-2">
-<h2 id="orgc39eabf">手动运行</h2>
-<div class="outline-text-2" id="text-orgc39eabf">
+<div id="outline-container-org9fbb3ab" class="outline-2">
+<h2 id="org9fbb3ab">手动运行</h2>
+<div class="outline-text-2" id="text-org9fbb3ab">
 </div>
-<div id="outline-container-orgf2ad5fc" class="outline-4">
-<h4 id="orgf2ad5fc">cryptogen工具</h4>
-<div class="outline-text-4" id="text-orgf2ad5fc">
+<div id="outline-container-orgae0df86" class="outline-4">
+<h4 id="orgae0df86">cryptogen工具</h4>
+<div class="outline-text-4" id="text-orgae0df86">
 <p>
-cryptogen工具为我们生成各种网络实体的加密材料(x509证书). 这些证书是身份的代表, 它们使得我们可以在网络中交易时进行签名/验证身份.
+cryptogen工具为网络节点生成证书信息(x509证书). 这些证书是节点身份的代表, 它们使得我们可以在网络中交易时进行签名/验证身份.
 </p>
 
 <p>
-cryptogen工具根据 <code>crypto-config.yaml</code> 文件里的配置进行工具, 这个文件包含了网络拓扑, 并且使得我们可以为Organizations和属于Organizations的组件生成证书与密钥. 每个Organization都有唯一的根证书(ca-cert), 它将组件(peers, orders)绑定到Organization. 通过为每个Organization颁发唯一的CA证书, 我们可以模仿一个经典的网络, 这个网络中的成员将使用自己的证书颁发机构. Hyperledger Fabric中的交易和通信, 都是通过存储在 <code>keystore</code> 中的实体的私钥签名, 然后使用公钥进行身份验证.
+cryptogen工具根据 <code>crypto-config.yaml</code> 文件里的配置进行工具, 这个文件包含了网络拓扑, 并且使得我们可以为Organizations和属于Organizations的节点生成证书与密钥. 每个Organization都有唯一的根证书(ca-cert), 它将组件(peers, orders)绑定到Organization. 通过为每个Organization颁发唯一的CA证书, 我们可以模仿一个典型的区块链网络, 这个网络中的成员将使用自己的数字证书获取授权. Hyperledger Fabric中的交易和通信, 都是通过存储在 <code>keystore</code> 中的实体的私钥签名, 然后使用公钥进行身份验证.
 </p>
+
+<p>
+去掉 <code>crypto-config.yaml</code> 中的注释部分, 可以清楚地看清其内容.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sed '/#/d' crypto-config.yaml &gt; cryp.yaml
+emacs cryp.yaml
+</pre>
+</div>
+<p>
+可以看到, 里面的内容如下:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric官方安全first-network/11.png" alt="11.png" />
+</p>
+</div>
 
 <p>
 <code>crypto-config.yaml</code> 中的 <code>count</code> 表示Organization中的 <code>peer</code> 的数量.
 </p>
 
 <p>
-还要注意 OrdererOrgs 下的 Name, Domain, Specs 这些字段. 网络实体的命名规则为: {{.Hostname}}.{{.Domain}}
+还要注意 OrdererOrgs 下的 Name, Domain, Specs 这些字段. 网络实体的命名规则为: {Hostname}.{Domain}
+</p>
+
+<p>
+因此, Orderer节点的命名为 orderer.example.com, MSP ID为Orderer.
+</p>
+
+<p>
+使用 <code>cryptogen</code> 生成的数字证书和密钥信息保存在 <code>crypto-config</code> 文件夹中.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5dffa49" class="outline-4">
+<h4 id="org5dffa49">configtxgen工具(配置交易生成器)</h4>
+<div class="outline-text-4" id="text-org5dffa49">
+<p>
+configtxgen会生成4个配置信息:
+</p>
+<ol class="org-ol">
+<li>orderer genesis block</li>
+<li>channel configuration transaction</li>
+<li>两个 anchor peer transactions</li>
+</ol>
+
+<p>
+其中, orderer block是Orderer Service的创世区块. Channel configuration transaction文件在Channel创建的时候广播给Order. Anchor peer transactions指定了每个Organization在此Channel上的代表节点.
+</p>
+
+<p>
+configtxgen的配置文件是 <code>configtx.yaml</code>. 去掉其中的注释, 内容如下:
+</p>
+
+
+<div class="figure">
+<p><img src="./18.png" alt="18.png" />
+</p>
+</div>
+
+<p>
+内容很多, 只截取其中一部分.
+</p>
+
+<p>
+该配置文件定义了3个成员: 一个Ordering Service组织(Organization) OrdererOrg, 两个节点组织 Org1 和 Org2, 每个组织由2个Peer组成. 每个组织还指定了Anchor Peer(peer0.org1.example.com和peer0.org2.example.com). 还为每个成员指定了MSP文件夹, 用来存储每个组织在orderer genesis block中指定的根证书, 有了这些证书, 任意和Ordering service通信的节点都可以对其数字签名进行验证.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdc0ea23" class="outline-4">
+<h4 id="orgdc0ea23">使用工具</h4>
+<div class="outline-text-4" id="text-orgdc0ea23">
+<p>
+其实怎么去使用这些工具, 在一键式脚本 <code>byfn.sh</code> 中都有写明. 如根据 <code>crypto-config.yaml</code> 中的配置来生成用于相关数字证书, 可以查看 <code>generateCerts()</code> 中的写法.
+</p>
+
+<p>
+手动执行, 可加深了解.
+</p>
+
+<p>
+创建数字证书:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">../bin/cryptogen generate --config=./crypto-config.yaml
+</pre>
+</div>
+<p>
+生成的数字证书存放在 <code>crypto-config</code> 文件夹中.
+</p>
+
+<p>
+生成Ordering Service的创世区块:
+设置环境变量 <code>FABRIC_CFG_PATH</code>, 告诉configtxgen工具, 要到哪里去寻找配置文件 <code>configtx.yaml</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export FABRIC_CFG_PATH=${PWD}
+../bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+</pre>
+</div>
+<p>
+这样, Ordering Service的创世区块就生成了, 放在 <code>channel-artifacts</code> 目录中.
+</p>
+
+<p>
+创建Channel:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export CHANNEL_NAME=mychannel
+../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME 
+</pre>
+</div>
+
+<p>
+创建Channel上Org1的anchor peer:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+</pre>
+</div>
+
+<p>
+创建Channel上Org2的anchor peer:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+</pre>
+</div>
+
+<p>
+到此为止, 我们有了Channel, Org1, Org2, Org1的anchor peer, Org2的anchor peer
 </p>
 </div>
 </div>
@@ -228,7 +358,7 @@ cryptogen工具根据 <code>crypto-config.yaml</code> 文件里的配置进行�
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/03/28/fabric官方安全first-network";
           var disqus_url = "http://pinvondev.github.io/blog/2018/03/28/fabric官方安全first-network";
-          var disqus_shortname = 'pinvon';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

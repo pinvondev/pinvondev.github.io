@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Fabric交易流程 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Fabric交易流程</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbe0a4a4">交易流程</a>
+<ul>
+<li>
+<ul>
+<li><a href="#org689d925">假设</a></li>
+<li><a href="#orgd31942d">A发起交易</a></li>
+<li><a href="#orgad33502">背书节点(Endorsing Peers)校验签名并执行交易</a></li>
+<li><a href="#org0d47e3f">检查交易提交响应</a></li>
+<li><a href="#org77c0054">客户端将所有背书组装进交易</a></li>
+<li><a href="#org17c7559">交易被确认并提交</a></li>
+<li><a href="#org9aedce9">账本更新</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orge257599">通俗交易流程</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbe0a4a4" class="outline-2">
+<h2 id="orgbe0a4a4">交易流程</h2>
+<div class="outline-text-2" id="text-orgbe0a4a4">
+<p>
+A: 买萝卜
+</p>
+
+<p>
+B: 卖萝卜
+</p>
+
+<p>
+A和B分别有一个Peer, 通过区块链网络, A和B进行交易(Transactions), 并与账本(Ledger)进行交互.
+</p>
+</div>
+
+<div id="outline-container-org689d925" class="outline-4">
+<h4 id="org689d925">假设</h4>
+<div class="outline-text-4" id="text-org689d925">
+<ol class="org-ol">
+<li>已经建立Channel.</li>
+<li>应用程序的用户已注册.</li>
+<li>应用程序的用户完成了CA注册, 有需要的加密材料, 可以在网络上进行身份验证.</li>
+<li>Chaincode已安装在Peer上, 已在Channel上实例化.</li>
+<li>Chaincode包含一组交易指令和商定萝卜价格的业务逻辑.</li>
+<li>背书策略(Endorsement Policy)已经为Chaincode设置完成, 并规定, 任何一笔交易, 需要由PeerA和PeerB共同背书.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd31942d" class="outline-4">
+<h4 id="orgd31942d">A发起交易</h4>
+<div class="outline-text-4" id="text-orgd31942d">
+<p>
+A发起购买萝卜的请求给PeerA和PeerB. (因为在假设中, 背书策略规定任何一笔交易需要由PeerA和PeerB共同背书).
+</p>
+
+<p>
+应用程序利用SDK的API生成交易提议(Transaction Proposal). 交易提议请求调用Chaincode的函数, 因此, 数据可以被读取或写入账本.
+</p>
+
+<p>
+SDK根据A的加密凭证, 为此交易生成唯一签名.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric交易流程/12.png" alt="12.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgad33502" class="outline-4">
+<h4 id="orgad33502">背书节点(Endorsing Peers)校验签名并执行交易</h4>
+<div class="outline-text-4" id="text-orgad33502">
+<p>
+背书节点的工作如下:
+</p>
+<ol class="org-ol">
+<li>交易提议的格式是否正确</li>
+<li>交易提议在以前是否被提交过</li>
+<li>签名是否有效</li>
+<li>提交者A是否在该Channel上被授权执行提议操作(要确保提供者满足Channel的写入策略)</li>
+</ol>
+
+<p>
+背书节点将交易提议作为Chaincode的函数的输入参数.
+</p>
+
+<p>
+Chaincode在状态数据库(State Database)上执行, 生成交易结果(响应值, 读取集合, 写入集合). <code>此时还不更新账本</code>
+</p>
+
+<p>
+背书节点将交易提议响应(包括交易结果和背书节点的签名)发给SDK, SDK解析这些数据给应用程序使用.
+</p>
+
+<p>
+MSP是一个节点组件(Peer Component), 校验来自客户端的交易请求, 并为交易结果签名(背书).
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric交易流程/13.png" alt="13.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0d47e3f" class="outline-4">
+<h4 id="org0d47e3f">检查交易提交响应</h4>
+<div class="outline-text-4" id="text-org0d47e3f">
+<p>
+应用程序验证所有背书节点(Endorsing Peer)的签名, 并比较所有的交易提交响应是否相同(因为背书节点有PeerA和PeerB, 它们分别会回复一个交易提交响应).
+</p>
+
+<p>
+如果本次交易调用的只是Chaincode的查询账本的函数, 则应用程序会检查查询响应, 并且通常不会将此交易提交给排序服务(Ordering Service).
+</p>
+
+<p>
+如果本次交易调用的是Chaincode的更新账本的函数, 则应用程序在提交之前, 会先确定PeerA和PeerB是否都已经背书.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric交易流程/14.png" alt="14.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org77c0054" class="outline-4">
+<h4 id="org77c0054">客户端将所有背书组装进交易</h4>
+<div class="outline-text-4" id="text-org77c0054">
+<p>
+应用程序将交易提议和交易提议响应组成的交易消息广播给排序服务(Ordering Service). 交易消息包括以下内容:
+</p>
+<ol class="org-ol">
+<li>读写集合</li>
+<li>所有背书节点的签名和频道ID</li>
+</ol>
+
+<p>
+排序服务将每个Channel上的交易按时间顺序排序, 创建各个Channel的交易区块.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric交易流程/15.png" alt="15.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org17c7559" class="outline-4">
+<h4 id="org17c7559">交易被确认并提交</h4>
+<div class="outline-text-4" id="text-org17c7559">
+<p>
+交易区块被交付给Channel中的所有节点. 这些节点所做的事情如下:
+</p>
+<ol class="org-ol">
+<li>对区块中的交易进行确认, 确保背书策略得到满足</li>
+<li>确保账本状态中读取的变量集合在交易执行后没有变化过</li>
+<li>标记交易区块是否有效</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric交易流程/16.png" alt="16.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9aedce9" class="outline-4">
+<h4 id="org9aedce9">账本更新</h4>
+<div class="outline-text-4" id="text-org9aedce9">
+<p>
+所有Peer会将所区块追加到Channel的链中, 并且对于每一笔有效的交易, 写集合都会被提交给当前的状态数据库.
+</p>
+
+<p>
+通知客户端, 此交易已追加到链中.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/28/fabric交易流程/17.png" alt="17.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orge257599" class="outline-2">
+<h2 id="orge257599">通俗交易流程</h2>
+<div class="outline-text-2" id="text-orge257599">
+<p>
+Chaincode规定背书策略, 如交易生效的前提是PeerA, PeerB, PeerC中有两个以上的节点批准了这笔交易.
+</p>
+
+<p>
+Client买车, 生成交易请求, 触发Chaincode, 将该交易请求发给PeerA, PeerB, PeerC.
+</p>
+
+<p>
+如果交易可信, PeerA, PeerB, PeerC根据交易请求进行运算, 生成交易结果, 反馈给Client. (这时还不写入区块链)
+</p>
+
+<p>
+Client对交易结果进行确认, 如果三个背书节点返回的交易结果一致, 则把交易发给排序模块.
+</p>
+
+<p>
+排序模块将所有收到的交易根据时间排序, 打包成区块, 发给所有节点.
+</p>
+
+<p>
+所有节点检查每笔交易是否满足背书策略.
+</p>
+
+<p>
+如果交易成功, 节点通知用户, 交易已加入区块链.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-03-28</span>
+        <span title="last modification date" class="post-info">2018-03-28</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/03/28/fabric交易流程";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/03/28/fabric交易流程";
+          var disqus_shortname = 'pw lin';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; ubuntu">pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
