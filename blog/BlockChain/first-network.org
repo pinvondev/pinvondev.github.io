@@ -104,3 +104,60 @@ emacs cryp.yaml
 还要注意 OrdererOrgs 下的 Name, Domain, Specs 这些字段. 网络实体的命名规则为: {Hostname}.{Domain}
 
 因此, Orderer节点的命名为 orderer.example.com, MSP ID为Orderer.
+
+使用 =cryptogen= 生成的数字证书和密钥信息保存在 =crypto-config= 文件夹中.
+
+*** configtxgen工具(配置交易生成器)
+
+configtxgen会生成4个配置信息:
+1. orderer genesis block
+2. channel configuration transaction
+3. 两个 anchor peer transactions
+
+其中, orderer block是Orderer Service的创世区块. Channel configuration transaction文件在Channel创建的时候广播给Order. Anchor peer transactions指定了每个Organization在此Channel上的代表节点.
+
+configtxgen的配置文件是 =configtx.yaml=. 去掉其中的注释, 内容如下:
+
+[[./18.png]]
+
+内容很多, 只截取其中一部分.
+
+该配置文件定义了3个成员: 一个Ordering Service组织(Organization) OrdererOrg, 两个节点组织 Org1 和 Org2, 每个组织由2个Peer组成. 每个组织还指定了Anchor Peer(peer0.org1.example.com和peer0.org2.example.com). 还为每个成员指定了MSP文件夹, 用来存储每个组织在orderer genesis block中指定的根证书, 有了这些证书, 任意和Ordering service通信的节点都可以对其数字签名进行验证.
+
+*** 使用工具
+
+其实怎么去使用这些工具, 在一键式脚本 =byfn.sh= 中都有写明. 如根据 =crypto-config.yaml= 中的配置来生成用于相关数字证书, 可以查看 =generateCerts()= 中的写法.
+
+手动执行, 可加深了解.
+
+创建数字证书:
+#+BEGIN_SRC Shell
+../bin/cryptogen generate --config=./crypto-config.yaml
+#+END_SRC
+生成的数字证书存放在 =crypto-config= 文件夹中.
+
+生成Ordering Service的创世区块:
+设置环境变量 =FABRIC_CFG_PATH=, 告诉configtxgen工具, 要到哪里去寻找配置文件 =configtx.yaml=:
+#+BEGIN_SRC Shell
+export FABRIC_CFG_PATH=${PWD}
+../bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+#+END_SRC
+这样, Ordering Service的创世区块就生成了, 放在 =channel-artifacts= 目录中.
+
+创建Channel:
+#+BEGIN_SRC Shell
+export CHANNEL_NAME=mychannel
+../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME 
+#+END_SRC
+
+创建Channel上Org1的anchor peer:
+#+BEGIN_SRC Shell
+../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+#+END_SRC
+
+创建Channel上Org2的anchor peer:
+#+BEGIN_SRC Shell
+../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+#+END_SRC
+
+到此为止, 我们有了Channel, Org1, Org2, Org1的anchor peer, Org2的anchor peer
