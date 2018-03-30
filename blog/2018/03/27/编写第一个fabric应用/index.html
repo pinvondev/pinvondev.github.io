@@ -35,13 +35,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3d35403">概述</a>
+<li><a href="#org479d57e">背景知识</a>
 <ul>
-<li><a href="#orgc8579b7">启动区块链网络</a>
+<li><a href="#orgdfe86d1">Fabric CA</a></li>
+<li><a href="#org15f05fe">一些组件</a>
 <ul>
-<li><a href="#org3c5bd79">Hyperledger Fabric组件</a></li>
-<li><a href="#orgee004b5">交易流程</a></li>
-<li><a href="#org69e86ea">peer节点</a></li>
+<li><a href="#org8c3796a">Peer</a></li>
+<li><a href="#org7b273ea">Org</a></li>
+<li><a href="#org4f36fa7">Channel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org04bba5f">编写第一个应用程序(v1.1.0 版本)</a>
+<ul>
+<li><a href="#org3874116">配置开发环境</a></li>
+<li><a href="#orgbc3a654">安装客户端 &amp; 启动网络</a></li>
+<li><a href="#org3ef4557">App如何与网络交互?</a>
+<ul>
+<li><a href="#org3d5aa41">登记管理员用户</a></li>
+<li><a href="#org8184a70">注册和登记User1</a></li>
+<li><a href="#org4a92b06">查询账本</a></li>
+<li><a href="#org5f3bf57">更新账本</a></li>
 </ul>
 </li>
 </ul>
@@ -50,63 +65,96 @@
 </div>
 </div>
 
-<div id="outline-container-org3d35403" class="outline-2">
-<h2 id="org3d35403">概述</h2>
-<div class="outline-text-2" id="text-org3d35403">
+<div id="outline-container-org479d57e" class="outline-2">
+<h2 id="org479d57e">背景知识</h2>
+<div class="outline-text-2" id="text-org479d57e">
+</div>
+<div id="outline-container-orgdfe86d1" class="outline-3">
+<h3 id="orgdfe86d1">Fabric CA</h3>
+<div class="outline-text-3" id="text-orgdfe86d1">
 <p>
-区块链网络应用程序, 首先要给用户提供查询账本(包含特定记录)及更新账本(添加记录)的功能.
+Fabric CA是Hyperledger Fabric的证书颁发机构, 提供如下功能:
 </p>
+<ol class="org-ol">
+<li>身份注册</li>
+<li>发放登记证书(Ecerts)</li>
+<li>发布交易证书(Tcerts), 在区块链上进行交易时提供匿名性和不可链接性</li>
+<li>证书更新和撤销</li>
+</ol>
+
+<p>
+Fabric CA包含一个Client和一个Server. Fabric 1.0以后, CA可脱离Docker镜像, 作为一个独立的服务来运行. 如果使用Docker启动, 则所有的CA服务都在一个专门的镜像中执行.
+</p>
+
+<p>
+Fabric CA调用Server的方式: 通过Client调用, 或通过SDK调用.
+</p>
+
+<p>
+SDK方式的API在 <code>fabric-ca/swagger/swagger-fabric-ca.json</code>.
+</p>
+
+<p>
+这边介绍通过Client调用的方式. Fabric CA运行流程:
+</p>
+<ol class="org-ol">
+<li>Server初始化</li>
+<li>生成CA根证书</li>
+<li>启动Server</li>
+<li>Client向Server <code>请求登记</code></li>
+<li>Server向Client返回 <code>登记证书ECert</code></li>
+<li>Client向Server请求 <code>注册节点</code></li>
+<li>Server向Client返回 <code>节点注册信息结果</code></li>
+<li>Client向Server请求 <code>登记节点</code></li>
+<li>Server生成 <code>TCert</code>, 存入数据库</li>
+<li>Server向Client返回 <code>登记结果</code></li>
+</ol>
+</div>
 </div>
 
-<div id="outline-container-orgc8579b7" class="outline-3">
-<h3 id="orgc8579b7">启动区块链网络</h3>
-<div class="outline-text-3" id="text-orgc8579b7">
-<p>
-在这个网络中, 需要一些最基本的组件来查询和更新账本.
-</p>
+<div id="outline-container-org15f05fe" class="outline-3">
+<h3 id="org15f05fe">一些组件</h3>
+<div class="outline-text-3" id="text-org15f05fe">
 </div>
-
-<div id="outline-container-org3c5bd79" class="outline-4">
-<h4 id="org3c5bd79">Hyperledger Fabric组件</h4>
-<div class="outline-text-4" id="text-org3c5bd79">
-</div>
-<ul class="org-ul">
-<li><a id="org3eac69b"></a>Peer<br />
-<div class="outline-text-5" id="text-org3eac69b">
+<div id="outline-container-org8c3796a" class="outline-4">
+<h4 id="org8c3796a">Peer</h4>
+<div class="outline-text-4" id="text-org8c3796a">
 <p>
 Fabric网络中的节点(Peer), 表现为一个运行着的Docker容器. Peer可分两种:
 </p>
-</div>
 
 <ul class="org-ul">
-<li><a id="orgfea4e52"></a>endorsing peer/endoser<br />
-<div class="outline-text-6" id="text-orgfea4e52">
+<li><p>
+endorsing peer/endoser
+</p>
+
 <p>
 安装和执行chaincode等一系列操作都离不开peer, 通常会说: chaincode安装在某个peer上. channel内同一个chaincode可以安装到多个peer上, 但只能实例化一次.
-</p>
-</div>
-</li>
+</p></li>
 
-<li><a id="orgfd604b7"></a>anchor peer<br />
-<div class="outline-text-6" id="text-orgfd604b7">
+<li><p>
+anchor peer
+</p>
+
 <p>
 锚节点是一个channel或org的代表, 它从orderer获取信息, 并在组内广播给其他peer, 其他peer可以不直接跟orderer打交道.
-</p>
-</div>
-</li>
+</p></li>
 </ul>
-</li>
+</div>
+</div>
 
-<li><a id="orga0457a9"></a>Org<br />
-<div class="outline-text-5" id="text-orga0457a9">
+<div id="outline-container-org7b273ea" class="outline-4">
+<h4 id="org7b273ea">Org</h4>
+<div class="outline-text-4" id="text-org7b273ea">
 <p>
 Org由若干个Peer组成. 可在 <code>crypto-config.yaml</code> 中设置一个Block中的Peer数量.
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="orgf3fa0ef"></a>Channel<br />
-<div class="outline-text-5" id="text-orgf3fa0ef">
+<div id="outline-container-org4f36fa7" class="outline-4">
+<h4 id="org4f36fa7">Channel</h4>
+<div class="outline-text-4" id="text-org4f36fa7">
 <p>
 Channel有点像"子网", 可以作为两个或多个特定网络成员间的专门以机密交易为目的而建立的. 一个Channel可包含多个Org. 每个Channel拥有一个账本, 并共享给内部的Peer.
 </p>
@@ -115,70 +163,360 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 同一个Channel内的Org可部署到多台机器上. Fabric为Channel间数据通信和同步提供了多套解决方案, 如基于Zookeeper的Kafka.
 </p>
 </div>
-</li>
-</ul>
+</div>
+</div>
 </div>
 
-<div id="outline-container-orgee004b5" class="outline-4">
-<h4 id="orgee004b5">交易流程</h4>
-<div class="outline-text-4" id="text-orgee004b5">
+<div id="outline-container-org04bba5f" class="outline-2">
+<h2 id="org04bba5f">编写第一个应用程序(v1.1.0 版本)</h2>
+<div class="outline-text-2" id="text-org04bba5f">
 <p>
-了解了一些组件之后, 介绍一下交易流程.
+主要学习如何与CA交互, 申请登记证书. 然后使用这些生成的实体来查询和更新账本.
+</p>
+
+<p>
+主要步骤如下:
+</p>
+
+<ul class="org-ul">
+<li>配置开发环境. 我们的应用要通过网络进行交互, 首先下载一个脚本, 使用这个脚本下载一些组件, 以便进行注册, 登记, 查询, 更新.</li>
+</ul>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/27/编写第一个fabric应用/21.png" alt="21.png" />
 </p>
 </div>
 
 <ul class="org-ul">
-<li><a id="org507f309"></a>Client发起交易<br />
-<div class="outline-text-5" id="text-org507f309">
-<p>
-Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 不是随意选择的, 由Chaincode和该Chaincode定义的Endorsement Policy共同决定. 
-</p>
+<li>学习一些App需要用到的智能合约提供的参数. 智能合约里有很多方法, 使我们可以通过多种方式来与账本交互.</li>
 
-<p>
-提交的信息包含:
-</p>
-<ul class="org-ul">
-<li>ClientID</li>
-<li>ChaincodeID: 该交易所属的Chaincode的ID</li>
-<li>txPayload: 交易本体的信息</li>
-<li>timestamp</li>
-<li>clientSig: Client的签名</li>
-</ul>
-</div>
-</li>
-
-<li><a id="org1781ba4"></a>Endorser接收信息<br />
-<div class="outline-text-5" id="text-org1781ba4">
-<p>
-收到信息后, 首先用Client的公钥验证它的签名, 然后开始模拟交易(模拟的意思是还不写入账本), 并核实相关信息(如, 是否是篡改过的信息等), 根据Endorsement Policy选择是否为该交易背书, 然后把结果发回.
-</p>
-</div>
-</li>
-
-<li><a id="orgdb71af2"></a>Client收集信息<br />
-<div class="outline-text-5" id="text-orgdb71af2">
-<p>
-提交交易的Client收集各个Endorser返回的信息, 如果有足够的背书信息后, 就说明这个交易通过了Endorsement阶段. 如果没有收集到足够信息, 交易废止, Client可选择重新发起交易.
-</p>
-
-<p>
-通过了Endorsement阶段的交易, 会进入共识阶段.
-</p>
-</div>
-</li>
-
-<li><a id="org5a05bad"></a>共识阶段<br />
-<div class="outline-text-5" id="text-org5a05bad">
-<p>
-共识算法很多, 目的都是把有效的交易加入新生成的区块, 并通知所有节点, 使它们保持一致.
-</p>
-</div>
-</li>
+<li>开发能够查询及更新资产的App. 我们要进入到App的代码内部, 手动修改变量来进行不同方式的查询和更新.</li>
 </ul>
 </div>
 
-<div id="outline-container-org69e86ea" class="outline-4">
-<h4 id="org69e86ea">peer节点</h4>
+<div id="outline-container-org3874116" class="outline-3">
+<h3 id="org3874116">配置开发环境</h3>
+<div class="outline-text-3" id="text-org3874116">
+<p>
+<a href="https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E5%AE%89%E5%85%A8first-network/">Fabric官方案例first-network</a>中写了如何配置环境.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 进入fabcar, 查看里面的文件
+cd fabric-samples/fabcar &amp;&amp; ls
+
+# 做一些清理工作
+docker rm -f $(docker ps -qa)
+
+# 清除网络中的缓存
+docker network prune
+
+# 如果之前运行过, 可能要删除Chaincode镜像
+docker rmi dev-peer0.org1.example.com-fabcar-1.0-5c906e402ed29f20260ae42283216aa75549c571e2e380f3615826365d8269ba
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc3a654" class="outline-3">
+<h3 id="orgbc3a654">安装客户端 &amp; 启动网络</h3>
+<div class="outline-text-3" id="text-orgbc3a654">
+<p>
+首先为App安装Fabric依赖. 可以打开 <code>package.json</code> 查看依赖. 如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/27/编写第一个fabric应用/22.png" alt="22.png" />
+</p>
+</div>
+
+<p>
+fabric-ca-client: 它使得App可以与CA服务器交互, 获得相关证书.
+fabric-client: 它使得App可以使用获得的证书与Peers和Ordering Service交互.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 安装依赖
+npm install
+./startFabric.sh
+</pre>
+</div>
+
+<p>
+<code>startFabric.sh</code> 脚本会初始化各种Fabric实体, 启动一个使用Golang编写的智能合约窗口.
+</p>
+
+<p>
+也可以使用 <code>node.js</code> 编写的Chaincode, 只要把命令改成: <code>./startFabric.sh node</code>. Node.js的方案会更慢一些.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ef4557" class="outline-3">
+<h3 id="org3ef4557">App如何与网络交互?</h3>
+<div class="outline-text-3" id="text-org3ef4557">
+<p>
+更详细的内容在<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.1/understand_fabcar_network.html">Understanding the Fabcar Network</a>, 现在我们只要知道, App是通过SDK调用API来查询, 更新账本的.
+</p>
+</div>
+
+<div id="outline-container-org3d5aa41" class="outline-4">
+<h4 id="org3d5aa41">登记管理员用户</h4>
+<div class="outline-text-4" id="text-org3d5aa41">
+<p>
+接下来的两小节内容, 都是与CA交互的, 可以新开一个命令行窗口, 通过如下命令查看CA日志.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker logs -f ca.example.com
+</pre>
+</div>
+
+<p>
+当我们启动网络时, 我们通过CA注册了一个管理员用户 <code>admin</code>. 
+</p>
+
+<p>
+现在需要向CA Server发送一个登记请求, 然后为 <code>admin</code> 取回一个登记证书. 这个登记证书是构成管理员用户的必要条件. 随后需要使用这个管理员来注册和登记新用户.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 向CA Server发送管理员登记请求
+node enrollAdmin.js
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/27/编写第一个fabric应用/23.png" alt="23.png" />
+</p>
+</div>
+
+<p>
+<code>enrollAdmin.js</code> 会调用一个证书签名请求(CSR), 最后在项目根目录生成 <code>hfc-key-store</code> 目录, 里面包含了证书和密钥. 当App需要创建和读取不同身份用户时, 需要定位到此文件夹.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8184a70" class="outline-4">
+<h4 id="org8184a70">注册和登记User1</h4>
+<div class="outline-text-4" id="text-org8184a70">
+<p>
+连通CA Server, 使用刚刚生成的管理员证书, 注册和登记一个新用户.
+</p>
+
+<p>
+<code>user1</code> 是用来查询和更新账本的用户. <code>admin</code> 发起了新用户的注册和登记工作(就好像 <code>admin</code> 扮演了登记员的角色). <code>admin</code> 发起登记和注册请求:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">node registerUser.js
+</pre>
+</div>
+<p>
+和管理员登记一样, <code>registerUser.js</code> 调用CSR, 将证书和密钥放入 <code>hfc-key-store</code>. 现在有两个用户的身份材料了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4a92b06" class="outline-4">
+<h4 id="org4a92b06">查询账本</h4>
+<div class="outline-text-4" id="text-org4a92b06">
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/27/编写第一个fabric应用/24.png" alt="24.png" />
+</p>
+</div>
+
+<p>
+我们使用 <code>user1</code> 作为签名实体, 查询账本上的汽车列表. 在 <code>query.js</code> 中, 通过代码 <code>fabric_client.getUserContext('user1', true)</code> 指定使用 <code>user1</code> 作为签名实体, 通过代码 <code>var store_path = path.join(__dirname, 'hfc-key-store')</code> 告诉程序 <code>user1</code> 的登记材料的存储位置. 通过 <code>query.js</code> 中的 <code>queryAllCars()</code> 来查询所有的汽车.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">node query.js
+</pre>
+</div>
+
+<p>
+分析 <code>query.js</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">var channel = fabric_client.newChannel('mychannel');
+var peer = fabric_client.newPeer('grpc://localhost:7051');
+channel.addPeer(peer);
+
+var member_user = null;
+var store_path = path.join(__dirname, 'hfc-key-store');
+console.log('Store path:'+store_path);
+var tx_id = null;
+</pre>
+</div>
+<p>
+这段代码告诉程序使用哪些Channel, Peer, 证书和密钥的存放位置.
+</p>
+
+<p>
+构建查询的代码块:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">// queryCar chaincode function - requires 1 argument, ex: args: ['CAR4'],
+// queryAllCars chaincode function - requires no arguments , ex: args: [''],
+const request = {
+  //targets : --- letting this default to the peers assigned to the channel
+  chaincodeId: 'fabcar',
+  fcn: 'queryAllCars',
+  args: ['']
+};
+</pre>
+</div>
+<p>
+指定Peer上的ChaincodeID为 <code>fabcar</code>, 执行 <code>queryAllCars</code> 函数, 没有传递参数.
+</p>
+
+<p>
+要查看Chaincode的内容, 可以在 <code>fabric-samples/chaincode/fabcar</code> 中查看, 里面有 <code>go</code> 和 <code>Node.js</code> 两个版本.
+</p>
+
+<p>
+如, Chaincode中定义的, 我们之前使用过的 <code>queryAllCars()</code>, 内容如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+      startKey := "CAR0"
+      endKey := "CAR999"
+
+      resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
+</pre>
+</div>
+
+<p>
+如果我们要查询 <code>CAR4</code> 的信息, 我们可以将 <code>queryAllCars()</code> 改成 <code>queryCar()</code>, 并传递参数 <code>CAR4</code>.
+</p>
+
+<p>
+修改后的 <code>request</code> 内容如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">const request = {
+  //targets : --- letting this default to the peers assigned to the channel
+  chaincodeId: 'fabcar',
+  fcn: 'queryCar',
+  args: ['CAR4']
+};
+</pre>
+</div>
+
+<p>
+使用 <code>node query.js</code> 运行. 返回内容为:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">Store path:/home/pinvon/go/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store
+Successfully loaded user1 from persistence
+Query has completed, checking results
+Response is  {"colour":"black","make":"Tesla","model":"S","owner":"Adriana"}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5f3bf57" class="outline-4">
+<h4 id="org5f3bf57">更新账本</h4>
+<div class="outline-text-4" id="text-org5f3bf57">
+<p>
+更新账本的流程:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/03/27/编写第一个fabric应用/25.png" alt="25.png" />
+</p>
+</div>
+
+<p>
+账本更新是从生成交易提案的App开始的. 具体关于交易提案, 可参考<a href="https://pinvondev.github.io/blog/2018/03/28/fabric%E4%BA%A4%E6%98%93%E6%B5%81%E7%A8%8B/">交易流程</a>一文.
+</p>
+
+<ol class="org-ol">
+<li>构造 <code>request</code>, 内容包括Channel ID, func, Chaincode Name. 然后调用API <code>channel.SendTransactionProposal</code> 将交易提案发送给Peers进行背书.</li>
+<li>Endorsing Peers各返回一个提案答复. App根据所有提案答复来创建交易请求, 并为其签名. 通过调用API <code>channelsendTransaction</code> 将交易请求发送到Ordering Service.</li>
+<li>Ordering Service把交易打包到区块, 将区块发送到Channel上的所有Peers进行认证, 查看是否满足背书策略.</li>
+<li>App使用API <code>eh.setPeerAddr</code> 连接到Peer的事务监听端口, 调用API <code>eh.registerTxEvent</code> 注册与特定交易ID相关的事务. 该API使得App获得事务的结果(提交成功与否).</li>
+</ol>
+
+<p>
+在代码中, 首先创建一个新汽车. <code>invoke.js</code> 是专门用于交易的JavaScript程序. 将其打开, 找到构建调用的代码块. 即request的填充处. 程序并没有填充要调用的函数字段和参数字段, 我们可以把函数 <code>createCar</code> 填进去, 表示要创建一辆汽车. 并填充该汽车的参数. 如下所示:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">var request = {
+    //targets: let default to the peer assigned to the client
+    chaincodeId: 'fabcar',
+    fcn: 'createCar',
+    args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
+    chainId: 'mychannel',
+    txId: tx_id
+};
+</pre>
+</div>
+
+<p>
+保存并运行: <code>node invoke.js</code>.
+</p>
+
+<p>
+输出内容如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">Store path:/home/pinvon/go/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store
+Successfully loaded user1 from persistence
+Assigning transaction_id:  2a15883b896e8be844c20be92188178f8592fdb145bbf1532d27cc6c08c59d2f
+Transaction proposal was good
+Successfully sent Proposal and received ProposalResponse: Status - 200, message - "OK"
+The transaction has been committed on peer localhost:7053
+Send transaction promise and event listener promise have completed
+Successfully sent transaction to the orderer.
+Successfully committed the change to the ledger by the peer
+</pre>
+</div>
+
+<p>
+看到 <code>The transaction has been committed on peer localhost:7053</code>, 且后面提示 <code>Successfully</code>, 则表示交易已经被确认.
+</p>
+
+<p>
+这时, 再去修改 <code>query.js</code> 中的 <code>request</code> 的内容, 查询 <code>CAR12</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">const request = {
+  //targets : --- letting this default to the peers assigned to the channel
+  chaincodeId: 'fabcar',
+  fcn: 'queryCar',
+  args: ['CAR12']
+};
+</pre>
+</div>
+
+<p>
+保存后运行, 输出:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">Store path:/home/pinvon/go/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store
+Successfully loaded user1 from persistence
+Query has completed, checking results
+Response is  {"colour":"Black","make":"Honda","model":"Accord","owner":"Tom"}
+</pre>
+</div>
+<p>
+说明账本已经更新了.
+</p>
+
+<p>
+在实际应用中, Chaincode需要权限控制, 只有某些具有权限的人才能创造汽车.
+</p>
+
+<p>
+官方例子中还有关于车主转让汽车所有权的例子, 就不具体介绍了.
+</p>
+</div>
 </div>
 </div>
 </div>
@@ -188,7 +526,7 @@ Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-03-27</span>
-        <span title="last modification date" class="post-info">2018-03-27</span>
+        <span title="last modification date" class="post-info">2018-03-30</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
@@ -199,7 +537,7 @@ Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/03/27/编写第一个fabric应用";
           var disqus_url = "http://pinvondev.github.io/blog/2018/03/27/编写第一个fabric应用";
-          var disqus_shortname = 'pw lin';
+          var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
