@@ -9,67 +9,271 @@
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
-* 概述
+* 背景知识
 
-区块链网络应用程序, 首先要给用户提供查询账本(包含特定记录)及更新账本(添加记录)的功能.
+** Fabric CA
 
-** 启动区块链网络
+Fabric CA是Hyperledger Fabric的证书颁发机构, 提供如下功能:
+1. 身份注册
+2. 发放登记证书(Ecerts)
+3. 发布交易证书(Tcerts), 在区块链上进行交易时提供匿名性和不可链接性
+4. 证书更新和撤销
 
-在这个网络中, 需要一些最基本的组件来查询和更新账本.
+Fabric CA包含一个Client和一个Server. Fabric 1.0以后, CA可脱离Docker镜像, 作为一个独立的服务来运行. 如果使用Docker启动, 则所有的CA服务都在一个专门的镜像中执行.
 
-*** Hyperledger Fabric组件
+Fabric CA调用Server的方式: 通过Client调用, 或通过SDK调用.
 
-**** Peer
+SDK方式的API在 =fabric-ca/swagger/swagger-fabric-ca.json=.
+
+这边介绍通过Client调用的方式. Fabric CA运行流程:
+1. Server初始化
+2. 生成CA根证书
+3. 启动Server
+4. Client向Server =请求登记=
+5. Server向Client返回 =登记证书ECert=
+6. Client向Server请求 =注册节点=
+7. Server向Client返回 =节点注册信息结果=
+8. Client向Server请求 =登记节点=
+9. Server生成 =TCert=, 存入数据库
+10. Server向Client返回 =登记结果=
+
+** 一些组件
+
+*** Peer
 
 Fabric网络中的节点(Peer), 表现为一个运行着的Docker容器. Peer可分两种:
 
-***** endorsing peer/endoser
+- endorsing peer/endoser
 
  安装和执行chaincode等一系列操作都离不开peer, 通常会说: chaincode安装在某个peer上. channel内同一个chaincode可以安装到多个peer上, 但只能实例化一次.
 
-***** anchor peer
+- anchor peer
 
  锚节点是一个channel或org的代表, 它从orderer获取信息, 并在组内广播给其他peer, 其他peer可以不直接跟orderer打交道.
 
-**** Org
+*** Org
 
 Org由若干个Peer组成. 可在 =crypto-config.yaml= 中设置一个Block中的Peer数量.
 
-**** Channel
+*** Channel
 
 Channel有点像"子网", 可以作为两个或多个特定网络成员间的专门以机密交易为目的而建立的. 一个Channel可包含多个Org. 每个Channel拥有一个账本, 并共享给内部的Peer.
 
 同一个Channel内的Org可部署到多台机器上. Fabric为Channel间数据通信和同步提供了多套解决方案, 如基于Zookeeper的Kafka.
 
-*** 交易流程
+* 编写第一个应用程序(v1.1.0 版本)
 
-了解了一些组件之后, 介绍一下交易流程.
+主要学习如何与CA交互, 申请登记证书. 然后使用这些生成的实体来查询和更新账本.
 
-**** Client发起交易
+主要步骤如下:
 
-Client把交易的相关信息发给Endorser. Endorser的选择有范围限制, 不是随意选择的, 由Chaincode和该Chaincode定义的Endorsement Policy共同决定. 
+- 配置开发环境. 我们的应用要通过网络进行交互, 首先下载一个脚本, 使用这个脚本下载一些组件, 以便进行注册, 登记, 查询, 更新.
 
-提交的信息包含:
-- ClientID
-- ChaincodeID: 该交易所属的Chaincode的ID
-- txPayload: 交易本体的信息
-- timestamp
-- clientSig: Client的签名
+[[./21.png]]
 
-**** Endorser接收信息
+- 学习一些App需要用到的智能合约提供的参数. 智能合约里有很多方法, 使我们可以通过多种方式来与账本交互.
 
-收到信息后, 首先用Client的公钥验证它的签名, 然后开始模拟交易(模拟的意思是还不写入账本), 并核实相关信息(如, 是否是篡改过的信息等), 根据Endorsement Policy选择是否为该交易背书, 然后把结果发回.
+- 开发能够查询及更新资产的App. 我们要进入到App的代码内部, 手动修改变量来进行不同方式的查询和更新.
 
-**** Client收集信息
+** 配置开发环境
 
-提交交易的Client收集各个Endorser返回的信息, 如果有足够的背书信息后, 就说明这个交易通过了Endorsement阶段. 如果没有收集到足够信息, 交易废止, Client可选择重新发起交易.
+[[https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E5%AE%89%E5%85%A8first-network/][Fabric官方案例first-network]]中写了如何配置环境.
 
-通过了Endorsement阶段的交易, 会进入共识阶段.
+#+BEGIN_SRC Shell
+# 进入fabcar, 查看里面的文件
+cd fabric-samples/fabcar && ls
 
-**** 共识阶段
+# 做一些清理工作
+docker rm -f $(docker ps -qa)
 
-共识算法很多, 目的都是把有效的交易加入新生成的区块, 并通知所有节点, 使它们保持一致.
+# 清除网络中的缓存
+docker network prune
 
-*** peer节点
+# 如果之前运行过, 可能要删除Chaincode镜像
+docker rmi dev-peer0.org1.example.com-fabcar-1.0-5c906e402ed29f20260ae42283216aa75549c571e2e380f3615826365d8269ba
+#+END_SRC
 
+** 安装客户端 & 启动网络
 
+首先为App安装Fabric依赖. 可以打开 =package.json= 查看依赖. 如图所示:
+
+[[./22.png]]
+
+fabric-ca-client: 它使得App可以与CA服务器交互, 获得相关证书.
+fabric-client: 它使得App可以使用获得的证书与Peers和Ordering Service交互.
+
+#+BEGIN_SRC Shell
+# 安装依赖
+npm install
+./startFabric.sh
+#+END_SRC
+
+=startFabric.sh= 脚本会初始化各种Fabric实体, 启动一个使用Golang编写的智能合约窗口.
+
+也可以使用 =node.js= 编写的Chaincode, 只要把命令改成: =./startFabric.sh node=. Node.js的方案会更慢一些.
+
+** App如何与网络交互?
+
+更详细的内容在[[https://hyperledger-fabric.readthedocs.io/en/release-1.1/understand_fabcar_network.html][Understanding the Fabcar Network]], 现在我们只要知道, App是通过SDK调用API来查询, 更新账本的.
+
+*** 登记管理员用户
+
+接下来的两小节内容, 都是与CA交互的, 可以新开一个命令行窗口, 通过如下命令查看CA日志.
+#+BEGIN_SRC Shell
+docker logs -f ca.example.com
+#+END_SRC
+
+当我们启动网络时, 我们通过CA注册了一个管理员用户 =admin=. 
+
+现在需要向CA Server发送一个登记请求, 然后为 =admin= 取回一个登记证书. 这个登记证书是构成管理员用户的必要条件. 随后需要使用这个管理员来注册和登记新用户.
+
+#+BEGIN_SRC Shell
+# 向CA Server发送管理员登记请求
+node enrollAdmin.js
+#+END_SRC
+
+[[./23.png]]
+
+=enrollAdmin.js= 会调用一个证书签名请求(CSR), 最后在项目根目录生成 =hfc-key-store= 目录, 里面包含了证书和密钥. 当App需要创建和读取不同身份用户时, 需要定位到此文件夹.
+
+*** 注册和登记User1
+
+连通CA Server, 使用刚刚生成的管理员证书, 注册和登记一个新用户.
+
+=user1= 是用来查询和更新账本的用户. =admin= 发起了新用户的注册和登记工作(就好像 =admin= 扮演了登记员的角色). =admin= 发起登记和注册请求:
+#+BEGIN_SRC Shell
+node registerUser.js
+#+END_SRC
+和管理员登记一样, =registerUser.js= 调用CSR, 将证书和密钥放入 =hfc-key-store=. 现在有两个用户的身份材料了.
+
+*** 查询账本
+
+[[./24.png]]
+
+我们使用 =user1= 作为签名实体, 查询账本上的汽车列表. 在 =query.js= 中, 通过代码 =fabric_client.getUserContext('user1', true)= 指定使用 =user1= 作为签名实体, 通过代码 =var store_path = path.join(__dirname, 'hfc-key-store')= 告诉程序 =user1= 的登记材料的存储位置. 通过 =query.js= 中的 =queryAllCars()= 来查询所有的汽车.
+#+BEGIN_SRC Shell
+node query.js
+#+END_SRC
+
+分析 =query.js=:
+#+BEGIN_SRC Shell
+var channel = fabric_client.newChannel('mychannel');
+var peer = fabric_client.newPeer('grpc://localhost:7051');
+channel.addPeer(peer);
+
+var member_user = null;
+var store_path = path.join(__dirname, 'hfc-key-store');
+console.log('Store path:'+store_path);
+var tx_id = null;
+#+END_SRC
+这段代码告诉程序使用哪些Channel, Peer, 证书和密钥的存放位置.
+
+构建查询的代码块:
+#+BEGIN_SRC Shell
+// queryCar chaincode function - requires 1 argument, ex: args: ['CAR4'],
+// queryAllCars chaincode function - requires no arguments , ex: args: [''],
+const request = {
+  //targets : --- letting this default to the peers assigned to the channel
+  chaincodeId: 'fabcar',
+  fcn: 'queryAllCars',
+  args: ['']
+};
+#+END_SRC
+指定Peer上的ChaincodeID为 =fabcar=, 执行 =queryAllCars= 函数, 没有传递参数.
+
+要查看Chaincode的内容, 可以在 =fabric-samples/chaincode/fabcar= 中查看, 里面有 =go= 和 =Node.js= 两个版本.
+
+如, Chaincode中定义的, 我们之前使用过的 =queryAllCars()=, 内容如下:
+#+BEGIN_SRC Shell
+func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+      startKey := "CAR0"
+      endKey := "CAR999"
+
+      resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
+#+END_SRC
+
+如果我们要查询 =CAR4= 的信息, 我们可以将 =queryAllCars()= 改成 =queryCar()=, 并传递参数 =CAR4=.
+
+修改后的 =request= 内容如下:
+#+BEGIN_SRC Shell
+const request = {
+  //targets : --- letting this default to the peers assigned to the channel
+  chaincodeId: 'fabcar',
+  fcn: 'queryCar',
+  args: ['CAR4']
+};
+#+END_SRC
+
+使用 =node query.js= 运行. 返回内容为:
+#+BEGIN_SRC Shell
+Store path:/home/pinvon/go/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store
+Successfully loaded user1 from persistence
+Query has completed, checking results
+Response is  {"colour":"black","make":"Tesla","model":"S","owner":"Adriana"}
+#+END_SRC
+
+*** 更新账本
+
+更新账本的流程:
+
+[[./25.png]]
+
+账本更新是从生成交易提案的App开始的. 具体关于交易提案, 可参考[[https://pinvondev.github.io/blog/2018/03/28/fabric%E4%BA%A4%E6%98%93%E6%B5%81%E7%A8%8B/][交易流程]]一文.
+
+1. 构造 =request=, 内容包括Channel ID, func, Chaincode Name. 然后调用API =channel.SendTransactionProposal= 将交易提案发送给Peers进行背书.
+2. Endorsing Peers各返回一个提案答复. App根据所有提案答复来创建交易请求, 并为其签名. 通过调用API =channelsendTransaction= 将交易请求发送到Ordering Service.
+3. Ordering Service把交易打包到区块, 将区块发送到Channel上的所有Peers进行认证, 查看是否满足背书策略.
+4. App使用API =eh.setPeerAddr= 连接到Peer的事务监听端口, 调用API =eh.registerTxEvent= 注册与特定交易ID相关的事务. 该API使得App获得事务的结果(提交成功与否).
+
+在代码中, 首先创建一个新汽车. =invoke.js= 是专门用于交易的JavaScript程序. 将其打开, 找到构建调用的代码块. 即request的填充处. 程序并没有填充要调用的函数字段和参数字段, 我们可以把函数 =createCar= 填进去, 表示要创建一辆汽车. 并填充该汽车的参数. 如下所示:
+#+BEGIN_SRC Shell
+	var request = {
+		//targets: let default to the peer assigned to the client
+		chaincodeId: 'fabcar',
+		fcn: 'createCar',
+		args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
+		chainId: 'mychannel',
+		txId: tx_id
+	};
+#+END_SRC
+
+保存并运行: =node invoke.js=.
+
+输出内容如下:
+#+BEGIN_SRC Shell
+Store path:/home/pinvon/go/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store
+Successfully loaded user1 from persistence
+Assigning transaction_id:  2a15883b896e8be844c20be92188178f8592fdb145bbf1532d27cc6c08c59d2f
+Transaction proposal was good
+Successfully sent Proposal and received ProposalResponse: Status - 200, message - "OK"
+The transaction has been committed on peer localhost:7053
+Send transaction promise and event listener promise have completed
+Successfully sent transaction to the orderer.
+Successfully committed the change to the ledger by the peer
+#+END_SRC
+
+看到 =The transaction has been committed on peer localhost:7053=, 且后面提示 =Successfully=, 则表示交易已经被确认.
+
+这时, 再去修改 =query.js= 中的 =request= 的内容, 查询 =CAR12=:
+#+BEGIN_SRC Shell
+const request = {
+  //targets : --- letting this default to the peers assigned to the channel
+  chaincodeId: 'fabcar',
+  fcn: 'queryCar',
+  args: ['CAR12']
+};
+#+END_SRC
+
+保存后运行, 输出:
+#+BEGIN_SRC Shell
+Store path:/home/pinvon/go/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store
+Successfully loaded user1 from persistence
+Query has completed, checking results
+Response is  {"colour":"Black","make":"Honda","model":"Accord","owner":"Tom"}
+#+END_SRC
+说明账本已经更新了.
+
+在实际应用中, Chaincode需要权限控制, 只有某些具有权限的人才能创造汽车.
+
+官方例子中还有关于车主转让汽车所有权的例子, 就不具体介绍了.
