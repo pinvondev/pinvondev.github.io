@@ -1,0 +1,356 @@
+#+TITLE:       chaincode教程
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-03-30 五
+#+URI:         /blog/%y/%m/%d/chaincode教程
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+[[https://hyperledger-fabric.readthedocs.io/en/release-1.1/chaincode.html][chaincode Tutorial]]英文教程.
+
+** 什么是chaincode
+
+chaincode是个程序, 可以用Go, Node.js编写. chaincode运行在一个单独的Docker容器里, 与背书节点的运行互相隔离. chaincode通过App提交的事务(交易)来对账本状态进行管理.
+
+chaincode通常用来处理被网络成员认可的业务逻辑, 也称为智能合约. chaincode创建的账本状态通常是独立的, 其他chaincode一般不能直接访问. 但在相同网络中, 如果满足一定条件, 一个chaincode可以调用另一个chaincode来访问其创建的账本状态.
+
+** 两类角色
+
+可以从两个不同的角度来看待chaincode. 一个是从App开发人员的角度, 可以看下文中的[[1][chaincode for Developers]]; 另一个是从区块链操作人员的角度, 他们需要管理区块链网络, 调用Hyperledger Fabric API来安装, 实例化, 更新chaincode, 可以看下文中的[[2][chaincode for Operators]].
+
+* <<1>>chaincode for Developers
+
+在一次交易提案中, 可以调用chaincode来更新, 查询账本. 如果给chaincode适当的权限, 它可以调用 其他chaincode来访问自己创建的账本状态, 不论这两个chaincode在不在同一个Channel上. 如果不在同一个Channel, 只能调用其他chaincode来查询, 在随后的提交阶段, 不参与状态验证检查.
+
+** chaincode API
+
+每个chaincode程序都要实现chaincode interface.
+- [[https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Chaincode][Go版本的chaincode interface]]
+- [[https://fabric-shim.github.io/ChaincodeInterface.html][Node.js版本的chaincode interface]]
+
+这些方法在响应传过来的交易时会被调用. =Init()= 在收到 =instantiate(实例化)= 和 =upgrade(升级)= 交易时被调用, 使得chaincode执行必要的初始化操作, 包括初始化App的状态. =Invoke()= 在响应 =invode(调用)= 交易时被调用, 使得交易可以执行.
+
+还有一些其他的interface, 叫做 =chaincodeStubInterface=.
+- [[https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub][Go版本的chaincodeStubInterface]]
+- [[https://fabric-shim.github.io/ChaincodeStub.html][Node.js版本的chaincodeStubInterface]]
+
+这些用来访问和修改账本, 实现chaincode之间的互相调用.
+
+在接下来的教程中, 通过实现简单的chaincode程序来说明如何使用这些API.
+
+** <<0>>简单的资产管理chaincode
+
+我们的chaincode程序是在账本上创建资产(键值对). 使用Go来编写, 注意要配置Go的环境变量.
+
+*** 选择chaincode的存放位置
+
+#+BEGIN_SRC Shell
+mkdir -p $GOPATH/src/sacc && cd $GOPATH/src/sacc
+emacs sacc.go
+#+END_SRC
+
+*** 导入依赖
+
+首先导入必要的依赖, 这边是 =chaincode shim package= 和 =peer protobuf package=.
+
+#+BEGIN_SRC Shell
+package main
+import (
+	"fmt"
+    "github.com/hyperledger/fabric/core/chaincode/shim"
+    "github.com/hyperledger/fabric/protos/peer"
+)
+
+type SimpleAsset struct{
+
+}
+#+END_SRC
+
+*** 初始化chaincode
+
+对于每一个chaincode, 都要实现 =Init()= 和 =Invoke()=.
+
+首先实现 =Init()=:
+#+BEGIN_SRC Shell
+func (t *SimpleAsset) Init(stub shim.chaincodeStubInterface) peer.Response {
+	args := stub.GetStringArgs()
+    if len(args) != 2 {
+    	return shim.Error("Incorrect arguments. Expecting a key and a value")
+    }
+    err := stub.PutState(args[0], []byte(args[1]))
+    if err != nil {
+       return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+   }
+   return shim.Success(nil)
+}
+#+END_SRC
+
+在 =Init()= 里, 我们使用 =chaincodeStubInterface.GetStringArgs()= 来获取 =Init()= 所需的参数, 并验证是否正确, 并进行有效性检查.
+
+如果获得的值有效, 我们先将初始状态存放账本. 使用的方法是 =chaincodeStubInterface.PutState()=, 参数是键值对. 如果一正avip, 我们会收到表明初始化成功的 =peer.Response= 对象.
+
+
+chaincode更新时也会调用这个函数. 如果我们写的chaincode会更新现有的chaincode, 要确保 =Init()= 有适当的修改. 如果什么都不做, 就提供一个空的 =Init()=.
+
+*** 调用chaincode
+
+#+BEGIN_SRC Go
+func (t *SimpleAsset) Invoke(stub shim.chaincodeStubInterface) peer.Response {
+     fn, args := stub.GetFunctionAndParameters()
+     var result string
+     var err error
+     if fn == "set" {
+        result, err = set(stub, args)
+    } else {
+        result, err = get(stub, args)
+    }
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    return shim.Success([]byte(result))
+}
+#+END_SRC
+
+和 =Init()= 一样, 我们要使用 =chaincodeStubInterface= 来获取参数. =Invoke()= 的参数是App想要调用的chaincode的名字. 在我们的例子中, chaincode只有两个函数: =set()= 和 =get()=, 分别表示设置资产和获取当前状态. 首先调用 =chaincodeStubInterface.GetFunctionAndParameters()= 来提取函数名和参数. 
+
+然后验证函数名是不是 =set()= 或 =get()=, 然后调用对应的chaincode的函数. 最后返回.
+
+*** 实现chaincode程序
+
+从前面已经知道, 我们的程序要实现两个方法, 由 =Invoke()= 所调用. 我们通过 =chaincodeStubInterface.PutState()= 和 =chaincodeStubInterface.GetState()= 来访问账本状态.
+
+#+BEGIN_SRC Go
+func set(stub shim.chaincodeStubInterface, args []string) (string, error) {
+     if len(args) != 2 {
+        return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+     }
+     err := stub.PutState(args[0], []byte(args[1]))
+     if err != nil {
+        return "", fmt.Errorf("Failed to set asset: %s", args[0])
+     }
+     return args[1], nil
+}
+
+func get(stub shim.chaincodeStubInterface, args []string) (string, error) {
+     if len(args) != 1 {
+        return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+     }
+     value, err := stub.GetState(args[0])
+     if err != nil {
+        return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+     }
+     if value == nil {
+        return "", fmt.Errorf("Asset not found: %s", args[0])
+     }
+     return string(value), nil
+}
+#+END_SRC
+
+*** main
+
+#+BEGIN_SRC Go
+func main() {
+     if err := shim.Start(new(SimpleAsset)); err != nil {
+        fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+     }
+}
+#+END_SRC
+
+*** 编译chaincode
+
+#+BEGIN_SRC Shell
+go get -u --tags nopkcs11 github.com/hyperledger/fabric/core/chaincode/shim
+go build --tags nopkcs11
+#+END_SRC
+
+*** 使用开发者模式测试
+
+通常chaincode由Peer节点启动并维护. 但是在开发者模式下, chaincode可以由用户创建并启动. 当用户处于以快速编码, 编译, 运行, 调试的循环周期为主的chaincode开发阶段时, 该模式十分有用.
+
+我们利用预先生成的orderer和channel的配置来启动开发者模式, 这会生成一个简单的网络. 这样, 用户可以马上进入编译环节, 调用函数.
+
+*** 安装hyperledger fabric样例
+
+参考文章[[https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E6%A1%88%E4%BE%8Bfirst-network/][Fabric-samples]]安装.
+
+进入 =fabric-samples= 根目录, 执行以下命令:
+#+BEGIN_SRC Shell
+cd chaincode-docker-devmode
+#+END_SRC
+
+*** 下载Docker镜像
+
+此处略过. 构建镜像, 参考文章[[https://pinvondev.github.io/blog/2018/03/25/hyperledger/][搭建开发环境]].
+
+如果选择手动拉取Docker镜像, 则需要将其重新标记为 =latest=.
+
+开发者模式下, 我们只关心 =fabric-tools=, =fabric-orderer=, =fabric-peer= 和 =fabric-ccenv= 这4个镜像.
+
+*** 启动网络
+
+开启1个终端, 进入 =chaincode-docker-devmode= 目录, 运行:
+#+BEGIN_SRC Shell
+docker-compose -f docker-compose-simple.yaml up
+#+END_SRC
+
+该命令根据 =orderer= 配置项启动了一个带有 =SingleSampleMSPSolo= 的网络, 将节点在开发者模式下启动. 另外还启动了两个容器, 一个包含chaincode的运行环境, 另一个是CLI命令行, 可与chaincode进行交互. 创建并加入Channel的命令已经内嵌于CLI容器中.
+
+*** 构建 & 启动chaincode
+
+新开一个终端, 进入chaincode容器:
+#+BEGIN_SRC Shell
+docker exec -it chaincode bash
+cd sacc
+go build
+CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./sacc
+#+END_SRC
+
+chaincode被Peer节点启动, chaincode日志表示Peer节点成功注册. 但是现在chaincode还没与Channel关联, 后面会使用 =instantiate= 命令实现.
+
+*** 使用chaincode
+
+进入CLI容器:
+#+BEGIN_SRC Shell
+docker exec -it cli bash
+
+# 安装chaincode
+peer chaincode install -p chaincodedev/chaincode/sacc -n mycc -v 0
+
+# 初始化chaincode
+peer chaincode instantiate -n mycc -v 0 -c '{"Args":["a","10"]}' -C myc
+
+# 调用set方法, 将a的值改成20
+peer chaincode invoke -n mycc -c '{"Args":["set", "a", "20"]}' -C myc
+
+# 查询a的值
+peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
+#+END_SRC
+
+*** 测试其他chaincode
+
+在这里, 我们只挂载了 =sacc= 进来. 实际上, 我们可以将其他的chaincode放在 =chaincode= 子目录下, 然后重启网络即可. 这样它们就可以在chaincode容器中访问到.
+
+*** chaincode加密
+
+在某些情况下, 将与密钥相关的值进行加密是很有必要的. 比如, 如果一个人的密码或地址正在写入账本, 那么我们可能不希望这些数据以明文的形式出现. 
+
+具体写法, 可以参考 =fabric/examples/chaincode/go/enccc_example= 中的 =utils.go= 文件. 它使用的 =encryptAndPutState()=, =getStateAndDecrypt()= 方法.
+
+* <<2>>chaincode for Operators
+
+** 智能合约生命周期
+
+Fabric的API可以和区块链网络中的各个节点(Peers, Orderers, MSPs)进行交互, 还允许其中一个在支持背书的节点上打包, 安装, 实例化, 更新chaincode. 可以使用Hyperledger Fabric API来管理chaincode的生命周期, 它还提供了特定语言的SDK来抽象Hyperledger Fabric API的细节, 以促进App的开发. 在后面的教程中, 我们使用CLI直接访问Hyperledger Fabric API.
+
+Hyperledger Fabric API提供了4个命令来管理chaincode的生命周期: package, install, instantiate, upgrade. 在成功安装并实例化一个chaincode后, chaincode就处于运行状态, 可以通过 =Invoke()= 处理事务(交易). 在安装后, 还可以在任何时间对chaincode进行升级.
+
+** Packaging
+
+chaincode包由3部分组成:
+1. chaincode, 它由 =ChaincodeDeploymentSpec= 或CDS定义.
+2. 实例化策略(可选), 描述语法与背书策略的一样.
+3. 拥有chaincode的实体的数字签名集合.
+
+这些数字签名的作用为:
+1. 建立对chaincode的所有权.
+2. 允许对包的内容进行验证.
+3. 允许检测包是否篡改.
+
+实例化chaincode的身份会chaincode的实例化策略所验证.
+
+*** 创建包
+
+有两种方法打包chaincode:
+
+- 如果一个chaincode有多个所有者, 需要使用多个身份标识为该chaincode签名. 首先创建一个已签名的chaincode, 然后通过序列的方式将其传递给其他所有者来签署.
+#+BEGIN_SRC Shell
+peer chaincode package -n mycc -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -v 0 -s -S -i "AND('OrgA.admin')" ccpack.out
+#+END_SRC
+-s参数: 创建一个由多个所有者签署的包. 如果指定了 =-s= 参数, 那么也一定要指定 =-S= , 它后面跟的参数表示其他需要签名的所有者.
+-S参数(可选): 使用 =core.yaml= 中 =localMspid= 属性所指定的MSP实体来进行签名.
+-i参数(可选): 指定chaincode实例化策略. 实例化策略与背书策略的格式一样, 并且指定了哪些id可以实例化chaincode, 例子中只允许OrgA的admin实例化chaincode. 如果没有提供策略, 则使用默认策略, 这只允许Peer中MSP的admin身份来实例化chaincode.
+
+*** 包签名
+
+一个在创建时就被签名的chaincode包可以交给其他所有者进行检查与签名. =ChaincodeDeploymentSpec= 可以选择被全部所有者签名, 并创建一个 =SignedChaincodeploymentSpec(SignedCDS)=, SignedCDS包含三个部分:
+1. chaincode的源码, 名称和版本
+2. chaincode实例化策略
+3. chaincode所有者的列表
+
+每个chaincode的所有者通过将 =ChaincodeDeploymentSpec= 与其本人的身份信息（证书）结合, 然后对组合结果签名来认证 =ChaincodeDeploymentSpec=.
+
+一个chaincode的所有者, 可以对一个之前创建好的带签名的包进行签名:
+#+BEGIN_SRC Shell
+# 输入ccpack.out, 输出signedccpack.out
+peer chaincode signpackage ccpack.out signedccpack.out
+#+END_SRC
+
+*** 安装chaincode
+
+=install= 交易的过程会将chaincode的源码以一种被称为 =ChaincodeDeploymentSpec= 的规定格式打包, 并把它安装在一个将要运行该chaincode的peer节点上. Channel上每个要运行chaincode的背书节点都要安装chaincode.
+
+没有chaincode的节点, 不能影响交易的背书阶段, 因为它们不能执行chaincode, 但是他们可以在共识完成后的验证交易阶段进行验证, 并提交交易到账本上.
+
+安装命令: ([[0][简单的资产管理]]中的sacc chaincode)
+#+BEGIN_SRC Shell
+peer chaincode install -n asset_mgmt -v 1.0 -p sacc
+#+END_SRC
+-p: chaincode的路径, 必须在 =GOPATH= 目录下, 如 =$GOPATH/src/sacc=.
+
+*** 实例化chaincode
+
+chaincode可能会与任意数量的Channel绑定, 并在每个Channel上独立运行. 即chaincode在多少个Channel上安装并实例化并没有什么影响, 对于每个提交交易的Channel, 其状态都是独立而互不影响的.
+
+#+BEGIN_SRC Shell
+peer chaincode instantiate -n sacc -v 1.0 -c '{"Args":["john","0"]}' -P "OR ('Org1.member','Org2.member')"
+#+END_SRC
+该指令初始化john的状态为0. 背书策略向Org1或Org2的成员询问所有sacc处理的交易. 即, 为确保交易有效, Org1或Org2必须为调用sacc的结果签名.
+
+在成功实例化后, Channel上的chaincode就进入激活状态, 并时刻准备执行任何 =[[https://github.com/hyperledger/fabric/blob/master/protos/common/common.proto#L42][ENDORSER_TRANSACTION]]= 类型的交易提议. 交易会在到达背书节点的同时被处理.
+
+*** 更新chaincode
+
+可以通过更新chaincode的版本来对chaincode进行更新, 但是名字必须保持一致, 否则会被当作是完全不同的chaincode. 如果两个Channel使用了同一个chaincode, 可以只更新其中一个Channel的chaincode, 另一个Channel不受影响.
+
+更新chaincode时默认会采用当前chaincode的实例化策略来检查, 这是为了确保只有当前实例化策略指定的已有成员才能升级chaincode.
+
+chaincode的 =Init()= 会在更新时被再次调用, 所以要小心在更新chaincode时重设状态信息.
+
+*** 停止和启动
+
+还未实现. 目前直接删除chaincode容器, 然后在每个背书节点删除SignedCDS包.
+
+要删除SignedCDS包, 需要先进入背书节点的容器内. 然后执行:
+#+BEGIN_SRC Shell
+rm /var/hyperledger/production/chaincodes/<ccname>:<ccversion>
+#+END_SRC
+
+** 系统chaincode
+
+暂不介绍, 虽然它们很重要, 但是暂时项目不需要涉及此内容, 也正是因为它们重要, 所以除非有这个需求, 否则不要替换或更改系统chaincode.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
