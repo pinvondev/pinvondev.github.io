@@ -1,0 +1,33 @@
+#+TITLE:       Fabric ToDo List 分析
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-01 日
+#+URI:         /blog/%y/%m/%d/fabric-todo-list-分析
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 流程
+
+[[./26.png]]
+
+1. User通过Browser与Client进行交互.
+2. User执行操作, Client调用Server API, 已注册的管理员通过该API与Hyperledger区块链网络进行交互.
+3. 读取或写入账本称为提案. 提案由Server通过SDK进行构建, 然后发送到Peer.
+4. Peer与chaincode容器通信. chaincode将运行/模拟该交易. 如果没有问题(验证User身份, 提案的格式是否正确等), 它会对该交易进行背书, 并将其发回Server.
+5. Server通过SDK, 将背书后的提案发送到Ordering Service. Ordering Service将整个网络的许多提案打包到一个区块中. 然后, Ordering Service将新区块广播到网络中的Peers.
+6. Peers验证该区块, 并将它写入自己的账本中. 交易至此生效, 所有后续读取都会反映此更改.
+
+* server
+
+** enrollAdmin
+
+Web端打开应用程序, 向 =/enrollAdmin= 端点发出一个GET请求, 就可以在chaincode上注册管理员. 以后, 要注册新的成员, 都是通过这个管理员来进行的.
+
+*** enroll_admin()
+
+程序的最开始, 是向区块链网络中的CA注册管理员用户. 如果注册成功, CA会向Server发送注册证书, SDK会将该证书存储在本地的文件系统中.
+
+* client

@@ -18,6 +18,89 @@
 
 * 开发环境
 
+** 下载代码
+
+#+BEGIN_SRC Shell
+git clone https://github.com/IBM-blockchain/marbles.git
+#+END_SRC
+
+** 安装
+
+*** 启动网络
+
+暂时使用官方示例 =fabric-samples/fabcar= 中的配置来启动一个比较简单的网络.
+#+BEGIN_SRC Shell
+git clone https://github.com/fabric-samples.git
+#+END_SRC
+
+下载相关镜像, 或者自己本地编译文件. 启动网络:
+#+BEGIN_SRC Shell
+cd fabric-samples/fabcar
+./startFabric.sh
+
+# 如果要关闭
+cd ../basic-network
+./stop.sh
+./teardown.sh
+#+END_SRC
+
+*** 获取加密材料
+
+#+BEGIN_SRC Shell
+cd fabric-samples/fabcar
+node enrollAdmins.js
+node registerUser.js
+node query.js
+#+END_SRC
+加密材料都放在 =hfc-key-store= 文件夹里.
+
+*** 安装chaincode
+
+安装chaincode, 首先要将chaincode放进Peer的文件系统里. chaincode里定义了资产(如sportcoin)是什么, 定义了资产交易的业务逻辑. 项目的chaincode放在 =marbles/chaincode/src/= 里.
+
+在 =marbles/scripts/= 文件夹里, 放了几个脚本, 可以一键安装chaincode, 实例化chaincode, 更新chaincode等. 可以在 =install_chaincode.js= 中对chaincode的ID和版本进行修改.
+
+#+BEGIN_SRC Shell
+cd marbles/scripts
+node install_chaincode.js
+#+END_SRC
+
+*** 初始化chaincode
+
+** 配置
+
+配置marbles主要涉及到两个文件, 或一个文件和一个环境变量. 如果两个都设置了, Marbles使用环境变量的设置来覆盖文件的设置. 如果你不确定Marbles使用了哪个设置, 可以查看日志, 它会说 =Loaded connection profile from an environmental variable= 或者 =Loaded connection profile file <filename>=.
+
+默认的设置是设置两个文件, 不去动环境变量. 更推荐这个方式. 这样的话, Marbles会从 =marbles/config= 这个文件夹里加载 =connection_profile_xxx(后称cp)= 文件. 如果修改了 =cp= 文件或者设置了环境变量, 需要重启应用.
+
+*** 配置文件
+
+=marbles/config/marbles_tls.json= 文件里写了关于marbles程序的一些配置, 如端口等.
+
+文件内容如下:
+#+BEGIN_SRC JSON
+{
+    "cred_filename": "connection_profile_tls.json",
+    "use_events": true,
+    "keep_alive_secs": 120,
+    "company": "United Marbles",
+    "usernames": [
+        "amy",
+        "alice",
+        "ava"
+    ],
+    "port": 3001
+}
+#+END_SRC
+配置文件里的字段每项都必须有. 要确认 =cred_filename= 字段中的文件是正确的.
+
+*** connection_profile_tls.json
+
+这个文件包括设置区块链网络的一些信息, 如IP, 端口, 证书等. 如果要使用设置环境变量的方法, 则要这样写:
+#+BEGIN_SRC Shell
+export CONNECTION_PROFILE="{JSON GOES IN HERE}"
+#+END_SRC
+
 * Hyperleger Fabric SDK
 
 使用Node.js版本的SDK.
