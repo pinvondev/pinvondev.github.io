@@ -35,28 +35,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org27134b0">背景知识</a>
+<li><a href="#org1ccd706">背景知识</a>
 <ul>
-<li><a href="#orgb190295">Fabric CA</a></li>
-<li><a href="#org3624081">一些组件</a>
+<li><a href="#orgec361a0">Fabric CA</a></li>
+<li><a href="#org41e2f05">一些组件</a>
 <ul>
-<li><a href="#org653f991">Peer</a></li>
-<li><a href="#org9ef7f0b">Org</a></li>
-<li><a href="#org4bed0cb">Channel</a></li>
+<li><a href="#org590a8eb">Peer</a></li>
+<li><a href="#org8bc3cee">Org</a></li>
+<li><a href="#orgc07779f">Channel</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org73fa091">编写第一个应用程序(v1.1.0 版本)</a>
+<li><a href="#org9cc63a7">编写第一个应用程序(v1.1.0 版本)</a>
 <ul>
-<li><a href="#orgddc5c64">配置开发环境</a></li>
-<li><a href="#orgd31a7ca">安装客户端 &amp; 启动网络</a></li>
-<li><a href="#org63a5537">App如何与网络交互?</a>
+<li><a href="#orgab9a1e3">配置开发环境</a></li>
+<li><a href="#org0259900">安装客户端 &amp; 启动网络</a></li>
+<li><a href="#orgb1855f5">App如何与网络交互?</a>
 <ul>
-<li><a href="#orga50483b">登记管理员用户</a></li>
-<li><a href="#orgb703888">注册和登记User1</a></li>
-<li><a href="#orgfc24a97">查询账本</a></li>
-<li><a href="#orgec0b2de">更新账本</a></li>
+<li><a href="#org085fd11">登记管理员用户</a></li>
+<li><a href="#org63ef601">注册和登记User1</a></li>
+<li><a href="#orgf59bdcd">查询账本</a></li>
+<li><a href="#org1a26055">更新账本</a></li>
 </ul>
 </li>
 </ul>
@@ -65,13 +65,13 @@
 </div>
 </div>
 
-<div id="outline-container-org27134b0" class="outline-2">
-<h2 id="org27134b0">背景知识</h2>
-<div class="outline-text-2" id="text-org27134b0">
+<div id="outline-container-org1ccd706" class="outline-2">
+<h2 id="org1ccd706">背景知识</h2>
+<div class="outline-text-2" id="text-org1ccd706">
 </div>
-<div id="outline-container-orgb190295" class="outline-3">
-<h3 id="orgb190295">Fabric CA</h3>
-<div class="outline-text-3" id="text-orgb190295">
+<div id="outline-container-orgec361a0" class="outline-3">
+<h3 id="orgec361a0">Fabric CA</h3>
+<div class="outline-text-3" id="text-orgec361a0">
 <p>
 Fabric CA是Hyperledger Fabric的证书颁发机构, 提供如下功能:
 </p>
@@ -112,13 +112,13 @@ SDK方式的API在 <code>fabric-ca/swagger/swagger-fabric-ca.json</code>.
 </div>
 </div>
 
-<div id="outline-container-org3624081" class="outline-3">
-<h3 id="org3624081">一些组件</h3>
-<div class="outline-text-3" id="text-org3624081">
+<div id="outline-container-org41e2f05" class="outline-3">
+<h3 id="org41e2f05">一些组件</h3>
+<div class="outline-text-3" id="text-org41e2f05">
 </div>
-<div id="outline-container-org653f991" class="outline-4">
-<h4 id="org653f991">Peer</h4>
-<div class="outline-text-4" id="text-org653f991">
+<div id="outline-container-org590a8eb" class="outline-4">
+<h4 id="org590a8eb">Peer</h4>
+<div class="outline-text-4" id="text-org590a8eb">
 <p>
 Fabric网络中的节点(Peer), 表现为一个运行着的Docker容器. Peer可分两种:
 </p>
@@ -143,18 +143,18 @@ anchor peer
 </div>
 </div>
 
-<div id="outline-container-org9ef7f0b" class="outline-4">
-<h4 id="org9ef7f0b">Org</h4>
-<div class="outline-text-4" id="text-org9ef7f0b">
+<div id="outline-container-org8bc3cee" class="outline-4">
+<h4 id="org8bc3cee">Org</h4>
+<div class="outline-text-4" id="text-org8bc3cee">
 <p>
 Org由若干个Peer组成. 可在 <code>crypto-config.yaml</code> 中设置一个Block中的Peer数量.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4bed0cb" class="outline-4">
-<h4 id="org4bed0cb">Channel</h4>
-<div class="outline-text-4" id="text-org4bed0cb">
+<div id="outline-container-orgc07779f" class="outline-4">
+<h4 id="orgc07779f">Channel</h4>
+<div class="outline-text-4" id="text-orgc07779f">
 <p>
 Channel有点像"子网", 可以作为两个或多个特定网络成员间的专门以机密交易为目的而建立的. 一个Channel可包含多个Org. 每个Channel拥有一个账本, 并共享给内部的Peer.
 </p>
@@ -167,9 +167,9 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 </div>
 </div>
 
-<div id="outline-container-org73fa091" class="outline-2">
-<h2 id="org73fa091">编写第一个应用程序(v1.1.0 版本)</h2>
-<div class="outline-text-2" id="text-org73fa091">
+<div id="outline-container-org9cc63a7" class="outline-2">
+<h2 id="org9cc63a7">编写第一个应用程序(v1.1.0 版本)</h2>
+<div class="outline-text-2" id="text-org9cc63a7">
 <p>
 主要学习如何与CA交互, 申请登记证书. 然后使用这些生成的实体来查询和更新账本.
 </p>
@@ -195,9 +195,9 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 </ul>
 </div>
 
-<div id="outline-container-orgddc5c64" class="outline-3">
-<h3 id="orgddc5c64">配置开发环境</h3>
-<div class="outline-text-3" id="text-orgddc5c64">
+<div id="outline-container-orgab9a1e3" class="outline-3">
+<h3 id="orgab9a1e3">配置开发环境</h3>
+<div class="outline-text-3" id="text-orgab9a1e3">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E5%AE%89%E5%85%A8first-network/">Fabric官方案例first-network</a>中写了如何配置环境.
 </p>
@@ -219,9 +219,9 @@ docker rmi dev-peer0.org1.example.com-fabcar-1.0-5c906e402ed29f20260ae42283216aa
 </div>
 </div>
 
-<div id="outline-container-orgd31a7ca" class="outline-3">
-<h3 id="orgd31a7ca">安装客户端 &amp; 启动网络</h3>
-<div class="outline-text-3" id="text-orgd31a7ca">
+<div id="outline-container-org0259900" class="outline-3">
+<h3 id="org0259900">安装客户端 &amp; 启动网络</h3>
+<div class="outline-text-3" id="text-org0259900">
 <p>
 首先为App安装Fabric依赖. 可以打开 <code>package.json</code> 查看依赖. 如图所示:
 </p>
@@ -254,17 +254,17 @@ npm install
 </div>
 </div>
 
-<div id="outline-container-org63a5537" class="outline-3">
-<h3 id="org63a5537">App如何与网络交互?</h3>
-<div class="outline-text-3" id="text-org63a5537">
+<div id="outline-container-orgb1855f5" class="outline-3">
+<h3 id="orgb1855f5">App如何与网络交互?</h3>
+<div class="outline-text-3" id="text-orgb1855f5">
 <p>
 更详细的内容在<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.1/understand_fabcar_network.html">Understanding the Fabcar Network</a>, 现在我们只要知道, App是通过SDK调用API来查询, 更新账本的.
 </p>
 </div>
 
-<div id="outline-container-orga50483b" class="outline-4">
-<h4 id="orga50483b">登记管理员用户</h4>
-<div class="outline-text-4" id="text-orga50483b">
+<div id="outline-container-org085fd11" class="outline-4">
+<h4 id="org085fd11">登记管理员用户</h4>
+<div class="outline-text-4" id="text-org085fd11">
 <p>
 接下来的两小节内容, 都是与CA交互的, 可以新开一个命令行窗口, 通过如下命令查看CA日志.
 </p>
@@ -299,9 +299,9 @@ node enrollAdmin.js
 </div>
 </div>
 
-<div id="outline-container-orgb703888" class="outline-4">
-<h4 id="orgb703888">注册和登记User1</h4>
-<div class="outline-text-4" id="text-orgb703888">
+<div id="outline-container-org63ef601" class="outline-4">
+<h4 id="org63ef601">注册和登记User1</h4>
+<div class="outline-text-4" id="text-org63ef601">
 <p>
 连通CA Server, 使用刚刚生成的管理员证书, 注册和登记一个新用户.
 </p>
@@ -319,9 +319,9 @@ node enrollAdmin.js
 </div>
 </div>
 
-<div id="outline-container-orgfc24a97" class="outline-4">
-<h4 id="orgfc24a97">查询账本</h4>
-<div class="outline-text-4" id="text-orgfc24a97">
+<div id="outline-container-orgf59bdcd" class="outline-4">
+<h4 id="orgf59bdcd">查询账本</h4>
+<div class="outline-text-4" id="text-orgf59bdcd">
 
 <div class="figure">
 <p><img src="/assets/blog/2018/03/27/编写第一个fabric应用/24.png" alt="24.png" />
@@ -419,9 +419,9 @@ Response is  {"colour":"black","make":"Tesla","model":"S","owner":"Adriana"}
 </div>
 </div>
 
-<div id="outline-container-orgec0b2de" class="outline-4">
-<h4 id="orgec0b2de">更新账本</h4>
-<div class="outline-text-4" id="text-orgec0b2de">
+<div id="outline-container-org1a26055" class="outline-4">
+<h4 id="org1a26055">更新账本</h4>
+<div class="outline-text-4" id="text-org1a26055">
 <p>
 更新账本的流程:
 </p>
