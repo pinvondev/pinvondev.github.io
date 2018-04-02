@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Fabric ToDo List 分析 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Fabric ToDo List 分析</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgba578eb">流程</a></li>
+<li><a href="#orgcc8108f">server</a>
+<ul>
+<li><a href="#org8d6dd9a">enrollAdmin</a>
+<ul>
+<li><a href="#org409bbb0">enroll_admin()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org1206b77">client</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgba578eb" class="outline-2">
+<h2 id="orgba578eb">流程</h2>
+<div class="outline-text-2" id="text-orgba578eb">
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/01/fabric-todo-list-分析/26.png" alt="26.png" />
+</p>
+</div>
+
+<ol class="org-ol">
+<li>User通过Browser与Client进行交互.</li>
+<li>User执行操作, Client调用Server API, 已注册的管理员通过该API与Hyperledger区块链网络进行交互.</li>
+<li>读取或写入账本称为提案. 提案由Server通过SDK进行构建, 然后发送到Peer.</li>
+<li>Peer与chaincode容器通信. chaincode将运行/模拟该交易. 如果没有问题(验证User身份, 提案的格式是否正确等), 它会对该交易进行背书, 并将其发回Server.</li>
+<li>Server通过SDK, 将背书后的提案发送到Ordering Service. Ordering Service将整个网络的许多提案打包到一个区块中. 然后, Ordering Service将新区块广播到网络中的Peers.</li>
+<li>Peers验证该区块, 并将它写入自己的账本中. 交易至此生效, 所有后续读取都会反映此更改.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgcc8108f" class="outline-2">
+<h2 id="orgcc8108f">server</h2>
+<div class="outline-text-2" id="text-orgcc8108f">
+</div>
+<div id="outline-container-org8d6dd9a" class="outline-3">
+<h3 id="org8d6dd9a">enrollAdmin</h3>
+<div class="outline-text-3" id="text-org8d6dd9a">
+<p>
+Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请求, 就可以在chaincode上注册管理员. 以后, 要注册新的成员, 都是通过这个管理员来进行的.
+</p>
+</div>
+
+<div id="outline-container-org409bbb0" class="outline-4">
+<h4 id="org409bbb0">enroll_admin()</h4>
+<div class="outline-text-4" id="text-org409bbb0">
+<p>
+程序的最开始, 是向区块链网络中的CA注册管理员用户. 如果注册成功, CA会向Server发送注册证书, SDK会将该证书存储在本地的文件系统中.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1206b77" class="outline-2">
+<h2 id="org1206b77">client</h2>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-01</span>
+        <span title="last modification date" class="post-info">2018-04-02</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/01/fabric-todo-list-分析";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/01/fabric-todo-list-分析";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>

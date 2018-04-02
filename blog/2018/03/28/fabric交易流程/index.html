@@ -35,29 +35,29 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6643918">交易流程</a>
+<li><a href="#orgbc18b10">交易流程</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org7406df1">假设</a></li>
-<li><a href="#org9bfcd0c">A发起交易</a></li>
-<li><a href="#org9a9b507">背书节点(Endorsing Peers)校验签名并执行交易</a></li>
-<li><a href="#org1116bf0">检查交易提交响应</a></li>
-<li><a href="#org0b207c4">客户端将所有背书组装进交易</a></li>
-<li><a href="#orgbdee00e">交易被确认并提交</a></li>
-<li><a href="#org79a4a15">账本更新</a></li>
+<li><a href="#org30fc970">假设</a></li>
+<li><a href="#org468caa2">A发起交易</a></li>
+<li><a href="#orgab634b0">背书节点(Endorsing Peers)校验签名并执行交易</a></li>
+<li><a href="#orga82ec78">检查交易提交响应</a></li>
+<li><a href="#org9b3380c">客户端将所有背书组装进交易</a></li>
+<li><a href="#orgedb2d3b">交易被确认并提交</a></li>
+<li><a href="#org006d0c2">账本更新</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org69999b6">通俗交易流程</a></li>
+<li><a href="#org931f1f1">通俗交易流程</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6643918" class="outline-2">
-<h2 id="org6643918">交易流程</h2>
-<div class="outline-text-2" id="text-org6643918">
+<div id="outline-container-orgbc18b10" class="outline-2">
+<h2 id="orgbc18b10">交易流程</h2>
+<div class="outline-text-2" id="text-orgbc18b10">
 <p>
 A: 买萝卜
 </p>
@@ -71,9 +71,9 @@ A和B分别有一个Peer, 通过区块链网络, A和B进行交易(Transactions)
 </p>
 </div>
 
-<div id="outline-container-org7406df1" class="outline-4">
-<h4 id="org7406df1">假设</h4>
-<div class="outline-text-4" id="text-org7406df1">
+<div id="outline-container-org30fc970" class="outline-4">
+<h4 id="org30fc970">假设</h4>
+<div class="outline-text-4" id="text-org30fc970">
 <ol class="org-ol">
 <li>已经建立Channel.</li>
 <li>应用程序的用户已注册.</li>
@@ -85,9 +85,9 @@ A和B分别有一个Peer, 通过区块链网络, A和B进行交易(Transactions)
 </div>
 </div>
 
-<div id="outline-container-org9bfcd0c" class="outline-4">
-<h4 id="org9bfcd0c">A发起交易</h4>
-<div class="outline-text-4" id="text-org9bfcd0c">
+<div id="outline-container-org468caa2" class="outline-4">
+<h4 id="org468caa2">A发起交易</h4>
+<div class="outline-text-4" id="text-org468caa2">
 <p>
 A发起购买萝卜的请求给PeerA和PeerB. (因为在假设中, 背书策略规定任何一笔交易需要由PeerA和PeerB共同背书).
 </p>
@@ -108,9 +108,9 @@ SDK根据A的加密凭证, 为此交易生成唯一签名.
 </div>
 </div>
 
-<div id="outline-container-org9a9b507" class="outline-4">
-<h4 id="org9a9b507">背书节点(Endorsing Peers)校验签名并执行交易</h4>
-<div class="outline-text-4" id="text-org9a9b507">
+<div id="outline-container-orgab634b0" class="outline-4">
+<h4 id="orgab634b0">背书节点(Endorsing Peers)校验签名并执行交易</h4>
+<div class="outline-text-4" id="text-orgab634b0">
 <p>
 背书节点的工作如下:
 </p>
@@ -145,9 +145,9 @@ MSP是一个节点组件(Peer Component), 校验来自客户端的交易请求, 
 </div>
 </div>
 
-<div id="outline-container-org1116bf0" class="outline-4">
-<h4 id="org1116bf0">检查交易提交响应</h4>
-<div class="outline-text-4" id="text-org1116bf0">
+<div id="outline-container-orga82ec78" class="outline-4">
+<h4 id="orga82ec78">检查交易提交响应</h4>
+<div class="outline-text-4" id="text-orga82ec78">
 <p>
 应用程序验证所有背书节点(Endorsing Peer)的签名, 并比较所有的交易提交响应是否相同(因为背书节点有PeerA和PeerB, 它们分别会回复一个交易提交响应).
 </p>
@@ -168,9 +168,9 @@ MSP是一个节点组件(Peer Component), 校验来自客户端的交易请求, 
 </div>
 </div>
 
-<div id="outline-container-org0b207c4" class="outline-4">
-<h4 id="org0b207c4">客户端将所有背书组装进交易</h4>
-<div class="outline-text-4" id="text-org0b207c4">
+<div id="outline-container-org9b3380c" class="outline-4">
+<h4 id="org9b3380c">客户端将所有背书组装进交易</h4>
+<div class="outline-text-4" id="text-org9b3380c">
 <p>
 应用程序将交易提议和交易提议响应组成的交易消息广播给排序服务(Ordering Service). 交易消息包括以下内容:
 </p>
@@ -191,9 +191,9 @@ MSP是一个节点组件(Peer Component), 校验来自客户端的交易请求, 
 </div>
 </div>
 
-<div id="outline-container-orgbdee00e" class="outline-4">
-<h4 id="orgbdee00e">交易被确认并提交</h4>
-<div class="outline-text-4" id="text-orgbdee00e">
+<div id="outline-container-orgedb2d3b" class="outline-4">
+<h4 id="orgedb2d3b">交易被确认并提交</h4>
+<div class="outline-text-4" id="text-orgedb2d3b">
 <p>
 交易区块被交付给Channel中的所有节点. 这些节点所做的事情如下:
 </p>
@@ -211,9 +211,9 @@ MSP是一个节点组件(Peer Component), 校验来自客户端的交易请求, 
 </div>
 </div>
 
-<div id="outline-container-org79a4a15" class="outline-4">
-<h4 id="org79a4a15">账本更新</h4>
-<div class="outline-text-4" id="text-org79a4a15">
+<div id="outline-container-org006d0c2" class="outline-4">
+<h4 id="org006d0c2">账本更新</h4>
+<div class="outline-text-4" id="text-org006d0c2">
 <p>
 所有Peer会将所区块追加到Channel的链中, 并且对于每一笔有效的交易, 写集合都会被提交给当前的状态数据库.
 </p>
@@ -232,9 +232,9 @@ MSP是一个节点组件(Peer Component), 校验来自客户端的交易请求, 
 </div>
 
 
-<div id="outline-container-org69999b6" class="outline-2">
-<h2 id="org69999b6">通俗交易流程</h2>
-<div class="outline-text-2" id="text-org69999b6">
+<div id="outline-container-org931f1f1" class="outline-2">
+<h2 id="org931f1f1">通俗交易流程</h2>
+<div class="outline-text-2" id="text-org931f1f1">
 <p>
 Chaincode规定背书策略, 如交易生效的前提是PeerA, PeerB, PeerC中有两个以上的节点批准了这笔交易.
 </p>
