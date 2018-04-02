@@ -1,0 +1,39 @@
+#+TITLE:       React Native 常见问题
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-02 一
+#+URI:         /blog/%y/%m/%d/react-native-常见问题
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        ReactNative
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 常见问题
+
+*** 命令行安装AVD
+
+#+BEGIN_SRC Shell
+avdmanager create avd -n test -k "system-images;android-25;google_apis;x86"
+#+END_SRC
+
+[[https://developer.android.com/studio/command-line/avdmanager.html][其他使用方法]]
+
+启动AVD: 先进入 =Android/Sdk/tools=, 执行:
+#+BEGIN_SRC Shell
+emulator -avd myAndroid
+#+END_SRC
+
+*** 启动
+
+#+BEGIN_SRC Shell
+react-native start
+#+END_SRC
+
+如果手机上不能打开, 可能是8081端口被占用了. 可以先使用命令 =lsof -i :8081= 查看, 然后 =kill= 它.
+
+如果没有监听端口8081, 则使用命令 =adb reverse tcp:8081 tcp:8081=. 
+
+也可以在执行安装命令时固定端口, 如: =react-native run-android --port=3131=.
+
+注: 新手. 目前看来, 只有出错时, 才有可能需要远程来调试. 如果正确, 手机上的程序可直接就进入.

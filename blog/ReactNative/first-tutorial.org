@@ -1,0 +1,591 @@
+#+TITLE:       React-Native入门教程
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-02 一
+#+URI:         /blog/%y/%m/%d/react-native入门教程
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        ReactNative
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* props(属性)
+
+大部分组件在创建的时候, 就可以使用各种参数来进行定制. 这些参数就称为 =props=.
+
+例如, 在创建图片时:
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { Image } from 'react-native';
+
+export default class Bananas extends Component {
+  render() {
+    let pic = {
+      uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
+    };
+    return (
+      <Image source={pic} style={{width: 193, height: 110}} />
+    );
+  }
+}
+#+END_SRC
+这边, 使用名为 =source= 的props来指定图片的地址, 使用名为 =style= 的props来控制尺寸.
+
+* state(状态)
+
+=props= 一旦被指定, 在该组件的生命周期中就不再改变. 如果有组件继续了该组件, 则可以在子组件中使用 =state= 来改变.
+
+一般做法: 子组件在 =constructor()= 中初始化 =state=, 在需要修改时使用 =setState()=.
+
+如: 要制作一段闪烁的文字. 文字内容在组件创建时被指定, 所以文字内容应该是一个 =prop=, 而文字的显示或隐藏状态(快速显隐切换可产生闪烁效果)是随时间变化的, 因此这个状态应该写到 =state= 中.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { Text, View } from 'react-native';
+class Blink extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { showText: true };
+
+        // 每1s对showText状态取反
+        setInterval(() => {
+            this.setState(previousState => {
+                return { showText: !previousState.showText };
+            });
+        }, 1000);
+    }
+    render () {
+        // 根据showText的值来决定是否显示text内容
+        let display = this.state.showText ? this.props.text : ' ';
+        return (
+                <Text>{display}</Text>
+        );
+    }
+}
+export default class BlinkApp extends Component {
+  render() {
+    return (
+      <View>
+        <Blink text='I love to blink' />
+        <Blink text='Yes blinking is so great' />
+        <Blink text='Why did they ever take this out of HTML' />
+        <Blink text='Look at me look at me look at me' />
+      </View>
+    );
+  }
+}
+#+END_SRC
+
+这只是示例. =state= 使用的典型场景是在接收到服务器返回的新数据, 或在用户输入数据之后.
+
+* style(样式)
+
+所有核心组件都接受名为 =style= 的属性.
+
+在实际开发的时候, 样式会很复杂. 建议使用 =StyleSheet.create= 来集中定义组件的样式. 如:
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, StyleSheet, Text, View } from 'react-native';
+
+export default class LotsOfStyles extends Component {
+  render() {
+    return (
+      <View>
+        <Text style={styles.red}>just red</Text>
+        <Text style={styles.bigblue}>just bigblue</Text>
+        <Text style={[styles.bigblue, styles.red]}>bigblue, then red</Text>
+        <Text style={[styles.red, styles.bigblue]}>red, then bigblue</Text>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  bigblue: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  red: {
+    color: 'red',
+  },
+});
+
+AppRegistry.registerComponent('LotsOfStyles', () => LotsOfStyles);
+#+END_SRC
+
+* 高度与宽度
+
+** 指定宽高
+
+组件的高度与宽度决定了它在屏幕上显示的尺寸. 给组件设定尺寸的方式是在样式中指定 =width= 和 =height=. React Native中尺寸没有单位, 表示的是与设备像素密度无关的逻辑像素点.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, View } from 'react-native';
+
+class FixedDimensionsBasics extends Component {
+  render() {
+    return (
+      <View>
+        <View style={{width: 50, height: 50, backgroundColor: 'powderblue'}} />
+        <View style={{width: 100, height: 100, backgroundColor: 'skyblue'}} />
+        <View style={{width: 150, height: 150, backgroundColor: 'steelblue'}} />
+      </View>
+    );
+  }
+};
+// 注册应用(registerComponent)后才能正确渲染
+// 注意：只把应用作为一个整体注册一次，而不是每个组件/模块都注册
+AppRegistry.registerComponent('AwesomeProject', () => FixedDimensionsBasics);
+#+END_SRC
+
+** 弹性宽高(flex)
+
+=flex= 表示在可利用的空间中动态扩张或收缩. 一般会使用 =flex:1= 来指定某个组件扩张以撑满所有剩余的空间.
+
+如果有多个并列的子组件使用了 =flex:1=, 则这些子组件会平分父容器中的剩余空间.
+
+组件能撑满剩余空间的前提是其父容器的尺寸不为0. 如果父容器既没有固定的 =width= 和 =height=, 也没有设定 =flex=, 则父容器的尺寸为0. 这样的话, 即使子组件使用了 =flex= 也不会起效果.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, View } from 'react-native';
+
+class FlexDimensionsBasics extends Component {
+  render() {
+    return (
+      // 试试去掉父View中的`flex: 1`。
+      // 则父View不再具有尺寸，因此子组件也无法再撑开。
+      // 然后再用`height: 300`来代替父View的`flex: 1`试试看？
+      <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: 'powderblue'}} />
+        <View style={{flex: 2, backgroundColor: 'skyblue'}} />
+        <View style={{flex: 3, backgroundColor: 'steelblue'}} />
+      </View>
+    );
+  }
+};
+
+AppRegistry.registerComponent('AwesomeProject', () => FlexDimensionsBasics);
+#+END_SRC
+
+* 使用Flexbox布局
+
+在React Native中, 使用flexbox规则来指定某个组件的子元素的布局. flexbox可以在不同屏幕尺寸上提供一致的布局结构.
+
+** flexDirection
+
+在组件的 =style= 中指定 =flexDirection= 可以决定布局的主轴. 子元素可以沿着水平排列(row), 也可以垂直排列(column), 默认为column.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, View } from 'react-native';
+
+class FlexDirectionBasics extends Component {
+  render() {
+    return (
+      // 尝试把`flexDirection`改为`column`看看
+      <View style={{flex: 1, flexDirection: 'row'}}>
+        <View style={{width: 50, height: 50, backgroundColor: 'powderblue'}} />
+        <View style={{width: 50, height: 50, backgroundColor: 'skyblue'}} />
+        <View style={{width: 50, height: 50, backgroundColor: 'steelblue'}} />
+      </View>
+    );
+  }
+};
+
+AppRegistry.registerComponent('AwesomeProject', () => FlexDirectionBasics);
+#+END_SRC
+
+** justifyContent
+
+在组件中的 =style= 中指定 =justifyContent= 可以决定子元素沿着主轴的排列方式. 如, 左对齐, 右对齐, 还是居中, 等等, 都是由它来指定.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, View } from 'react-native';
+
+class JustifyContentBasics extends Component {
+  render() {
+    return (
+      // 尝试把`justifyContent`改为`center`看看
+      // 尝试把`flexDirection`改为`row`看看
+      <View style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}>
+        <View style={{width: 50, height: 50, backgroundColor: 'powderblue'}} />
+        <View style={{width: 50, height: 50, backgroundColor: 'skyblue'}} />
+        <View style={{width: 50, height: 50, backgroundColor: 'steelblue'}} />
+      </View>
+    );
+  }
+};
+
+AppRegistry.registerComponent('AwesomeProject', () => JustifyContentBasics);
+#+END_SRC
+
+** alignItems
+
+在组件的 =style= 中指定 =alignItems= 可以决定其子元素沿着次轴的排列方式.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, View } from 'react-native';
+
+class AlignItemsBasics extends Component {
+  render() {
+    return (
+      // 尝试把`alignItems`改为`flex-start`看看
+      // 尝试把`justifyContent`改为`flex-end`看看
+      // 尝试把`flexDirection`改为`row`看看
+      <View style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        <View style={{width: 50, height: 50, backgroundColor: 'powderblue'}} />
+        <View style={{width: 50, height: 50, backgroundColor: 'skyblue'}} />
+        <View style={{width: 50, height: 50, backgroundColor: 'steelblue'}} />
+      </View>
+    );
+  }
+};
+
+AppRegistry.registerComponent('AwesomeProject', () => AlignItemsBasics);
+#+END_SRC
+
+* 处理文本输入
+
+=TextInput= 是一个允许用户输入文本的基础组件. 它有一个名为 =onChangeText= 属性, 此属性接受一个函数, 而此函数会在文本变化时被调用; 有一个名为 =onSubmitEditing= 的属性, 在文件被提交后被调用.
+
+把输入的单词转换成🍕:
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { AppRegistry, Text, TextInput, View } from 'react-native';
+
+export default class PizzaTranslator extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {text: ''};
+  }
+
+  render() {
+    return (
+      <View style={{padding: 10}}>
+        <TextInput
+          style={{height: 40}}
+          placeholder="Type here to translate!"
+          onChangeText={(text) => this.setState({text})}
+        />
+        <Text style={{padding: 10, fontSize: 42}}>
+          {this.state.text.split(' ').map((word) => word && '🍕').join(' ')}
+        </Text>
+      </View>
+    );
+  }
+}
+#+END_SRC
+
+* (ScrollView)滚动视图
+
+=ScrollView= 是一个通用的可滚动的容器, 可以在其中放入多个组件和视图, 而且这些组件并不需要是同类型的. =ScrollView= 可以水平或者垂直滚动.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import{ ScrollView, Image, Text, View } from 'react-native'
+
+export default class IScrolledDownAndWhatHappenedNextShockedMe extends Component {
+  render() {
+      return(
+        <ScrollView>
+          <Text style={{fontSize:96}}>Scroll me plz</Text>
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Text style={{fontSize:96}}>If you like</Text>
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Text style={{fontSize:96}}>Scrolling down</Text>
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Text style={{fontSize:96}}>What's the best</Text>
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Text style={{fontSize:96}}>Framework around?</Text>
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Image source={require('./img/favicon.png')} />
+          <Text style={{fontSize:80}}>React Native</Text>
+        </ScrollView>
+    );
+  }
+}
+#+END_SRC
+
+=ScrollView= 会将内部所有组件都渲染. 如果如果要显示较长的滚动列表, 应该使用功能差不多, 但性能更好的长列表.
+
+* 长列表
+
+React Native中有几个长列表, 一般使用 =FlatList= 或 =SectionList=.
+
+** FlatList
+
+用于显示一个垂直的滚动列表, 内部元素格式相同, 元素个数可增删. 它优先渲染屏幕上可见的元素.
+
+=FlatList= 有两个必须的属性: =data= 和 =renderItem=. =data= 是列表的数据源, =renderItem= 则从数据源中逐个解析数据, 然后返回一个设定好格式的组件来渲染.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+
+export default class FlatListBasics extends Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={[
+            {key: 'Devin'},
+            {key: 'Jackson'},
+            {key: 'James'},
+            {key: 'Joel'},
+            {key: 'John'},
+            {key: 'Jillian'},
+            {key: 'Jimmy'},
+            {key: 'Julie'},
+          ]}
+          renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+        />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+   flex: 1,
+   paddingTop: 22
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+})
+#+END_SRC
+
+** SectionList
+
+适用于渲染一组需要分组的数据, 也许还带有分组标签.
+
+#+BEGIN_SRC JavaScript
+import React, { Component } from 'react';
+import { SectionList, StyleSheet, Text, View } from 'react-native';
+
+export default class SectionListBasics extends Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <SectionList
+          sections={[
+            {title: 'D', data: ['Devin']},
+            {title: 'J', data: ['Jackson', 'James', 'Jillian', 'Jimmy', 'Joel', 'John', 'Julie']},
+          ]}
+          renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
+          renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
+        />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+   flex: 1,
+   paddingTop: 22
+  },
+  sectionHeader: {
+    paddingTop: 2,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 2,
+    fontSize: 14,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(247,247,247,1.0)',
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+})
+#+END_SRC
+
+* 网络
+
+一般移动应用都要从Server中获取数据. 我们可能要给某个REST API发起POST请求, 以提交用户数据; 也可能从Server上获取一些数据.
+
+** fetch
+
+如果学过 =XMLHttpRequest(ajax)=, 则 =fetch= 用起来比较容易上手.
+
+*** 发起网络请求
+
+从指定地址获取内容:
+#+BEGIN_SRC JavaScript
+fetch('https://mywebsite.com/mydata.json')
+#+END_SRC
+
+=fetch()= 还有可选的第二个参数, 用来定制HTTP请求一些参数. 如:
+#+BEGIN_SRC JavaScript
+fetch('https://mywebsite.com/endpoint/', {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    firstParam: 'yourValue',
+    secondParam: 'yourOtherValue',
+  })
+})
+#+END_SRC
+提交数据的格式取决于 =headers= 中的 =Content-Type=. =Content-Type= 有多种, 对应的 =body= 的格式也有多种. 使用哪种, 协商清楚就好. 比如用网页表示的形式传递:
+#+BEGIN_SRC JavaScript
+fetch('https://mywebsite.com/endpoint/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: 'key1=value1&key2=value2'
+})
+#+END_SRC
+
+** 处理服务器的响应数据
+
+#+BEGIN_SRC JavaScript
+getMoviesFromApiAsync() {
+    return fetch('https://facebook.github.io/react-native/movies.json')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        return responseJson.movies;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+#+END_SRC
+
+还可以使用ES7标准中的 =async/await= 语法:
+#+BEGIN_SRC JavaScript
+// 注意这个方法前面有async关键字
+  async getMoviesFromApi() {
+    try {
+      // 注意这里的await语句，其所在的函数必须有async关键字声明
+      let response = await fetch('https://facebook.github.io/react-native/movies.json');
+      let responseJson = await response.json();
+      return responseJson.movies;
+    } catch(error) {
+      console.error(error);
+    }
+  }
+#+END_SRC
+
+默认情况下, iOS会阻止所有非https请求. 如果非要使用http协议, 参考文档https://segmentfault.com/a/1190000002933776.
+
+** AJAX
+
+此处不介绍.
+
+** WebSocket
+
+React Native还支持 =WebSocket=.
+#+BEGIN_SRC JavaScript
+var ws = new WebSocket('ws://host.com/path');
+
+ws.onopen = () => {
+  // 打开一个连接
+
+  ws.send('something'); // 发送一个消息
+};
+
+ws.onmessage = (e) => {
+  // 接收到了一个消息
+  console.log(e.data);
+};
+
+ws.onerror = (e) => {
+  // 发生了一个错误
+  console.log(e.message);
+};
+
+ws.onclose = (e) => {
+  // 连接被关闭了
+  console.log(e.code, e.reason);
+};
+#+END_SRC
+
+* Navigation
+
+React Native中有多种导航组件, 社区主推 =react-navigation=.
+
+** 安装
+
+#+BEGIN_SRC Shell
+yarn add react-navigation
+#+END_SRC
+
+** 创建两个页面
+
+创建有两个页面(Main和Profile)的应用:
+#+BEGIN_SRC JavaScript
+import {
+  StackNavigator,
+} from 'react-navigation';
+
+const App = StackNavigator({
+  Main: {screen: MainScreen},
+  Profile: {screen: ProfileScreen},
+});
+#+END_SRC
+
+其中, 每个 =screen= 组件都可以单独设置导航选项, 如导航头的标题, 页面的跳转等:
+#+BEGIN_SRC JavaScript
+class MainScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Welcome',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <Button
+        title="Go to Jane's profile"
+        onPress={() =>
+          navigate('Profile', { name: 'Jane' });
+        }
+      />
+    );
+  }
+}
+#+END_SRC
+
+* 集成到现有原生应用
+
+在原生应用程序的基础上, 加上React Native写的内容. 值得学习.
