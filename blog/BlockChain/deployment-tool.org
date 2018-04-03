@@ -1,0 +1,85 @@
+#+TITLE:       Fabric部署
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-03 二
+#+URI:         /blog/%y/%m/%d/fabric部署
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+源码: [[https://github.com/olegabu/fabric-starter][fabric-starter]]
+
+创建网络来开发区块链应用程序.
+
+网络可以部署到单机的多个容器上, 也可以部署到多个主机上.
+
+利用这些脚本, 可以生成加密材料和配置文件, 启动网络, 部署chaincode. 开发人员可以使用[[https://github.com/Altoros/fabric-rest][REST API server]]的admin Web应用程序来调用和查询chaincode, 测试区块和事务.
+
+我们所要做的, 就是开发chaincode, 然后把它们放到 =chaincode/= 文件夹, 用户界面作为单个页面的Web应用程序, 我们可以通过将源代码放入 =www/= 文件夹来提供服务. 我们可以使用Web应用程序来注册用户, 调用chaincode, 订阅事件, 也可以遵循admin应用程序的模式来做这些.
+
+大部分工作都由这些脚本完成了.
+
+* 用户和组件
+
+网络的组成:
+- Orderer组织 =example.com=
+- Peer组织1 =a=
+- Peer组织2 =b=
+- Peer组织3 =c=
+
+它们通过以下的channel来通信:
+- =common.sh= 可以部署所有的成员和chaincode到 =reference=.
+- 双边保密channel =relationship=. 双边有三种选择, =a-b & a-c & b-c=.
+
+chaincode里面的代码是其他地方拷贝的, 可以用自己的代码来替换掉它.
+
+每个组织都有以下几个容器, 以a组织为例:
+- peer0.a.example.com 作为锚节点.
+- peer1.a.example.com 作为第二节点.
+- ca.a.example.com 作为证书的授权服务器.
+- api.a.example.com 作为 REST API 服务器.
+- www.a.example.com 作为简单的HTTP服务器, 在生成配置文件和设置时提供成员的证书文件.
+- cli.a.example.com 作为运行命令行的工具.
+
+* 本地部署
+
+部署所有成员的容器到一台主机, 用于测试开发.
+
+容器之间使用主机的容器网络来通信, 只有 =api= 容器需要为主机所用, 因为我们要用它来连接每个成员的admin Web应用程序, 所以原本它们的4000端口号现在分别映射到4000, 4001, 4002端口.
+
+生成配置文件:
+#+BEGIN_SRC Shell
+./network.sh -m generate
+#+END_SRC
+该命令会生成所有成员的加密材料, Orderer的创世区块, 还有一些 tx 文件, 最后放在 =artifacts/= 文件夹内.
+
+启动所有成员的容器:
+#+BEGIN_SRC Shell
+./network.sh -m up
+#+END_SRC
+
+所有容器都启动后, 可以通过以下网络进行访问:
+- org1 http://localhost:4000/admin
+- org2 http://localhost:4001/admin
+- org3 http://localhost:4002/admin
+
+查看日志:
+#+BEGIN_SRC Shell
+./network.sh -m logs -m example.com
+./network.sh -m logs -m a
+./network.sh -m logs -m b
+#+END_SRC
+
+停止所有成员:
+#+BEGIN_SRC Shell
+./network.sh -m down
+#+END_SRC
+
+移除所有容器:
+#+BEGIN_SRC Shell
+./network.sh -m clean
+#+END_SRC

@@ -1,0 +1,28 @@
+#+TITLE:       Fabric Node.js SDK
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-03 二
+#+URI:         /blog/%y/%m/%d/fabric-nodejs-sdk
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 配置应用程序开发环境
+
+运行在Fabric区块链网络上的应用程序, 主要包括两个部分: 运行在Server(背书节点)的chaincode, 使用Node.js编写的Client.
+
+[[http://hyperledger-fabric.readthedocs.io/en/latest/chaincode.html][chaincode教程]]
+
+[[http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html][启动Fabric网络的完整流程]]
+
+下面的教程假设chaincode已经写完, 只关注Client的编写.
+
+** Fabric应用程序开发环境的组成
+
+*** orderer
+
+在测试阶段, 只用一个orderer节点. 有了orderer节点后, 可以加入组织, 启动网络. 我们还需要一些peer节点, 把它们加入到组织, 维护整个账本.
+
+peer节点扮演两个角色: 背书和提交. 对于一个背书节点, 在配置文件中, 只能配置其有效或无效. 所有节点都是提交节点.
