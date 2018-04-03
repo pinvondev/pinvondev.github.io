@@ -9,13 +9,13 @@
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
-*** 查看在使用的容器
+* 查看在使用的容器
 
 #+BEGIN_SRC Shell
 docker ps -a
 #+END_SRC
 
-*** 关掉所有在使用的容器
+* 关掉所有在使用的容器
 
 #+BEGIN_SRC Shell
 docker ps -qa | xargs docker rm
@@ -24,4 +24,10 @@ docker rm $(docker ps -qa)
 
 # 如果无法删除成功
 docker rm --force $(docker ps -qa)
+#+END_SRC
+
+* 删除所有镜像文件
+
+#+BEGIN_SRC Shell
+docker rmi $(docker images -q)
 #+END_SRC
