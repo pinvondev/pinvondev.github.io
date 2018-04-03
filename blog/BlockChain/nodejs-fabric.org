@@ -1,0 +1,286 @@
+#+TITLE:       Node.js Fabric
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-03 二
+#+URI:         /blog/%y/%m/%d/nodejs-fabric
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 创建项目
+
+#+BEGIN_SRC Shell
+mkdir blockchain
+cd blockchain
+touch index.js
+npm install express fabric-ca-client fabric-client body-parser --save
+#+END_SRC
+
+其中, =fabric-ca-client= 和 =fabric-ca= 用来与Fabric网络交互; =express= 用来创建服务器, =body-parser= 用于解析数据.
+
+* 连接配置和加密处理
+
+连接配置, 主要包括Org, Peers, Orderer, CA.
+#+BEGIN_SRC Shell
+name: "Org1 Client"
+version: "1.0"
+
+client:
+  organization: Org1
+  credentialStore:
+    path: "./hfc-key-store"
+    cryptoStore:
+      path: "./hfc-key-store"
+
+channels:
+  mychannel:
+    orderers:
+      - orderer.example.com
+    peers:
+      peer0.org1.example.com:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+      peer0.org2.example.com:
+        endorsingPeer: true
+        chaincodeQuery: false
+        ledgerQuery: true
+        eventSource: false
+
+organizations:
+  Org1:
+    mspid: Org1MSP
+    peers:
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+    certificateAuthorities:
+      - ca.org1.example.com
+    adminPrivateKey:
+      path: crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/1a11ffdebfb3bba13a7738dfa820a505002d29ba3e812657a127f27ba79345e5_sk
+    signedCert:
+      path: crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
+
+orderers:
+  orderer.example.com:
+    url: grpcs://localhost:7050
+    grpcOptions:
+      ssl-target-name-override: orderer.example.com
+      grpc-max-send-message-length: 15
+    tlsCACerts:
+      path: crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+peers:
+  peer0.org1.example.com:
+    url: grpcs://localhost:7051
+    eventUrl: grpcs://localhost:7053
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+
+  peer1.org1.example.com:
+    url: grpcs://localhost:8051
+    eventUrl: grpcs://localhost:8053
+    grpcOptions:
+      ssl-target-name-override: peer1.org1.example.com
+      grpc.keepalive_time_ms: 600000
+    tlsCACerts:
+      path: crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+
+certificateAuthorities:
+  ca.org1.example.com:
+    url: https://localhost:7054
+    httpOptions:
+      verify: false
+    tlsCACerts:
+      path: crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+    registrar:
+      - enrollId: admin
+        enrollSecret: adminpw
+    caName: ca-org1
+#+END_SRC
+
+注意, =credentialStore= 指定的位置, 是App后面用来存放密钥和证书的地方.
+
+* 创建脚本生成admin的加密材料
+
+为了Client能提交事务, 需要在SDK中设置用户内容. 在此之前, 我们需要先对Org的admin进行登记, 并获取证书.
+
+./enrollAdmin.js:
+#+BEGIN_SRC JavaScript
+'use strict';
+var fabricClient = require('./Config/FabricClient');
+var FabricCAClient = require('fabric-ca-client');
+
+var connection = fabricClient;
+var fabricCAClient;
+var adminUser;
+
+connection.initCredentialStores().then(() => {
+  fabricCAClient = connection.getCertificateAuthority();
+  return connection.getUserContext('admin', true);
+}).then((user) => {
+  if (user) {
+    throw new Error("Admin already exists");
+  } else {
+    return fabricCAClient.enroll({
+      enrollmentID: 'admin',
+      enrollmentSecret: 'adminpw',
+      attr_reqs: [
+          { name: "hf.Registrar.Roles" },
+          { name: "hf.Registrar.Attributes" }
+      ]
+    }).then((enrollment) => {
+      console.log('Successfully enrolled admin user "admin"');
+      return connection.createUser(
+          {username: 'admin',
+              mspid: 'Org1MSP',
+              cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
+          });
+    }).then((user) => {
+      adminUser = user;
+      return connection.setUserContext(adminUser);
+    }).catch((err) => {
+      console.error('Failed to enroll and persist admin. Error: ' + err.stack ? err.stack : err);
+      throw new Error('Failed to enroll admin');
+    });
+  }
+}).then(() => {
+    console.log('Assigned the admin user to the fabric client ::' + adminUser.toString());
+}).catch((err) => {
+    console.error('Failed to enroll admin: ' + err);
+});
+#+END_SRC
+
+./Config/FabricClient.js:
+#+BEGIN_SRC JavaScript
+var FabricClient = require('fabric-client');
+var fs = require('fs');
+var path = require('path');
+
+var configFilePath = path.join(__dirname, './ConnectionProfile.yml');
+const CONFIG = fs.readFileSync(configFilePath, 'utf8')
+
+class FBClient extends FabricClient {
+    constructor(props) {
+        super(props);
+    }
+
+    submitTransaction(requestData) {
+        var returnData;
+        var _this = this;
+        var channel = this.getChannel();
+        var peers = this.getPeersForOrg();
+        var event_hub = this.getEventHub(peers[0].getName());
+        return channel.sendTransactionProposal(requestData).then(function (results) {
+            var proposalResponses = results[0];
+            var proposal = results[1];
+            let isProposalGood = false;
+
+            if (proposalResponses && proposalResponses[0].response &&
+                proposalResponses[0].response.status === 200) {
+                isProposalGood = true;
+                console.log('Transaction proposal was good');
+            } else {
+                throw new Error(results[0][0].details);
+                console.error('Transaction proposal was bad');
+            }
+            returnData = proposalResponses[0].response.payload.toString();
+            returnData = JSON.parse(returnData);
+
+            if (isProposalGood) {
+                console.log(
+                    'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
+                    proposalResponses[0].response.status, proposalResponses[0].response.message);
+
+                var request = {
+                    proposalResponses: proposalResponses,
+                    proposal: proposal
+                };
+
+                var transaction_id_string = requestData.txId.getTransactionID();
+                var promises = [];
+
+                var sendPromise = channel.sendTransaction(request);
+                promises.push(sendPromise); 
+
+                let txPromise = new Promise((resolve, reject) => {
+                    let handle = setTimeout(() => {
+                        event_hub.disconnect();
+                        resolve({ event_status: 'TIMEOUT' });
+                    }, 3000);
+                    event_hub.connect();
+
+                    event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
+                        clearTimeout(handle);
+                        event_hub.unregisterTxEvent(transaction_id_string);
+                        event_hub.disconnect();
+
+                        var return_status = { event_status: code, tx_id: transaction_id_string };
+                        if (code !== 'VALID') {
+                            console.error('The transaction was invalid, code = ' + code);
+                            resolve(return_status);
+                        } else {
+                            console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
+                            resolve(return_status);
+                        }
+                    }, (err) => {
+                        console.log(err)
+                        reject(new Error('There was a problem with the eventhub ::' + err));
+                    });
+                });
+                promises.push(txPromise);
+
+                return Promise.all(promises);
+            } else {
+                console.error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
+                throw new Error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
+            }
+        }).then((results) => {
+            console.log('Send transaction promise and event listener promise have completed');
+            if (results && results[0] && results[0].status === 'SUCCESS') {
+                console.log('Successfully sent transaction to the orderer.');
+            } else {
+                console.error('Failed to order the transaction. Error code: ' + response.status);
+            }
+
+            if (results && results[1] && results[1].event_status === 'VALID') {
+                console.log('Successfully committed the change to the ledger by the peer');
+            } else {
+                console.log('Transaction failed to be committed to the ledger due to ::' + results[1].event_status);
+            }
+        }).then(function () {
+            return returnData;
+        })
+    }
+
+    query(requestData) {
+        var channel = this.getChannel();
+        return channel.queryByChaincode(requestData).then((response_payloads) => {
+            var resultData = JSON.parse(response_payloads.toString('utf8'));
+            return resultData;
+        }).then(function(resultData) {
+            if (resultData.constructor === Array) {
+                resultData = resultData.map(function (item, index) {
+                    if (item.data) {
+                        return item.data
+                    } else {
+                        return item;
+                    }
+                })
+            }
+
+            return resultData;
+        });
+    }
+}
+
+var fabricClient = new FBClient();
+fabricClient.loadFromConfig(configFilePath);
+
+module.exports = fabricClient;
+#+END_SRC

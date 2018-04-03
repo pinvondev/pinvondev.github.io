@@ -9,6 +9,189 @@
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
+* 解析
+
+** cryptogen
+
+Fabric中有两种类型的公钥, 私钥和证书. 其中, Tcerts证书负责Peer之间的通讯安全, Ecerts负责用户登录和权限控制. 这些证书由CA颁发, 通常一个Org就有一个CA. 有时候在测试环境中, 没有启用CA节点, 可以使用 =cryptogen= 来颁发证书.
+
+** configtx.yaml
+
+在 =examples/e2e_cli/configtx.yaml= 中配置了两个Org参与的Orderer共识配置, 以及两个Org参与的Channel配置.
+
+Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超时时间等.
+
+如果需要更多的Org或者Channel, 可以根据模板进行修改.
+
+** configtxgen
+
+可以使用这个工具, 根据 =configtx.yaml= 生成4个文件, 并保存在 =examples/e2e_cli/channel-artifacts= 中.
+
+1. 创世区块 =genesis.block=. 用于启动Orderer节点.
+2. Channel配置区块 =channel.tx=.
+3. 两个用于更新Org的锚节点的配置文件 =OrgxMSPanchors.tx=.
+
+** 配置docker-compose
+
+配置docker-compose的yaml文件, 这些文件可以用于启动Fabric的Docker环境.
+
+*** 配置Orderer
+
+Orderer的配置在 =base/docker-compose-base.yaml= 中.
+
+#+BEGIN_SRC Shell
+../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block 
+#+END_SRC
+
+这种语句的意思是把宿主机器的路径映射到Docker环境中.
+
+还有一些其他配置, 如环境变量, 端口, 证书等.
+
+*** 配置Peer
+
+Peer的配置在 =base/docker-compose-base.yaml= 和 =peer-base.yaml= 里. 配置信息与Orderer的类似.
+
+*** 配置CLI
+
+CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用CLI来代替SDK, 执行各种SDK能执行的操作. CLI会和Peer通讯, 把指令发送给对应的Peer执行. CLI的配置在 =docker-compose-cli.yaml= 中.
+
+#+BEGIN_SRC Shell
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
+#+END_SRC
+可以看出, CLI默认连接的是 =peer0.org1.example.com=, 身份是 =admin=. CLI启动的时候, 会执行 =./scripts/script.sh=, 完成Fabric网络的初始化, chaincode的安装, 运行.
+
+** 启动Fabric环境的容器
+
+上面的文件配置好以后, 都会集成在 =docker-compose-cli.yaml= 中, 使用命令一键启动:
+#+BEGIN_SRC Shell
+docker-compose -f docker-compose-cli.yaml up -d
+#+END_SRC
+
+** 创建Channel
+
+进入CLI容器里面创建.
+
+#+BEGIN_SRC Shell
+docker exec -it cli bash
+
+ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile $ORDERER_CA
+#+END_SRC
+
+执行完后会在CLI内部的当前目录下创建一个 =mychannel.block= 文件, 其他节点如果要加入这个Channel, 都要使用这个文件.
+
+** Peer加入Channel
+
+由于CLI默认连接的是peer0.org1.example.com, 所以将peer0.org1.example.com加入Channel会比较容易.
+#+BEGIN_SRC Shell
+peer channel join -b mychannel.block
+#+END_SRC
+
+但是如果要加入其他Peer, 则需要修改环境变量. 如:
+#+BEGIN_SRC Shell
+CORE_PEER_LOCALMSPID="Org1MSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
+CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+
+peer channel join -b mychannel.block
+#+END_SRC
+可以把所有的命令连在一起执行, 这样不会对默认的环境变量造成影响.
+
+** 更新锚节点
+
+对于Org1来说, peer0.org1.example.com是锚节点, 需要连接上它, 并进行更新:
+#+BEGIN_SRC Shell
+CORE_PEER_LOCALMSPID="Org1MSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+
+peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls true --cafile $ORDERER_CA
+#+END_SRC
+
+* 启动
+
+** 启动网络
+
+#+BEGIN_SRC Shell
+cd fabric-sdk-node/test/fixtures
+docker-compose -f docker-compose-networksetup.yaml up -d
+#+END_SRC
+
+** chaincode
+
+*** 安装
+
+chaincode必须在每个与交易相关的Peer上都安装. 如果有4个Peer与交易相关, 则要安装4次.
+
+#+BEGIN_SRC Shell
+CORE_PEER_LOCALMSPID="Org1MSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+
+peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+#+END_SRC
+
+*** 实例化
+
+实例化是生成Channel的Docker镜像和Docker容器, 在实例化时还可以指定背书策略.
+#+BEGIN_SRC Shell
+peer chaincode instantiate -o orderer.example.com:7050 --tls true --cafile $ORDERER_CA -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR      ('Org1MSP.member','Org2MSP.member')"
+#+END_SRC
+
+*** 在一个节点上查询并发起交易
+
+在CLI容器中执行:
+#+BEGIN_SRC Shell
+peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
+peer chaincode invoke -o orderer.example.com:7050  --tls true --cafile $ORDERER_CA -C mychannel -n mycc -c '{"Args":["invoke","a","b","10"]}'
+#+END_SRC
+
+*** 在另一个节点上查询交易
+
+#+BEGIN_SRC Shell
+CORE_PEER_LOCALMSPID="Org2MSP" 
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt 
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp 
+CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+
+peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+
+peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
+#+END_SRC
+
+首先在Org2的peer0.org2.example.com上进行安装chaincode, 但是不需要实例化, 因为chaincode只能实例化一次. 安装完了之后就可以直接查询.
+
+** 创建通道
+
+#+BEGIN_SRC Shell
+# pwd: fabric-sdk-node
+node test/integration/e2e/create-channel.js
+#+END_SRC
+
+* Fabric CA
+
+在实际开发中, 我们应该为每个Org建立一个CA, 用CA来管理其中的用户, 而不是使用 =cryptogen= 这个工具根据 =crypto-config.yaml= 生成.
+
+编辑 =docker-compose-cli.yaml=, 增加内容:
+#+BEGIN_SRC Shell
+  ca0:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/peerOrg1-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/d8a5b3cac1b821f6e4b487ceaf1fd239cdcfc310894150908b90f05e9179556a_sk -b admin:adminpw' -d
+    volumes:
+      - ./channel/crypto-config/peerOrganizations/peerOrg1/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerOrg1
+#+END_SRC
+在命令中, --ca.certfile指定了CA的根证书, ca.keyfile指定了给新用户签发证书时的私钥, -b表示CA Client连接CA Server时使用的用户名和密码.
+
+
 * 流程
 
 [[./26.png]]
