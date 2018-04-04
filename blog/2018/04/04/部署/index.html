@@ -35,17 +35,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge63b297">概述</a></li>
-<li><a href="#orgadee3fa">网络成员</a></li>
-<li><a href="#orgda9c55c">本地部署</a></li>
-<li><a href="#orge3045af">多机部署</a></li>
+<li><a href="#org843cf52">概述</a></li>
+<li><a href="#org17b4296">网络成员</a></li>
+<li><a href="#org861e085">本地部署</a></li>
+<li><a href="#org299f086">多机部署</a></li>
+<li><a href="#org14f75ab">配置文件</a></li>
+<li><a href="#orgdb61f18">自定义和扩展</a></li>
+<li><a href="#org80134bf">chaincode</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge63b297" class="outline-2">
-<h2 id="orge63b297">概述</h2>
-<div class="outline-text-2" id="text-orge63b297">
+<div id="outline-container-org843cf52" class="outline-2">
+<h2 id="org843cf52">概述</h2>
+<div class="outline-text-2" id="text-org843cf52">
 <p>
 <a href="https://github.com/olegabu/fabric-starter">源码</a>
 </p>
@@ -56,9 +59,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgadee3fa" class="outline-2">
-<h2 id="orgadee3fa">网络成员</h2>
-<div class="outline-text-2" id="text-orgadee3fa">
+<div id="outline-container-org17b4296" class="outline-2">
+<h2 id="org17b4296">网络成员</h2>
+<div class="outline-text-2" id="text-org17b4296">
 <ol class="org-ol">
 <li>Orderer组织: example.com</li>
 <li>Peer组织1: a</li>
@@ -84,9 +87,9 @@ cli.a.example.com: 使用命令与节点交互
 </div>
 </div>
 
-<div id="outline-container-orgda9c55c" class="outline-2">
-<h2 id="orgda9c55c">本地部署</h2>
-<div class="outline-text-2" id="text-orgda9c55c">
+<div id="outline-container-org861e085" class="outline-2">
+<h2 id="org861e085">本地部署</h2>
+<div class="outline-text-2" id="text-org861e085">
 <p>
 有了 <code>api</code> 容器, 我们可以在浏览器中看到每个组织中的成员. 由于有三个组织, 我们把原本他们默认使用的4000端口分别映射成4000, 4001, 4002端口.
 </p>
@@ -131,9 +134,9 @@ cli.a.example.com: 使用命令与节点交互
 </div>
 </div>
 
-<div id="outline-container-orge3045af" class="outline-2">
-<h2 id="orge3045af">多机部署</h2>
-<div class="outline-text-2" id="text-orge3045af">
+<div id="outline-container-org299f086" class="outline-2">
+<h2 id="org299f086">多机部署</h2>
+<div class="outline-text-2" id="text-org299f086">
 <p>
 部署每个成员的容器, 然后容器之间通过网络连接.
 </p>
@@ -179,6 +182,110 @@ cli.a.example.com: 使用命令与节点交互
 <pre class="src src-Shell">./network.sh -m up-1
 ./network.sh -m up-2
 ./network.sh -m up-3
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org14f75ab" class="outline-2">
+<h2 id="org14f75ab">配置文件</h2>
+<div class="outline-text-2" id="text-org14f75ab">
+<p>
+crypto工具使用 <code>cryptogentemplate-orderer.yaml &amp; cryptogentemplate-peer.yaml</code> 生成成员的加密材料: 私钥与证书. 这两个配置文件对应官方示例中的 <code>cryptogen.yaml</code>.
+</p>
+
+<p>
+configtx工具使用 <code>configtxtemplate.yaml</code> 生成启动Orderer所需的创世区块(genesis.block), 创建Channel所需的 <code>.tx</code>. 这个配置文件对应于官方示例中的 <code>configtx.yaml</code>.
+</p>
+
+<p>
+API Server 和 Web应用程序使用 <code>network-config-template.json</code> 来连接成员的节点和CA.
+</p>
+
+<p>
+每个成员组织启动docker容器, 使用 <code>docker-composetemplate-orderer.yaml &amp; docker-composetemplate-peer.yaml</code>.
+</p>
+
+<p>
+脚本使用 <code>cli</code> 容器来创建和加入Channel, 安装和初始化chaincode.
+</p>
+
+<p>
+最后通过生成的 <code>docker-compose.yaml</code> 开始成员的服务.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdb61f18" class="outline-2">
+<h2 id="orgdb61f18">自定义和扩展</h2>
+<div class="outline-text-2" id="text-orgdb61f18">
+<p>
+通过编辑 <code>network.sh</code> 或设置环境变量, 可以自定义Orderer的名字和组织的名字, 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export DOMAIN=myapp.com ORG1=bar ORG2=baz ORG3=foo
+</pre>
+</div>
+
+<p>
+<code>common Channel</code> 包含哪些成员可以自定义, 如果要更改, 可以通过修改 <code>configtxtemplate.yaml</code> 这个文件.
+</p>
+
+<p>
+组织内的成员数量也可以修改. 修改的位置在 <code>network.sh</code> 的 <code>iterateChannels()</code> 中.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org80134bf" class="outline-2">
+<h2 id="org80134bf">chaincode</h2>
+<div class="outline-text-2" id="text-org80134bf">
+<p>
+在 <code>chaincode-dev</code> 模式下有一些与chaincode相关的命令, 该模式下, chaincode不是在容器内, 可以单独执行. Peer可以不安装chaincode, 但可以调用它.
+</p>
+
+<p>
+在 <code>dev</code> 模式下, Channel叫做 <code>myc</code>, chaincode叫做 <code>mycc</code>, 当然, 我们也可以在 <code>network.sh</code> 中修改它们.
+</p>
+
+<p>
+启动 <code>dev</code> 模式:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m devup
+./network.sh -m devinstall
+</pre>
+</div>
+
+<p>
+设置环境变量:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">CORE_CHAINCODE_LOGGING_LEVEL=debug
+CORE_PEER_ADDRESS=0.0.0.0:7051
+CORE_CHAINCODE_ID_NAME=mycc:0
+</pre>
+</div>
+
+<p>
+实例化, 调用, 查询:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m devinstantiate
+./network.sh -m devinvoke
+./network.sh -m devquery
+</pre>
+</div>
+
+<p>
+可以在不重新编译, 重启开发模式网络的情况下, 对chaincode进行修改, 重新测试.
+</p>
+
+<p>
+关闭:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m devdown
 </pre>
 </div>
 </div>
