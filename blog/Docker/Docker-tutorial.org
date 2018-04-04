@@ -62,7 +62,6 @@ Docker Registry公开服务是开放给用户使用, 允许用户管理镜像的
 除了公开服务, 也可以自己搭建私有服务.
 
 
-
 * 安装Docker
 
 以Ubuntu为例.
@@ -309,3 +308,34 @@ docker pull centos
 docker username/ubuntu:17.10
 docker search username
 #+END_SRC
+* Compose项目
+
+Docker Compose项目负责快速部署分布式应用. 其定位是"定义和运行多个Docker容器的应用".
+
+在日常工作中, 一般需要多个容器相互配合来完成某项任务, 如要实现一个Web项目, 除了Web服务容器本身之外, 还要加上后端的数据库服务容器, 甚至还要负载均衡容器等.
+
+Compose允许用户通过一个单独的 =docker-compose.yml= 模板文件来定义一组相关联的应用容器为一个项目.
+
+Compose中有两个重要的概念: 
+- 服务(service): 一个应用的容器, 实际上可以包括若干运行相同镜像的容器实例.
+- 项目(project): 由一组相关联的应用容器组成的一个完整业务单元, 在 =docker-compose.yml= 文件中定义.
+
+Compose的默认管理对象是项目, 通过子命令对项目中的一组容器进行便捷的生命周期管理.
+
+** 安装
+
+直接到[[https://github.com/docker/compose/releases/][compose]]下载所需版本, 赋予执行操作.
+#+BEGIN_SRC Shell
+mv docker-compose-xxx /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+#+END_SRC
+
+卸载的话, 直接将该文件删除即可.
+
+也可以通过pip安装.
+#+BEGIN_SRC Shell
+pip install docker-compose
+pip uninstall docker-compose # 卸载
+#+END_SRC
+
+** 使用

@@ -95,3 +95,61 @@ export IP_ORDERER=54.235.3.243 IP1=54.235.3.231 IP2=54.235.3.232 IP3=54.235.3.23
 ./network.sh -m up-2
 ./network.sh -m up-3
 #+END_SRC
+
+* 配置文件
+
+crypto工具使用 =cryptogentemplate-orderer.yaml & cryptogentemplate-peer.yaml= 生成成员的加密材料: 私钥与证书. 这两个配置文件对应官方示例中的 =cryptogen.yaml=.
+
+configtx工具使用 =configtxtemplate.yaml= 生成启动Orderer所需的创世区块(genesis.block), 创建Channel所需的 =.tx=. 这个配置文件对应于官方示例中的 =configtx.yaml=.
+
+API Server 和 Web应用程序使用 =network-config-template.json= 来连接成员的节点和CA.
+
+每个成员组织启动docker容器, 使用 =docker-composetemplate-orderer.yaml & docker-composetemplate-peer.yaml=.
+
+脚本使用 =cli= 容器来创建和加入Channel, 安装和初始化chaincode.
+
+最后通过生成的 =docker-compose.yaml= 开始成员的服务.
+
+* 自定义和扩展
+
+通过编辑 =network.sh= 或设置环境变量, 可以自定义Orderer的名字和组织的名字, 如:
+#+BEGIN_SRC Shell
+export DOMAIN=myapp.com ORG1=bar ORG2=baz ORG3=foo
+#+END_SRC
+
+=common Channel= 包含哪些成员可以自定义, 如果要更改, 可以通过修改 =configtxtemplate.yaml= 这个文件.
+
+组织内的成员数量也可以修改. 修改的位置在 =network.sh= 的 =iterateChannels()= 中.
+
+* chaincode
+
+在 =chaincode-dev= 模式下有一些与chaincode相关的命令, 该模式下, chaincode不是在容器内, 可以单独执行. Peer可以不安装chaincode, 但可以调用它.
+
+在 =dev= 模式下, Channel叫做 =myc=, chaincode叫做 =mycc=, 当然, 我们也可以在 =network.sh= 中修改它们.
+
+启动 =dev= 模式:
+#+BEGIN_SRC Shell
+./network.sh -m devup
+./network.sh -m devinstall
+#+END_SRC
+
+设置环境变量:
+#+BEGIN_SRC Shell
+CORE_CHAINCODE_LOGGING_LEVEL=debug
+CORE_PEER_ADDRESS=0.0.0.0:7051
+CORE_CHAINCODE_ID_NAME=mycc:0
+#+END_SRC
+
+实例化, 调用, 查询:
+#+BEGIN_SRC Shell
+./network.sh -m devinstantiate
+./network.sh -m devinvoke
+./network.sh -m devquery
+#+END_SRC
+
+可以在不重新编译, 重启开发模式网络的情况下, 对chaincode进行修改, 重新测试.
+
+关闭:
+#+BEGIN_SRC Shell
+./network.sh -m devdown
+#+END_SRC
