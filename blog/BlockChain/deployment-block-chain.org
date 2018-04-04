@@ -1,0 +1,97 @@
+#+TITLE:       部署
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-04 三
+#+URI:         /blog/%y/%m/%d/部署
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+[[https://github.com/olegabu/fabric-starter][源码]]
+
+这些脚本文件可以用于部署一个区块链网络.
+
+* 网络成员
+
+1. Orderer组织: example.com
+2. Peer组织1: a
+3. Peer组织2: b
+4. Peer组织3: c
+
+通道:
+common通道: 包含所有成员, 使用的chaincode在 =reference/= 目录下.
+a-b通道, a-c通道, b-c通道: 使用的chaincode在 =relationship/= 目录下.
+
+每个组织使用的容器, 以a组织为例:
+peer0.a.example.com: 锚节点
+peer1.a.example.com: a组织内另一个节点
+ca.a.example.com: 发放证书机构Fabric-ca
+api.a.example.com: Fabric-rest API 服务器
+www.a.example.com: HTTP服务器, 在生成配置文件和启动阶段, 提供成员的证书
+cli.a.example.com: 使用命令与节点交互
+
+* 本地部署
+
+有了 =api= 容器, 我们可以在浏览器中看到每个组织中的成员. 由于有三个组织, 我们把原本他们默认使用的4000端口分别映射成4000, 4001, 4002端口.
+
+#+BEGIN_SRC Shell
+./network.sh -m generate
+#+END_SRC
+该命令会生成所有成员的加密材料, Orderer的创世区块(genesis.block), Channel的配置文件(.tx). 
+
+#+BEGIN_SRC Shell
+./network.sh -m up
+#+END_SRC
+该命令会启动所有成员的容器.
+
+在所有容器都启动完成之后, 启动浏览器通过Channel的管理员admin与该组织交互.
+- org1 http://localhost:4000/admin
+- org2 http://localhost:4001/admin
+- org3 http://localhost:4002/admin
+
+#+BEGIN_SRC Shell
+./network.sh -m logs -m example.com
+./network.sh -m logs -m a
+./network.sh -m logs -m b
+#+END_SRC
+
+#+BEGIN_SRC Shell
+./network.sh -m down
+./network.sh -m clean
+#+END_SRC
+
+* 多机部署
+
+部署每个成员的容器, 然后容器之间通过网络连接.
+
+在多机环境下, 容器之间不能通过容器网络来连接, 而是使用真实的网络. 因此, 我们需要在 =network.sh= 文件中指定节点的真实IP地址, 或者通过环境变量来设置:
+#+BEGIN_SRC Shell
+export IP_ORDERER=54.235.3.243 IP1=54.235.3.231 IP2=54.235.3.232 IP3=54.235.3.233
+#+END_SRC
+
+每个成员在各自的主机上生成配置文件:
+#+BEGIN_SRC Shell
+./network.sh -m generate-peer -o a
+./network.sh -m generate-peer -o b
+./network.sh -m generate-peer -o c
+#+END_SRC
+在证书生成之后, 脚本会启动一个 =www docker= 来为其他成员提供服务: Orderer节点下载证书以创建账本, Peer节点下载证书以使用TLS保证通信安全.
+
+然后使用Orderer节点通过从成员那边生成的证书来生成创世区块(genesis.block)和Channel的配置文件(.tx). 在Orderer所在主机执行:
+#+BEGIN_SRC Shell
+./network.sh -m generate-orderer
+./network.sh -m up-orderer
+#+END_SRC
+
+当Orderer启动之后, 所有节点在各自主机上启动服务, 与Orderer通信, 创建Channel. 在Fabric中, 一个成员创建Channel, 然后其他成员通过 =channel.block= 来加入Channel. 创建Channel的成员使这些 =channel.block= 文件对通过 =www docker= 连接过来的其他成员有效. 启动Orderer的成员是很重要的, 特别是对那些两两成对的Channel的成员, 比如, Channel =a-b= 的成员 =a= 需要先启动, 创建 =channel.block=, 然后 =b= 才启动, 下载 =channel.block= 然后加入Channel.
+
+每个组织在各自节点上启动成员:
+#+BEGIN_SRC Shell
+./network.sh -m up-1
+./network.sh -m up-2
+./network.sh -m up-3
+#+END_SRC
