@@ -338,4 +338,168 @@ pip install docker-compose
 pip uninstall docker-compose # 卸载
 #+END_SRC
 
-** 使用
+** 命令说明
+
+#+BEGIN_SRC Shell
+docker-compose -h
+#+END_SRC
+
+** 模板文件
+
+默认的模板文件名为: =docker-compose.yml=, 格式为YAML格式.
+#+BEGIN_SRC YAML
+version: "3"
+
+services:
+  webapp:
+    image: examples/web
+    ports:
+      - "80:80"
+    volumes:
+      - "/data"
+#+END_SRC
+
+每个服务都必须通过 =image= 指令指定镜像, 或通过 =build= 指令(需要Dockerfile)等来自动构建生成镜像.
+
+如果使用 =build= 指令, 在 =Dockerfile= 设置的选项将会自动被获取, 无需在 =docker-compose.yml= 中再次设置.
+
+只讲一些常用的指令. 具体的, 可参考链接: https://yeasy.gitbooks.io/docker_practice/content/compose/compose_file.html
+
+*** build
+
+ 指定 =Dockerfile= 所在文件夹的路径. =Compose= 将会利用它自动构建这个镜像, 然后使用这个镜像.
+ #+BEGIN_SRC YAML
+ version: '3'
+ services:
+	 webapp:
+     build: ./dir
+ #+END_SRC
+
+ 如果在构建镜像时需要使用参数, 则可以使用 =context= 指令:
+ #+BEGIN_SRC YAML
+ version: '3'
+ services:
+
+   webapp:
+     build:
+       context: ./dir
+       dockerfile: Dockerfile-alternate
+       args:
+         buildno: 1
+ #+END_SRC
+
+*** cap_add, cap_drop
+
+ 指定容器的内核能力分配.
+
+ 让容器拥有所有能力, 可以写成:
+ #+BEGIN_SRC YAML
+ cap_add:
+	 - ALL
+ #+END_SRC
+
+ 去掉 NET_ADMID 能力, 可以写成:
+ #+BEGIN_SRC YAML
+ cap_drop:
+	 - NET_ADMIN
+ #+END_SRC
+
+*** command
+
+ 容器启动后默认执行的命令.
+ #+BEGIN_SRC YAML
+ command: echo "hello world"
+ #+END_SRC
+
+*** container_name
+
+指定容器名称. 默认使用 =项目名称_服务名称_序号= 这种格式.
+#+BEGIN_SRC YAML
+container_name: docker-web-container
+#+END_SRC
+
+*** devices
+
+指定设备的映射关系:
+#+BEGIN_SRC YAML
+devices:
+  - "/dev/ttyUSB1:/dev/ttyUSB0"
+#+END_SRC
+
+*** depends_on
+
+解决容器的依赖, 启动先后的问题. 先启动 =redis & db=, 再启动 =web=.
+#+BEGIN_SRC YAML
+version: '3'
+
+services:
+  web:
+    build: .
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis
+
+  db:
+    image: postgres
+#+END_SRC
+
+*** expose
+
+暴露端口, 但不映射到宿主机器, 只被连接的服务访问. 仅可以指定内部端口为参数.
+#+BEGIN_SRC YAML
+expose:
+	- "3000"
+	- "8000"
+#+END_SRC
+
+*** extra_hosts
+
+指定额外的host名称映射信息.
+
+#+BEGIN_SRC YAML
+extra_hosts:
+ - "googledns:8.8.8.8"
+ - "dockerhub:52.1.157.61"
+#+END_SRC
+
+在启动容器后, 容器的 =/etc/hosts= 中会添加以下两条条目:
+#+BEGIN_SRC Shell
+8.8.8.8 googledns
+52.1.157.61 dockerhub
+#+END_SRC
+
+*** image
+
+指定镜像名称或镜像ID, 如果镜像在本地不存在, =Compose= 将会尝试拉取这个镜像.
+#+BEGIN_SRC YAML
+image: ubuntu
+image: orchardup/postgresql
+image: a4bc65fd
+#+END_SRC
+
+*** ports
+
+暴露端口信息. 格式为 =宿主端口:容器端口=, 也可以只指定容器端口, 宿主将会随机选择端口.
+#+BEGIN_SRC YAML
+ports:
+ - "3000"
+ - "8000:8000"
+ - "49100:22"
+ - "127.0.0.1:8001:8001"
+#+END_SRC
+
+*** volumes
+
+数据卷所挂载路径设置. 可以设置宿主机器路径(host:container)或加上访问模式(host:container:ro).
+
+在指令中路径支持相对路径.
+
+#+BEGIN_SRC YAML
+volumes:
+ - /var/lib/mysql
+ - cache/:/tmp/cache
+ - ~/configs:/etc/configs/:ro
+#+END_SRC
