@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>部署 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>部署</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge63b297">概述</a></li>
+<li><a href="#orgadee3fa">网络成员</a></li>
+<li><a href="#orgda9c55c">本地部署</a></li>
+<li><a href="#orge3045af">多机部署</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge63b297" class="outline-2">
+<h2 id="orge63b297">概述</h2>
+<div class="outline-text-2" id="text-orge63b297">
+<p>
+<a href="https://github.com/olegabu/fabric-starter">源码</a>
+</p>
+
+<p>
+这些脚本文件可以用于部署一个区块链网络.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgadee3fa" class="outline-2">
+<h2 id="orgadee3fa">网络成员</h2>
+<div class="outline-text-2" id="text-orgadee3fa">
+<ol class="org-ol">
+<li>Orderer组织: example.com</li>
+<li>Peer组织1: a</li>
+<li>Peer组织2: b</li>
+<li>Peer组织3: c</li>
+</ol>
+
+<p>
+通道:
+common通道: 包含所有成员, 使用的chaincode在 <code>reference/</code> 目录下.
+a-b通道, a-c通道, b-c通道: 使用的chaincode在 <code>relationship/</code> 目录下.
+</p>
+
+<p>
+每个组织使用的容器, 以a组织为例:
+peer0.a.example.com: 锚节点
+peer1.a.example.com: a组织内另一个节点
+ca.a.example.com: 发放证书机构Fabric-ca
+api.a.example.com: Fabric-rest API 服务器
+www.a.example.com: HTTP服务器, 在生成配置文件和启动阶段, 提供成员的证书
+cli.a.example.com: 使用命令与节点交互
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda9c55c" class="outline-2">
+<h2 id="orgda9c55c">本地部署</h2>
+<div class="outline-text-2" id="text-orgda9c55c">
+<p>
+有了 <code>api</code> 容器, 我们可以在浏览器中看到每个组织中的成员. 由于有三个组织, 我们把原本他们默认使用的4000端口分别映射成4000, 4001, 4002端口.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m generate
+</pre>
+</div>
+<p>
+该命令会生成所有成员的加密材料, Orderer的创世区块(genesis.block), Channel的配置文件(.tx). 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m up
+</pre>
+</div>
+<p>
+该命令会启动所有成员的容器.
+</p>
+
+<p>
+在所有容器都启动完成之后, 启动浏览器通过Channel的管理员admin与该组织交互.
+</p>
+<ul class="org-ul">
+<li>org1 <a href="http://localhost:4000/admin">http://localhost:4000/admin</a></li>
+<li>org2 <a href="http://localhost:4001/admin">http://localhost:4001/admin</a></li>
+<li>org3 <a href="http://localhost:4002/admin">http://localhost:4002/admin</a></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m logs -m example.com
+./network.sh -m logs -m a
+./network.sh -m logs -m b
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m down
+./network.sh -m clean
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge3045af" class="outline-2">
+<h2 id="orge3045af">多机部署</h2>
+<div class="outline-text-2" id="text-orge3045af">
+<p>
+部署每个成员的容器, 然后容器之间通过网络连接.
+</p>
+
+<p>
+在多机环境下, 容器之间不能通过容器网络来连接, 而是使用真实的网络. 因此, 我们需要在 <code>network.sh</code> 文件中指定节点的真实IP地址, 或者通过环境变量来设置:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export IP_ORDERER=54.235.3.243 IP1=54.235.3.231 IP2=54.235.3.232 IP3=54.235.3.233
+</pre>
+</div>
+
+<p>
+每个成员在各自的主机上生成配置文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m generate-peer -o a
+./network.sh -m generate-peer -o b
+./network.sh -m generate-peer -o c
+</pre>
+</div>
+<p>
+在证书生成之后, 脚本会启动一个 <code>www docker</code> 来为其他成员提供服务: Orderer节点下载证书以创建账本, Peer节点下载证书以使用TLS保证通信安全.
+</p>
+
+<p>
+然后使用Orderer节点通过从成员那边生成的证书来生成创世区块(genesis.block)和Channel的配置文件(.tx). 在Orderer所在主机执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m generate-orderer
+./network.sh -m up-orderer
+</pre>
+</div>
+
+<p>
+当Orderer启动之后, 所有节点在各自主机上启动服务, 与Orderer通信, 创建Channel. 在Fabric中, 一个成员创建Channel, 然后其他成员通过 <code>channel.block</code> 来加入Channel. 创建Channel的成员使这些 <code>channel.block</code> 文件对通过 <code>www docker</code> 连接过来的其他成员有效. 启动Orderer的成员是很重要的, 特别是对那些两两成对的Channel的成员, 比如, Channel <code>a-b</code> 的成员 <code>a</code> 需要先启动, 创建 <code>channel.block</code>, 然后 <code>b</code> 才启动, 下载 <code>channel.block</code> 然后加入Channel.
+</p>
+
+<p>
+每个组织在各自节点上启动成员:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network.sh -m up-1
+./network.sh -m up-2
+./network.sh -m up-3
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-04</span>
+        <span title="last modification date" class="post-info">2018-04-04</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/04/部署";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/04/部署";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
