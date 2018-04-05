@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>0 Go + Emacs 配置 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>0 Go + Emacs 配置</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org899fcc8">关于Go</a></li>
+<li><a href="#org49c7bde">安装Go</a>
+<ul>
+<li><a href="#orgd1f4d4b">下载Go</a></li>
+<li><a href="#org94b640d">解压</a></li>
+<li><a href="#orgdab03db">配置</a>
+<ul>
+<li><a href="#org11449d8">goimports</a></li>
+<li><a href="#org1dd82bb">gocode</a></li>
+<li><a href="#orgfe3fc10">godef</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org957af1c">Emacs配置</a>
+<ul>
+<li><a href="#org7f59480">安装go-mode</a></li>
+<li><a href="#org8f51cd8">添加自动格式化的hook</a></li>
+<li><a href="#org18f6b71">配置自动补齐</a></li>
+<li><a href="#orge435dc3">配置自动跳转</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org899fcc8" class="outline-2">
+<h2 id="org899fcc8">关于Go</h2>
+<div class="outline-text-2" id="text-org899fcc8">
+<p>
+Go语言的并发机制, 使它编写的程序能够非常有效地利用多核与联网的计算机, 新颖的类型系统则使程序结构变得灵活而模块化. Go代码编译成机器码不仅非常迅速, 还有方便的垃圾回收机制和强大的运行时反射机制. 它是一个快速的, 静态类型的编译型语言, 感觉却像动态类型的解释型语言.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org49c7bde" class="outline-2">
+<h2 id="org49c7bde">安装Go</h2>
+<div class="outline-text-2" id="text-org49c7bde">
+</div>
+<div id="outline-container-orgd1f4d4b" class="outline-3">
+<h3 id="orgd1f4d4b">下载Go</h3>
+<div class="outline-text-3" id="text-orgd1f4d4b">
+<p>
+<a href="https://golang.org/dl/">Go官网</a>
+</p>
+
+<p>
+如果打不开, 则选择: <a href="https://golang.google.cn/dl/">Go中国</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org94b640d" class="outline-3">
+<h3 id="org94b640d">解压</h3>
+<div class="outline-text-3" id="text-org94b640d">
+<div class="org-src-container">
+<pre class="src src-Shell">tar -C /usr/local -xzf goxxx.tar.gz
+</pre>
+</div>
+
+<p>
+打开 <code>~/.profile</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export PATH=$PATH:/usr/local/go/bin
+</pre>
+</div>
+
+<p>
+测试. 创建 <code>hello.go</code>, 输入以下代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+func main() {
+    fmt.Printf("hello, world\n")
+}
+</pre>
+</div>
+
+<p>
+在终端执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">go run hello.go
+# 输出 hello, world 则说明正确安装.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdab03db" class="outline-3">
+<h3 id="orgdab03db">配置</h3>
+<div class="outline-text-3" id="text-orgdab03db">
+</div>
+<div id="outline-container-org11449d8" class="outline-4">
+<h4 id="org11449d8">goimports</h4>
+<div class="outline-text-4" id="text-org11449d8">
+<p>
+<code>goimports</code> 命令能自动格式化代码, 自动添加和移除imports, 而且与Emacs集成良好.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">go clone https://github.com/golang/tools.git
+go get golang.org/x/tools/cmd/goimports
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1dd82bb" class="outline-4">
+<h4 id="org1dd82bb">gocode</h4>
+<div class="outline-text-4" id="text-org1dd82bb">
+<p>
+<code>gocode</code> 命令能为代码自动补全提供后台支持, 是Emacs下Go代码补全不可少的后台.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">go get github.com/nsf/gocode
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe3fc10" class="outline-4">
+<h4 id="orgfe3fc10">godef</h4>
+<div class="outline-text-4" id="text-orgfe3fc10">
+<p>
+<code>godef</code> 命令能在Go源码变量, 函数定义之间跳转.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">go get github.com/rogpeppe/godef
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org957af1c" class="outline-2">
+<h2 id="org957af1c">Emacs配置</h2>
+<div class="outline-text-2" id="text-org957af1c">
+</div>
+<div id="outline-container-org7f59480" class="outline-3">
+<h3 id="org7f59480">安装go-mode</h3>
+<div class="outline-text-3" id="text-org7f59480">
+<p>
+<code>M-x package-list-packages</code>, 找到 <code>go-mode</code>, 安装.
+</p>
+
+<p>
+如果当前的MELPA不可用, 重新配置一个新的源.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(add-to-list 'package-archives
+'("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8f51cd8" class="outline-3">
+<h3 id="org8f51cd8">添加自动格式化的hook</h3>
+<div class="outline-text-3" id="text-org8f51cd8">
+<p>
+需要先安装 <code>goimports</code> 命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">;; Call Gofmt before saving
+ (setq gofmt-command "goimports")
+ (add-hook 'before-save-hook 'gofmt-before-save)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org18f6b71" class="outline-3">
+<h3 id="org18f6b71">配置自动补齐</h3>
+<div class="outline-text-3" id="text-org18f6b71">
+<p>
+需要先安装 <code>gocode</code> 命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">;;autocomplete
+(set (make-local-variable 'company-backends) '(company-go))
+(company-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge435dc3" class="outline-3">
+<h3 id="orge435dc3">配置自动跳转</h3>
+<div class="outline-text-3" id="text-orge435dc3">
+<p>
+需要先安装 <code>godef</code> 命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">;; Godef jump key binding
+ (local-set-key (kbd "M-,") 'godef-jump)
+ (local-set-key (kbd "M-.") 'pop-tag-mark)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-05</span>
+        <span title="last modification date" class="post-info">2018-04-05</span>
+        <span title="tags" class="post-info"><a href="/tags/go/">Go</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/05/0 go-+-emacs-配置";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/05/0 go-+-emacs-配置";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>项目记录 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>项目记录</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org59791ca">环境搭建</a>
+<ul>
+<li><a href="#org835a0d6">前提</a></li>
+<li><a href="#org2c73f62">下载代码</a></li>
+<li><a href="#org1363673">启动网络</a></li>
+</ul>
+</li>
+<li><a href="#org1a27f3f">程序介绍</a></li>
+<li><a href="#org896a701">安装</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org59791ca" class="outline-2">
+<h2 id="org59791ca">环境搭建</h2>
+<div class="outline-text-2" id="text-org59791ca">
+</div>
+<div id="outline-container-org835a0d6" class="outline-3">
+<h3 id="org835a0d6">前提</h3>
+<div class="outline-text-3" id="text-org835a0d6">
+<p>
+安装git, go, docker, node.js
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2c73f62" class="outline-3">
+<h3 id="org2c73f62">下载代码</h3>
+<div class="outline-text-3" id="text-org2c73f62">
+<div class="org-src-container">
+<pre class="src src-Shell">git clone https://github.com/IBM-Blockchain/marbles.git
+cd marble
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1363673" class="outline-3">
+<h3 id="org1363673">启动网络</h3>
+<div class="outline-text-3" id="text-org1363673">
+<div class="org-src-container">
+<pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples
+cd fabric-samples
+git checkout v1.0.1
+
+curl -sSL https://goo.gl/6wtTN5 | bash -s 1.0.0
+# 或者
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s 1.0.0
+
+# 设置环境变量
+export PATH=$PWD/bin:$PATH
+
+cd fabcar
+./startFabric.sh
+
+# 安装依赖
+sudo npm install
+node enrollAdmin.js
+node registerUser.js
+node query.js
+
+# 如果要关闭网络
+cd ../bashic-network
+./stop.sh
+./teardown.sh
+</pre>
+</div>
+
+<p>
+npm install gulp -g
+如果失败, npm config seregistry <a href="http://registry.cnpmjs.org">http://registry.cnpmjs.org</a> 再执行.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a27f3f" class="outline-2">
+<h2 id="org1a27f3f">程序介绍</h2>
+<div class="outline-text-2" id="text-org1a27f3f">
+<p>
+chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链存储(账本)中以键值对的形式创建. 账本与chaincode的交互通过对网络上的一个节点使用gRPC协议来完成. gRPC协议的细节由<a href="https://www.npmjs.com/package/fabric-client">Hyperledger Fabric Client</a> SDK处理.
+</p>
+
+<p>
+项目以<a href="https://github.com/IBM-Blockchain/marbles">Marbles</a>为基础进行修改. 因此, 以Marbles程序的图片来进行介绍.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/04/项目记录/29.png" alt="29.png" />
+</p>
+</div>
+
+<ol class="org-ol">
+<li>admin通过浏览器与Marbles交互.</li>
+<li>客户端JS代码打开一个与后端Node.js应用程序的Websocket连接. admin与该站点交互时, 客户端JS将消息发送到后端.</li>
+<li>读取或写入账本称为提案. 提案由Marbles通过SDK构建, 然后发送到一个区块链节点.</li>
+<li>该节点将与它的Marbles chaincode容器进行通信. chaincode将运行/模拟该交易. 如果没有 问题, 它会对该交易进行背书, 并将其发回Marbles程序.</li>
+<li>Marbles通过SDK将背书后的提案发送到Orderer Service, Orderer Service将来自整个网络的许多提案打包到一个区块中, 然后, 它将新的区块广播到网络中的节点.</li>
+<li>最后, 节点会验证该区块, 并将它写入自己的账本中. 该交易现已生效, 所有节点都会过来同步账本.</li>
+</ol>
+
+<p>
+程序的架构主要分成3个部分:
+</p>
+<ol class="org-ol">
+<li>chaincode: 位于 <code>/chaincode</code>.</li>
+<li>客户端: 用户浏览器中所运行的JavaScript代码, 位于 <code>/public/js</code> 中.</li>
+<li>服务端: 核心部分, 它充当admin与区块链之间的连接器, 位于 <code>/utils &amp; /routes</code> 中.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org896a701" class="outline-2">
+<h2 id="org896a701">安装</h2>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-04</span>
+        <span title="last modification date" class="post-info">2018-04-05</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/04/项目记录";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/04/项目记录";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
