@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>1 Go基础 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>1 Go基础</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf01de14">包</a>
+<ul>
+<li><a href="#org84dcfc2">函数</a></li>
+<li><a href="#orgcf5e8de">变量</a>
+<ul>
+<li><a href="#orge46215d">初始化</a></li>
+</ul>
+</li>
+<li><a href="#orge642f6b">基本类型</a></li>
+<li><a href="#orgfbee105">类型转换</a></li>
+<li><a href="#org753dfed">类型推导</a></li>
+<li><a href="#org6665f8b">常量</a></li>
+</ul>
+</li>
+<li><a href="#org8fcdb9f">程序控制</a>
+<ul>
+<li><a href="#orgb02ce9c">for</a></li>
+<li><a href="#org92860bc">if</a></li>
+<li><a href="#orgd516300">switch</a></li>
+<li><a href="#org54b0ede">defer</a></li>
+</ul>
+</li>
+<li><a href="#org582fdf3">复杂类型</a>
+<ul>
+<li><a href="#org75cfa5c">指针</a></li>
+<li><a href="#org47d75a0">结构体</a>
+<ul>
+<li><a href="#orgb4c389a">结构体的声明与初始化</a></li>
+</ul>
+</li>
+<li><a href="#org49cbb01">数组</a></li>
+<li><a href="#orgbdd45b9">slice</a>
+<ul>
+<li><a href="#orgbc69cec">截取</a></li>
+<li><a href="#orgb7954de">构造</a></li>
+<li><a href="#org19c71fa">添加元素</a></li>
+<li><a href="#orge5821ca">range</a></li>
+</ul>
+</li>
+<li><a href="#org4560204">map</a>
+<ul>
+<li><a href="#orgd7661b5">修改</a></li>
+</ul>
+</li>
+<li><a href="#org74e75e2">函数值</a>
+<ul>
+<li><a href="#org38a8e6b">函数作为参数传递给另一个函数</a></li>
+<li><a href="#org1fd3406">回调函数</a></li>
+<li><a href="#orgc027b04">闭包</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org83afbe9">方法和接口</a>
+<ul>
+<li><a href="#org6a61a10">方法</a>
+<ul>
+<li><a href="#org9e60bcf">继承</a></li>
+</ul>
+</li>
+<li><a href="#org2de061c">接口</a>
+<ul>
+<li><a href="#org514eb1f">关于接口的更详细内容, 有空再补</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org74e488c">反射</a></li>
+<li><a href="#orgc394ab1">并发</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf01de14" class="outline-2">
+<h2 id="orgf01de14">包</h2>
+<div class="outline-text-2" id="text-orgf01de14">
+<p>
+每个Go程序都是由包组成的, 程序运行的入口是包 <code>main</code>. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import (
+    "fmt"
+    "math/rand"
+)
+
+func main() {
+    fmt.Println("My favorite number is", rand.Intn(10))
+}
+</pre>
+</div>
+<p>
+这个程序使用了两个包, <code>fmt &amp; math/rand</code>. 包名与导入路径的最后一个目录一致, 如 <code>math/rand</code> 这个包, 在使用的时候, 包名就直接写成 <code>rand</code> 即可.
+</p>
+
+<p>
+<code>import ( ... )</code> 中的圆括号表示把所有的导入语句打包到一起, 也可以分开写:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">import "fmt"
+import "math/rand"
+</pre>
+</div>
+<p>
+不过更推荐用括号将包组合导入.
+</p>
+
+<p>
+在Go的规范中, 包里面的名字如果第一个字符大写, 则可以被其他模块引用, 如果是小写的则不行. 如, 在外部使用 <code>math.pi</code> 将会报错, 而使用 <code>math.Pi</code> 才是正确的.
+</p>
+</div>
+
+<div id="outline-container-org84dcfc2" class="outline-3">
+<h3 id="org84dcfc2">函数</h3>
+<div class="outline-text-3" id="text-org84dcfc2">
+<p>
+函数的形式: <code>func add(x int, y int) int {...}</code>
+</p>
+
+<p>
+参数必须先于类型, 然后是返回类型.
+</p>
+
+<p>
+如果有两个或多个连续的参数是同一个类型, 可以只写最后一个. 如, 上面的函数也可以写成: <code>func add(x, y int) int {...}</code>.
+</p>
+
+<p>
+函数可以返回任意数量的返回值, 用逗号分隔. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func swap(x, y string) (string, string) {
+    return y, x
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf5e8de" class="outline-3">
+<h3 id="orgcf5e8de">变量</h3>
+<div class="outline-text-3" id="text-orgcf5e8de">
+<p>
+Go里面的变量定义形式: <code>var name type</code>, 其类型是在名称后面的. 如: <code>var i int</code>, 或 <code>var c, python, java bool</code>.
+</p>
+</div>
+
+<div id="outline-container-orge46215d" class="outline-4">
+<h4 id="orge46215d">初始化</h4>
+<div class="outline-text-4" id="text-orge46215d">
+<div class="org-src-container">
+<pre class="src src-Golang">var i, j int = 1, 2  // 有类型声明
+var c, python, java = true, false, "no!"  // 无类型声明
+</pre>
+</div>
+<p>
+如果初始化的值是表达式, 可以不写类型.
+</p>
+
+<p>
+在函数内部, 可以使用 ":=" 来代替 <code>var</code>. 但在函数外部不行.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func add(){
+    var c = true
+    // 等价于
+    // c := true
+}
+</pre>
+</div>
+
+<p>
+如果不指定初始化的值, 默认数值类型初始化为0, bool类型初始化为false, string初始化为空.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge642f6b" class="outline-3">
+<h3 id="orge642f6b">基本类型</h3>
+<div class="outline-text-3" id="text-orge642f6b">
+<ul class="org-ul">
+<li>bool: true, false</li>
+<li>string</li>
+<li>int: 有符号整型, 根据系统架构自动判断是int8, int16, int32还是int64. 如果系统是64位的, 则为int64</li>
+<li>int8: -128~127</li>
+<li>int16: -32768~32767</li>
+<li>int32: \(2^{-31}\) ~ \(2^{31}-1\)</li>
+<li>int64: \(2^{-63}\) ~ \(2^{63}-1\)</li>
+<li>uint: 无符号整型, 根据系统架构自动判断是uint8, uint16, uint32还是uint64</li>
+<li>uint8: 0~255</li>
+<li>uint16: 0~65536</li>
+<li>uint32: 0 ~ \(2^{32}-1\)</li>
+<li>uint64: 0 ~ \(2^{64}-1\)</li>
+<li>uintptr: 无符号整型, 用于存放一个指针, 可以足够保存指针的值的范围. 和uint范围相同, 根据系统架构自动判断.</li>
+<li>byte: uint8的别名</li>
+<li>rune: int32的别名</li>
+<li>float32: 单精度浮点数</li>
+<li>float64: 双精度浮点数</li>
+<li>complex64: 复数</li>
+<li>complex128: 复数</li>
+</ul>
+
+<p>
+在 <code>fmt.Printf()</code> 中, 使用 <code>%v</code>, 可以打印变量的值, 使用 <code>%T</code>, 可以打印变量的类型.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfbee105" class="outline-3">
+<h3 id="orgfbee105">类型转换</h3>
+<div class="outline-text-3" id="text-orgfbee105">
+<p>
+无论是什么时候, Go的类型转换都需要显式转换.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var i int = 42
+var f float64 = float64(i)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org753dfed" class="outline-3">
+<h3 id="org753dfed">类型推导</h3>
+<div class="outline-text-3" id="text-org753dfed">
+<p>
+在定义一个变量, 但不指定其类型时, 变量的类型由右值推导得出.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var i int
+j := i  // j 也是一个int
+
+i := 42  // i为int
+f := 3.142  // f为float64
+g := 0.867 + 0.5i  // g为complex128
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6665f8b" class="outline-3">
+<h3 id="org6665f8b">常量</h3>
+<div class="outline-text-3" id="text-org6665f8b">
+<p>
+常量使用 <code>const</code> 关键字定义, 不能使用 := 语法定义.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">const World = "世界"
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org8fcdb9f" class="outline-2">
+<h2 id="org8fcdb9f">程序控制</h2>
+<div class="outline-text-2" id="text-org8fcdb9f">
+</div>
+<div id="outline-container-orgb02ce9c" class="outline-3">
+<h3 id="orgb02ce9c">for</h3>
+<div class="outline-text-3" id="text-orgb02ce9c">
+<div class="org-src-container">
+<pre class="src src-Golang">for i := 0; i &lt; 10; i++ {...}
+for ; sum &lt; 1000; {...}
+for sum &lt; 1000 {...}  // 就像其他语言的while
+for {...}  // 死循环
+</pre>
+</div>
+<p>
+Go里面, for语句不能使用圆括号"()", "i := 0" 也不能写成 "var i int = 0".
+</p>
+</div>
+</div>
+
+<div id="outline-container-org92860bc" class="outline-3">
+<h3 id="org92860bc">if</h3>
+<div class="outline-text-3" id="text-org92860bc">
+<div class="org-src-container">
+<pre class="src src-Golang">if x &lt; 0 {...}  // 同样不能使用圆括号
+if x &lt; 0 {...} else {...}
+if x &lt; 0 {...} else if x &gt; 0 {...} else {...}
+</pre>
+</div>
+
+<p>
+if语句中, 可以使用短声明, 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">if v := math.Pow(x, n); x &lt; lim {...}
+</pre>
+</div>
+<p>
+<code>v</code> 只在 <code>if</code> 语句中有效.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd516300" class="outline-3">
+<h3 id="orgd516300">switch</h3>
+<div class="outline-text-3" id="text-orgd516300">
+<div class="org-src-container">
+<pre class="src src-Golang">switch os := runtime.GOOS; os {
+    case "darwin":
+        ...
+    case "linux":
+        ...
+    default:
+        ...
+}
+</pre>
+</div>
+
+<p>
+<code>swith</code> 还可以没有条件:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">t := time.Now()
+switch {
+    case t.Hour() &lt; 12:
+        ...
+    case t.Hour() &lt; 17:
+        ...
+    default:
+        ...
+}
+</pre>
+</div>
+<p>
+这样的结构可以代替很长的 if-then-else.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54b0ede" class="outline-3">
+<h3 id="org54b0ede">defer</h3>
+<div class="outline-text-3" id="text-org54b0ede">
+<p>
+<code>defer</code> 会延迟函数的执行, 直到上层函数返回. 但如果上层函数有 <code>return</code>, 则在 <code>return</code> 之前要执行.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+func main() {
+    defer fmt.Println("world")
+
+    fmt.Println("hello")
+}
+// 输出
+hello
+world
+</pre>
+</div>
+
+<p>
+延迟的函数调用被存储在栈中, 当函数返回时, 会按照后进先出的顺序调用被延迟的函数调用.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("counting")
+
+    for i := 0; i &lt; 10; i++ {
+        defer fmt.Println(i)
+    }
+
+    fmt.Println("done")
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org582fdf3" class="outline-2">
+<h2 id="org582fdf3">复杂类型</h2>
+<div class="outline-text-2" id="text-org582fdf3">
+</div>
+<div id="outline-container-org75cfa5c" class="outline-3">
+<h3 id="org75cfa5c">指针</h3>
+<div class="outline-text-3" id="text-org75cfa5c">
+<p>
+指针保存了变量的内存地址.
+</p>
+
+<p>
+<code>*T</code> 是指向类型 <code>T</code> 的值的指针. 如 <code>var p *int</code>.
+</p>
+
+<p>
+<code>&amp;</code> 会生成一个指向其作用对象的指针.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">i := 42
+p = &amp;i
+</pre>
+</div>
+
+<p>
+<code>*</code> 表示指针指向的底层的值.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">fmt.Println(*p)  // 通过指针p读取i
+*p = 21  // 通过指针p设置i
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org47d75a0" class="outline-3">
+<h3 id="org47d75a0">结构体</h3>
+<div class="outline-text-3" id="text-org47d75a0">
+<p>
+<code>struct</code> 就是一个字段的集合. 结构体字段使用点号来访问.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+type Vertex struct {
+    X int
+    Y int
+}
+
+func main() {
+    v := Vertex{1, 2}
+    v.X = 4
+    fmt.Println(v.X)
+}
+</pre>
+</div>
+
+<p>
+也可以通过指针来访问结构体:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">v := Vertex{1, 2}
+p := &amp;v
+p.X = 1e9
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb4c389a" class="outline-4">
+<h4 id="orgb4c389a">结构体的声明与初始化</h4>
+<div class="outline-text-4" id="text-orgb4c389a">
+<div class="org-src-container">
+<pre class="src src-Golang">type Vertex struct {
+    X, Y int
+}
+
+var (
+    v1 = Vertex{1, 2}  // 类型为Vertex
+    v2 = Vertex{X: 1}  // Y: 0 被省略
+    v3 = Vertex{}  // X: 0 和 Y: 0
+    p = &amp;Vertex{1, 2}  // 类型为*Vertex
+)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org49cbb01" class="outline-3">
+<h3 id="org49cbb01">数组</h3>
+<div class="outline-text-3" id="text-org49cbb01">
+<p>
+类型 <code>[n]T</code> 是一个有 <code>n</code> 个类型为 <code>T</code> 的值的数组.
+</p>
+
+<p>
+如: var a [10]int
+</p>
+
+<p>
+使用: a[0] = 1
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbdd45b9" class="outline-3">
+<h3 id="orgbdd45b9">slice</h3>
+<div class="outline-text-3" id="text-orgbdd45b9">
+<p>
+slice会指向一个序列的值, 并且包含长度信息.
+</p>
+
+<p>
+<code>[]T</code> 是一个元素类型为 <code>T</code> 的slice.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">p := []int{2, 3, 5, 7, 11, 13}
+for i := 0; i &lt; len(p); i++ {
+    fmt.Println(p[i])
+}
+</pre>
+</div>
+
+<p>
+slice就像是对数组元素的引用. 
+</p>
+
+<p>
+在函数传递中, slice传递的是地址, array是值传递.
+</p>
+
+<p>
+array是固定长度, 不能通过删除array元素来导致长度变化; slice是可变长度, 内存地址可扩展.
+</p>
+</div>
+
+<div id="outline-container-orgbc69cec" class="outline-4">
+<h4 id="orgbc69cec">截取</h4>
+<div class="outline-text-4" id="text-orgbc69cec">
+<p>
+可以对slice进行截取, 返回一个新的slice. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">p := []int{2, 3, 5, 7, 11, 13}
+fmt.Println(p[1:4])
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb7954de" class="outline-4">
+<h4 id="orgb7954de">构造</h4>
+<div class="outline-text-4" id="text-orgb7954de">
+<p>
+slice由函数 <code>make</code> 创建. 这会分配一个长度为0的数组, 并返回一个slice指向这个数组.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">a := make([]int, 5)  // len(a)=5
+</pre>
+</div>
+
+<p>
+len() 可以用来查看数组或slice的长度
+cap() 可以用来查看数组或slice的容量
+</p>
+
+<p>
+对于数组, 由于长度固定不可变, 因此 len(arr) 和 cap(arr) 永远相同.
+对于slice, len(slice) 表示可见元素的个数, cap(slice) 表示所有元素个数.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">b := make([]int, 0, 5)  // len(b) = 0, cap(b) = 5
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org19c71fa" class="outline-4">
+<h4 id="org19c71fa">添加元素</h4>
+<div class="outline-text-4" id="text-org19c71fa">
+<div class="org-src-container">
+<pre class="src src-Golang">var a []int
+a = append(a, 0)
+a = append(a, 2, 3, 4)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge5821ca" class="outline-4">
+<h4 id="orge5821ca">range</h4>
+<div class="outline-text-4" id="text-orge5821ca">
+<p>
+<code>for</code> 循环的 <code>range</code> 格式可以对slice或map进行迭代循环.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+for i, v := range pow {
+    fmt.Println(i, v)
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4560204" class="outline-3">
+<h3 id="org4560204">map</h3>
+<div class="outline-text-3" id="text-org4560204">
+<p>
+<code>map</code> 在使用之前必须用 <code>make</code> 来创建, 值为 <code>nil</code> 的 <code>map</code> 是空的, 并且不能赋值.
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">m = make(map[key_type]value_type)
+
+// 如
+var m map[string]int
+m = make(map[string]int)
+
+// 或
+var m map[string]int = make(map[string]int)
+
+// 或
+m := make(map[string]int)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgd7661b5" class="outline-4">
+<h4 id="orgd7661b5">修改</h4>
+<div class="outline-text-4" id="text-orgd7661b5">
+<div class="org-src-container">
+<pre class="src src-Golang">// 插入或修改
+m[key] = elem
+
+// 获得元素
+elem = m[key]
+
+// 删除元素
+delete(m, key)
+
+// 检测元素是否存在
+elem, ok = m[key]
+// 如果存在, ok为true; 如果不存在, ok为false
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org74e75e2" class="outline-3">
+<h3 id="org74e75e2">函数值</h3>
+<div class="outline-text-3" id="text-org74e75e2">
+<p>
+函数值在其他语言里叫函数指针, 常用于回调和闭包. 函数值可以作为函数的参数或返回值. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+func bb(x, y int) int {
+    return x + y
+}
+
+func main() {
+    cc := func(x, y int) int {
+        return x + y
+    }
+    fmt.Printf("%T\n", bb)
+    fmt.Printf("%T\n", cc)
+    fmt.Println(bb(1, 2))
+    fmt.Println(cc(1, 2))
+}
+</pre>
+</div>
+<p>
+<code>bb</code> 和 <code>cc</code> 只是写法不同, 实质上是一样的.
+</p>
+</div>
+
+<div id="outline-container-org38a8e6b" class="outline-4">
+<h4 id="org38a8e6b">函数作为参数传递给另一个函数</h4>
+<div class="outline-text-4" id="text-org38a8e6b">
+<div class="org-src-container">
+<pre class="src src-Golang">func dd(i func(int, int) int) int {
+    fmt.Printf("i type: %T\n", i)
+    return i(1, 2)
+}
+func main() {
+    ee := func(x, y int) int {
+        return x + y
+    }
+    fmt.Printf("ee type: %T\n", ee)
+    fmt.Println(dd(ee))
+}
+
+// 输出
+ee type: func(int, int) int
+i type: func(int, int) int
+3
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1fd3406" class="outline-4">
+<h4 id="org1fd3406">回调函数</h4>
+<div class="outline-text-4" id="text-org1fd3406">
+<p>
+callback, 就是通过一个函数指针调用的函数. 如把函数A作为参数传递给函数B, 那么A就叫做回调函数, B就叫中间函数, 调用B的函数就叫起始函数.
+</p>
+
+<p>
+回调函数:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package even
+
+//回调函数1
+//生成一个2k形式的偶数
+func Double(x int) int {
+    return x * 2
+}
+
+//回调函数2
+//生成一个4k形式的偶数
+func Quadruple(x int) int {
+    return x * 4
+}
+</pre>
+</div>
+
+<p>
+main:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import (
+    "fmt"
+    "github.com/cyent/golang/example/even"
+)
+
+//中间函数
+//接受一个生成偶数的函数作为参数
+//返回一个奇数
+func getOddNumber(k int, getEvenNumber func(int) int) int {
+    return 1 + getEvenNumber(k)
+}
+
+//起始函数，这里是程序的主函数
+func main() {
+    k := 1
+
+    //当需要生成一个2k+1形式的奇数时
+    i := getOddNumber(k, even.Double)
+    fmt.Println(i)
+
+    //当需要一个4k+1形式的奇数时
+    i = getOddNumber(k, even.Quadruple)
+    fmt.Println(i)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc027b04" class="outline-4">
+<h4 id="orgc027b04">闭包</h4>
+<div class="outline-text-4" id="text-orgc027b04">
+<p>
+由于变量存在作用域, 所以函数内部可以直接读取全局变量, 而函数外部无法读取函数内部声明的变量. 要想在函数外部获得函数内部的局部变量, 就要使用闭包.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+func adder() func(int) int {
+    sum := 0
+    return func(x int) int {
+        sum += x
+        return sum
+    }
+}
+
+func main() {
+    pos, neg := adder(), adder()
+    for i := 0; i &lt; 10; i++ {
+        fmt.Println(
+            pos(i),
+            neg(-2*i),
+        )
+    }
+}
+</pre>
+</div>
+<p>
+闭包被绑定到了变量 <code>sum</code> 上面. 
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org83afbe9" class="outline-2">
+<h2 id="org83afbe9">方法和接口</h2>
+<div class="outline-text-2" id="text-org83afbe9">
+</div>
+<div id="outline-container-org6a61a10" class="outline-3">
+<h3 id="org6a61a10">方法</h3>
+<div class="outline-text-3" id="text-org6a61a10">
+<p>
+Go中没有类, 但可以在结构体类型上定义方法, 这样效果和类很相似.
+</p>
+
+<p>
+方法与函数的区别在于, 方法拥有receiver参数. receiver参数写在 <code>func</code> 和方法名中间, 表示该方法的所有者是谁. 内置类型不能作为receiver.
+</p>
+
+<p>
+Go中面向对象的用法:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+type Person struct {
+    name string
+}
+
+func (p *Person) printName() {
+    fmt.Println(p.name)
+}
+
+func main() {
+    me := Person{name: "cyent"}
+    me.printName()
+}
+// 输出都是 cyent
+</pre>
+</div>
+<p>
+方法的所有者, 在 <code>func</code> 和 方法名中间.
+</p>
+</div>
+
+<div id="outline-container-org9e60bcf" class="outline-4">
+<h4 id="org9e60bcf">继承</h4>
+<div class="outline-text-4" id="text-org9e60bcf">
+<p>
+在Go中使用结构体的嵌套来模拟d继承.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+type SchoolMember struct {
+    name string
+    age int
+}
+
+func (this SchoolMember) tell() {
+    fmt.Printf("name:\"%s\", age:\"%d\"\n", this.name, this.age)
+}
+
+type Teacher struct {
+    SchoolMember
+    salary int
+}
+
+func (this Teacher) tell() {
+    this.SchoolMember.tell()
+    fmt.Printf("Salary: \"%d\"\n", this.salary)
+}
+
+type Student struct {
+    SchoolMember
+    marks int
+}
+
+func (this Student) tell() {
+    this.SchoolMember.tell()
+    fmt.Printf("Marks: \"%d\"\n", this.marks)
+}
+
+func main() {
+    t := Teacher{}
+    s := Student{}
+    t.name = "Mrs. Shrividya"
+    t.age = 40
+    t.salary = 30000
+    s.name = "Swaroop"
+    s.age = 22
+    s.marks = 75
+
+    t.tell()
+    s.tell()
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2de061c" class="outline-3">
+<h3 id="org2de061c">接口</h3>
+<div class="outline-text-3" id="text-org2de061c">
+<p>
+如果说类是对数据和方法的抽象和封装, 那么接口就是对类的抽象.
+</p>
+
+<p>
+接口类型是由一组方法定义的集合. 
+</p>
+
+<p>
+不使用接口的时候:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+type MyStruct struct {
+    X, Y int
+}
+
+func (a *MyStruct) add() int {
+    return a.X + a.Y
+}
+
+func main() {
+    s := MyStruct{3, 4}
+    fmt.Println(s.add())
+}
+</pre>
+</div>
+
+<p>
+使用接口后:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+type Adder interface {
+    add() int
+}
+
+type MyStruct struct {
+    X, Y int
+}
+
+func (a *MyStruct) add() int {
+    return a.X + a.Y
+}
+
+func main() {
+    var f Adder
+    s := MyStruct{3, 4}
+    f = &amp;s
+    fmt.Println(f.add())
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org514eb1f" class="outline-4">
+<h4 id="org514eb1f">关于接口的更详细内容, 有空再补</h4>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org74e488c" class="outline-2">
+<h2 id="org74e488c">反射</h2>
+</div>
+
+<div id="outline-container-orgc394ab1" class="outline-2">
+<h2 id="orgc394ab1">并发</h2>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-05</span>
+        <span title="last modification date" class="post-info">2018-04-05</span>
+        <span title="tags" class="post-info"><a href="/tags/go/">Go</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/05/1-go基础";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/05/1-go基础";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
