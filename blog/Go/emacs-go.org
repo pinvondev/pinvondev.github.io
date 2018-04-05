@@ -1,0 +1,116 @@
+#+TITLE:       0 Go + Emacs 配置
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-05 四
+#+URI:         /blog/%y/%m/%d/0 go-+-emacs-配置
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Go
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 关于Go
+
+Go语言的并发机制, 使它编写的程序能够非常有效地利用多核与联网的计算机, 新颖的类型系统则使程序结构变得灵活而模块化. Go代码编译成机器码不仅非常迅速, 还有方便的垃圾回收机制和强大的运行时反射机制. 它是一个快速的, 静态类型的编译型语言, 感觉却像动态类型的解释型语言.
+
+* 安装Go
+
+** 下载Go
+
+[[https://golang.org/dl/][Go官网]]
+
+如果打不开, 则选择: [[https://golang.google.cn/dl/][Go中国]]
+
+** 解压
+
+#+BEGIN_SRC Shell
+tar -C /usr/local -xzf goxxx.tar.gz
+#+END_SRC
+
+打开 =~/.profile=:
+#+BEGIN_SRC Shell
+export PATH=$PATH:/usr/local/go/bin
+#+END_SRC
+
+测试. 创建 =hello.go=, 输入以下代码:
+#+BEGIN_SRC Golang
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Printf("hello, world\n")
+}
+#+END_SRC
+
+在终端执行:
+#+BEGIN_SRC Shell
+go run hello.go
+# 输出 hello, world 则说明正确安装.
+#+END_SRC
+
+** 配置
+
+*** goimports
+
+=goimports= 命令能自动格式化代码, 自动添加和移除imports, 而且与Emacs集成良好.
+
+#+BEGIN_SRC Shell
+go clone https://github.com/golang/tools.git
+go get golang.org/x/tools/cmd/goimports
+#+END_SRC
+
+*** gocode
+
+=gocode= 命令能为代码自动补全提供后台支持, 是Emacs下Go代码补全不可少的后台.
+
+#+BEGIN_SRC Shell
+go get github.com/nsf/gocode
+#+END_SRC
+
+*** godef
+
+=godef= 命令能在Go源码变量, 函数定义之间跳转.
+
+#+BEGIN_SRC Shell
+go get github.com/rogpeppe/godef
+#+END_SRC
+
+* Emacs配置
+
+** 安装go-mode
+
+=M-x package-list-packages=, 找到 =go-mode=, 安装.
+
+如果当前的MELPA不可用, 重新配置一个新的源.
+#+BEGIN_SRC Elisp
+(add-to-list 'package-archives
+'("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
+#+END_SRC
+
+** 添加自动格式化的hook
+
+需要先安装 =goimports= 命令.
+#+BEGIN_SRC Elisp
+;; Call Gofmt before saving
+ (setq gofmt-command "goimports")
+ (add-hook 'before-save-hook 'gofmt-before-save)
+#+END_SRC
+
+** 配置自动补齐
+
+需要先安装 =gocode= 命令.
+#+BEGIN_SRC Elisp
+;;autocomplete
+(set (make-local-variable 'company-backends) '(company-go))
+(company-mode)
+#+END_SRC
+
+** 配置自动跳转
+
+需要先安装 =godef= 命令.
+#+BEGIN_SRC Elisp
+;; Godef jump key binding
+ (local-set-key (kbd "M-,") 'godef-jump)
+ (local-set-key (kbd "M-.") 'pop-tag-mark)
+#+END_SRC

@@ -1,0 +1,81 @@
+#+TITLE:       项目记录
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-04 三
+#+URI:         /blog/%y/%m/%d/项目记录
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 环境搭建
+
+** 前提
+
+安装git, go, docker, node.js
+
+** 下载代码
+
+#+BEGIN_SRC Shell
+git clone https://github.com/IBM-Blockchain/marbles.git
+cd marble
+#+END_SRC
+
+** 启动网络
+
+#+BEGIN_SRC Shell
+git clone https://github.com/hyperledger/fabric-samples
+cd fabric-samples
+git checkout v1.0.1
+
+curl -sSL https://goo.gl/6wtTN5 | bash -s 1.0.0
+# 或者
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s 1.0.0
+
+# 设置环境变量
+export PATH=$PWD/bin:$PATH
+
+cd fabcar
+./startFabric.sh
+
+# 安装依赖
+sudo npm install
+node enrollAdmin.js
+node registerUser.js
+node query.js
+
+# 如果要关闭网络
+cd ../bashic-network
+./stop.sh
+./teardown.sh
+#+END_SRC
+
+npm install gulp -g
+如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
+
+* 程序介绍
+
+chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链存储(账本)中以键值对的形式创建. 账本与chaincode的交互通过对网络上的一个节点使用gRPC协议来完成. gRPC协议的细节由[[https://www.npmjs.com/package/fabric-client][Hyperledger Fabric Client]] SDK处理.
+
+项目以[[https://github.com/IBM-Blockchain/marbles][Marbles]]为基础进行修改. 因此, 以Marbles程序的图片来进行介绍.
+
+[[./29.png]]
+
+1. admin通过浏览器与Marbles交互.
+2. 客户端JS代码打开一个与后端Node.js应用程序的Websocket连接. admin与该站点交互时, 客户端JS将消息发送到后端.
+3. 读取或写入账本称为提案. 提案由Marbles通过SDK构建, 然后发送到一个区块链节点.
+4. 该节点将与它的Marbles chaincode容器进行通信. chaincode将运行/模拟该交易. 如果没有 问题, 它会对该交易进行背书, 并将其发回Marbles程序.
+5. Marbles通过SDK将背书后的提案发送到Orderer Service, Orderer Service将来自整个网络的许多提案打包到一个区块中, 然后, 它将新的区块广播到网络中的节点.
+6. 最后, 节点会验证该区块, 并将它写入自己的账本中. 该交易现已生效, 所有节点都会过来同步账本.
+
+程序的架构主要分成3个部分:
+1. chaincode: 位于 =/chaincode=.
+2. 客户端: 用户浏览器中所运行的JavaScript代码, 位于 =/public/js= 中.
+3. 服务端: 核心部分, 它充当admin与区块链之间的连接器, 位于 =/utils & /routes= 中.
+
+* 安装
+
+
+
+
