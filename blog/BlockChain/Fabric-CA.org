@@ -1,0 +1,42 @@
+#+TITLE:       Fabric CA
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-06 五
+#+URI:         /blog/%y/%m/%d/fabric-ca
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+下图展示了 Hyperledger Fabric CA 服务器是如何与 Hyperledger Fabric 架构整合起来的.
+
+[[./30.png]]
+
+有两种方式与 Hyperledger Fabric CA 服务器交互: 通过 Hyperledger Fabric CA 客户端, 使用 Fabric SDK 与其交互; 通过 REST API 与其交互.
+
+Hyperledger Fabric CA 客户端或 SDK 可以和 Hyperledger Fabric CA 服务器集群进行联系. 在上图中, 客户端路由到 HA Proxy, HA Proxy 进行负载均衡, 将客户端与 Fabric CA 服务器集群中的一个成员连接起来.
+
+所有的 Hyperledger Fabric CA 服务器共享同一个数据库, 用于追踪实体和证书. 如果有配置LDAP, 则实体信息会保存在LDAP, 而不是数据库.
+
+一个服务器包含多个CA, 每个CA既是 root CA, 又是 intermediate CA. 每个 intermediate CA都有一个父CA.
+
+* 开始
+
+** 前提
+
+*** Go 1.9+ 版本
+
+*** GOPATH配置
+
+*** 安装 libtool, libtdhl-dev
+
+** 安装
+
+#+BEGIN_SRC Shell
+go get -u github.com/hyperledger/fabric-ca/cmd/...
+#+END_SRC
+
+** 在本地启动 Fabric-CA 服务器
