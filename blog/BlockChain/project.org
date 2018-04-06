@@ -41,9 +41,6 @@ cd fabcar
 
 # 安装依赖
 sudo npm install
-node enrollAdmin.js
-node registerUser.js
-node query.js
 
 # 如果要关闭网络
 cd ../bashic-network
@@ -51,8 +48,47 @@ cd ../bashic-network
 ./teardown.sh
 #+END_SRC
 
-npm install gulp -g
-如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
+** 启动marbles
+
+*** chaincode
+
+进入marbles根目录.
+
+修改 =config/connection_profile_local.json=:
+#+BEGIN_SRC JSON
+"credentialStore": {
+			"path": "/home/pinvon/go/src/github.com/hyperledger/project/fabric-samples/fabcar/creds"
+		}
+
+"x-certJson": {
+				"path": "/home/pinvon/go/src/github.com/hyperledger/project/fabric-samples/fabcar/creds/PeerAdmin"
+			}
+
+"registrar": [
+				{
+					"enrollId": "PeerAdmin",
+					"enrollSecret": "PeerAdminpw"
+				}
+			],
+#+END_SRC
+
+#+BEGIN_SRC Shell
+# 安装chaincode
+cd ./scripts
+node install_chaincode.js
+
+# 实例化chaincode
+node instantiate_chaincode.js
+#+END_SRC
+
+*** 启动marbles
+
+#+BEGIN_SRC Shell
+ npm install gulp -g
+#  如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
+npm install
+gulp marbles_local
+#+END_SRC
 
 * 程序介绍
 
@@ -74,7 +110,38 @@ chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链�
 2. 客户端: 用户浏览器中所运行的JavaScript代码, 位于 =/public/js= 中.
 3. 服务端: 核心部分, 它充当admin与区块链之间的连接器, 位于 =/utils & /routes= 中.
 
-* 安装
+* 区块链背景
+
+** 定义
+
+节点: 节点是区块链的成员, 运行着Hyperledger Fabric. 在marbles中, 节点归弹珠公司所有和操作.
+
+CA: CA负责守卫我们的区块链网络. 它为客户端(如 Marbles node.js 应用程序)提供交易证书.
+
+Orderer: 主要职责是将交易打包到区块中.
+
+区块: 包含交易和一个验证完整性的哈希值.
+
+交易或提案: 表示与区块链账本的交互. 对账本的读取和写入都是以交易/提案的形式发送的.
+
+账本: 区块链在一个节点上的存储区. 它包含由交易参数和键值对组成的实际的区块数据. 由chaincode编写.
+
+chaincode: 定义资产和所有关于资产的规则.
+
+资产: 存在于账本中的实体. 它是一种键值对, 在Marbles中, 资产是一颗弹珠, 或弹珠所有者.
+
+创建一颗弹珠时, 涉及的操作:
+1. 向网络的CA注册管理员用户. 如果成功, CA会向Marbles发送注册证书, SDK将证书存储在本地文件系统中.
+2. 管理员从用户界面创建一颗新弹珠时, SDK会创建一个调用事务.
+3. 创建弹珠的事务被构建为一个调用链代码函数 =init_marble()= 的提案.
+4. Marbles通过SDK将此提案发送到一个节点进行背书.
+5. 节点运行 =init_marble()= 来模拟该事务, 并记录它尝试写入账本中的所有更改.
+6. 如果该函数成功返回, 节点会对该提案进行背书, 并将它发回Marbles. 如果失败, 错误也会发送回来, 但不会对提案进行背书.
+7. Marbles通过SDK将背书后的提案发送到Orderer.
+8. Orderer将组织来自整个网络的提案的序列. 它通过查找相互冲突的交易, 检查该交易序列是否有效. 任何由于冲突无法添加到区块中的交易都被标记为错误.
+9. Orderer将新区块广播到网络中的节点.
+10. 节点收到新区块, 并通过查看各种签名和哈希值来验证它. 最后将该区块提交到节点的账本.
+11. 账本中会出现新的弹珠, 并很快会出现在所有节点的账本中.
 
 
 
