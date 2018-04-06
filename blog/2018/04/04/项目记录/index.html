@@ -35,35 +35,45 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org717ba9d">环境搭建</a>
+<li><a href="#org5f44621">环境搭建</a>
 <ul>
-<li><a href="#org194582a">前提</a></li>
-<li><a href="#org731f6cf">下载代码</a></li>
-<li><a href="#orga1700f6">启动网络</a></li>
+<li><a href="#org64d00a0">前提</a></li>
+<li><a href="#org879c1d9">下载代码</a></li>
+<li><a href="#org9146b31">启动网络</a></li>
+<li><a href="#org682bedd">启动marbles</a>
+<ul>
+<li><a href="#orgd961732">chaincode</a></li>
+<li><a href="#org0f23d66">启动marbles</a></li>
 </ul>
 </li>
-<li><a href="#org816e4a0">程序介绍</a></li>
-<li><a href="#org5ce54b6">安装</a></li>
+</ul>
+</li>
+<li><a href="#org55aac96">程序介绍</a></li>
+<li><a href="#org5e4eef2">区块链背景</a>
+<ul>
+<li><a href="#org6cb688f">定义</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org717ba9d" class="outline-2">
-<h2 id="org717ba9d">环境搭建</h2>
-<div class="outline-text-2" id="text-org717ba9d">
+<div id="outline-container-org5f44621" class="outline-2">
+<h2 id="org5f44621">环境搭建</h2>
+<div class="outline-text-2" id="text-org5f44621">
 </div>
-<div id="outline-container-org194582a" class="outline-3">
-<h3 id="org194582a">前提</h3>
-<div class="outline-text-3" id="text-org194582a">
+<div id="outline-container-org64d00a0" class="outline-3">
+<h3 id="org64d00a0">前提</h3>
+<div class="outline-text-3" id="text-org64d00a0">
 <p>
 安装git, go, docker, node.js
 </p>
 </div>
 </div>
 
-<div id="outline-container-org731f6cf" class="outline-3">
-<h3 id="org731f6cf">下载代码</h3>
-<div class="outline-text-3" id="text-org731f6cf">
+<div id="outline-container-org879c1d9" class="outline-3">
+<h3 id="org879c1d9">下载代码</h3>
+<div class="outline-text-3" id="text-org879c1d9">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/IBM-Blockchain/marbles.git
 cd marble
@@ -72,9 +82,9 @@ cd marble
 </div>
 </div>
 
-<div id="outline-container-orga1700f6" class="outline-3">
-<h3 id="orga1700f6">启动网络</h3>
-<div class="outline-text-3" id="text-orga1700f6">
+<div id="outline-container-org9146b31" class="outline-3">
+<h3 id="org9146b31">启动网络</h3>
+<div class="outline-text-3" id="text-org9146b31">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples
 cd fabric-samples
@@ -92,9 +102,6 @@ cd fabcar
 
 # 安装依赖
 sudo npm install
-node enrollAdmin.js
-node registerUser.js
-node query.js
 
 # 如果要关闭网络
 cd ../bashic-network
@@ -102,18 +109,71 @@ cd ../bashic-network
 ./teardown.sh
 </pre>
 </div>
+</div>
+</div>
+
+<div id="outline-container-org682bedd" class="outline-3">
+<h3 id="org682bedd">启动marbles</h3>
+<div class="outline-text-3" id="text-org682bedd">
+</div>
+<div id="outline-container-orgd961732" class="outline-4">
+<h4 id="orgd961732">chaincode</h4>
+<div class="outline-text-4" id="text-orgd961732">
+<p>
+进入marbles根目录.
+</p>
 
 <p>
-npm install gulp -g
-如果失败, npm config seregistry <a href="http://registry.cnpmjs.org">http://registry.cnpmjs.org</a> 再执行.
+修改 <code>config/connection_profile_local.json</code>:
 </p>
+<div class="org-src-container">
+<pre class="src src-JSON">"credentialStore": {
+            "path": "/home/pinvon/go/src/github.com/hyperledger/project/fabric-samples/fabcar/creds"
+        }
+
+"x-certJson": {
+                "path": "/home/pinvon/go/src/github.com/hyperledger/project/fabric-samples/fabcar/creds/PeerAdmin"
+            }
+
+"registrar": [
+                {
+                    "enrollId": "PeerAdmin",
+                    "enrollSecret": "PeerAdminpw"
+                }
+            ],
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 安装chaincode
+cd ./scripts
+node install_chaincode.js
+
+# 实例化chaincode
+node instantiate_chaincode.js
+</pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org816e4a0" class="outline-2">
-<h2 id="org816e4a0">程序介绍</h2>
-<div class="outline-text-2" id="text-org816e4a0">
+<div id="outline-container-org0f23d66" class="outline-4">
+<h4 id="org0f23d66">启动marbles</h4>
+<div class="outline-text-4" id="text-org0f23d66">
+<div class="org-src-container">
+<pre class="src src-Shell"> npm install gulp -g
+#  如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
+npm install
+gulp marbles_local
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org55aac96" class="outline-2">
+<h2 id="org55aac96">程序介绍</h2>
+<div class="outline-text-2" id="text-org55aac96">
 <p>
 chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链存储(账本)中以键值对的形式创建. 账本与chaincode的交互通过对网络上的一个节点使用gRPC协议来完成. gRPC协议的细节由<a href="https://www.npmjs.com/package/fabric-client">Hyperledger Fabric Client</a> SDK处理.
 </p>
@@ -148,8 +208,63 @@ chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链�
 </div>
 </div>
 
-<div id="outline-container-org5ce54b6" class="outline-2">
-<h2 id="org5ce54b6">安装</h2>
+<div id="outline-container-org5e4eef2" class="outline-2">
+<h2 id="org5e4eef2">区块链背景</h2>
+<div class="outline-text-2" id="text-org5e4eef2">
+</div>
+<div id="outline-container-org6cb688f" class="outline-3">
+<h3 id="org6cb688f">定义</h3>
+<div class="outline-text-3" id="text-org6cb688f">
+<p>
+节点: 节点是区块链的成员, 运行着Hyperledger Fabric. 在marbles中, 节点归弹珠公司所有和操作.
+</p>
+
+<p>
+CA: CA负责守卫我们的区块链网络. 它为客户端(如 Marbles node.js 应用程序)提供交易证书.
+</p>
+
+<p>
+Orderer: 主要职责是将交易打包到区块中.
+</p>
+
+<p>
+区块: 包含交易和一个验证完整性的哈希值.
+</p>
+
+<p>
+交易或提案: 表示与区块链账本的交互. 对账本的读取和写入都是以交易/提案的形式发送的.
+</p>
+
+<p>
+账本: 区块链在一个节点上的存储区. 它包含由交易参数和键值对组成的实际的区块数据. 由chaincode编写.
+</p>
+
+<p>
+chaincode: 定义资产和所有关于资产的规则.
+</p>
+
+<p>
+资产: 存在于账本中的实体. 它是一种键值对, 在Marbles中, 资产是一颗弹珠, 或弹珠所有者.
+</p>
+
+<p>
+创建一颗弹珠时, 涉及的操作:
+</p>
+<ol class="org-ol">
+<li>向网络的CA注册管理员用户. 如果成功, CA会向Marbles发送注册证书, SDK将证书存储在本地文件系统中.</li>
+<li>管理员从用户界面创建一颗新弹珠时, SDK会创建一个调用事务.</li>
+<li>创建弹珠的事务被构建为一个调用链代码函数 <code>init_marble()</code> 的提案.</li>
+<li>Marbles通过SDK将此提案发送到一个节点进行背书.</li>
+<li>节点运行 <code>init_marble()</code> 来模拟该事务, 并记录它尝试写入账本中的所有更改.</li>
+<li>如果该函数成功返回, 节点会对该提案进行背书, 并将它发回Marbles. 如果失败, 错误也会发送回来, 但不会对提案进行背书.</li>
+<li>Marbles通过SDK将背书后的提案发送到Orderer.</li>
+<li>Orderer将组织来自整个网络的提案的序列. 它通过查找相互冲突的交易, 检查该交易序列是否有效. 任何由于冲突无法添加到区块中的交易都被标记为错误.</li>
+<li>Orderer将新区块广播到网络中的节点.</li>
+<li>节点收到新区块, 并通过查看各种签名和哈希值来验证它. 最后将该区块提交到节点的账本.</li>
+<li>账本中会出现新的弹珠, 并很快会出现在所有节点的账本中.</li>
+</ol>
+</div>
+</div>
 </div>
 
 </div>
@@ -157,7 +272,7 @@ chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链�
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-04</span>
-        <span title="last modification date" class="post-info">2018-04-05</span>
+        <span title="last modification date" class="post-info">2018-04-06</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
