@@ -35,18 +35,33 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org330300b">通俗解释</a>
+<li><a href="#org4a7e289">通俗解释一</a>
 <ul>
-<li><a href="#orge787acd">实例(https, 主要用于网页加密)</a></li>
+<li><a href="#org0b2ca33">实例(https, 主要用于网页加密)</a></li>
+</ul>
+</li>
+<li><a href="#org8e23335">通俗解释二</a>
+<ul>
+<li><a href="#org21831ec">例子</a></li>
+<li><a href="#org6dc629d">专业术语</a>
+<ul>
+<li><a href="#org8305443">证书</a></li>
+<li><a href="#org0cc67da">CA</a></li>
+<li><a href="#org6ab8900">CA证书</a></li>
+<li><a href="#orgb1a7a70">证书之间的信任关系</a></li>
+<li><a href="#org8602f16">根证书</a></li>
+<li><a href="#orgd89ad8e">数字签名</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org330300b" class="outline-2">
-<h2 id="org330300b">通俗解释</h2>
-<div class="outline-text-2" id="text-org330300b">
+<div id="outline-container-org4a7e289" class="outline-2">
+<h2 id="org4a7e289">通俗解释一</h2>
+<div class="outline-text-2" id="text-org4a7e289">
 <ol class="org-ol">
 <li>B有一对密钥, 分别是公钥和私钥.</li>
 <li>B把公钥送给他的朋友们: A, C, D.</li>
@@ -70,9 +85,9 @@
 </div>
 </div>
 
-<div id="outline-container-orge787acd" class="outline-3">
-<h3 id="orge787acd">实例(https, 主要用于网页加密)</h3>
-<div class="outline-text-3" id="text-orge787acd">
+<div id="outline-container-org0b2ca33" class="outline-3">
+<h3 id="org0b2ca33">实例(https, 主要用于网页加密)</h3>
+<div class="outline-text-3" id="text-org0b2ca33">
 <ol class="org-ol">
 <li>Client向Server发出加密请求.</li>
 <li>Server用自己的私钥加密网页后, 连同本身的数字证书, 一起发给Client.</li>
@@ -84,13 +99,135 @@
 </div>
 </div>
 </div>
+<div id="outline-container-org8e23335" class="outline-2">
+<h2 id="org8e23335">通俗解释二</h2>
+<div class="outline-text-2" id="text-org8e23335">
+</div>
+<div id="outline-container-org21831ec" class="outline-3">
+<h3 id="org21831ec">例子</h3>
+<div class="outline-text-3" id="text-org21831ec">
+<p>
+假设A公司的张三先生要到B公司去拜访, 但是B公司的所有人都不认识他. 所以常用的办法是带公司开的一封介绍信, 并在信上敲上A公司的公章. 张三先生到了B公司后, 把介绍信给B公司的前台李四, 李四一看介绍信上有A公司的公章, 就相信张三先生不是歹人了.(这边假设公章难以伪造)
+</p>
+
+<p>
+如果和B公司有业务往来的公司很多, 每个公司的公章不同, 那李四要能分辨各种公章, 非常麻烦. 于是出现了中介公司C, 专门开设了一项"代理公章"的业务.
+</p>
+
+<p>
+于是, 张三先生去B公司, 需要带2封介绍信:
+</p>
+
+<p>
+介绍信1: 含有C公司的公章和A公司的公章, 且注明C公司信任A公司.
+</p>
+
+<p>
+介绍信2:含有A公司的公章, 并包含一些具体内容.
+</p>
+
+<p>
+这样, 李四就不需要记住各个公司的公章的样子了, 只要记住中介公司C的公章即可. 当李四拿到两封介绍信后, 先检查介绍信1的C公章, 验明正身; 确认无误后, 再对比介绍信1和介绍信2的公章是否一致, 如果一致, 说明介绍信2是可信任的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6dc629d" class="outline-3">
+<h3 id="org6dc629d">专业术语</h3>
+<div class="outline-text-3" id="text-org6dc629d">
+</div>
+<div id="outline-container-org8305443" class="outline-4">
+<h4 id="org8305443">证书</h4>
+<div class="outline-text-4" id="text-org8305443">
+<p>
+<a href="https://en.wikipedia.org/wiki/Public_key_certificate">专业解释</a>
+</p>
+
+<p>
+相当于例子中的公章, 它证明介绍信确实是A公司发出的. 在实际网络通信过程中, 一般是用来证明某请求确实是某用户发出的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0cc67da" class="outline-4">
+<h4 id="org0cc67da">CA</h4>
+<div class="outline-text-4" id="text-org0cc67da">
+<p>
+<a href="https://en.wikipedia.org/wiki/Certificate_authority">专业解释</a>
+</p>
+
+<p>
+负责管理和签发证书的第三方机构, 相当于例子中的C公司. 一般来说, CA必须是所有行业和所有公众都信任的, 认可的, 因此它必须具有足够的权威性.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6ab8900" class="outline-4">
+<h4 id="org6ab8900">CA证书</h4>
+<div class="outline-text-4" id="text-org6ab8900">
+<p>
+CA颁发的证书. 在例子中, 它用来证明介绍信1确实是CA发出的. CA证书中, 包含要CA证书来证明的实体的公钥. 如例子中, 介绍信1中包含公司A的公章. 接收者可以用介绍信1中的公章来对比介绍信2中的公章是否相同.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb1a7a70" class="outline-4">
+<h4 id="orgb1a7a70">证书之间的信任关系</h4>
+<div class="outline-text-4" id="text-orgb1a7a70">
+<p>
+例子中, 介绍信1注明了公章C信任公章A. 证书之间的信任关系, 就是用一个证书来证明另一个证书是真实可信的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8602f16" class="outline-4">
+<h4 id="org8602f16">根证书</h4>
+<div class="outline-text-4" id="text-org8602f16">
+<p>
+<a href="https://en.wikipedia.org/wiki/Root_certificate">专业解释</a>
+</p>
+
+<p>
+假设C证书信任A证书和B证书, A证书信任A1证书和A2证书, B证书信任B1证书和B2证书. 则它们之间, 构成了一个树形关系:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/06/数字签名与数字证书/1.png" alt="1.png" />
+</p>
+</div>
+
+<p>
+处于树根位置的证书, 就是根证书.
+</p>
+
+<p>
+除了根证书, 其他证书都要依靠上一级的证书来证明自己. 而根证书, 是自己证明自己可靠.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd89ad8e" class="outline-4">
+<h4 id="orgd89ad8e">数字签名</h4>
+<div class="outline-text-4" id="text-orgd89ad8e">
+<p>
+数字签名是将摘要(digest1)用A(发送者)的私钥加密, 与原文(Context)一起传送给B(接收者). B只有用A的公钥才能获得摘要(digest1), 然后用Hash函数对收到的原文(Context)进行计算, 得到另一个摘要(digest2), 对比digest1和digest2. 如果相同, 说明收到的信息未被修改, 否则被修改过.
+</p>
+
+<p>
+数字签名可以验证信息的完整性.
+</p>
+</div>
+</div>
+</div>
+</div>
 
 </div>
 </div>
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-06</span>
-        <span title="last modification date" class="post-info">2018-04-06</span>
+        <span title="last modification date" class="post-info">2018-04-07</span>
         <span title="tags" class="post-info"><a href="/tags/密码学/">密码学</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
