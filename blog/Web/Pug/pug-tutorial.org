@@ -1,0 +1,343 @@
+#+TITLE:       Pug学习笔记
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-08 日
+#+URI:         /blog/%y/%m/%d/pug学习笔记
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Web
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 安装
+
+#+BEGIN_SRC Shell
+npm install pug
+#+END_SRC
+
+* 概要
+
+=pug.compile()= 会把Pug代码编译成一个JavaScript函数, 并且这个函数带有一个参数.
+
+编译出来的函数可以重复使用, 可以传入不同的数据.
+
+#+BEGIN_SRC JavaScript
+// template.pug
+p #{name}的 Pug 代码！
+#+END_SRC
+
+#+BEGIN_SRC JavaScript
+const pug = require('pug');
+
+// 编译这份代码
+const compiledFunction = pug.compileFile('template.pug');
+
+// 渲染一组数据
+console.log(compiledFunction({
+  name: '李莉'
+}));
+// "<p>李莉的 Pug 代码！</p>"
+
+// 渲染另外一组数据
+console.log(compiledFunction({
+  name: '张伟'
+}));
+// "<p>张伟的 Pug 代码！</p>"
+#+END_SRC
+
+Pug提供了 =pug.render()= 系列函数, 它们把编译和渲染两个步骤合二为一.
+#+BEGIN_SRC JavaScript
+const pug = require('pug');
+
+// 编译并使用一组数据渲染 template.pug
+console.log(pug.renderFile('template.pug', {
+  name: 'Timothy'
+}));
+// "<p>Timothy 的 Pug 代码！</p>"
+#+END_SRC
+
+* API参考文档
+
+https://pugjs.org/zh-cn/api/reference.html
+
+* 语法
+
+** 属性
+
+#+BEGIN_SRC JavaScript
+a(class='button' href='baidu.com') 百度
+
+// 相当于
+
+<a class="button" href="baidu.com">百度</a>
+#+END_SRC
+
+还能使用表达式:
+#+BEGIN_SRC JavaScript
+//- 已登录
+- var authenticated = true
+body(class=authenticated ? 'authed' : 'anon')
+
+// 相当于
+
+<body class="authed"></body>
+#+END_SRC
+
+*** 在属性中使用变量
+
+#+BEGIN_SRC JavaScript
+var btnType = 'info'
+var btnSize = 'lg'
+button(type='button' class='btn btn-' + btnType + ' btn-' + btnSize)
+button(type='button' class=`btn btn-${btnType} btn-${btnSize}`)
+
+// 两种写法都相当于 
+#+END_SRC
+
+*** 类的字面值
+
+类可以使用 =.classname= 语法来定义:
+#+BEGIN_SRC JavaScript
+a.button
+
+//  相当于
+
+<a class="button"></a>
+#+END_SRC
+
+=div= 较常用, 可以直接写成:
+#+BEGIN_SRC JavaScript
+.content
+
+//  相当于
+
+<div class="content"></div>
+#+END_SRC
+
+*** ID的字面值
+
+ID可以使用 =$idname= 语法来定义:
+#+BEGIN_SRC JavaScript
+a#main-link
+
+// 相当于
+
+<a id="main-link"></a>
+#+END_SRC
+
+同样, 由于 =div= 太常见, 所以可以直接写成:
+#+BEGIN_SRC JavaScript
+#content
+
+//  相当于
+
+<div id="content"></div>
+#+END_SRC
+
+** 分支
+
+https://pugjs.org/zh-cn/language/case.html
+
+** 代码
+
+用 = 开始一段带有输出的代码, 它将被HTML转义:
+#+BEGIN_SRC JavaScript
+p
+  = '这个代码被 <转义> 了！'
+
+// 或者
+
+p= '这个代码被 <转义> 了！'
+
+// 相当于
+
+<p>这个代码被 &lt;转义&gt; 了！</p>
+#+END_SRC
+
+!= 表示开始一段不转义的, 带有输出的代码.
+#+BEGIN_SRC JavaScript
+p
+  != '这段文字 <strong>没有</strong> 被转义！'
+
+// 相当于
+
+<p>这段文字 <strong>没有</strong> 被转义！</p>
+#+END_SRC
+
+推荐使用带转义的输出.
+
+** 条件
+
+#+BEGIN_SRC JavaScript
+var user = { description: 'foo bar baz' }
+var authorised = false
+#user
+  if user.description
+    h2.green 描述
+    p.description= user.description
+  else if authorised
+    h2.blue 描述
+    p.description.
+      用户没有添加描述。
+      不写点什么吗……
+  else
+    h2.red 描述
+    p.description 用户没有描述
+#+END_SRC
+
+相当于:
+#+BEGIN_SRC HTML
+<div id="user">
+  <h2 class="green">描述</h2>
+  <p class="description">foo bar baz</p>
+</div>
+#+END_SRC
+
+** include
+
+=include= 允许我们把其他文件的内容插入进来.
+
+index.pug
+#+BEGIN_SRC JavaScript
+doctype html
+html
+  include includes/head.pug
+  body
+    h1 我的网站
+    p 欢迎来到我这简陋得不能再简陋的网站。
+    include includes/foot.pug
+#+END_SRC
+
+includes/head.pug
+#+BEGIN_SRC JavaScript
+head
+  title 我的网站
+  script(src='/javascripts/jquery.js')
+  script(src='/javascripts/app.js')
+#+END_SRC
+
+includes/foot.pug
+#+BEGIN_SRC JavaScript
+footer#footer
+  p Copyright (c) foobar
+#+END_SRC
+
+相当于:
+#+BEGIN_SRC HTML
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>我的网站</title>
+  <script src="/javascripts/jquery.js"></script>
+  <script src="/javascripts/app.js"></script>
+</head>
+
+<body>
+  <h1>我的网站</h1>
+  <p>欢迎来到我这简陋得不能再简陋的网站。</p>
+  <footer id="footer">
+    <p>Copyright (c) foobar</p>
+  </footer>
+</body>
+
+</html>
+#+END_SRC
+
+*** 包含纯文本
+
+如果被包含的不是Pug文件, 那只会当做文本内容来引入.
+
+index.pug
+#+BEGIN_SRC JavaScript
+doctype html
+html
+  head
+    style
+      include style.css
+  body
+    h1 我的网站
+    p 欢迎来到我这简陋得不能再简陋的网站。
+    script
+      include script.js
+#+END_SRC
+
+style.css
+#+BEGIN_SRC CSS
+h1 {
+  color: red;
+}
+#+END_SRC
+
+script.js
+#+BEGIN_SRC JavaScript
+console.log('真了不起！');
+#+END_SRC
+
+相当于:
+#+BEGIN_SRC HTML
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    h1 {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>我的网站</h1>
+  <p>欢迎来到我这简陋得不能再简陋的网站。</p>
+  <script>
+    console.log('真了不起！');
+  </script>
+</body>
+
+</html>
+#+END_SRC
+
+** 模板继承(block, extends)
+
+Pug支持使用 =block= 和 =extends= 关键字进行模板的继承.
+
+layout.pug
+#+BEGIN_SRC JavaScript
+html
+  head
+    title 我的站点 - #{title}
+    block scripts
+      script(src='/jquery.js')
+  body
+    block content
+    block foot
+      #footer
+        p 一些页脚的内容
+#+END_SRC
+
+现在, 使用 =extends= 扩展该布局, 然后对于那些要重写的 =block=, 我们只要重新定义, 就能覆盖父模板里的"父块".
+
+#+BEGIN_SRC JavaScript
+extends layout.pug
+
+block scripts
+  script(src='/jquery.js')
+  script(src='/pets.js')
+
+block content
+  h1= title
+  - var pets = ['猫', '狗']
+  each petName in pets
+    include pet.pug
+#+END_SRC
+
+pet.pug
+#+BEGIN_SRC JavaScript
+p= petName
+#+END_SRC
+由于没有重写 =foot= 块, 因此依然会输出"一些页脚的内容".
+
+** 嵌入
+
+=#{}= 中间的值会被求值.
