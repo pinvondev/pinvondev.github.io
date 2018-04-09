@@ -1,0 +1,66 @@
+#+TITLE:       Ubuntu 常见问题
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-09 一
+#+URI:         /blog/%y/%m/%d/ubuntu-常见问题
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Ubuntu
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* /boot空间不足
+
+** 方法一
+
+#+BEGIN_SRC Shell
+sudo apt autoremove
+#+END_SRC
+
+** 方法二
+
+#+BEGIN_SRC Shell
+# 查看磁盘使用情况
+df -h
+
+# 查看当前使用内核版本
+uname -a
+
+# 查看主机上所有内核版本
+sudo apt remove linux-image-
+# 按再次Tab键
+
+# 将非当前内核版本删除
+sudo apt remove linux-image-4.4.0-31-generic
+#+END_SRC
+
+** 方法三
+
+#+BEGIN_SRC Shell
+# 查看当前使用内核版本
+uname -a
+
+# 查看所有版本
+sudo dpkg --get-selections | grep linux
+
+# 把标记install的旧版本都删除
+sudo apt autoremove linux-headers-4.10.0-xx linux-image-4.10.0-xx-generic
+
+# linux-headers-4.10.0-xx-generic 会被顺带删除
+# linux-image-extra-4.10.0-xx-generic 会被顺带删除
+
+# 再次运行
+sudo dpkg --get-selections | grep linux
+
+# 如果有标记为deinstall的内核文件, 删除
+sudo dpkg -P linux-image-4.10.0-xx-generic
+sudo dpkg -P linux-image-extra-4.10.0-xx-generic
+
+# initrd.img-xxx-generic 千万别删
+#+END_SRC
+
+如果不小心误删, 可能导致重启后无法正常进入系统.
+
+强制关机, 不选第一项Ubuntu启动, 而是选择下面的其他选项, 然后选个低版本内核启动.
+
+进入系统后, 再 =sudo apt-get upgrade=, initrd.img-xxx-generic会再次出现.
