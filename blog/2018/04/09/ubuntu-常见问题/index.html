@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>概率论基础 - Pinvon&#39;s Blog</title>
+    <title>Ubuntu 常见问题 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,83 +30,96 @@
 
 <div>
 <div class="post">
-<h1>概率论基础</h1>
+<h1>Ubuntu 常见问题</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9f12219">主观解释</a></li>
-<li><a href="#orgd1cbe4a">多元概率分布</a>
+<li><a href="#orgb55d8d3">/boot空间不足</a>
 <ul>
-<li><a href="#orgb44e43f">联合概率</a></li>
-<li><a href="#orge09d3ad">边缘概率</a></li>
-<li><a href="#orgd4b576a">条件概率</a></li>
+<li><a href="#org199275c">方法一</a></li>
+<li><a href="#org1f5858a">方法二</a></li>
+<li><a href="#org42c272f">方法三</a></li>
 </ul>
 </li>
-<li><a href="#org1998f7c">贝叶斯定理</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9f12219" class="outline-2">
-<h2 id="org9f12219">主观解释</h2>
-<div class="outline-text-2" id="text-org9f12219">
-<p>
-主观解释又称为贝叶斯解释，它认为概率就是合理信度。如，巴西队赢得下届世界杯，用频率解释，则认为无意义，因为下届世界杯巴西队能赢不是一个可以重复的事件。但在主观解释中仍可以根据各种 <b>先验知识</b> 给出一个主观概率评估。
-</p>
+<div id="outline-container-orgb55d8d3" class="outline-2">
+<h2 id="orgb55d8d3">/boot空间不足</h2>
+<div class="outline-text-2" id="text-orgb55d8d3">
 </div>
-</div>
-
-<div id="outline-container-orgd1cbe4a" class="outline-2">
-<h2 id="orgd1cbe4a">多元概率分布</h2>
-<div class="outline-text-2" id="text-orgd1cbe4a">
-</div>
-<div id="outline-container-orgb44e43f" class="outline-3">
-<h3 id="orgb44e43f">联合概率</h3>
-<div class="outline-text-3" id="text-orgb44e43f">
-<p>
-如 \(P(X_1, X_2)\) ， <b>包含多个条件，且所有条件同时成立</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orge09d3ad" class="outline-3">
-<h3 id="orge09d3ad">边缘概率</h3>
-<div class="outline-text-3" id="text-orge09d3ad">
-<p>
-如 \(P(X=a), P(Y=b)\) ， <b>仅与单个随机变量有关</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgd4b576a" class="outline-3">
-<h3 id="orgd4b576a">条件概率</h3>
-<div class="outline-text-3" id="text-orgd4b576a">
-<p>
-如 \(P(A \mid B) = \frac{P(A \cap B)}{P(B)}\) ， <b>B发生的前提下，A发生的概率</b>
-</p>
+<div id="outline-container-org199275c" class="outline-3">
+<h3 id="org199275c">方法一</h3>
+<div class="outline-text-3" id="text-org199275c">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt autoremove
+</pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1998f7c" class="outline-2">
-<h2 id="org1998f7c">贝叶斯定理</h2>
-<div class="outline-text-2" id="text-org1998f7c">
+<div id="outline-container-org1f5858a" class="outline-3">
+<h3 id="org1f5858a">方法二</h3>
+<div class="outline-text-3" id="text-org1f5858a">
+<div class="org-src-container">
+<pre class="src src-Shell"># 查看磁盘使用情况
+df -h
+
+# 查看当前使用内核版本
+uname -a
+
+# 查看主机上所有内核版本
+sudo apt remove linux-image-
+# 按再次Tab键
+
+# 将非当前内核版本删除
+sudo apt remove linux-image-4.4.0-31-generic
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org42c272f" class="outline-3">
+<h3 id="org42c272f">方法三</h3>
+<div class="outline-text-3" id="text-org42c272f">
+<div class="org-src-container">
+<pre class="src src-Shell"># 查看当前使用内核版本
+uname -a
+
+# 查看所有版本
+sudo dpkg --get-selections | grep linux
+
+# 把标记install的旧版本都删除
+sudo apt autoremove linux-headers-4.10.0-xx linux-image-4.10.0-xx-generic
+
+# linux-headers-4.10.0-xx-generic 会被顺带删除
+# linux-image-extra-4.10.0-xx-generic 会被顺带删除
+
+# 再次运行
+sudo dpkg --get-selections | grep linux
+
+# 如果有标记为deinstall的内核文件, 删除
+sudo dpkg -P linux-image-4.10.0-xx-generic
+sudo dpkg -P linux-image-extra-4.10.0-xx-generic
+
+# initrd.img-xxx-generic 千万别删
+</pre>
+</div>
+
 <p>
-设 \(H\) 和 \(E\) 是两个随机变量， \(H=h\) 为某一假设， \(E=e\) 为一组证据。在考虑 \(E=e\) 之前， \(P(H=h)\) 为先验概率，考虑 \(E=e\) 之后， \(P(H=h \cap E=e)\) 为后验概率。
+如果不小心误删, 可能导致重启后无法正常进入系统.
 </p>
 
 <p>
-贝叶斯定理描述了先验概率和后验概率之间的关系：
+强制关机, 不选第一项Ubuntu启动, 而是选择下面的其他选项, 然后选个低版本内核启动.
 </p>
 
 <p>
-\[P(H=h \cap E=e)=\frac{P(H=h)P(E=e \cap H=h)}{P(E=e)}\]
+进入系统后, 再 <code>sudo apt-get upgrade</code>, initrd.img-xxx-generic会再次出现.
 </p>
-
-<p>
-这也称为贝叶斯公式。
-</p>
+</div>
 </div>
 </div>
 
@@ -114,9 +127,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2017-12-29</span>
-        <span title="last modification date" class="post-info">2017-12-30</span>
-        <span title="tags" class="post-info"><a href="/tags/《贝叶斯网引论》读书笔记/">《贝叶斯网引论》读书笔记</a></span>
+        <span title="post date" class="post-info">2018-04-09</span>
+        <span title="last modification date" class="post-info">2018-04-09</span>
+        <span title="tags" class="post-info"><a href="/tags/ubuntu/">Ubuntu</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -124,8 +137,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2017/12/29/概率论基础";
-          var disqus_url = "http://pinvondev.github.io/blog/2017/12/29/概率论基础";
+          var disqus_identifier = "/blog/2018/04/09/ubuntu-常见问题";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/09/ubuntu-常见问题";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
