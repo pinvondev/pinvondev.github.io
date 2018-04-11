@@ -146,3 +146,169 @@ chaincode: 定义资产和所有关于资产的规则.
 
 
 
+* 注册
+
+CA是最核心的组件, 主要完成对公钥的管理. 密钥有两种类型: 用于签名和用于加解密, 对应称为签名密钥对和加密密钥对. 用户基于PKI体系要申请一个证书, 一般可以由 CA 来生成证书和私钥, 也可以自己生成公钥和私钥, 然后由 CA 来对公钥进行签发.
+
+Fabric的私钥由用户本地存储.
+
+** 注册过程(参考fabcar例子):
+
+*** 创建SDK实例及保存加密材料的路径
+
+#+BEGIN_SRC JavaScript
+var Fabric_Client = require('fabric-client');
+var Fabric_CA_Client = require('fabric-ca-client');
+var path = require('path');
+var util = require('util');
+var os = require('os');
+
+var fabric_client = new Fabric_Client();
+var fabric_ca_client = null;
+var admin_user = null;
+var member_user = null;
+var store_path = path.join(__dirname, 'hfc-key-store');
+#+END_SRC
+
+*** 创建键值存储来存储注册证书
+
+#+BEGIN_SRC JavaScript
+Fabric_Client.newDefaultKeyValueStore({ path: store_path
+}).then((state_store) => {
+    // assign the store to the fabric client
+    fabric_client.setStateStore(state_store);
+#+END_SRC
+
+=newDefaultKeyValueStore()=: 将返回一个KeyValueStore类的实例. 该方法的参数, 一般只填一个路径, 该路径用于存放证书.
+
+*** 证书的参数设置
+
+#+BEGIN_SRC JavaScript
+    var crypto_suite = Fabric_Client.newCryptoSuite();
+    var crypto_store = Fabric_Client.newCryptoKeyStore({path: store_path});
+    crypto_suite.setCryptoKeyStore(crypto_store);
+    fabric_client.setCryptoSuite(crypto_suite);
+#+END_SRC
+
+=newCryptoSuite()=: 设置了证书中的一些内容, 如使用哪些hash算法, 使用哪些数字签名算法.
+
+=newCryptoKeyStore()=: 设置用户的证书, 密钥等材料的存放位置.
+
+*** 是否开启TLS
+
+#+BEGIN_SRC JavaScript
+    var	tlsOptions = {
+    	trustedRoots: [],
+    	verify: false
+    };
+    fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', crypto_suite);
+#+END_SRC
+
+如果有开启TLS, 则要把 =http= 改成 =https=.
+
+*** 检查是否已登记admin
+
+#+BEGIN_SRC JavaScript
+    return fabric_client.getUserContext('admin', true);
+}).then((user_from_store) => {
+    if (user_from_store && user_from_store.isEnrolled()) {
+        console.log('Successfully loaded admin from persistence');
+        admin_user = user_from_store;
+    } else {
+        throw new Error('Failed to get admin.... run enrollAdmin.js');
+    }
+#+END_SRC
+
+=getUserContext()=: 根据用户名字, 返回User类. 根据第二个参数来决定是同步调用(true)还是异步调用(false), 如果是同步调用, 就会返回Promise对象的User.
+
+*** 注册
+
+#+BEGIN_SRC JavaScript
+    return fabric_ca_client.register({enrollmentID: 'user1', affiliation: 'org1.department1',role: 'client'}, admin_user);
+#+END_SRC
+
+=register()= 所需要的参数为: 用户名, 从属关系等, 可通过SDK查看全部参数. 该方法将会返回一个一次性密码.
+
+*** 登记
+
+#+BEGIN_SRC JavaScript
+}).then((secret) => {
+    console.log('Successfully registered user1 - secret:'+ secret);
+    return fabric_ca_client.enroll({enrollmentID: 'user1', enrollmentSecret: secret});
+#+END_SRC
+
+使用用户名和刚获取的一次性密码进行登记.
+
+*** 创建用户
+
+#+BEGIN_SRC JavaScript
+}).then((enrollment) => {
+  console.log('Successfully enrolled member user "user1" ');
+  return fabric_client.createUser(
+     {username: 'user1',
+     mspid: 'Org1MSP',
+     cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
+     });
+#+END_SRC
+
+=createUser()=: 基于私钥和签名证书, 返回一个User对象. 也可以使用已经存在的私钥和证书来创建User对象.
+
+*** 设置此用户来对请求签名
+
+#+BEGIN_SRC JavaScript
+}).then((user) => {
+     member_user = user;
+     return fabric_client.setUserContext(member_user);
+}).then(()=>{
+     console.log('User1 was successfully registered and enrolled and is ready to intreact with the fabric network');
+}).catch((err) => {
+    console.error('Failed to register: ' + err);
+	if(err.toString().indexOf('Authorization') > -1) {
+		console.error('Authorization failures may be caused by having admin credentials from a previous CA instance.\n' +
+		'Try again after deleting the contents of the store directory '+store_path);
+	}
+});
+#+END_SRC
+
+在此以后, 与Fabric的交互, 都会使用该用户的私钥和证书来进行签名.
+
+注册时, 服务器向ECA(enroll ca)发出注册请求. =register()= 需要两个参数, 第1个参数是json格式的, 内容有登记ID, 属于哪个org等, 第2个参数是执行注册的用户, 一般是admin. 
+
+如果传入的登记ID尚未注册, 则ECA返回一个一次性密码.
+
+服务器向ECA发出登记请求. =enroll()= 包含1个参数, 参数内容为JSON格式, 主要有登记ID, 一次性密码等.
+
+ECA验证后, 返回一个登记证书对. 这个证书对包含两个证书, 一个用于签名, 一个用于加密.
+
+fabric_client.createUser(). 参数包括登记ID, 组织ID, 私钥PEM文件, 签名PEM文件. 返回User对象.
+
+fabric_client.setUserContext(). 参数为User对象. 以后这个用户的私钥和证书会在Fabric后端中为该用户的请求进行签名.
+
+* cp
+
+用于获取配置信息. 先解析 =config/marbles_local.json= 文件, 获取连接的配置文件, 心跳间隔, 客户端连接端口等信息.
+
+然后解析获取的连接配置文件 =config/connection_profile_local.json=. 这里包含有许多重要信息.
+
+1. 客户端属于哪个组织, 证书存放位置
+2. channel信息: 包含哪些orderer, peer, chaincode, x-blockDelay
+3. org信息: id, 包含的peer的信息, CA信息, PeerAdmin的证书信息
+4. orderer信息: 地址信息
+5. peer信息: 地址信息
+6. CA信息: 地址信息, 注册员信息
+
+* utils/fc_wrangler/parts/enrollment.js
+
+此文件用于注册用户.
+
+注册管理员:
+
+1. 创建SDK实例.
+2. 我们使用 =newDefaultKeyValueStore= 创建一个键值存储来存储我们的注册证书.
+3. 注册管理员. 在执行这一步时使用了enrollID和注册密钥向CA执行身份验证. CA将颁发注册证书, SDK将该证书存储在键值存储中. 因为我们使用的是默认的键值存储, 所以它会存储在本地文件系统中.
+4. 成功注册后, 设置orderer URL. 暂时不需要订购者, 但在我们尝试调用链代码时需要它. 仅在拥有自签名证书时, 才需要包含 ssl-target-name-override 的业务. 将此字段与您创建 PEM 文件时使用的常用名设置为相同.
+5. 接下来设置节点 URL. 这些 URL 也是暂时不需要的, 但我们将会完整设置我们的 SDK 链对象.
+6. 此刻, 已对 SDK 进行全面配置并准备好与区块链进行交互.
+
+注册普通用户:
+参考fabcar/registerUser.js
