@@ -1,0 +1,129 @@
+#+TITLE:       二 安装Hyperledger Fabric
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-12 四
+#+URI:         /blog/%y/%m/%d/二-安装hyperledger-fabric
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 安装Hyperledger Fabric
+
+[[https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64][安装]]
+
+也可以不必自己编译镜像文件, 直接下载即可. 在安装完 Git, Go, Docker 后, 下载 Fabric 源码.
+
+** 下载Docker镜像文件
+
+#+BEGIN_SRC Shell
+cd fabric/scripts
+
+# 不下载二进制文件
+sed -i 's/curl/#curl/g' bootstrap.sh
+
+./bootstrap.sh
+#+END_SRC
+
+镜像文件下载完成后, 输入 =docker images=, 可以看到如下内容:
+
+[[./32.png]]
+
+其中, =REPOSITORY= 表示镜像的仓库名称, 每个仓库下面都有许多不同版本的镜像文件, =TAG= 就是这个镜像文件的版本, 一般 =TAG= 有 =latest= 和 =主机CPU类型-版本号-snapshot-代码库版本号= 两种, =snapshot= 和 =代码库版本号= 只在本地编译时有, 如果是直接从网上拉取的镜像文件, 则没有这些字段.
+
+** 部署网络
+
+使用 =fabric-samples= 中已经生成的配置文件来部署网络:
+#+BEGIN_SRC Shell
+git clone https://github.com/hyperledger/fabric-samples.git
+cd fabric-samples/basic-network
+docker-compose -f docker-compose.yml up -d
+#+END_SRC
+
+网络启动后, 可以通过 =docker ps= 来查看已经启动的容器. (容器就是镜像文件的一个实例, 类似于类和对象的关系)
+
+*** 创建channel
+
+#+BEGIN_SRC Shell
+docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
+
+peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
+#+END_SRC
+
+*** 加入channel
+
+ #+BEGIN_SRC Shell
+ peer channel join -b mychannel.bloc
+ #+END_SRC
+
+*** 安装chaincode
+
+#+BEGIN_SRC Shell
+# 退出peer0.org1.example.com容器
+exit
+
+# 进入CLI容器(CLI容器相当于客户端)
+docker exec -it cli /bin/bash
+
+# 安装chaincode
+peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
+#+END_SRC
+
+*** 实例化chaincode
+
+#+BEGIN_SRC Shell
+peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
+#+END_SRC
+
+*** 调用chaincode
+
+实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
+#+BEGIN_SRC Shell
+peer chaincode query -C mychannel -n mycc -v v0 -v '{"Args": ["query", "a"]}'
+#+END_SRC
+
+*** 调用chaincode查询
+
+#+BEGIN_SRC Shell
+peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
+#+END_SRC
+
+*** 节点的配置参数传递规则
+
+程序在启动的时候, 会读取配置文件和环境变量的值, 如 =fabric-samples/basic-network/docker-compose.yml= 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
+
+[[./33.png]]
+
+每种组件的环境变量都要单独设置, 每个环境变量的名称都有前缀, 如ORDERER_GENERAL_LOGLEVEL的前缀是ORDERER, 它属于Orderer节点; 前缀是CORE的是Peer节点.
+
+** yaml配置文件
+
+查看 =fabric/examples/e2e_cli/base/docker-compose-base.yaml= 配置文件. 此处给出其中一些选项的解释.
+
+| 选项                | 举例                                                      | 说明                         |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| version             | version:'2'                                               | 采用version2的语法           |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| services            |                                                           | 定义服务列表                 |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| orderer.example.com | 根据服务名称自定义                                        | 自定义的服务名称, 需要唯一   |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| container_name      | container_name: orderer.example.com                       | 容器名称                     |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| image               | image:hyperledger/fabric-orderer                          | 容器使用的镜像文件           |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| environment         | -CORE_PEER_LOCALMSPID=Org1MSP                             | 传递给容器的环境变量         |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| working_dir         | working_dir:/opt/gopath/src/github.com/hyperledger/fabric | 容器启动的工作目录           |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| command             | command:orderer                                           | 容器启动命令                 |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| volumes             | - /var/run:/host/var/run/                                 | 宿主机和容器之间的目录映射   |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| ports               | - 7050:7050                                               | 宿主机和容器之间的端口映射   |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| extends             | file: common.yml                                          | 服务扩展, 基于common.yml文件 |
+|---------------------+-----------------------------------------------------------+------------------------------|
+| extends             | service:peer-base                                         | 服务扩展, 基础服务是peer-base         |
+
