@@ -163,56 +163,64 @@ docker-engine: 基础包, 它使得docker容器需要的所有必须的文件正
 
 docker-compose: 用于配置Docker.
 
-Ubuntu, Debian, CentOS等Linux系统, 可以通过Docker官方提供的脚本进行安装:
+Ubuntu可以通过Docker官方提供的脚本进行安装:
 #+BEGIN_SRC Shell
 curl -sSL https://get.docker.com | sh
 #+END_SRC
 
-**** 添加Docker的APT源
+修改Docker配置文件 =/etc/default/docker=, 增加Docker的socket绑定, 运行在Docker中的进程都能通过映射的Socket调用Docker的API执行镜像编译和创建容器等操作.
 
 #+BEGIN_SRC Shell
-# 将官方Docker资源库的GPG密钥添加到系统
-sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-
-# 将Docker存储库添加到APT源
-echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
-
-# 更新软件包数据库
-sudo apt-get update
-
-# 确保从Docker repo中安装
-apt-cache policy docker-engine
+DOCKER_OPTS="-s=aufs -r=true --api-cors-header='*' -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"
 #+END_SRC
 
-**** 安装Docker
-
+重启Docker服务, 使得配置生效:
 #+BEGIN_SRC Shell
-sudo apt-get install -y docker-engine
-
-# 开启docker服务
-sudo service docker start
-
-# 让docker服务开机自启动
-sudo systemctl enable docker
-
-# 如果要取消开机自动启动, 则输入
-sudo systemctl disable docker
-
-# 测试docker是否在运行
-docker
-
-# 使用pip安装docker-compose
-sudo pip install docker-compose
+sudo service docker restart
 #+END_SRC
 
-关于Docker的安装, 到此结束.
-
-默认情况下, 运行docker需要root权限, 也可以用安装docker的用户运行. 但是如果其他用户想要运行docker, 则会出错. 可以通过如下命令, 使用户有权限运行docker:
+配置Docker国内镜像, 使下载速度更快. 修改 =/etc/default/docker=:
 #+BEGIN_SRC Shell
-sudo usermod -aG docker username
+DOCKER_OPTS="-s=aufs -r=true --api-cors-header='*' -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --registry-mirror=https://registry.docker-cn.com"
 #+END_SRC
 
-*** 安装Pip
+也可以把镜像地址改成阿里云的, DaoCloud等的地址. 配置完后再重启一次服务.
+
+docker compose能够在一个主机上创建出相互隔离的网络, 通过命令行管理多个docker容器, 快速启动, 停止和更新容器. 安装方法很多, 这边通过pip安装:
+#+BEGIN_SRC Shell
+# 先安装pip
+sudo apt install python-pip
+sudo apt install docker-compose
+#+END_SRC
+
+docker常用命令:
+| 命令          | 举例                                                                             | 说明                                                                                                |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker images | docker images                                                                    | 查看主机上的镜像文件列表                                                                            |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker pull   | docker pull hyperledger/fabric-peer                                              | 从镜像仓库中下载镜像文件                                                                            |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker tag    | docker tag hyperledger/fabric-tools:x86_64-1.0.0 hyperledger/fabric-tools:latest | 给镜像文件打标签, x86_64-1.0.0标记为latest                                                          |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker run    | docker run -it --name cli ubuntu /bin/bash                                       | 从镜像中启动容器. cli是容器名, ubuntu是镜像名, -it是以交互方式启动, /bin/bash是启动容器时执行的命令 |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker logs   | docker logs -f cli                                                               | 查看容器日志                                                                                        |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker ps     | docker ps -a                                                                     | 查看主机上的容器, -a会显示已经停止的容器                                                            |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker port   | docker port peer0.org1.example.com                                               | 查看容器映射的端口                                                                                  |
+|---------------+----------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------|
+| docker rm     | docker rm cli                                                                    | 删除容器                                                                                            |
+
+docker-compose常用命令:
+| 命令                | 举例                                            | 说明                                                      |
+|---------------------+-------------------------------------------------+-----------------------------------------------------------|
+| docker-compose up   | docker-compose -f docker-compose-cli.yaml up -d | 根据配置文件.yaml启动容器. -f指定配置文件, -d设置后台运行 |
+|---------------------+-------------------------------------------------+-----------------------------------------------------------|
+| docker-compose down | docker-compose -f docker-compose-cli.yaml down  | 停止配置文件中的容器                                      |
+|---------------------+-------------------------------------------------+-----------------------------------------------------------|
+| docker-compose pull | docker-compose -f docker-compose-cli.yaml pull  | 批量下载所需的镜像文件                                               |
+
 ** 安装Hyperledger Fabric
 
 *** 创建GOPATH
