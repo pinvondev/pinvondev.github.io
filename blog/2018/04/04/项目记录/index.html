@@ -35,45 +35,64 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcf6cb11">环境搭建</a>
+<li><a href="#orgb1df6a2">环境搭建</a>
 <ul>
-<li><a href="#orge15c805">前提</a></li>
-<li><a href="#org3e117e8">下载代码</a></li>
-<li><a href="#org3646e8b">启动网络</a></li>
-<li><a href="#org806615c">启动marbles</a>
+<li><a href="#org9bcbd4b">前提</a></li>
+<li><a href="#orge00d07f">下载代码</a></li>
+<li><a href="#org8ef5300">启动网络</a></li>
+<li><a href="#orgec6760d">启动marbles</a>
 <ul>
-<li><a href="#org107d6e1">chaincode</a></li>
-<li><a href="#orgbd07f8f">启动marbles</a></li>
+<li><a href="#orge06e360">chaincode</a></li>
+<li><a href="#org4d9531c">启动marbles</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org8357032">程序介绍</a></li>
-<li><a href="#orgc31244a">区块链背景</a>
+<li><a href="#org6cbbfc5">程序介绍</a></li>
+<li><a href="#orgd941b33">区块链背景</a>
 <ul>
-<li><a href="#org77e3a3a">定义</a></li>
+<li><a href="#orgc2cd060">定义</a></li>
 </ul>
 </li>
+<li><a href="#orgf788210">注册</a>
+<ul>
+<li><a href="#org820b3e0">注册过程(参考fabcar例子):</a>
+<ul>
+<li><a href="#org237e5b4">创建SDK实例及保存加密材料的路径</a></li>
+<li><a href="#org294c572">创建键值存储来存储注册证书</a></li>
+<li><a href="#orgd3a0647">证书的参数设置</a></li>
+<li><a href="#org6a9b87e">是否开启TLS</a></li>
+<li><a href="#org8fe69f9">检查是否已登记admin</a></li>
+<li><a href="#orgb6799d8">注册</a></li>
+<li><a href="#orgad670d2">登记</a></li>
+<li><a href="#orgd3648d1">创建用户</a></li>
+<li><a href="#org5f8f0b3">设置此用户来对请求签名</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org9c1282c">cp</a></li>
+<li><a href="#orgd9d3932">utils/fc_wrangler/parts/enrollment.js</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcf6cb11" class="outline-2">
-<h2 id="orgcf6cb11">环境搭建</h2>
-<div class="outline-text-2" id="text-orgcf6cb11">
+<div id="outline-container-orgb1df6a2" class="outline-2">
+<h2 id="orgb1df6a2">环境搭建</h2>
+<div class="outline-text-2" id="text-orgb1df6a2">
 </div>
-<div id="outline-container-orge15c805" class="outline-3">
-<h3 id="orge15c805">前提</h3>
-<div class="outline-text-3" id="text-orge15c805">
+<div id="outline-container-org9bcbd4b" class="outline-3">
+<h3 id="org9bcbd4b">前提</h3>
+<div class="outline-text-3" id="text-org9bcbd4b">
 <p>
 安装git, go, docker, node.js
 </p>
 </div>
 </div>
 
-<div id="outline-container-org3e117e8" class="outline-3">
-<h3 id="org3e117e8">下载代码</h3>
-<div class="outline-text-3" id="text-org3e117e8">
+<div id="outline-container-orge00d07f" class="outline-3">
+<h3 id="orge00d07f">下载代码</h3>
+<div class="outline-text-3" id="text-orge00d07f">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/IBM-Blockchain/marbles.git
 cd marble
@@ -82,9 +101,9 @@ cd marble
 </div>
 </div>
 
-<div id="outline-container-org3646e8b" class="outline-3">
-<h3 id="org3646e8b">启动网络</h3>
-<div class="outline-text-3" id="text-org3646e8b">
+<div id="outline-container-org8ef5300" class="outline-3">
+<h3 id="org8ef5300">启动网络</h3>
+<div class="outline-text-3" id="text-org8ef5300">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples
 cd fabric-samples
@@ -112,13 +131,13 @@ cd ../bashic-network
 </div>
 </div>
 
-<div id="outline-container-org806615c" class="outline-3">
-<h3 id="org806615c">启动marbles</h3>
-<div class="outline-text-3" id="text-org806615c">
+<div id="outline-container-orgec6760d" class="outline-3">
+<h3 id="orgec6760d">启动marbles</h3>
+<div class="outline-text-3" id="text-orgec6760d">
 </div>
-<div id="outline-container-org107d6e1" class="outline-4">
-<h4 id="org107d6e1">chaincode</h4>
-<div class="outline-text-4" id="text-org107d6e1">
+<div id="outline-container-orge06e360" class="outline-4">
+<h4 id="orge06e360">chaincode</h4>
+<div class="outline-text-4" id="text-orge06e360">
 <p>
 进入marbles根目录.
 </p>
@@ -156,9 +175,9 @@ node instantiate_chaincode.js
 </div>
 </div>
 
-<div id="outline-container-orgbd07f8f" class="outline-4">
-<h4 id="orgbd07f8f">启动marbles</h4>
-<div class="outline-text-4" id="text-orgbd07f8f">
+<div id="outline-container-org4d9531c" class="outline-4">
+<h4 id="org4d9531c">启动marbles</h4>
+<div class="outline-text-4" id="text-org4d9531c">
 <div class="org-src-container">
 <pre class="src src-Shell"> npm install gulp -g
 #  如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
@@ -171,9 +190,9 @@ gulp marbles_local
 </div>
 </div>
 
-<div id="outline-container-org8357032" class="outline-2">
-<h2 id="org8357032">程序介绍</h2>
-<div class="outline-text-2" id="text-org8357032">
+<div id="outline-container-org6cbbfc5" class="outline-2">
+<h2 id="org6cbbfc5">程序介绍</h2>
+<div class="outline-text-2" id="text-org6cbbfc5">
 <p>
 chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链存储(账本)中以键值对的形式创建. 账本与chaincode的交互通过对网络上的一个节点使用gRPC协议来完成. gRPC协议的细节由<a href="https://www.npmjs.com/package/fabric-client">Hyperledger Fabric Client</a> SDK处理.
 </p>
@@ -208,13 +227,13 @@ chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链�
 </div>
 </div>
 
-<div id="outline-container-orgc31244a" class="outline-2">
-<h2 id="orgc31244a">区块链背景</h2>
-<div class="outline-text-2" id="text-orgc31244a">
+<div id="outline-container-orgd941b33" class="outline-2">
+<h2 id="orgd941b33">区块链背景</h2>
+<div class="outline-text-2" id="text-orgd941b33">
 </div>
-<div id="outline-container-org77e3a3a" class="outline-3">
-<h3 id="org77e3a3a">定义</h3>
-<div class="outline-text-3" id="text-org77e3a3a">
+<div id="outline-container-orgc2cd060" class="outline-3">
+<h3 id="orgc2cd060">定义</h3>
+<div class="outline-text-3" id="text-orgc2cd060">
 <p>
 节点: 节点是区块链的成员, 运行着Hyperledger Fabric. 在marbles中, 节点归弹珠公司所有和操作.
 </p>
@@ -267,12 +286,278 @@ chaincode: 定义资产和所有关于资产的规则.
 </div>
 </div>
 
+
+
+
+<div id="outline-container-orgf788210" class="outline-2">
+<h2 id="orgf788210">注册</h2>
+<div class="outline-text-2" id="text-orgf788210">
+<p>
+CA是最核心的组件, 主要完成对公钥的管理. 密钥有两种类型: 用于签名和用于加解密, 对应称为签名密钥对和加密密钥对. 用户基于PKI体系要申请一个证书, 一般可以由 CA 来生成证书和私钥, 也可以自己生成公钥和私钥, 然后由 CA 来对公钥进行签发.
+</p>
+
+<p>
+Fabric的私钥由用户本地存储.
+</p>
+</div>
+
+<div id="outline-container-org820b3e0" class="outline-3">
+<h3 id="org820b3e0">注册过程(参考fabcar例子):</h3>
+<div class="outline-text-3" id="text-org820b3e0">
+</div>
+<div id="outline-container-org237e5b4" class="outline-4">
+<h4 id="org237e5b4">创建SDK实例及保存加密材料的路径</h4>
+<div class="outline-text-4" id="text-org237e5b4">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var Fabric_Client = require('fabric-client');
+var Fabric_CA_Client = require('fabric-ca-client');
+var path = require('path');
+var util = require('util');
+var os = require('os');
+
+var fabric_client = new Fabric_Client();
+var fabric_ca_client = null;
+var admin_user = null;
+var member_user = null;
+var store_path = path.join(__dirname, 'hfc-key-store');
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org294c572" class="outline-4">
+<h4 id="org294c572">创建键值存储来存储注册证书</h4>
+<div class="outline-text-4" id="text-org294c572">
+<div class="org-src-container">
+<pre class="src src-JavaScript">Fabric_Client.newDefaultKeyValueStore({ path: store_path
+}).then((state_store) =&gt; {
+    // assign the store to the fabric client
+    fabric_client.setStateStore(state_store);
+</pre>
+</div>
+
+<p>
+<code>newDefaultKeyValueStore()</code>: 将返回一个KeyValueStore类的实例. 该方法的参数, 一般只填一个路径, 该路径用于存放证书.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd3a0647" class="outline-4">
+<h4 id="orgd3a0647">证书的参数设置</h4>
+<div class="outline-text-4" id="text-orgd3a0647">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var crypto_suite = Fabric_Client.newCryptoSuite();
+var crypto_store = Fabric_Client.newCryptoKeyStore({path: store_path});
+crypto_suite.setCryptoKeyStore(crypto_store);
+fabric_client.setCryptoSuite(crypto_suite);
+</pre>
+</div>
+
+<p>
+<code>newCryptoSuite()</code>: 设置了证书中的一些内容, 如使用哪些hash算法, 使用哪些数字签名算法.
+</p>
+
+<p>
+<code>newCryptoKeyStore()</code>: 设置用户的证书, 密钥等材料的存放位置.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6a9b87e" class="outline-4">
+<h4 id="org6a9b87e">是否开启TLS</h4>
+<div class="outline-text-4" id="text-org6a9b87e">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var	tlsOptions = {
+    trustedRoots: [],
+    verify: false
+};
+fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', crypto_suite);
+</pre>
+</div>
+
+<p>
+如果有开启TLS, 则要把 <code>http</code> 改成 <code>https</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8fe69f9" class="outline-4">
+<h4 id="org8fe69f9">检查是否已登记admin</h4>
+<div class="outline-text-4" id="text-org8fe69f9">
+<div class="org-src-container">
+<pre class="src src-JavaScript">    return fabric_client.getUserContext('admin', true);
+}).then((user_from_store) =&gt; {
+    if (user_from_store &amp;&amp; user_from_store.isEnrolled()) {
+        console.log('Successfully loaded admin from persistence');
+        admin_user = user_from_store;
+    } else {
+        throw new Error('Failed to get admin.... run enrollAdmin.js');
+    }
+</pre>
+</div>
+
+<p>
+<code>getUserContext()</code>: 根据用户名字, 返回User类. 根据第二个参数来决定是同步调用(true)还是异步调用(false), 如果是同步调用, 就会返回Promise对象的User.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb6799d8" class="outline-4">
+<h4 id="orgb6799d8">注册</h4>
+<div class="outline-text-4" id="text-orgb6799d8">
+<div class="org-src-container">
+<pre class="src src-JavaScript">return fabric_ca_client.register({enrollmentID: 'user1', affiliation: 'org1.department1',role: 'client'}, admin_user);
+</pre>
+</div>
+
+<p>
+<code>register()</code> 所需要的参数为: 用户名, 从属关系等, 可通过SDK查看全部参数. 该方法将会返回一个一次性密码.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgad670d2" class="outline-4">
+<h4 id="orgad670d2">登记</h4>
+<div class="outline-text-4" id="text-orgad670d2">
+<div class="org-src-container">
+<pre class="src src-JavaScript">}).then((secret) =&gt; {
+    console.log('Successfully registered user1 - secret:'+ secret);
+    return fabric_ca_client.enroll({enrollmentID: 'user1', enrollmentSecret: secret});
+</pre>
+</div>
+
+<p>
+使用用户名和刚获取的一次性密码进行登记.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd3648d1" class="outline-4">
+<h4 id="orgd3648d1">创建用户</h4>
+<div class="outline-text-4" id="text-orgd3648d1">
+<div class="org-src-container">
+<pre class="src src-JavaScript">}).then((enrollment) =&gt; {
+  console.log('Successfully enrolled member user "user1" ');
+  return fabric_client.createUser(
+     {username: 'user1',
+     mspid: 'Org1MSP',
+     cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
+     });
+</pre>
+</div>
+
+<p>
+<code>createUser()</code>: 基于私钥和签名证书, 返回一个User对象. 也可以使用已经存在的私钥和证书来创建User对象.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5f8f0b3" class="outline-4">
+<h4 id="org5f8f0b3">设置此用户来对请求签名</h4>
+<div class="outline-text-4" id="text-org5f8f0b3">
+<div class="org-src-container">
+<pre class="src src-JavaScript">}).then((user) =&gt; {
+     member_user = user;
+     return fabric_client.setUserContext(member_user);
+}).then(()=&gt;{
+     console.log('User1 was successfully registered and enrolled and is ready to intreact with the fabric network');
+}).catch((err) =&gt; {
+    console.error('Failed to register: ' + err);
+    if(err.toString().indexOf('Authorization') &gt; -1) {
+        console.error('Authorization failures may be caused by having admin credentials from a previous CA instance.\n' +
+        'Try again after deleting the contents of the store directory '+store_path);
+    }
+});
+</pre>
+</div>
+
+<p>
+在此以后, 与Fabric的交互, 都会使用该用户的私钥和证书来进行签名.
+</p>
+
+<p>
+注册时, 服务器向ECA(enroll ca)发出注册请求. <code>register()</code> 需要两个参数, 第1个参数是json格式的, 内容有登记ID, 属于哪个org等, 第2个参数是执行注册的用户, 一般是admin. 
+</p>
+
+<p>
+如果传入的登记ID尚未注册, 则ECA返回一个一次性密码.
+</p>
+
+<p>
+服务器向ECA发出登记请求. <code>enroll()</code> 包含1个参数, 参数内容为JSON格式, 主要有登记ID, 一次性密码等.
+</p>
+
+<p>
+ECA验证后, 返回一个登记证书对. 这个证书对包含两个证书, 一个用于签名, 一个用于加密.
+</p>
+
+<p>
+fabric_client.createUser(). 参数包括登记ID, 组织ID, 私钥PEM文件, 签名PEM文件. 返回User对象.
+</p>
+
+<p>
+fabric_client.setUserContext(). 参数为User对象. 以后这个用户的私钥和证书会在Fabric后端中为该用户的请求进行签名.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9c1282c" class="outline-2">
+<h2 id="org9c1282c">cp</h2>
+<div class="outline-text-2" id="text-org9c1282c">
+<p>
+用于获取配置信息. 先解析 <code>config/marbles_local.json</code> 文件, 获取连接的配置文件, 心跳间隔, 客户端连接端口等信息.
+</p>
+
+<p>
+然后解析获取的连接配置文件 <code>config/connection_profile_local.json</code>. 这里包含有许多重要信息.
+</p>
+
+<ol class="org-ol">
+<li>客户端属于哪个组织, 证书存放位置</li>
+<li>channel信息: 包含哪些orderer, peer, chaincode, x-blockDelay</li>
+<li>org信息: id, 包含的peer的信息, CA信息, PeerAdmin的证书信息</li>
+<li>orderer信息: 地址信息</li>
+<li>peer信息: 地址信息</li>
+<li>CA信息: 地址信息, 注册员信息</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd9d3932" class="outline-2">
+<h2 id="orgd9d3932">utils/fc_wrangler/parts/enrollment.js</h2>
+<div class="outline-text-2" id="text-orgd9d3932">
+<p>
+此文件用于注册用户.
+</p>
+
+<p>
+注册管理员:
+</p>
+
+<ol class="org-ol">
+<li>创建SDK实例.</li>
+<li>我们使用 <code>newDefaultKeyValueStore</code> 创建一个键值存储来存储我们的注册证书.</li>
+<li>注册管理员. 在执行这一步时使用了enrollID和注册密钥向CA执行身份验证. CA将颁发注册证书, SDK将该证书存储在键值存储中. 因为我们使用的是默认的键值存储, 所以它会存储在本地文件系统中.</li>
+<li>成功注册后, 设置orderer URL. 暂时不需要订购者, 但在我们尝试调用链代码时需要它. 仅在拥有自签名证书时, 才需要包含 ssl-target-name-override 的业务. 将此字段与您创建 PEM 文件时使用的常用名设置为相同.</li>
+<li>接下来设置节点 URL. 这些 URL 也是暂时不需要的, 但我们将会完整设置我们的 SDK 链对象.</li>
+<li>此刻, 已对 SDK 进行全面配置并准备好与区块链进行交互.</li>
+</ol>
+
+<p>
+注册普通用户:
+参考fabcar/registerUser.js
+</p>
+</div>
+</div>
+
 </div>
 </div>
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-04</span>
-        <span title="last modification date" class="post-info">2018-04-06</span>
+        <span title="last modification date" class="post-info">2018-04-11</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>

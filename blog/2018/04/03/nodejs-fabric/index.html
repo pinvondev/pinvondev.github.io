@@ -35,311 +35,248 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2f1f773">创建项目</a></li>
-<li><a href="#org2d43111">连接配置和加密处理</a></li>
-<li><a href="#org5d47eb0">创建脚本生成admin的加密材料</a></li>
+<li><a href="#org8a06b2a">概述</a>
+<ul>
+<li><a href="#org187f272">fabric-client</a></li>
+<li><a href="#org20fe473">fabric-ca-client</a></li>
+</ul>
+</li>
+<li><a href="#org9a98aa5">配置应用程序开发环境</a>
+<ul>
+<li><a href="#orgf69e2e5">开发环境组成</a>
+<ul>
+<li><a href="#org034e66f">orderer</a></li>
+<li><a href="#org4ace65f">peer</a></li>
+<li><a href="#org6ba2eab">身份</a></li>
+</ul>
+</li>
+<li><a href="#orgcefedf7">前提</a>
+<ul>
+<li><a href="#org475ce2f">Docker</a></li>
+<li><a href="#org64e3235">Docker Compose</a></li>
+<li><a href="#orga21f9cf">Nodejs(v6.2.0-6.10.0)</a></li>
+</ul>
+</li>
+<li><a href="#org15719d9">准备加密材料</a></li>
+<li><a href="#org314da06">创世区块</a></li>
+<li><a href="#orgf147c6a">启动网络</a></li>
+</ul>
+</li>
+<li><a href="#org806861e">如何创建channel</a>
+<ul>
+<li><a href="#org66ebc81">步骤</a></li>
+<li><a href="#org2a804f8">使用*.tx构建可签名的channel配置</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2f1f773" class="outline-2">
-<h2 id="org2f1f773">创建项目</h2>
-<div class="outline-text-2" id="text-org2f1f773">
-<div class="org-src-container">
-<pre class="src src-Shell">mkdir blockchain
-cd blockchain
-touch index.js
-npm install express fabric-ca-client fabric-client body-parser --save
-</pre>
-</div>
+<div id="outline-container-org8a06b2a" class="outline-2">
+<h2 id="org8a06b2a">概述</h2>
+<div class="outline-text-2" id="text-org8a06b2a">
+<p>
+Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链进行交互. 使用这些API, 我们可以做到:
+</p>
+<ul class="org-ul">
+<li>创建channels</li>
+<li>将peer加入channel</li>
+<li>在peer上安装chaincode</li>
+<li>在channel上实例化chaincode</li>
+<li>通过chaincode调用事务</li>
+<li>查询账本</li>
+</ul>
 
 <p>
-其中, <code>fabric-ca-client</code> 和 <code>fabric-ca</code> 用来与Fabric网络交互; <code>express</code> 用来创建服务器, <code>body-parser</code> 用于解析数据.
+为了安全起见, 在Fabric中需要使用数字签名. 用户通过证书, 要对所有的Fabric请求进行签名(用户对请求进行签名, 再附上从CA获取的数字证书, Fabric使用CA的公钥解开数字证书, 拿到用户的公钥, 这样就能证明数字签名是否真的是用户签的). <a href="http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#table-of-contents">关于Fabric CA</a>.
+</p>
+</div>
+
+<div id="outline-container-org187f272" class="outline-3">
+<h3 id="org187f272">fabric-client</h3>
+<div class="outline-text-3" id="text-org187f272">
+<ul class="org-ul">
+<li><a href="https://fabric-sdk-node.github.io/Client.html#createChannel">创建channel</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#joinChannel">将peer加入channel</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#installChaincode">将chaincode安装到peer</a></li>
+<li>在channel上实例化chaincode, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a></li>
+<li>提交事务, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryByChaincode">查询chaincode以获得最新的应用程序状态</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInfo">查询其他的channel状态</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlock">查询块(通过number)</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlockByHash">查询块(通过hash)</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#queryChannels">peer属于哪些channel</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#queryInstalledChaincodes">peer上安装的所有chaincode</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInstantiatedChaincodes">peer上实例化的所有chaincode</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryTransaction">查询事务(通过id)</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#getChannelConfig">channel的配置数据</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#connect">与peer事件建立联系</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerBlockEvent">监听块事件</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerTxEvent">监听交易事件以获知是否成功写入账本</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerChaincodeEvent">自定义一些由chaincode产生的事件</a></li>
+<li><a href="https://fabric-sdk-node.github.io/User.html">序列化用户类(已经登记, 并由登记证书和签名密钥表示)</a></li>
+<li>具有多层覆盖的分层配置设置: 文件, 环境变量, 程序参数, 内存中设置</li>
+<li>内置的日志系统为winston, 也可以使用常用的log4j</li>
+<li>可插入的CryptoSuite接口描述与Fabric成功交互所需的加密操作. 提供两种实现方式: <a href="https://fabric-sdk-node.github.io/CryptoSuite_ECDSA_AES.html">Software-based ECDSA</a>和<a href="https://fabric-sdk-node.github.io/CryptoSuite_PKCS11.html">PKCS#11-compliant ECDSA</a></li>
+<li>可插拔的状态存储接口, 用于保存诸如用户的状态缓存: <a href="https://fabric-sdk-node.github.io/FileKeyValueStore.html">存储到文件</a>和<a href="https://fabric-sdk-node.github.io/CouchDBKeyValueStore.html">存储到CouchDB</a></li>
+<li><a href="https://fabric-sdk-node.github.io/CryptoKeyStore.html">可自定义的加密密钥库</a></li>
+<li>支持使用TLS(grpcs://)和非TLS(grcp://)与peer和orderer连接. 可查看<a href="https://fabric-sdk-node.github.io/Remote.html">Remote类</a>, 它是peers和orderers的父类.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org20fe473" class="outline-3">
+<h3 id="org20fe473">fabric-ca-client</h3>
+<div class="outline-text-3" id="text-org20fe473">
+<ul class="org-ul">
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#register">注册新用户</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#enroll">登记一个用户, 获得Fabric CA签名的登记证书</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#revoke">通过登记ID注销用户或注销某证书</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html">自定义持久化存储</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9a98aa5" class="outline-2">
+<h2 id="org9a98aa5">配置应用程序开发环境</h2>
+<div class="outline-text-2" id="text-org9a98aa5">
+<p>
+chaincode运行在服务器(背书节点), 客户端使用node.js编写.
+</p>
+</div>
+
+<div id="outline-container-orgf69e2e5" class="outline-3">
+<h3 id="orgf69e2e5">开发环境组成</h3>
+<div class="outline-text-3" id="text-orgf69e2e5">
+</div>
+<div id="outline-container-org034e66f" class="outline-4">
+<h4 id="org034e66f">orderer</h4>
+<div class="outline-text-4" id="text-org034e66f">
+<p>
+orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要orderer?
+</p>
+
+<p>
+因为orderer节点维护了整个网络的关键数据, 如: 哪些组织加入了, 哪些channel创建了, 哪个组织加入了哪个channel, 对网络的改变需要遵循哪些策略. 本质上来讲, ordering service掌握了整个网络.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org2d43111" class="outline-2">
-<h2 id="org2d43111">连接配置和加密处理</h2>
-<div class="outline-text-2" id="text-org2d43111">
+<div id="outline-container-org4ace65f" class="outline-4">
+<h4 id="org4ace65f">peer</h4>
+<div class="outline-text-4" id="text-org4ace65f">
 <p>
-连接配置, 主要包括Org, Peers, Orderer, CA.
+peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节点是否是背书节点, 需要自己配置. 而提交节点则无需配置, 因为所有的peer都是提交节点. 在实际环境中, 一个组织内的节点需要多个, 在开发阶段, 一个组织只配置一个节点, 这个节点既是背书节点, 又是提交节点. 它可以为提交的事务提案进行背书, 可以从账本中获得信息.
 </p>
-<div class="org-src-container">
-<pre class="src src-Shell">name: "Org1 Client"
-version: "1.0"
-
-client:
-  organization: Org1
-  credentialStore:
-    path: "./hfc-key-store"
-    cryptoStore:
-      path: "./hfc-key-store"
-
-channels:
-  mychannel:
-    orderers:
-      - orderer.example.com
-    peers:
-      peer0.org1.example.com:
-        endorsingPeer: true
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: true
-      peer0.org2.example.com:
-        endorsingPeer: true
-        chaincodeQuery: false
-        ledgerQuery: true
-        eventSource: false
-
-organizations:
-  Org1:
-    mspid: Org1MSP
-    peers:
-      - peer0.org1.example.com
-      - peer1.org1.example.com
-    certificateAuthorities:
-      - ca.org1.example.com
-    adminPrivateKey:
-      path: crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/1a11ffdebfb3bba13a7738dfa820a505002d29ba3e812657a127f27ba79345e5_sk
-    signedCert:
-      path: crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem
-
-orderers:
-  orderer.example.com:
-    url: grpcs://localhost:7050
-    grpcOptions:
-      ssl-target-name-override: orderer.example.com
-      grpc-max-send-message-length: 15
-    tlsCACerts:
-      path: crypto-config/ordererOrganizations/example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-
-peers:
-  peer0.org1.example.com:
-    url: grpcs://localhost:7051
-    eventUrl: grpcs://localhost:7053
-    grpcOptions:
-      ssl-target-name-override: peer0.org1.example.com
-      grpc.keepalive_time_ms: 600000
-    tlsCACerts:
-      path: crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
-
-  peer1.org1.example.com:
-    url: grpcs://localhost:8051
-    eventUrl: grpcs://localhost:8053
-    grpcOptions:
-      ssl-target-name-override: peer1.org1.example.com
-      grpc.keepalive_time_ms: 600000
-    tlsCACerts:
-      path: crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
-
-certificateAuthorities:
-  ca.org1.example.com:
-    url: https://localhost:7054
-    httpOptions:
-      verify: false
-    tlsCACerts:
-      path: crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
-    registrar:
-      - enrollId: admin
-        enrollSecret: adminpw
-    caName: ca-org1
-</pre>
-</div>
 
 <p>
-注意, <code>credentialStore</code> 指定的位置, 是App后面用来存放密钥和证书的地方.
+另外, peer还要将事件进行广播. 只要账本新增了区块, peer节点就会广播该事件, 组织内的所有应用都可以监听到它.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org5d47eb0" class="outline-2">
-<h2 id="org5d47eb0">创建脚本生成admin的加密材料</h2>
-<div class="outline-text-2" id="text-org5d47eb0">
+<div id="outline-container-org6ba2eab" class="outline-4">
+<h4 id="org6ba2eab">身份</h4>
+<div class="outline-text-4" id="text-org6ba2eab">
 <p>
-为了Client能提交事务, 需要在SDK中设置用户内容. 在此之前, 我们需要先对Org的admin进行登记, 并获取证书.
+Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进行访问控制. 在v1.0以后, 身份基于公钥基础设施(PKI)标准. 每个orderer, peer, 用户, 交易者都必须有密钥对, 其中公钥包含在CA签名的x.509证书里. 在开发阶段, 为了简便, 我们直接使用一些工具来生成证书.
 </p>
 
 <p>
-./enrollAdmin.js:
+另外, 还要确定是否要在项目中加入Fabric-CA. 它是一个具有REST API的服务器, 可以支持动态身份管理, 包括注册, 登记(获取证书), 撤销和重新注册, 所以在提供用户身份时非常有用. 注意, 以这种方式配置的身份只能是 <code>MEMBER</code>, 而不是 <code>ADMIN</code>.
 </p>
-<div class="org-src-container">
-<pre class="src src-JavaScript">'use strict';
-var fabricClient = require('./Config/FabricClient');
-var FabricCAClient = require('fabric-ca-client');
 
-var connection = fabricClient;
-var fabricCAClient;
-var adminUser;
+<p>
+<code>ADMIN</code> 可以创建/更新channel, 安装/实例化chaincode, 等等.
+</p>
 
-connection.initCredentialStores().then(() =&gt; {
-  fabricCAClient = connection.getCertificateAuthority();
-  return connection.getUserContext('admin', true);
-}).then((user) =&gt; {
-  if (user) {
-    throw new Error("Admin already exists");
-  } else {
-    return fabricCAClient.enroll({
-      enrollmentID: 'admin',
-      enrollmentSecret: 'adminpw',
-      attr_reqs: [
-          { name: "hf.Registrar.Roles" },
-          { name: "hf.Registrar.Attributes" }
-      ]
-    }).then((enrollment) =&gt; {
-      console.log('Successfully enrolled admin user "admin"');
-      return connection.createUser(
-          {username: 'admin',
-              mspid: 'Org1MSP',
-              cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
-          });
-    }).then((user) =&gt; {
-      adminUser = user;
-      return connection.setUserContext(adminUser);
-    }).catch((err) =&gt; {
-      console.error('Failed to enroll and persist admin. Error: ' + err.stack ? err.stack : err);
-      throw new Error('Failed to enroll admin');
-    });
-  }
-}).then(() =&gt; {
-    console.log('Assigned the admin user to the fabric client ::' + adminUser.toString());
-}).catch((err) =&gt; {
-    console.error('Failed to enroll admin: ' + err);
-});
-</pre>
+<p>
+如果不需要Fabric-CA, 也没有什么关系, 不过应用程序需要管理用户的证书.
+</p>
+</div>
+</div>
 </div>
 
-<p>
-./Config/FabricClient.js:
-</p>
-<div class="org-src-container">
-<pre class="src src-JavaScript">var FabricClient = require('fabric-client');
-var fs = require('fs');
-var path = require('path');
-
-var configFilePath = path.join(__dirname, './ConnectionProfile.yml');
-const CONFIG = fs.readFileSync(configFilePath, 'utf8')
-
-class FBClient extends FabricClient {
-    constructor(props) {
-        super(props);
-    }
-
-    submitTransaction(requestData) {
-        var returnData;
-        var _this = this;
-        var channel = this.getChannel();
-        var peers = this.getPeersForOrg();
-        var event_hub = this.getEventHub(peers[0].getName());
-        return channel.sendTransactionProposal(requestData).then(function (results) {
-            var proposalResponses = results[0];
-            var proposal = results[1];
-            let isProposalGood = false;
-
-            if (proposalResponses &amp;&amp; proposalResponses[0].response &amp;&amp;
-                proposalResponses[0].response.status === 200) {
-                isProposalGood = true;
-                console.log('Transaction proposal was good');
-            } else {
-                throw new Error(results[0][0].details);
-                console.error('Transaction proposal was bad');
-            }
-            returnData = proposalResponses[0].response.payload.toString();
-            returnData = JSON.parse(returnData);
-
-            if (isProposalGood) {
-                console.log(
-                    'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
-                    proposalResponses[0].response.status, proposalResponses[0].response.message);
-
-                var request = {
-                    proposalResponses: proposalResponses,
-                    proposal: proposal
-                };
-
-                var transaction_id_string = requestData.txId.getTransactionID();
-                var promises = [];
-
-                var sendPromise = channel.sendTransaction(request);
-                promises.push(sendPromise); 
-
-                let txPromise = new Promise((resolve, reject) =&gt; {
-                    let handle = setTimeout(() =&gt; {
-                        event_hub.disconnect();
-                        resolve({ event_status: 'TIMEOUT' });
-                    }, 3000);
-                    event_hub.connect();
-
-                    event_hub.registerTxEvent(transaction_id_string, (tx, code) =&gt; {
-                        clearTimeout(handle);
-                        event_hub.unregisterTxEvent(transaction_id_string);
-                        event_hub.disconnect();
-
-                        var return_status = { event_status: code, tx_id: transaction_id_string };
-                        if (code !== 'VALID') {
-                            console.error('The transaction was invalid, code = ' + code);
-                            resolve(return_status);
-                        } else {
-                            console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
-                            resolve(return_status);
-                        }
-                    }, (err) =&gt; {
-                        console.log(err)
-                        reject(new Error('There was a problem with the eventhub ::' + err));
-                    });
-                });
-                promises.push(txPromise);
-
-                return Promise.all(promises);
-            } else {
-                console.error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
-                throw new Error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
-            }
-        }).then((results) =&gt; {
-            console.log('Send transaction promise and event listener promise have completed');
-            if (results &amp;&amp; results[0] &amp;&amp; results[0].status === 'SUCCESS') {
-                console.log('Successfully sent transaction to the orderer.');
-            } else {
-                console.error('Failed to order the transaction. Error code: ' + response.status);
-            }
-
-            if (results &amp;&amp; results[1] &amp;&amp; results[1].event_status === 'VALID') {
-                console.log('Successfully committed the change to the ledger by the peer');
-            } else {
-                console.log('Transaction failed to be committed to the ledger due to ::' + results[1].event_status);
-            }
-        }).then(function () {
-            return returnData;
-        })
-    }
-
-    query(requestData) {
-        var channel = this.getChannel();
-        return channel.queryByChaincode(requestData).then((response_payloads) =&gt; {
-            var resultData = JSON.parse(response_payloads.toString('utf8'));
-            return resultData;
-        }).then(function(resultData) {
-            if (resultData.constructor === Array) {
-                resultData = resultData.map(function (item, index) {
-                    if (item.data) {
-                        return item.data
-                    } else {
-                        return item;
-                    }
-                })
-            }
-
-            return resultData;
-        });
-    }
-}
-
-var fabricClient = new FBClient();
-fabricClient.loadFromConfig(configFilePath);
-
-module.exports = fabricClient;
-</pre>
+<div id="outline-container-orgcefedf7" class="outline-3">
+<h3 id="orgcefedf7">前提</h3>
+<div class="outline-text-3" id="text-orgcefedf7">
 </div>
+<div id="outline-container-org475ce2f" class="outline-4">
+<h4 id="org475ce2f">Docker</h4>
+</div>
+
+<div id="outline-container-org64e3235" class="outline-4">
+<h4 id="org64e3235">Docker Compose</h4>
+</div>
+
+<div id="outline-container-orga21f9cf" class="outline-4">
+<h4 id="orga21f9cf">Nodejs(v6.2.0-6.10.0)</h4>
+</div>
+</div>
+
+<div id="outline-container-org15719d9" class="outline-3">
+<h3 id="org15719d9">准备加密材料</h3>
+<div class="outline-text-3" id="text-org15719d9">
+<p>
+身份由x.509证书建立. 我们涉及到很多身份证明:
+</p>
+<ul class="org-ul">
+<li>peer需要身份来注册背书</li>
+<li>orderer需要身份来生成交易区块, 然后供给提交节点验证与加入区块链</li>
+<li>应用程序需要身份来生成交易请求</li>
+<li>Fabric CA需要身份, 这样它们的给证书的签名都能被验证</li>
+</ul>
+
+<p>
+在开发阶段, 我们直接使用cryptogen工具来生成需要的密钥和证书.
+</p>
+
+<p>
+cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以用来启动Fabric-CA服务器(如果要将Fabric CA作为项目的一部分). 另外, 它还会生成一个 <code>ADMIN</code>, 它具有特殊的操作权限. 最后, 它还生成用于提交交易的 <code>MEMBER</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org314da06" class="outline-3">
+<h3 id="org314da06">创世区块</h3>
+<div class="outline-text-3" id="text-org314da06">
+<p>
+我们需要使用创世区块来启动网络. 使用configtxgen工具来生成genesis.block.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf147c6a" class="outline-3">
+<h3 id="orgf147c6a">启动网络</h3>
+<div class="outline-text-3" id="text-orgf147c6a">
+<p>
+使用docker-compose来启动网络.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org806861e" class="outline-2">
+<h2 id="org806861e">如何创建channel</h2>
+<div class="outline-text-2" id="text-org806861e">
+</div>
+<div id="outline-container-org66ebc81" class="outline-3">
+<h3 id="org66ebc81">步骤</h3>
+<div class="outline-text-3" id="text-org66ebc81">
+<ul class="org-ul">
+<li>使用configtxgen工具, 生成genesis.block</li>
+<li>使用configtxgen工具, 生成 *.tx</li>
+<li>获取channel的可签名的配置文件</li>
+<li>使用fabric-client SDK注册channel的可签名的配置文件</li>
+<li>使用fabric-client SDK将channel可签名配置文件和签名发给orderer</li>
+<li>使用fabric-client SDK将peer加入到channel</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2a804f8" class="outline-3">
+<h3 id="org2a804f8">使用*.tx构建可签名的channel配置</h3>
 </div>
 </div>
 
@@ -348,7 +285,7 @@ module.exports = fabricClient;
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-03</span>
-        <span title="last modification date" class="post-info">2018-04-03</span>
+        <span title="last modification date" class="post-info">2018-04-11</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>

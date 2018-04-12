@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>IEEE802标准与以太网 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>IEEE802标准与以太网</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgac6d253">OSI模型与TCP/IP协议族</a>
+<ul>
+<li><a href="#orgebd288e">OSI</a></li>
+<li><a href="#orgf802930">TCP/IP协议族</a></li>
+</ul>
+</li>
+<li><a href="#org3ef20f5">IEEE802参考模型</a></li>
+<li><a href="#org828ba0d">以太网</a>
+<ul>
+<li><a href="#org8a898e9">MAC层</a></li>
+<li><a href="#org98df30a">LLC层</a></li>
+<li><a href="#orgc23990c">MAC帧和LLC帧的关系</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgac6d253" class="outline-2">
+<h2 id="orgac6d253">OSI模型与TCP/IP协议族</h2>
+<div class="outline-text-2" id="text-orgac6d253">
+<p>
+ISO(国际标准化组织)专门就一些国际标准达成世界范围的一致.
+</p>
+</div>
+
+<div id="outline-container-orgebd288e" class="outline-3">
+<h3 id="orgebd288e">OSI</h3>
+<div class="outline-text-3" id="text-orgebd288e">
+<p>
+在网络方面的ISO标准, 就是OSI(开放系统互连)模型. 该模型使两个不同的系统能够较容易地通信. 它不是协议, 而是一种模型, 用来设计网络体系结构, 使得所有类型的计算机系统可以通信. 该模型包括7层.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf802930" class="outline-3">
+<h3 id="orgf802930">TCP/IP协议族</h3>
+<div class="outline-text-3" id="text-orgf802930">
+<p>
+TCP/IP协议族比OSI模型更早出现, 因此无法与OSI模型准确对应, TCP/IP协议族只有丑怪.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3ef20f5" class="outline-2">
+<h2 id="org3ef20f5">IEEE802参考模型</h2>
+<div class="outline-text-2" id="text-org3ef20f5">
+<p>
+IEEE802参考模型只定义了物理层和数据链路层. 其他层次尽可能与OSI模型一致. 它主要做的是与局域网标准化有关的工作.
+</p>
+
+<p>
+在OSI模型中的物理层, 在IEEE802局域网参考模型中, 改成了两层: 介质说明和介质访问单元.
+</p>
+
+<p>
+在OSI模型中的数据链路层, 在IEEE802标准中, 也改成了两层: 媒体访问控制子层(MAC)和逻辑链路控制子层(LLC).
+</p>
+
+<p>
+LLC: 实现数据传输, 负责数据链路层的流量控制和差错控制.
+MAC: 保证物理功能和逻辑功能的连续性, 还把从LLC子层收到的数据组装成帧, 交给物理层.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org828ba0d" class="outline-2">
+<h2 id="org828ba0d">以太网</h2>
+<div class="outline-text-2" id="text-org828ba0d">
+</div>
+<div id="outline-container-org8a898e9" class="outline-3">
+<h3 id="org8a898e9">MAC层</h3>
+<div class="outline-text-3" id="text-org8a898e9">
+<p>
+以太网在IEEE802.3的基础上进行扩展, 符合以太网标准的局域网称为以太网.
+</p>
+
+<p>
+以太网的物理地址就是MAC地址. 该地址可分成单播地址, 多播地址和广播地址.
+</p>
+
+<p>
+以太网帧所封装的高层协议数据最小长度是46B, 如果小于46B, 则填充到46B.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org98df30a" class="outline-3">
+<h3 id="org98df30a">LLC层</h3>
+<div class="outline-text-3" id="text-org98df30a">
+<p>
+LLC有三种帧: 信息帧(I-帧), 监控帧(S-帧), 无编号帧(U-帧). 信息帧和监控帧的控制字段为2B, 无编号帧的控制字段为1B.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc23990c" class="outline-3">
+<h3 id="orgc23990c">MAC帧和LLC帧的关系</h3>
+<div class="outline-text-3" id="text-orgc23990c">
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/11/ieee802标准与以太网/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-11</span>
+        <span title="last modification date" class="post-info">2018-04-11</span>
+        <span title="tags" class="post-info"><a href="/tags/计算机网络/">计算机网络</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/11/ieee802标准与以太网";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/11/ieee802标准与以太网";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
