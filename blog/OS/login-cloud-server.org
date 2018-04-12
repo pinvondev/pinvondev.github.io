@@ -1,0 +1,40 @@
+#+TITLE:       登录云服务器
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@ubuntu
+#+DATE:        2018-04-11 三
+#+URI:         /blog/%y/%m/%d/登录云服务器
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        Ubuntu
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 腾讯云
+
+** 本地Linux 远程Linux
+
+*** 创建SSH密钥
+
+控制台 - SSH密钥 - 创建密钥
+
+*** 下载私钥
+
+创建私钥后, 自动下载.
+
+*** 绑定云服务器
+
+右键选择刚创建的密钥, 选择绑定云主机.
+
+*** 使用私钥登录
+
+为安全起见, 私钥不应该公开可见, 只有SSH才能工作.
+#+BEGIN_SRC Shell
+chmod 400 /path/to/priv-key
+#+END_SRC
+
+登录:
+#+BEGIN_SRC Shell
+ssh -i /path/to/priv-key hostname@ip
+# 如
+ssh -i ~/pinvon_priv_key ubuntu@119.xxx.xxx.xxx
+#+END_SRC
