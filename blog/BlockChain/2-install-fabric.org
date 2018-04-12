@@ -43,9 +43,12 @@ docker-compose -f docker-compose.yml up -d
 
 网络启动后, 可以通过 =docker ps= 来查看已经启动的容器. (容器就是镜像文件的一个实例, 类似于类和对象的关系)
 
+[[./37.png]]
+
 *** 创建channel
 
 #+BEGIN_SRC Shell
+# 切换到管理员用户
 docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
 
 peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
@@ -57,6 +60,8 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
  peer channel join -b mychannel.bloc
  #+END_SRC
 
+[[./38.png]]
+
 *** 安装chaincode
 
 #+BEGIN_SRC Shell
@@ -67,7 +72,7 @@ exit
 docker exec -it cli /bin/bash
 
 # 安装chaincode
-peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
+peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 #+END_SRC
 
 *** 实例化chaincode
@@ -83,11 +88,17 @@ peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v
 peer chaincode query -C mychannel -n mycc -v v0 -v '{"Args": ["query", "a"]}'
 #+END_SRC
 
+[[./39.png]]
+
 *** 调用chaincode查询
 
 #+BEGIN_SRC Shell
 peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 #+END_SRC
+
+[[./40.png]]
+
+可以看到, 转账过后, a的值变成了90, b的值变成了210.
 
 *** 节点的配置参数传递规则
 
