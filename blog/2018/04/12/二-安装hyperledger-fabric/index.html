@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>二 安装Hyperledger Fabric - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>二 安装Hyperledger Fabric</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9abbb54">安装Hyperledger Fabric</a>
+<ul>
+<li><a href="#org4dc1ce5">下载Docker镜像文件</a></li>
+<li><a href="#orgec14c32">部署网络</a>
+<ul>
+<li><a href="#org42b36ff">创建channel</a></li>
+<li><a href="#orgba72061">加入channel</a></li>
+<li><a href="#orgd48e3ce">安装chaincode</a></li>
+<li><a href="#org4f64210">实例化chaincode</a></li>
+<li><a href="#orga9f20ce">调用chaincode</a></li>
+<li><a href="#orgea0572c">调用chaincode查询</a></li>
+<li><a href="#orgb5dfbe6">节点的配置参数传递规则</a></li>
+</ul>
+</li>
+<li><a href="#orgd523c54">yaml配置文件</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9abbb54" class="outline-2">
+<h2 id="org9abbb54">安装Hyperledger Fabric</h2>
+<div class="outline-text-2" id="text-org9abbb54">
+<p>
+<a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64">安装</a>
+</p>
+
+<p>
+也可以不必自己编译镜像文件, 直接下载即可. 在安装完 Git, Go, Docker 后, 下载 Fabric 源码.
+</p>
+</div>
+
+<div id="outline-container-org4dc1ce5" class="outline-3">
+<h3 id="org4dc1ce5">下载Docker镜像文件</h3>
+<div class="outline-text-3" id="text-org4dc1ce5">
+<div class="org-src-container">
+<pre class="src src-Shell">cd fabric/scripts
+
+# 不下载二进制文件
+sed -i 's/curl/#curl/g' bootstrap.sh
+
+./bootstrap.sh
+</pre>
+</div>
+
+<p>
+镜像文件下载完成后, 输入 <code>docker images</code>, 可以看到如下内容:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/12/二-安装hyperledger-fabric/32.png" alt="32.png" />
+</p>
+</div>
+
+<p>
+其中, <code>REPOSITORY</code> 表示镜像的仓库名称, 每个仓库下面都有许多不同版本的镜像文件, <code>TAG</code> 就是这个镜像文件的版本, 一般 <code>TAG</code> 有 <code>latest</code> 和 <code>主机CPU类型-版本号-snapshot-代码库版本号</code> 两种, <code>snapshot</code> 和 <code>代码库版本号</code> 只在本地编译时有, 如果是直接从网上拉取的镜像文件, 则没有这些字段.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgec14c32" class="outline-3">
+<h3 id="orgec14c32">部署网络</h3>
+<div class="outline-text-3" id="text-orgec14c32">
+<p>
+使用 <code>fabric-samples</code> 中已经生成的配置文件来部署网络:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples.git
+cd fabric-samples/basic-network
+docker-compose -f docker-compose.yml up -d
+</pre>
+</div>
+
+<p>
+网络启动后, 可以通过 <code>docker ps</code> 来查看已经启动的容器. (容器就是镜像文件的一个实例, 类似于类和对象的关系)
+</p>
+</div>
+
+<div id="outline-container-org42b36ff" class="outline-4">
+<h4 id="org42b36ff">创建channel</h4>
+<div class="outline-text-4" id="text-org42b36ff">
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
+
+peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgba72061" class="outline-4">
+<h4 id="orgba72061">加入channel</h4>
+<div class="outline-text-4" id="text-orgba72061">
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel join -b mychannel.bloc
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd48e3ce" class="outline-4">
+<h4 id="orgd48e3ce">安装chaincode</h4>
+<div class="outline-text-4" id="text-orgd48e3ce">
+<div class="org-src-container">
+<pre class="src src-Shell"># 退出peer0.org1.example.com容器
+exit
+
+# 进入CLI容器(CLI容器相当于客户端)
+docker exec -it cli /bin/bash
+
+# 安装chaincode
+peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4f64210" class="outline-4">
+<h4 id="org4f64210">实例化chaincode</h4>
+<div class="outline-text-4" id="text-org4f64210">
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9f20ce" class="outline-4">
+<h4 id="orga9f20ce">调用chaincode</h4>
+<div class="outline-text-4" id="text-orga9f20ce">
+<p>
+实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode query -C mychannel -n mycc -v v0 -v '{"Args": ["query", "a"]}'
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgea0572c" class="outline-4">
+<h4 id="orgea0572c">调用chaincode查询</h4>
+<div class="outline-text-4" id="text-orgea0572c">
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb5dfbe6" class="outline-4">
+<h4 id="orgb5dfbe6">节点的配置参数传递规则</h4>
+<div class="outline-text-4" id="text-orgb5dfbe6">
+<p>
+程序在启动的时候, 会读取配置文件和环境变量的值, 如 <code>fabric-samples/basic-network/docker-compose.yml</code> 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/12/二-安装hyperledger-fabric/33.png" alt="33.png" />
+</p>
+</div>
+
+<p>
+每种组件的环境变量都要单独设置, 每个环境变量的名称都有前缀, 如ORDERER_GENERAL_LOGLEVEL的前缀是ORDERER, 它属于Orderer节点; 前缀是CORE的是Peer节点.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd523c54" class="outline-3">
+<h3 id="orgd523c54">yaml配置文件</h3>
+<div class="outline-text-3" id="text-orgd523c54">
+<p>
+查看 <code>fabric/examples/e2e_cli/base/docker-compose-base.yaml</code> 配置文件. 此处给出其中一些选项的解释.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">选项</th>
+<th scope="col" class="org-left">举例</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">version</td>
+<td class="org-left">version:'2'</td>
+<td class="org-left">采用version2的语法</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">services</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">定义服务列表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">orderer.example.com</td>
+<td class="org-left">根据服务名称自定义</td>
+<td class="org-left">自定义的服务名称, 需要唯一</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">container_name</td>
+<td class="org-left">container_name: orderer.example.com</td>
+<td class="org-left">容器名称</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">image</td>
+<td class="org-left">image:hyperledger/fabric-orderer</td>
+<td class="org-left">容器使用的镜像文件</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">environment</td>
+<td class="org-left">-CORE_PEER_LOCALMSPID=Org1MSP</td>
+<td class="org-left">传递给容器的环境变量</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">working_dir</td>
+<td class="org-left">working_dir:/opt/gopath/src/github.com/hyperledger/fabric</td>
+<td class="org-left">容器启动的工作目录</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">command</td>
+<td class="org-left">command:orderer</td>
+<td class="org-left">容器启动命令</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">volumes</td>
+<td class="org-left">- <i>var/run:/host/var/run</i></td>
+<td class="org-left">宿主机和容器之间的目录映射</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">ports</td>
+<td class="org-left">- 7050:7050</td>
+<td class="org-left">宿主机和容器之间的端口映射</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">extends</td>
+<td class="org-left">file: common.yml</td>
+<td class="org-left">服务扩展, 基于common.yml文件</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">extends</td>
+<td class="org-left">service:peer-base</td>
+<td class="org-left">服务扩展, 基础服务是peer-base</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-12</span>
+        <span title="last modification date" class="post-info">2018-04-12</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/12/二-安装hyperledger-fabric";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/12/二-安装hyperledger-fabric";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
