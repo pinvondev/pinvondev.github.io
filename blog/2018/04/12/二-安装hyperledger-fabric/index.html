@@ -35,30 +35,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9abbb54">安装Hyperledger Fabric</a>
+<li><a href="#org1fe3cd2">安装Hyperledger Fabric</a>
 <ul>
-<li><a href="#org4dc1ce5">下载Docker镜像文件</a></li>
-<li><a href="#orgec14c32">部署网络</a>
+<li><a href="#orgf37900b">下载Docker镜像文件</a></li>
+<li><a href="#org3469cc8">部署网络</a>
 <ul>
-<li><a href="#org42b36ff">创建channel</a></li>
-<li><a href="#orgba72061">加入channel</a></li>
-<li><a href="#orgd48e3ce">安装chaincode</a></li>
-<li><a href="#org4f64210">实例化chaincode</a></li>
-<li><a href="#orga9f20ce">调用chaincode</a></li>
-<li><a href="#orgea0572c">调用chaincode查询</a></li>
-<li><a href="#orgb5dfbe6">节点的配置参数传递规则</a></li>
+<li><a href="#org111b071">创建channel</a></li>
+<li><a href="#org3bcc4a4">加入channel</a></li>
+<li><a href="#org0e36b97">安装chaincode</a></li>
+<li><a href="#orge03bf90">实例化chaincode</a></li>
+<li><a href="#org6d7cd97">调用chaincode</a></li>
+<li><a href="#org102b796">调用chaincode查询</a></li>
+<li><a href="#orgc2e3a60">节点的配置参数传递规则</a></li>
 </ul>
 </li>
-<li><a href="#orgd523c54">yaml配置文件</a></li>
+<li><a href="#org86ceabe">yaml配置文件</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9abbb54" class="outline-2">
-<h2 id="org9abbb54">安装Hyperledger Fabric</h2>
-<div class="outline-text-2" id="text-org9abbb54">
+<div id="outline-container-org1fe3cd2" class="outline-2">
+<h2 id="org1fe3cd2">安装Hyperledger Fabric</h2>
+<div class="outline-text-2" id="text-org1fe3cd2">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64">安装</a>
 </p>
@@ -68,9 +68,9 @@
 </p>
 </div>
 
-<div id="outline-container-org4dc1ce5" class="outline-3">
-<h3 id="org4dc1ce5">下载Docker镜像文件</h3>
-<div class="outline-text-3" id="text-org4dc1ce5">
+<div id="outline-container-orgf37900b" class="outline-3">
+<h3 id="orgf37900b">下载Docker镜像文件</h3>
+<div class="outline-text-3" id="text-orgf37900b">
 <div class="org-src-container">
 <pre class="src src-Shell">cd fabric/scripts
 
@@ -97,9 +97,9 @@ sed -i 's/curl/#curl/g' bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-orgec14c32" class="outline-3">
-<h3 id="orgec14c32">部署网络</h3>
-<div class="outline-text-3" id="text-orgec14c32">
+<div id="outline-container-org3469cc8" class="outline-3">
+<h3 id="org3469cc8">部署网络</h3>
+<div class="outline-text-3" id="text-org3469cc8">
 <p>
 使用 <code>fabric-samples</code> 中已经生成的配置文件来部署网络:
 </p>
@@ -113,13 +113,20 @@ docker-compose -f docker-compose.yml up -d
 <p>
 网络启动后, 可以通过 <code>docker ps</code> 来查看已经启动的容器. (容器就是镜像文件的一个实例, 类似于类和对象的关系)
 </p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/12/二-安装hyperledger-fabric/37.png" alt="37.png" />
+</p>
+</div>
 </div>
 
-<div id="outline-container-org42b36ff" class="outline-4">
-<h4 id="org42b36ff">创建channel</h4>
-<div class="outline-text-4" id="text-org42b36ff">
+<div id="outline-container-org111b071" class="outline-4">
+<h4 id="org111b071">创建channel</h4>
+<div class="outline-text-4" id="text-org111b071">
 <div class="org-src-container">
-<pre class="src src-Shell">docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
+<pre class="src src-Shell"># 切换到管理员用户
+docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
 
 peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
 </pre>
@@ -127,19 +134,25 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-orgba72061" class="outline-4">
-<h4 id="orgba72061">加入channel</h4>
-<div class="outline-text-4" id="text-orgba72061">
+<div id="outline-container-org3bcc4a4" class="outline-4">
+<h4 id="org3bcc4a4">加入channel</h4>
+<div class="outline-text-4" id="text-org3bcc4a4">
 <div class="org-src-container">
 <pre class="src src-Shell">peer channel join -b mychannel.bloc
 </pre>
 </div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/12/二-安装hyperledger-fabric/38.png" alt="38.png" />
+</p>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgd48e3ce" class="outline-4">
-<h4 id="orgd48e3ce">安装chaincode</h4>
-<div class="outline-text-4" id="text-orgd48e3ce">
+<div id="outline-container-org0e36b97" class="outline-4">
+<h4 id="org0e36b97">安装chaincode</h4>
+<div class="outline-text-4" id="text-org0e36b97">
 <div class="org-src-container">
 <pre class="src src-Shell"># 退出peer0.org1.example.com容器
 exit
@@ -148,15 +161,15 @@ exit
 docker exec -it cli /bin/bash
 
 # 安装chaincode
-peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
+peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org4f64210" class="outline-4">
-<h4 id="org4f64210">实例化chaincode</h4>
-<div class="outline-text-4" id="text-org4f64210">
+<div id="outline-container-orge03bf90" class="outline-4">
+<h4 id="orge03bf90">实例化chaincode</h4>
+<div class="outline-text-4" id="text-orge03bf90">
 <div class="org-src-container">
 <pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
 </pre>
@@ -164,9 +177,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
 </div>
 </div>
 
-<div id="outline-container-orga9f20ce" class="outline-4">
-<h4 id="orga9f20ce">调用chaincode</h4>
-<div class="outline-text-4" id="text-orga9f20ce">
+<div id="outline-container-org6d7cd97" class="outline-4">
+<h4 id="org6d7cd97">调用chaincode</h4>
+<div class="outline-text-4" id="text-org6d7cd97">
 <p>
 实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
 </p>
@@ -174,22 +187,38 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
 <pre class="src src-Shell">peer chaincode query -C mychannel -n mycc -v v0 -v '{"Args": ["query", "a"]}'
 </pre>
 </div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/12/二-安装hyperledger-fabric/39.png" alt="39.png" />
+</p>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgea0572c" class="outline-4">
-<h4 id="orgea0572c">调用chaincode查询</h4>
-<div class="outline-text-4" id="text-orgea0572c">
+<div id="outline-container-org102b796" class="outline-4">
+<h4 id="org102b796">调用chaincode查询</h4>
+<div class="outline-text-4" id="text-org102b796">
 <div class="org-src-container">
 <pre class="src src-Shell">peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </pre>
 </div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/12/二-安装hyperledger-fabric/40.png" alt="40.png" />
+</p>
+</div>
+
+<p>
+可以看到, 转账过后, a的值变成了90, b的值变成了210.
+</p>
 </div>
 </div>
 
-<div id="outline-container-orgb5dfbe6" class="outline-4">
-<h4 id="orgb5dfbe6">节点的配置参数传递规则</h4>
-<div class="outline-text-4" id="text-orgb5dfbe6">
+<div id="outline-container-orgc2e3a60" class="outline-4">
+<h4 id="orgc2e3a60">节点的配置参数传递规则</h4>
+<div class="outline-text-4" id="text-orgc2e3a60">
 <p>
 程序在启动的时候, 会读取配置文件和环境变量的值, 如 <code>fabric-samples/basic-network/docker-compose.yml</code> 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
 </p>
@@ -207,9 +236,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
 </div>
 </div>
 
-<div id="outline-container-orgd523c54" class="outline-3">
-<h3 id="orgd523c54">yaml配置文件</h3>
-<div class="outline-text-3" id="text-orgd523c54">
+<div id="outline-container-org86ceabe" class="outline-3">
+<h3 id="org86ceabe">yaml配置文件</h3>
+<div class="outline-text-3" id="text-org86ceabe">
 <p>
 查看 <code>fabric/examples/e2e_cli/base/docker-compose-base.yaml</code> 配置文件. 此处给出其中一些选项的解释.
 </p>
@@ -325,7 +354,7 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-12</span>
-        <span title="last modification date" class="post-info">2018-04-12</span>
+        <span title="last modification date" class="post-info">2018-04-13</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
