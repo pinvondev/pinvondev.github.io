@@ -1,55 +1,39 @@
-ProposalResponse:{
-    Version:Version,
-    Timestamp:Timestamp,
-    Response:{
-        Status:Status,
-        Message:Message,
-        Payload:Payload
-    },
-    Payload(ProposalResponsePayload):{
-        ProposalHash:ProposalHash,
-        Extension(ChaincodeAction):{
-            Results(TxRwSet):{
-                NsRwSets(NsRwSets):[
-                    NameSpace:NameSpace,
-                    KvRwSet:{
-                        Reads(KVRead):[
-                            Key:Key,
-                            Version:{
-                                BlockNum:BlockNum,
-                                TxNum:TxNum
-                            }
-                        ],
-                        RangeQueriesInfo(RangeQueriesInfo):[
-                            StartKey:StartKey,
-                            EndKey:EndKey,
-                            ItrExhausted:ItrExhausted,
-                            ReadsInfo:ReadsInfo
-                        ],
-                        Writes(KVWrite):[
-                            Key:Key,
-                            IsDelete:IsDelete,
-                            Value:Value
-                        ]
-                    }
-                ]
-            },
-            Events(ChaincodeEvent):{
-                ChaincodeId:ChaincodeId,
-                TxId:TxId,
-                EventName:EventName,
-                Payload:Payload
-            }
-            Response:{
-                Status:Status,
-                Message:Message,
-                Payload:Payload
-            },
-            ChaincodeId:ChaincodeId
-        }
-    },
-    Endorsement:{
-        Endorser:Endorser,
-        Signature:Signature
-    }
+message Envelope { // 包含一个带有签名的负载, 以便认证该消息
+    bytes payload = 1;
+    bytes signature = 2;  // 客户端签名
+}
+
+message Payload {  // 消息内容, 可以签名
+    Header header = 1;  // 负载头部, 提供身份验证并防止重放
+    bytes data = 3;
+}
+
+message Header {
+    bytes channel_header = 1;
+    bytes signature_header = 2;
+}
+
+message ChannelHeader {
+    int32 type = 1;
+    int32 version = 2;
+    google.protobuf.Timestamp timestamp = 3;
+    string channel_id = 4;
+    string tx_id = 5;  // 由客户端设置
+    uint64 epoch = 6;
+    bytes extension = 7;
+}
+
+enum HeaderType {
+    MESSAGE = 0;  // 非透明消息
+    CONFIG = 1;  // channel配置
+    CONFIG_UPDATE = 2;  // channel配置更新
+    ENDORSER_TRANSACTION = 3;  // SDK提交背书
+    ORDERER_TRANSACTION = 4;
+    DELIVER_SEEK_INFO = 5;
+    CHANICODE_PACKAGE = 6;
+}
+
+message SignatureHeader {
+    bytes creator = 1;
+    bytes nonce = 2;
 }

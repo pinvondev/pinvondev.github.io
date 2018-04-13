@@ -229,3 +229,279 @@ ProposalResponse:{
     }
 }
 #+END_SRC
+ProposalResponse = Version + Timestamp + Response + Payload + Endorsement
+
+主要是Payload中的读写集, Endorsement中的背书节点签名和channel名称.
+
+** 客户端收集交易的背书
+
+客户端收集到ProposalResponse后, 对其中的背书节点签名进行验证. 记住, 所有的节点接收到任何消息后, 都要先验证消息的合法性.
+
+如果chaincode只进行账本查询, 客户端只检查查询响应, 而不将交易提交给Orderer节点; 如果chaincode对账本进行Invoke操作, 则客户端先判断是否满足背书策略(如果客户端未收集到足够的背书就提交了交易, Committer节点会在提交验证阶段发现交易不能满足背书策略, 将会标记为无效交易), 然后将交易提交给Orderer节点, 进行账本更新.
+
+** 客户端构造交易请求并发送给Orderer
+
+客户端接收到所有的背书节点签名后, 将背书签名作为参数调用SDK生成交易, 广播给Orderer.
+
+生成交易的过程: 先确认所有背书节点的执行结果完全一致, 再将交易提案, 提案响应和背书签名打包, 生成交易.
+
+交易的数据结构如下:
+#+BEGIN_SRC JSON
+Envelope:{
+    Payload:{
+        Header:{
+            ChannelHeader:{
+                Type:"HeaderType_ENDORSER_TRANSACTION",
+                TxId:TxId,
+                Timestamp:Timestamp,
+                ChannelId:ChannelId,
+                Extension(ChaincodeHeaderExtension):{
+                    PayloadVisibility:PayloadVisibility,
+                    ChaincodeId:{
+                        Path:Path,
+                        Name:Name,
+                        Version:Version
+                    }
+                },
+                Epoch:Epoch
+            },
+            SignatureHeader:{
+                Creator:Creator,
+                Nonce:Nonce
+            }
+        },
+        Data(Transaction):{
+            TransactionAction:[
+                Header(SignatureHeader):{
+                    Creator:Creator,
+                    Nonce:Nonce
+                },
+                Payload(ChaincodeActionPayload):{
+                    ChaincodeProposalPayload:{
+                        Input(ChaincodeInvocationSpec):{
+                            ChaincodeSpec:{
+                                Type:Type,
+                                ChaincodeId:{
+                                    Name:Name
+                                },
+                                Input(ChaincodeInput):{
+                                    Args:[]
+                                }
+                            }
+                        },
+                        TransientMap:nil
+                    },
+                    Action(ChaincodeEndorsedAction):{
+                        Payload(ProposalResponsePayload):{
+                            ProposalHash:ProposalHash,
+                            Extension(ChaincodeAction):{
+                                Results(TxRwSet):{
+                                    NsRwSets(NsRwSet):[
+                                        NameSpace:NameSpace,
+                                        KvRwSet:{
+                                            Reads(KVRead):[
+                                                Key:Key,
+                                                Version:{
+                                                    BlockNum:BlockNum,
+                                                    TxNum:TxNum
+                                                }
+                                            ],
+                                            RangeQueriesInfo(RangeQueryInfo):[
+                                                StartKey:StartKey,
+                                                EndKey:EndKey,
+                                                ItrExhausted:ItrExhausted,
+                                                ReadsInfo:ReadsInfo
+                                            ],
+                                            Writes(KVWrite):[
+                                                Key:Key,
+                                                IsDelete:IsDelete,
+                                                Value:Value
+                                            ]
+                                        }
+                                    ]
+                                },
+                                Events(ChaincodeEvent):{
+                                    ChaincodeId:ChaincodeId,
+                                    TxId:TxId,
+                                    EventName:EventName,
+                                    Payload:Payload
+                                }
+                                Response:{
+                                    Status:Status,
+                                    Message:Message,
+                                    Payload:Payload
+                                },
+                                ChaincodeId:ChaincodeId
+                            }
+                        },
+                        Endorsement:[
+                            Endorser:Endorser,
+                            Signature:Signature
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    Signature:Signature
+}
+#+END_SRC
+Envelope = Payload1 + Signature(客户端对Payload1的签名)
+Payload1 = Header + Data
+Header = ChannelHeader + SignatureHeader
+Data = TransactionAction + Payload2
+Payload2 = ChaincodeProposalPayload + Action
+Action = Payload3 + Endorsement
+...
+
+注意:
+
+Envelope.Payload.Header == SignedProposal.Proposal.Header; (和交易提案的头部信息相同).
+
+Envelope.Payload.Data.TransactionAction.Header 是交易提案的提交者的身份信息, 与 Envelope.Payload.Header.SignatureHeader, SignedProposal.Proposal.Header.SignatureHeader 是相同的.
+
+Envelope.Payload.Data.TransactionAction.Payload.ChaincodeProposalPayload 与 SignedProposal.Proposal.Payload.ChaincodeProposalPayload 类似, 除了前者的TransientMap设置成了nil, 目的是避免在区块中出现敏感信息.
+
+Envelope.Payload.Data.TransactionAction.Payload.Action.Payload == ProposalResponse.Payload.
+
+Envelope.Payload.Data.Transaction.Payload.Action.Endorsement 是数组, 将多个背书节点的背书签名放置在这里.
+
+** Orderer对交易进行排序并生成区块
+
+Orderer不读取交易的内容, 所以如果在交易(背书前称为提案, 背书后将提案打包在一起, 称为交易)里面伪造了交易模拟执行的结果, Orderer并不会发现. 但是在最终的交易验证阶段会被校验出来, 并标记为无效交易.
+
+Orderer做的事情:
+1. 接收所有channel发出的交易信息
+2. 读取交易数据结构中的Envelope.Payload.Header.ChannelHeader.ChannelId 获取channel名称
+3. 按各个channel上交易的接收时间顺序对交易信息进行排序, 生成区块
+
+** Orderer广播给组织的主节点
+
+** Committer验证区块内容并写入区块
+
+哪些交易选择哪些节点作为背书节点是由客户端选择的, 需要满足背书策略都能生效.
+
+committer节点记录的是节点所加入的channel的账本数据.
+
+流程如下:
+
+[[./41.png]]
+
+*** 交易数据的验证
+
+对区块中的数据的验证, 以交易为单位. 验证内容如下:
+1. 交易格式是否正确
+2. 是否有合法的签名
+3. 交易内容是否被篡改
+4. committer节点是否加入了该channel
+
+*** committer节点与VSCC
+
+chaincode的交易是隔离的, 每个交易的模拟执行结果读写集TxRwSet都包含了交易所属的chaincode.
+
+为避免错误地更新chaincode交易数据, 在交易提交给系统chaincode(VSCC)验证前, 还要对chaincode进行校验. 以下交易都是无效的:
+1. chaincode的名称或版本为空
+2. Envelope.Payload.Header.ChannelHeader.Extension.ChaincodeId.Name != Envelope.Payload.Data.TransactionAction.Payload.ChaincodeProposalPayload.Input.ChaincodeSpec.ChaincodeId.Name
+3. chaincode更新chaincode数据时, 生成读写集的chaincode版本不是LSCS(生命周期管理系统chaincode)记录的最新版本
+4. chaincode更新了LSCC的数据
+5. chaincode更新了VSCC的数据
+
+*** 基于状态数据的验证和MVCC检查
+
+交易通过VSCC检查后, 就进入记账流程. 键值账本会对读写集TxRwSet进行MVCC(Multi-Version Concurrency Control)检查.
+
+键值账本实现的是基于键值对的状态数据模型, 对状态数据的键有3种操作:
+- 读状态数据
+- 写状态数据
+- 删除状态数据
+
+对状态数据的读操作有两种形式:
+- 基于单一键的读取
+- 基于键范围的读取
+
+MVCC的检查是对模拟执行时状态数据的版本和提交交易时状态数据的版本进行比较. 如果版本发生变化, 就说明这段时间之内有别的交易改变了状态数据, 当前交易基于原有状态的处理就是有问题的.
+
+由于交易提交是并行的, 所以在交易未打包生成区块之前, 并不能确定最终的执行顺序. 如果交易执行的顺序存在依赖, 在MVCC检查的时候就会出现依赖的状态发生了变化, 实际上是数据发生了冲突.
+
+为了提升效率, 状态数据库的提交是批处理的, 整个区块交易的状态数据同时提交, 意思就是整个区块的状态数据要么都提交成功, 要么都提交失败.
+
+基于状态的数据验证流程如下:
+
+[[./42.png]]
+
+*** 无效交易的处理
+
+除了伪造的交易会导致交易无效外, 正常的交易也可能出现交易无效.
+
+因为如果MVCC检查的是背书节点在模拟执行的时候, 环境是否和committer节点提交交易时的环境(key, value, version)一致. 如果正常提交的交易在这个过程中涉及的数据发生了变化, 也会出现检查失败导致交易无效. 这时, 需要调整交易打包的配置, 重新提交失败的交易等.
+* 消息协议结构
+
+** Envelope消息结构
+
+#+BEGIN_SRC JSON
+message Envelope { // 包含一个带有签名的负载, 以便认证该消息
+    bytes payload = 1;
+    bytes signature = 2;  // 客户端签名
+}
+
+message Payload {  // 消息内容, 可以签名
+    Header header = 1;  // 负载头部, 提供身份验证并防止重放
+    bytes data = 3;
+}
+
+message Header {
+    bytes channel_header = 1;
+    bytes signature_header = 2;
+}
+
+message ChannelHeader {
+    int32 type = 1;
+    int32 version = 2;
+    google.protobuf.Timestamp timestamp = 3;
+    string channel_id = 4;
+    string tx_id = 5;  // 由客户端设置
+    uint64 epoch = 6;
+    bytes extension = 7;
+}
+
+enum HeaderType {
+    MESSAGE = 0;  // 非透明消息
+    CONFIG = 1;  // channel配置
+    CONFIG_UPDATE = 2;  // channel配置更新
+    ENDORSER_TRANSACTION = 3;  // SDK提交背书
+    ORDERER_TRANSACTION = 4;
+    DELIVER_SEEK_INFO = 5;
+    CHANICODE_PACKAGE = 6;
+}
+
+message SignatureHeader {
+    bytes creator = 1;
+    bytes nonce = 2;
+}
+#+END_SRC
+
+** 配置管理结构
+
+区块链有与之相关的配置, 配置设置在创世区块之中, 但在后续也可以修改.
+
+配置信息本身就是区块的一个单独交易.
+
+任何有权更改配置项的角色, 都可以构建新的配置信息交易. 修改配置项将更新序列号, 并产生新的创世区块, 这将引导新加入网络的各种节点.
+
+** 背书流程
+
+* 策略管理和访问控制
+
+** 交易背书策略
+
+背书策略是对交易进行背书的规则, 与channel和chaincode相关, 在chaincode实例化的时候指定.
+
+chaincode调用的时候, 需要从背书节点收集足够的签名背书, 只有通过背书策略的交易才是有效的.
+
+*** 验证背书策略
+
+committer节点收到区块后, 可以根据交易的内容, 在节点本地验证背书是否符合背书策略, 不需要和其他节点交互.
+
+*** chaincode实例化策略
+
+*** 通道管理策略

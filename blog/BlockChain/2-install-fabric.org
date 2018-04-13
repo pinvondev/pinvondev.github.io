@@ -57,7 +57,7 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 *** 加入channel
 
  #+BEGIN_SRC Shell
- peer channel join -b mychannel.bloc
+ peer channel join -b mychannel.block
  #+END_SRC
 
 [[./38.png]]
@@ -85,7 +85,7 @@ peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v
 
 实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
 #+BEGIN_SRC Shell
-peer chaincode query -C mychannel -n mycc -v v0 -v '{"Args": ["query", "a"]}'
+peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 #+END_SRC
 
 [[./39.png]]
@@ -93,6 +93,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -v '{"Args": ["query", "a"]}'
 *** 调用chaincode查询
 
 #+BEGIN_SRC Shell
+# 转账
+peer chaincode invoke -C mychannel -n mycc -v v0 -c '{"Args":["invoke","a","b","10"]}'
+
 peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 #+END_SRC
 
