@@ -1,0 +1,140 @@
+#+TITLE:       四 分布式账本
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-13 五
+#+URI:         /blog/%y/%m/%d/四-分布式账本
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+分布式账本技术(共享账本)通过在不同节点之间达成共识, 记录相同的账本数据.
+
+Hyperledger Fabric采用背书/共识模型, 模拟执行chaincode和区块验证是在不同角色的节点(endorsing peer & committer peer)中分开执行的, 模拟执行是并发的, 这样可以提高扩展性和吞吐量.
+
+每个Peer节点会维护多个账本, 如图所示:
+
+[[./43.png]]
+
+Hyperledger Fabric 主要包含以下元素:
+- 账本编号: 快速查询存在哪些账本
+- 账本数据: 实际的区块数据存储
+- 区块索引: 快速查询区块/交易
+- 状态数据: 最新的世界状态数据
+- 历史数据: 跟踪键的历史
+
+每个节点都会维护4个DB:
+- idStore: 存储chainID
+- stateDB: 存储world state
+- versioned DB: 存储key的版本变化
+- blockDB: 存储block
+
+** 读写集
+
+背书节点模拟执行交易时会生成读写集. 
+
+=Read Set= 包括一系列键值对, 其中键是唯一的, 内容是模拟执行交易时, 交易读取的键和对应的提交的版本.(读集包含键的版本)
+
+=Write Set= 包括一系列键值对, 其中键是唯一的, 内容是模拟执行交易时, 交易读取的键和准备写入的新值.(写集只包含键的最新值)
+
+如果交易执行的是删除键, 则为key设置删除标记.
+
+如果在一个交易中对同一个键进行了多次更新, 则以最后一个为准. 如果一个交易读取某个键对应的值, 只会返回提交状态的值, 而不管在提交状态之后是否还更新了该值.
+
+一个读写集的例子:
+#+BEGIN_SRC XML
+<TxReadWriteSet>
+  <NsReadWriteSet name="chaincode1">
+    <read-set>
+      <read key="K1", version="1">
+      <read key="K2", version="1">
+    </read-set>
+    <write-set>
+      <write key="K1", value="V1"
+      <write key="K3", value="V2"
+      <write key="K4", isDelete="true"
+    </write-set>
+  </NsReadWriteSet>
+<TxReadWriteSet>
+#+END_SRC
+
+** 交易验证和世界状态更新
+
+committer根据读集来验证交易, 根据写集来更新键的版本和值.
+
+判断交易合法性:
+1. 检查读集的版本号, 比较交易中读集里每个键的版本号是否和World State中键的版本号一致.
+2. 如果读写集包含query-info, 则检查query-info包含的键是否有变化(如新建键, 更新键, 删除键).
+3. 比较模拟阶段交易进行范围查询的结果, 与验证阶段范围查询的结果是否一致.
+
+通过验证后, committer节点会根据写集来更新World State: 遍历写集的每个键, 更新World State里对应的键值和版本号.
+
+*** 模拟和验证例子
+
+假设World State中的键值对用一个三元组来表示: (k, ver, val). 其中, k是键, ver是最新版本, val是值.
+
+现在有5个交易:T1, T2, T3, T4, T5. 它们都基于同一个World State进行模拟. 每个交易的读写集操作如下所示:
+World State的键值对为: (k1, 1, v1), (k2, 1, v2), (k3, 1, v3), (k4, 1, v4), (k5, 1, v5)
+| 交易 | 操作1            | 操作2          |
+|------+------------------+----------------|
+| T1   | Write(k1, v1')   | Write(k2, v2') |
+| T2   | Read(k1)         | Write(k3, v3') |
+| T3   | Write(k2, v2'')  |                |
+| T4   | Write(k2, v2''') | Read(k2)       |
+| T5   | Write(k6, v6')   | Read(k5)       |
+
+Orderer按照T1-T5的顺序进行排序, 则committer节点的验证结果如下:
+1. T1验证通过. 交易中没有读操作, 交易会更新键k1和k2, 更新后的三元组为(k1, 2, v1'), (k2, 2, v2')
+2. T2验证失败. 因为交易需要读取的键k1在T1中被修改了.
+3. T3验证通过. 因为交易中没有读操作, 更新后的三元组为(k2, 3, v2'')
+4. T4验证失败. 因为交易需要读取的键k2在T1中被修改了.
+5. T5验证通过. 因为交易需要读取的键k5在前面的交易中未被修改.
+** 账本编号
+** 账本数据
+
+*** 账本数据存储
+
+账本文件以 "blockfile_" 为前缀, 默认区块文件大小上限为64MB, 一个账本能保存的最大数据量约为61TB.
+
+committer节点负责维护节点本地的账本, 通过gossip模块从Orderer接收到区块以后, 将其添加到账本. 添加区块的流程如下:
+
+[[./44.png]]
+
+*** 账本数据读取
+
+*** 索引同步
+
+*** 交易模拟执行
+
+** 区块索引
+
+有多种区块索引方式, 帮助我们快速找到需要的区块.
+- 区块编号
+- 区块哈希
+- 交易编号
+- 区块编号 + 交易编号
+- 区块交易编号
+- 交易验证码
+
+** 状态数据
+
+World State记录交易执行结果.
+
+chaincode根据当前状态数据执行交易.
+
+为了提高chaincode的执行效率, 键的最新值都存储在状态数据库中, 状态数据库只是区块链交易日志中的索引视图, 因此可以随时根据区块链重新生成. 状态数据库在Peer节点启动时自动恢复, 重新构建完成后才接受新的交易.
+
+状态数据库目前可以用LevelDB和CouchDB. 不同账本的状态数据库存放在不同的目录下, 同一个账本的数据存放在一起, 不同chaincode的数据是按chaincodeid作为命名空间来划分数据的.
+
+在前面, 已经说World State中的数据可以用一个三元组来表示: (k, ver, val). 读取状态数据的时候, 不能指定版本, 只能读取最新版本, 但是返回的数据里面包含了版本信息.
+
+可以通过3种方式来查询区块数据: 查询单个键的数据GetState(), 查询多个键的数据GetStateMultipleKeys(), 查询一个范围内的数据GetStateRangeScanIterator(). 如果使用CouchDB, 还可以支持某些字段的条件查询.
+
+账本中可以包含多种chaincode的数据, 它们的存放根据账本编号作为命名空间进行分割.
+
+*** 基于状态数据的区块验证
+
+区块有两种类型: 背书交易区块, 配置交易区块.

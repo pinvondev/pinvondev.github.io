@@ -90,6 +90,19 @@ npm install
 gulp marbles_local
 #+END_SRC
 
+
+* 项目架构
+
+| 层次     | 描述         | 功能                                                                          |
+|----------+--------------+-------------------------------------------------------------------------------|
+| 应用层   | 移动端/Web端 | 注册 登录 计步 排行 商城 查看个人信息 邀请 发起提案 接收提案响应 发起交易 ... |
+|----------+--------------+-------------------------------------------------------------------------------|
+| 业务层   | 服务端       | 用户管理 能量管理 提供RestFul接口给应用层 使用Node.js SDK与智能合约交互       |
+|----------+--------------+-------------------------------------------------------------------------------|
+| 智能合约 | 背书 调用    | 生成能量 提案背书 增查删改 使用gRPC与区块链交互                               |
+|----------+--------------+-------------------------------------------------------------------------------|
+| 区块链   |              | CA 账本                                                                       |
+
 * 程序介绍
 
 chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链存储(账本)中以键值对的形式创建. 账本与chaincode的交互通过对网络上的一个节点使用gRPC协议来完成. gRPC协议的细节由[[https://www.npmjs.com/package/fabric-client][Hyperledger Fabric Client]] SDK处理.
@@ -142,9 +155,6 @@ chaincode: 定义资产和所有关于资产的规则.
 9. Orderer将新区块广播到网络中的节点.
 10. 节点收到新区块, 并通过查看各种签名和哈希值来验证它. 最后将该区块提交到节点的账本.
 11. 账本中会出现新的弹珠, 并很快会出现在所有节点的账本中.
-
-
-
 
 * 注册
 
@@ -312,3 +322,26 @@ fabric_client.setUserContext(). 参数为User对象. 以后这个用户的私钥
 
 注册普通用户:
 参考fabcar/registerUser.js
+* 查询chaincode
+
+** 调用栈
+
+| query_cc.js       | query_cc.query_chaincode(obj, options, cb) |
+|-------------------+--------------------------------------------|
+| index.js          | fcw.query_chaincode(obj, options, cb_done) |
+|-------------------+--------------------------------------------|
+| marbles_cc_lib.js | fcw.query_chaincode(enrollobj, options, cb) |
+
+
+在 =marbles_cc_lib.js= 的 =fcw.query_chaincode(enrollobj, options, cb)= 中, 可以查到 =options= 的内容. 如下:
+#+BEGIN_SRC JavaScript
+		var opts = {
+			peer_urls: g_options.peer_urls,
+			peer_tls_opts: g_options.peer_tls_opts,
+			channel_id: g_options.channel_id,
+			chaincode_id: g_options.chaincode_id,
+			chaincode_version: g_options.chaincode_version,
+			cc_function: 'read',
+			cc_args: ['selftest']
+		};
+#+END_SRC
