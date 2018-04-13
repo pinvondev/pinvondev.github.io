@@ -35,64 +35,70 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge3058f1">环境搭建</a>
+<li><a href="#org10c2d65">环境搭建</a>
 <ul>
-<li><a href="#orgcd771f0">前提</a></li>
-<li><a href="#org5d39332">下载代码</a></li>
-<li><a href="#orga209b6d">启动网络</a></li>
-<li><a href="#orge86620b">启动marbles</a>
+<li><a href="#org0154146">前提</a></li>
+<li><a href="#org27cbd4c">下载代码</a></li>
+<li><a href="#org7368703">启动网络</a></li>
+<li><a href="#org6e4ebd4">启动marbles</a>
 <ul>
-<li><a href="#orgc960d96">chaincode</a></li>
-<li><a href="#org339ba36">启动marbles</a></li>
+<li><a href="#orgd94022c">chaincode</a></li>
+<li><a href="#org9a44035">启动marbles</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org169a607">程序介绍</a></li>
-<li><a href="#org968e36a">区块链背景</a>
+<li><a href="#org8377eec">项目架构</a></li>
+<li><a href="#orgde05396">程序介绍</a></li>
+<li><a href="#orgadedced">区块链背景</a>
 <ul>
-<li><a href="#orgd0b6656">定义</a></li>
+<li><a href="#org34fb789">定义</a></li>
 </ul>
 </li>
-<li><a href="#orgf9e952d">注册</a>
+<li><a href="#org25a707d">注册</a>
 <ul>
-<li><a href="#orgd2124c2">注册过程(参考fabcar例子):</a>
+<li><a href="#org90c6e94">注册过程(参考fabcar例子):</a>
 <ul>
-<li><a href="#org63c1b9a">创建SDK实例及保存加密材料的路径</a></li>
-<li><a href="#org6bbad98">创建键值存储来存储注册证书</a></li>
-<li><a href="#org37844b7">证书的参数设置</a></li>
-<li><a href="#orgbe1307f">是否开启TLS</a></li>
-<li><a href="#orga138de7">检查是否已登记admin</a></li>
-<li><a href="#org284bd96">注册</a></li>
-<li><a href="#org10aecce">登记</a></li>
-<li><a href="#orgfba9fc3">创建用户</a></li>
-<li><a href="#orgc10969f">设置此用户来对请求签名</a></li>
+<li><a href="#org67c10a0">创建SDK实例及保存加密材料的路径</a></li>
+<li><a href="#orgfddc057">创建键值存储来存储注册证书</a></li>
+<li><a href="#org8cd0496">证书的参数设置</a></li>
+<li><a href="#orge9ce092">是否开启TLS</a></li>
+<li><a href="#org471df07">检查是否已登记admin</a></li>
+<li><a href="#orgab45250">注册</a></li>
+<li><a href="#orgc2bf9e5">登记</a></li>
+<li><a href="#orgca80c83">创建用户</a></li>
+<li><a href="#org2133dde">设置此用户来对请求签名</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org8ed85b0">cp</a></li>
-<li><a href="#orgcb1b758">utils/fc_wrangler/parts/enrollment.js</a></li>
+<li><a href="#org7815157">cp</a></li>
+<li><a href="#org9aa5839">utils/fc_wrangler/parts/enrollment.js</a></li>
+<li><a href="#orgc64e695">查询chaincode</a>
+<ul>
+<li><a href="#orgd8650af">调用栈</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge3058f1" class="outline-2">
-<h2 id="orge3058f1">环境搭建</h2>
-<div class="outline-text-2" id="text-orge3058f1">
+<div id="outline-container-org10c2d65" class="outline-2">
+<h2 id="org10c2d65">环境搭建</h2>
+<div class="outline-text-2" id="text-org10c2d65">
 </div>
-<div id="outline-container-orgcd771f0" class="outline-3">
-<h3 id="orgcd771f0">前提</h3>
-<div class="outline-text-3" id="text-orgcd771f0">
+<div id="outline-container-org0154146" class="outline-3">
+<h3 id="org0154146">前提</h3>
+<div class="outline-text-3" id="text-org0154146">
 <p>
 安装git, go, docker, node.js
 </p>
 </div>
 </div>
 
-<div id="outline-container-org5d39332" class="outline-3">
-<h3 id="org5d39332">下载代码</h3>
-<div class="outline-text-3" id="text-org5d39332">
+<div id="outline-container-org27cbd4c" class="outline-3">
+<h3 id="org27cbd4c">下载代码</h3>
+<div class="outline-text-3" id="text-org27cbd4c">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/IBM-Blockchain/marbles.git
 cd marble
@@ -101,9 +107,9 @@ cd marble
 </div>
 </div>
 
-<div id="outline-container-orga209b6d" class="outline-3">
-<h3 id="orga209b6d">启动网络</h3>
-<div class="outline-text-3" id="text-orga209b6d">
+<div id="outline-container-org7368703" class="outline-3">
+<h3 id="org7368703">启动网络</h3>
+<div class="outline-text-3" id="text-org7368703">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples
 cd fabric-samples
@@ -131,13 +137,13 @@ cd ../bashic-network
 </div>
 </div>
 
-<div id="outline-container-orge86620b" class="outline-3">
-<h3 id="orge86620b">启动marbles</h3>
-<div class="outline-text-3" id="text-orge86620b">
+<div id="outline-container-org6e4ebd4" class="outline-3">
+<h3 id="org6e4ebd4">启动marbles</h3>
+<div class="outline-text-3" id="text-org6e4ebd4">
 </div>
-<div id="outline-container-orgc960d96" class="outline-4">
-<h4 id="orgc960d96">chaincode</h4>
-<div class="outline-text-4" id="text-orgc960d96">
+<div id="outline-container-orgd94022c" class="outline-4">
+<h4 id="orgd94022c">chaincode</h4>
+<div class="outline-text-4" id="text-orgd94022c">
 <p>
 进入marbles根目录.
 </p>
@@ -175,9 +181,9 @@ node instantiate_chaincode.js
 </div>
 </div>
 
-<div id="outline-container-org339ba36" class="outline-4">
-<h4 id="org339ba36">启动marbles</h4>
-<div class="outline-text-4" id="text-org339ba36">
+<div id="outline-container-org9a44035" class="outline-4">
+<h4 id="org9a44035">启动marbles</h4>
+<div class="outline-text-4" id="text-org9a44035">
 <div class="org-src-container">
 <pre class="src src-Shell"> npm install gulp -g
 #  如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
@@ -190,9 +196,62 @@ gulp marbles_local
 </div>
 </div>
 
-<div id="outline-container-org169a607" class="outline-2">
-<h2 id="org169a607">程序介绍</h2>
-<div class="outline-text-2" id="text-org169a607">
+
+<div id="outline-container-org8377eec" class="outline-2">
+<h2 id="org8377eec">项目架构</h2>
+<div class="outline-text-2" id="text-org8377eec">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">层次</th>
+<th scope="col" class="org-left">描述</th>
+<th scope="col" class="org-left">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">应用层</td>
+<td class="org-left">移动端/Web端</td>
+<td class="org-left">注册 登录 计步 排行 商城 查看个人信息 邀请 发起提案 接收提案响应 发起交易 ...</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">业务层</td>
+<td class="org-left">服务端</td>
+<td class="org-left">用户管理 能量管理 提供RestFul接口给应用层 使用Node.js SDK与智能合约交互</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">智能合约</td>
+<td class="org-left">背书 调用</td>
+<td class="org-left">生成能量 提案背书 增查删改 使用gRPC与区块链交互</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">区块链</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">CA 账本</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgde05396" class="outline-2">
+<h2 id="orgde05396">程序介绍</h2>
+<div class="outline-text-2" id="text-orgde05396">
 <p>
 chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链存储(账本)中以键值对的形式创建. 账本与chaincode的交互通过对网络上的一个节点使用gRPC协议来完成. gRPC协议的细节由<a href="https://www.npmjs.com/package/fabric-client">Hyperledger Fabric Client</a> SDK处理.
 </p>
@@ -227,13 +286,13 @@ chaincode会创建资产, 将它存储到chaincode状态中. 资产在区块链�
 </div>
 </div>
 
-<div id="outline-container-org968e36a" class="outline-2">
-<h2 id="org968e36a">区块链背景</h2>
-<div class="outline-text-2" id="text-org968e36a">
+<div id="outline-container-orgadedced" class="outline-2">
+<h2 id="orgadedced">区块链背景</h2>
+<div class="outline-text-2" id="text-orgadedced">
 </div>
-<div id="outline-container-orgd0b6656" class="outline-3">
-<h3 id="orgd0b6656">定义</h3>
-<div class="outline-text-3" id="text-orgd0b6656">
+<div id="outline-container-org34fb789" class="outline-3">
+<h3 id="org34fb789">定义</h3>
+<div class="outline-text-3" id="text-org34fb789">
 <p>
 节点: 节点是区块链的成员, 运行着Hyperledger Fabric. 在marbles中, 节点归弹珠公司所有和操作.
 </p>
@@ -286,12 +345,9 @@ chaincode: 定义资产和所有关于资产的规则.
 </div>
 </div>
 
-
-
-
-<div id="outline-container-orgf9e952d" class="outline-2">
-<h2 id="orgf9e952d">注册</h2>
-<div class="outline-text-2" id="text-orgf9e952d">
+<div id="outline-container-org25a707d" class="outline-2">
+<h2 id="org25a707d">注册</h2>
+<div class="outline-text-2" id="text-org25a707d">
 <p>
 CA是最核心的组件, 主要完成对公钥的管理. 密钥有两种类型: 用于签名和用于加解密, 对应称为签名密钥对和加密密钥对. 用户基于PKI体系要申请一个证书, 一般可以由 CA 来生成证书和私钥, 也可以自己生成公钥和私钥, 然后由 CA 来对公钥进行签发.
 </p>
@@ -301,13 +357,13 @@ Fabric的私钥由用户本地存储.
 </p>
 </div>
 
-<div id="outline-container-orgd2124c2" class="outline-3">
-<h3 id="orgd2124c2">注册过程(参考fabcar例子):</h3>
-<div class="outline-text-3" id="text-orgd2124c2">
+<div id="outline-container-org90c6e94" class="outline-3">
+<h3 id="org90c6e94">注册过程(参考fabcar例子):</h3>
+<div class="outline-text-3" id="text-org90c6e94">
 </div>
-<div id="outline-container-org63c1b9a" class="outline-4">
-<h4 id="org63c1b9a">创建SDK实例及保存加密材料的路径</h4>
-<div class="outline-text-4" id="text-org63c1b9a">
+<div id="outline-container-org67c10a0" class="outline-4">
+<h4 id="org67c10a0">创建SDK实例及保存加密材料的路径</h4>
+<div class="outline-text-4" id="text-org67c10a0">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var Fabric_Client = require('fabric-client');
 var Fabric_CA_Client = require('fabric-ca-client');
@@ -325,9 +381,9 @@ var store_path = path.join(__dirname, 'hfc-key-store');
 </div>
 </div>
 
-<div id="outline-container-org6bbad98" class="outline-4">
-<h4 id="org6bbad98">创建键值存储来存储注册证书</h4>
-<div class="outline-text-4" id="text-org6bbad98">
+<div id="outline-container-orgfddc057" class="outline-4">
+<h4 id="orgfddc057">创建键值存储来存储注册证书</h4>
+<div class="outline-text-4" id="text-orgfddc057">
 <div class="org-src-container">
 <pre class="src src-JavaScript">Fabric_Client.newDefaultKeyValueStore({ path: store_path
 }).then((state_store) =&gt; {
@@ -342,9 +398,9 @@ var store_path = path.join(__dirname, 'hfc-key-store');
 </div>
 </div>
 
-<div id="outline-container-org37844b7" class="outline-4">
-<h4 id="org37844b7">证书的参数设置</h4>
-<div class="outline-text-4" id="text-org37844b7">
+<div id="outline-container-org8cd0496" class="outline-4">
+<h4 id="org8cd0496">证书的参数设置</h4>
+<div class="outline-text-4" id="text-org8cd0496">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var crypto_suite = Fabric_Client.newCryptoSuite();
 var crypto_store = Fabric_Client.newCryptoKeyStore({path: store_path});
@@ -363,9 +419,9 @@ fabric_client.setCryptoSuite(crypto_suite);
 </div>
 </div>
 
-<div id="outline-container-orgbe1307f" class="outline-4">
-<h4 id="orgbe1307f">是否开启TLS</h4>
-<div class="outline-text-4" id="text-orgbe1307f">
+<div id="outline-container-orge9ce092" class="outline-4">
+<h4 id="orge9ce092">是否开启TLS</h4>
+<div class="outline-text-4" id="text-orge9ce092">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var	tlsOptions = {
     trustedRoots: [],
@@ -381,9 +437,9 @@ fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', cryp
 </div>
 </div>
 
-<div id="outline-container-orga138de7" class="outline-4">
-<h4 id="orga138de7">检查是否已登记admin</h4>
-<div class="outline-text-4" id="text-orga138de7">
+<div id="outline-container-org471df07" class="outline-4">
+<h4 id="org471df07">检查是否已登记admin</h4>
+<div class="outline-text-4" id="text-org471df07">
 <div class="org-src-container">
 <pre class="src src-JavaScript">    return fabric_client.getUserContext('admin', true);
 }).then((user_from_store) =&gt; {
@@ -402,9 +458,9 @@ fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', cryp
 </div>
 </div>
 
-<div id="outline-container-org284bd96" class="outline-4">
-<h4 id="org284bd96">注册</h4>
-<div class="outline-text-4" id="text-org284bd96">
+<div id="outline-container-orgab45250" class="outline-4">
+<h4 id="orgab45250">注册</h4>
+<div class="outline-text-4" id="text-orgab45250">
 <div class="org-src-container">
 <pre class="src src-JavaScript">return fabric_ca_client.register({enrollmentID: 'user1', affiliation: 'org1.department1',role: 'client'}, admin_user);
 </pre>
@@ -416,9 +472,9 @@ fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', cryp
 </div>
 </div>
 
-<div id="outline-container-org10aecce" class="outline-4">
-<h4 id="org10aecce">登记</h4>
-<div class="outline-text-4" id="text-org10aecce">
+<div id="outline-container-orgc2bf9e5" class="outline-4">
+<h4 id="orgc2bf9e5">登记</h4>
+<div class="outline-text-4" id="text-orgc2bf9e5">
 <div class="org-src-container">
 <pre class="src src-JavaScript">}).then((secret) =&gt; {
     console.log('Successfully registered user1 - secret:'+ secret);
@@ -432,9 +488,9 @@ fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', cryp
 </div>
 </div>
 
-<div id="outline-container-orgfba9fc3" class="outline-4">
-<h4 id="orgfba9fc3">创建用户</h4>
-<div class="outline-text-4" id="text-orgfba9fc3">
+<div id="outline-container-orgca80c83" class="outline-4">
+<h4 id="orgca80c83">创建用户</h4>
+<div class="outline-text-4" id="text-orgca80c83">
 <div class="org-src-container">
 <pre class="src src-JavaScript">}).then((enrollment) =&gt; {
   console.log('Successfully enrolled member user "user1" ');
@@ -452,9 +508,9 @@ fabric_ca_client = new Fabric_CA_Client('http://localhost:7054', null , '', cryp
 </div>
 </div>
 
-<div id="outline-container-orgc10969f" class="outline-4">
-<h4 id="orgc10969f">设置此用户来对请求签名</h4>
-<div class="outline-text-4" id="text-orgc10969f">
+<div id="outline-container-org2133dde" class="outline-4">
+<h4 id="org2133dde">设置此用户来对请求签名</h4>
+<div class="outline-text-4" id="text-org2133dde">
 <div class="org-src-container">
 <pre class="src src-JavaScript">}).then((user) =&gt; {
      member_user = user;
@@ -503,9 +559,9 @@ fabric_client.setUserContext(). 参数为User对象. 以后这个用户的私钥
 </div>
 </div>
 
-<div id="outline-container-org8ed85b0" class="outline-2">
-<h2 id="org8ed85b0">cp</h2>
-<div class="outline-text-2" id="text-org8ed85b0">
+<div id="outline-container-org7815157" class="outline-2">
+<h2 id="org7815157">cp</h2>
+<div class="outline-text-2" id="text-org7815157">
 <p>
 用于获取配置信息. 先解析 <code>config/marbles_local.json</code> 文件, 获取连接的配置文件, 心跳间隔, 客户端连接端口等信息.
 </p>
@@ -525,9 +581,9 @@ fabric_client.setUserContext(). 参数为User对象. 以后这个用户的私钥
 </div>
 </div>
 
-<div id="outline-container-orgcb1b758" class="outline-2">
-<h2 id="orgcb1b758">utils/fc_wrangler/parts/enrollment.js</h2>
-<div class="outline-text-2" id="text-orgcb1b758">
+<div id="outline-container-org9aa5839" class="outline-2">
+<h2 id="org9aa5839">utils/fc_wrangler/parts/enrollment.js</h2>
+<div class="outline-text-2" id="text-org9aa5839">
 <p>
 此文件用于注册用户.
 </p>
@@ -551,13 +607,67 @@ fabric_client.setUserContext(). 参数为User对象. 以后这个用户的私钥
 </p>
 </div>
 </div>
+<div id="outline-container-orgc64e695" class="outline-2">
+<h2 id="orgc64e695">查询chaincode</h2>
+<div class="outline-text-2" id="text-orgc64e695">
+</div>
+<div id="outline-container-orgd8650af" class="outline-3">
+<h3 id="orgd8650af">调用栈</h3>
+<div class="outline-text-3" id="text-orgd8650af">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">query_cc.js</th>
+<th scope="col" class="org-left">query_cc.query_chaincode(obj, options, cb)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">index.js</td>
+<td class="org-left">fcw.query_chaincode(obj, options, cb_done)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">marbles_cc_lib.js</td>
+<td class="org-left">fcw.query_chaincode(enrollobj, options, cb)</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+在 <code>marbles_cc_lib.js</code> 的 <code>fcw.query_chaincode(enrollobj, options, cb)</code> 中, 可以查到 <code>options</code> 的内容. 如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var opts = {
+    peer_urls: g_options.peer_urls,
+    peer_tls_opts: g_options.peer_tls_opts,
+    channel_id: g_options.channel_id,
+    chaincode_id: g_options.chaincode_id,
+    chaincode_version: g_options.chaincode_version,
+    cc_function: 'read',
+    cc_args: ['selftest']
+};
+</pre>
+</div>
+</div>
+</div>
+</div>
 
 </div>
 </div>
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-04</span>
-        <span title="last modification date" class="post-info">2018-04-11</span>
+        <span title="last modification date" class="post-info">2018-04-13</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>

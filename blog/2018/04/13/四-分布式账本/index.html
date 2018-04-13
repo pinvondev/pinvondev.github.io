@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>四 分布式账本 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>四 分布式账本</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org73e4939">概述</a>
+<ul>
+<li><a href="#orgaa10a66">读写集</a></li>
+<li><a href="#org42f106b">交易验证和世界状态更新</a>
+<ul>
+<li><a href="#org8fa8f73">模拟和验证例子</a></li>
+</ul>
+</li>
+<li><a href="#org8af445a">账本编号</a></li>
+<li><a href="#org3730f2e">账本数据</a>
+<ul>
+<li><a href="#orgc2ce37d">账本数据存储</a></li>
+<li><a href="#org907c59e">账本数据读取</a></li>
+<li><a href="#orgb3083d9">索引同步</a></li>
+<li><a href="#orgd2c57e3">交易模拟执行</a></li>
+</ul>
+</li>
+<li><a href="#org0cdf94d">区块索引</a></li>
+<li><a href="#orge6ceab0">状态数据</a>
+<ul>
+<li><a href="#orgce4da5a">基于状态数据的区块验证</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org73e4939" class="outline-2">
+<h2 id="org73e4939">概述</h2>
+<div class="outline-text-2" id="text-org73e4939">
+<p>
+分布式账本技术(共享账本)通过在不同节点之间达成共识, 记录相同的账本数据.
+</p>
+
+<p>
+Hyperledger Fabric采用背书/共识模型, 模拟执行chaincode和区块验证是在不同角色的节点(endorsing peer &amp; committer peer)中分开执行的, 模拟执行是并发的, 这样可以提高扩展性和吞吐量.
+</p>
+
+<p>
+每个Peer节点会维护多个账本, 如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/13/四-分布式账本/43.png" alt="43.png" />
+</p>
+</div>
+
+<p>
+Hyperledger Fabric 主要包含以下元素:
+</p>
+<ul class="org-ul">
+<li>账本编号: 快速查询存在哪些账本</li>
+<li>账本数据: 实际的区块数据存储</li>
+<li>区块索引: 快速查询区块/交易</li>
+<li>状态数据: 最新的世界状态数据</li>
+<li>历史数据: 跟踪键的历史</li>
+</ul>
+
+<p>
+每个节点都会维护4个DB:
+</p>
+<ul class="org-ul">
+<li>idStore: 存储chainID</li>
+<li>stateDB: 存储world state</li>
+<li>versioned DB: 存储key的版本变化</li>
+<li>blockDB: 存储block</li>
+</ul>
+</div>
+
+<div id="outline-container-orgaa10a66" class="outline-3">
+<h3 id="orgaa10a66">读写集</h3>
+<div class="outline-text-3" id="text-orgaa10a66">
+<p>
+背书节点模拟执行交易时会生成读写集. 
+</p>
+
+<p>
+<code>Read Set</code> 包括一系列键值对, 其中键是唯一的, 内容是模拟执行交易时, 交易读取的键和对应的提交的版本.(读集包含键的版本)
+</p>
+
+<p>
+<code>Write Set</code> 包括一系列键值对, 其中键是唯一的, 内容是模拟执行交易时, 交易读取的键和准备写入的新值.(写集只包含键的最新值)
+</p>
+
+<p>
+如果交易执行的是删除键, 则为key设置删除标记.
+</p>
+
+<p>
+如果在一个交易中对同一个键进行了多次更新, 则以最后一个为准. 如果一个交易读取某个键对应的值, 只会返回提交状态的值, 而不管在提交状态之后是否还更新了该值.
+</p>
+
+<p>
+一个读写集的例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-XML">&lt;TxReadWriteSet&gt;
+  &lt;NsReadWriteSet name="chaincode1"&gt;
+    &lt;read-set&gt;
+      &lt;read key="K1", version="1"&gt;
+      &lt;read key="K2", version="1"&gt;
+    &lt;/read-set&gt;
+    &lt;write-set&gt;
+      &lt;write key="K1", value="V1"
+      &lt;write key="K3", value="V2"
+      &lt;write key="K4", isDelete="true"
+    &lt;/write-set&gt;
+  &lt;/NsReadWriteSet&gt;
+&lt;TxReadWriteSet&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org42f106b" class="outline-3">
+<h3 id="org42f106b">交易验证和世界状态更新</h3>
+<div class="outline-text-3" id="text-org42f106b">
+<p>
+committer根据读集来验证交易, 根据写集来更新键的版本和值.
+</p>
+
+<p>
+判断交易合法性:
+</p>
+<ol class="org-ol">
+<li>检查读集的版本号, 比较交易中读集里每个键的版本号是否和World State中键的版本号一致.</li>
+<li>如果读写集包含query-info, 则检查query-info包含的键是否有变化(如新建键, 更新键, 删除键).</li>
+<li>比较模拟阶段交易进行范围查询的结果, 与验证阶段范围查询的结果是否一致.</li>
+</ol>
+
+<p>
+通过验证后, committer节点会根据写集来更新World State: 遍历写集的每个键, 更新World State里对应的键值和版本号.
+</p>
+</div>
+
+<div id="outline-container-org8fa8f73" class="outline-4">
+<h4 id="org8fa8f73">模拟和验证例子</h4>
+<div class="outline-text-4" id="text-org8fa8f73">
+<p>
+假设World State中的键值对用一个三元组来表示: (k, ver, val). 其中, k是键, ver是最新版本, val是值.
+</p>
+
+<p>
+现在有5个交易:T1, T2, T3, T4, T5. 它们都基于同一个World State进行模拟. 每个交易的读写集操作如下所示:
+World State的键值对为: (k1, 1, v1), (k2, 1, v2), (k3, 1, v3), (k4, 1, v4), (k5, 1, v5)
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">交易</th>
+<th scope="col" class="org-left">操作1</th>
+<th scope="col" class="org-left">操作2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">T1</td>
+<td class="org-left">Write(k1, v1')</td>
+<td class="org-left">Write(k2, v2')</td>
+</tr>
+
+<tr>
+<td class="org-left">T2</td>
+<td class="org-left">Read(k1)</td>
+<td class="org-left">Write(k3, v3')</td>
+</tr>
+
+<tr>
+<td class="org-left">T3</td>
+<td class="org-left">Write(k2, v2'')</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">T4</td>
+<td class="org-left">Write(k2, v2''')</td>
+<td class="org-left">Read(k2)</td>
+</tr>
+
+<tr>
+<td class="org-left">T5</td>
+<td class="org-left">Write(k6, v6')</td>
+<td class="org-left">Read(k5)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Orderer按照T1-T5的顺序进行排序, 则committer节点的验证结果如下:
+</p>
+<ol class="org-ol">
+<li>T1验证通过. 交易中没有读操作, 交易会更新键k1和k2, 更新后的三元组为(k1, 2, v1'), (k2, 2, v2')</li>
+<li>T2验证失败. 因为交易需要读取的键k1在T1中被修改了.</li>
+<li>T3验证通过. 因为交易中没有读操作, 更新后的三元组为(k2, 3, v2'')</li>
+<li>T4验证失败. 因为交易需要读取的键k2在T1中被修改了.</li>
+<li>T5验证通过. 因为交易需要读取的键k5在前面的交易中未被修改.</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org8af445a" class="outline-3">
+<h3 id="org8af445a">账本编号</h3>
+</div>
+<div id="outline-container-org3730f2e" class="outline-3">
+<h3 id="org3730f2e">账本数据</h3>
+<div class="outline-text-3" id="text-org3730f2e">
+</div>
+<div id="outline-container-orgc2ce37d" class="outline-4">
+<h4 id="orgc2ce37d">账本数据存储</h4>
+<div class="outline-text-4" id="text-orgc2ce37d">
+<p>
+账本文件以 "blockfile_" 为前缀, 默认区块文件大小上限为64MB, 一个账本能保存的最大数据量约为61TB.
+</p>
+
+<p>
+committer节点负责维护节点本地的账本, 通过gossip模块从Orderer接收到区块以后, 将其添加到账本. 添加区块的流程如下:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/13/四-分布式账本/44.png" alt="44.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org907c59e" class="outline-4">
+<h4 id="org907c59e">账本数据读取</h4>
+</div>
+
+<div id="outline-container-orgb3083d9" class="outline-4">
+<h4 id="orgb3083d9">索引同步</h4>
+</div>
+
+<div id="outline-container-orgd2c57e3" class="outline-4">
+<h4 id="orgd2c57e3">交易模拟执行</h4>
+</div>
+</div>
+
+<div id="outline-container-org0cdf94d" class="outline-3">
+<h3 id="org0cdf94d">区块索引</h3>
+<div class="outline-text-3" id="text-org0cdf94d">
+<p>
+有多种区块索引方式, 帮助我们快速找到需要的区块.
+</p>
+<ul class="org-ul">
+<li>区块编号</li>
+<li>区块哈希</li>
+<li>交易编号</li>
+<li>区块编号 + 交易编号</li>
+<li>区块交易编号</li>
+<li>交易验证码</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge6ceab0" class="outline-3">
+<h3 id="orge6ceab0">状态数据</h3>
+<div class="outline-text-3" id="text-orge6ceab0">
+<p>
+World State记录交易执行结果.
+</p>
+
+<p>
+chaincode根据当前状态数据执行交易.
+</p>
+
+<p>
+为了提高chaincode的执行效率, 键的最新值都存储在状态数据库中, 状态数据库只是区块链交易日志中的索引视图, 因此可以随时根据区块链重新生成. 状态数据库在Peer节点启动时自动恢复, 重新构建完成后才接受新的交易.
+</p>
+
+<p>
+状态数据库目前可以用LevelDB和CouchDB. 不同账本的状态数据库存放在不同的目录下, 同一个账本的数据存放在一起, 不同chaincode的数据是按chaincodeid作为命名空间来划分数据的.
+</p>
+
+<p>
+在前面, 已经说World State中的数据可以用一个三元组来表示: (k, ver, val). 读取状态数据的时候, 不能指定版本, 只能读取最新版本, 但是返回的数据里面包含了版本信息.
+</p>
+
+<p>
+可以通过3种方式来查询区块数据: 查询单个键的数据GetState(), 查询多个键的数据GetStateMultipleKeys(), 查询一个范围内的数据GetStateRangeScanIterator(). 如果使用CouchDB, 还可以支持某些字段的条件查询.
+</p>
+
+<p>
+账本中可以包含多种chaincode的数据, 它们的存放根据账本编号作为命名空间进行分割.
+</p>
+</div>
+
+<div id="outline-container-orgce4da5a" class="outline-4">
+<h4 id="orgce4da5a">基于状态数据的区块验证</h4>
+<div class="outline-text-4" id="text-orgce4da5a">
+<p>
+区块有两种类型: 背书交易区块, 配置交易区块.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-13</span>
+        <span title="last modification date" class="post-info">2018-04-13</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/13/四-分布式账本";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/四-分布式账本";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
