@@ -35,14 +35,16 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org25b5763">SSR</a></li>
+<li><a href="#org1881dcc">SSR</a></li>
+<li><a href="#orgc561f2b">配置浏览器</a></li>
+<li><a href="#orgf0f1dab">终端使用代理上网</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org25b5763" class="outline-2">
-<h2 id="org25b5763">SSR</h2>
-<div class="outline-text-2" id="text-org25b5763">
+<div id="outline-container-org1881dcc" class="outline-2">
+<h2 id="org1881dcc">SSR</h2>
+<div class="outline-text-2" id="text-org1881dcc">
 <p>
 下载ssr: <a href="https://github.com/shadowsocksr-backup/shadowsocksr">https://github.com/shadowsocksr-backup/shadowsocksr</a>
 </p>
@@ -89,12 +91,72 @@ sudo python ../local.py -c config.json -d start
 </div>
 </div>
 
+<div id="outline-container-orgc561f2b" class="outline-2">
+<h2 id="orgc561f2b">配置浏览器</h2>
+<div class="outline-text-2" id="text-orgc561f2b">
+<p>
+根据<a href="https://github.com/FelisCatus/SwitchyOmega/wiki/GFWList">说明</a>进行配置.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf0f1dab" class="outline-2">
+<h2 id="orgf0f1dab">终端使用代理上网</h2>
+<div class="outline-text-2" id="text-orgf0f1dab">
+<p>
+通过上面的配置, 已经可以在浏览器中使用代理了. 如果要在终端中使用代理上网, 继续配置.
+</p>
+
+<p>
+可以使用 <code>proxychains-ng</code> 这个工具来配置.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">git clone https://github.com/rofl0r/proxychains-ng.git
+cd proxychains-ng
+./configure
+sudo make &amp;&amp; sudo make install
+cp ./src/proxychains.conf /etc/proxychains.conf
+</pre>
+</div>
+
+<p>
+编辑 <code>proxychains-ng</code> 的配置文件.
+</p>
+
+<p>
+进入文件, 跳到最后一行, 将 <code>socks4 127.0.0.1 9095</code> 注释掉, 添加如下内容:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">socks5 127.0.0.1 1080
+</pre>
+</div>
+
+<p>
+需要使用代理的时候, 在命令的最前面加上 <code>proxychains4</code> 即可.
+</p>
+
+<p>
+测试:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">proxychains4 w3m https://www.google.com
+</pre>
+</div>
+
+<p>
+内容如下:
+<img src="/assets/blog/2018/03/05/ubuntu+vpn/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+
 </div>
 </div>
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-03-05</span>
-        <span title="last modification date" class="post-info">2018-03-05</span>
+        <span title="last modification date" class="post-info">2018-04-14</span>
         <span title="tags" class="post-info"><a href="/tags/vpn/">VPN</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
