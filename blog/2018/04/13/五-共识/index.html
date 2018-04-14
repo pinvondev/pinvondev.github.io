@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>Ubuntu 16.04 安装 MySQL - Pinvon&#39;s Blog</title>
+    <title>五 共识 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,100 +30,87 @@
 
 <div>
 <div class="post">
-<h1>Ubuntu 16.04 安装 MySQL</h1>
+<h1>五 共识</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd86bbd7">安装MySQL</a></li>
-<li><a href="#org3927692">配置</a></li>
-<li><a href="#orgbf5b0f3">启动和停止MySQL</a></li>
+<li><a href="#org5768e91">概述</a></li>
+<li><a href="#org0fa9bfc">实现数据隔离的multi-channel</a>
+<ul>
+<li><a href="#org3da5053">排序服务的初始化</a></li>
+<li><a href="#org6929af1">创建channel</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd86bbd7" class="outline-2">
-<h2 id="orgd86bbd7">安装MySQL</h2>
-<div class="outline-text-2" id="text-orgd86bbd7">
-<div class="org-src-container">
-<pre class="src src-Shell">sudo apt update
-sudo apt install mysql-server
-</pre>
-</div>
-
+<div id="outline-container-org5768e91" class="outline-2">
+<h2 id="org5768e91">概述</h2>
+<div class="outline-text-2" id="text-org5768e91">
 <p>
-这一步会让我们设置MySQL的root密码. 如果这一步不设置, 则留空. 然后安装完了, 运行 <code>mysql_secure_installation</code> 来设置root密码.
+PoW, PoET, RBFT, ...
 </p>
 </div>
 </div>
 
-<div id="outline-container-org3927692" class="outline-2">
-<h2 id="org3927692">配置</h2>
-<div class="outline-text-2" id="text-org3927692">
+<div id="outline-container-org0fa9bfc" class="outline-2">
+<h2 id="org0fa9bfc">实现数据隔离的multi-channel</h2>
+<div class="outline-text-2" id="text-org0fa9bfc">
 <p>
-编辑MySQL的配置文件, 把数据库默认的编码全部改为UTF-8.
+Ordering Service给客户端和Peer节点提供了一个共享通信Channel, 用来实现交易的广播服务. 客户端连接到channel上, 在通道上广播的消息最终会发送到channel内部的所有Peer节点.
 </p>
-<div class="org-src-container">
-<pre class="src src-Shell">sudo emacs /etc/mysql/my.cnf
-</pre>
-</div>
 
 <p>
-内容编辑如下:
+Ordering Service支持multi-channel, 客户端连接到一个指定的channel上, 就可以发送和获取消息了. channel是相互隔离的, 客户端连接到一个channel的时候, 并不知道其他channel的存在, 这边所说的隔离, 并不针对Orderer. 客户端可以连接到多个channel. multi-channel的例子如下:
 </p>
-<div class="org-src-container">
-<pre class="src src-Shell">[client]
-default-character-set = utf8
-
-[mysqld]
-default-storage-engine = INNODB
-character-set-server = utf8
-collation-server = utf8_general_ci
-</pre>
-</div>
-
-<p>
-重启MySQL后, 可以通过MySQL的客户端命令检查编码:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">mysql -u root -p
-# 输入密码
-show variables like '%char%';
-# 如果看到utf8字样, 就表示编码设置正确
-</pre>
-</div>
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/14/ubuntu-1604-安装-mysql/0.png" alt="0.png" />
+<p><img src="/assets/blog/2018/04/13/五-共识/45.png" alt="45.png" />
 </p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgbf5b0f3" class="outline-2">
-<h2 id="orgbf5b0f3">启动和停止MySQL</h2>
-<div class="outline-text-2" id="text-orgbf5b0f3">
-<div class="org-src-container">
-<pre class="src src-Shell">sudo service mysql status  # 检查MySQL服务器状态
-sudo service mysql stop  # 关闭MySQL服务器
-sudo service mysql start  # 启动MySQL服务器
-</pre>
 </div>
 
 <p>
-服务启动后查询端口:
+客户端获得背书节点返回的提案响应后, 构造交易, 提交给Orderer节点, Orderer节点 <code>根据交易信息里提案的请求头确定channel信息</code>, 添加到对应的队列中进行排序, 生成区块后广播给该channel内的节点.
 </p>
-<div class="org-src-container">
-<pre class="src src-Shell">sudo netstat -anp | grep mysql  # 一般查询得知是3306
 
-# 连接数据库
-mysql -h 127.0.0.1 -P 3306 -u root -p
-# 或者
-mysql -u root -p 
+<p>
+每个channel在节点上都有一个对应的账本.
+</p>
+</div>
 
-# 输入密码
-</pre>
+<div id="outline-container-org3da5053" class="outline-3">
+<h3 id="org3da5053">排序服务的初始化</h3>
+<div class="outline-text-3" id="text-org3da5053">
+<p>
+排序服务由多个Orderer节点组成, <code>每个Orderer启动的时候, 都需要一个创世区块</code>. 创世区块内包含的信息有:
+</p>
+<ul class="org-ul">
+<li>Orderer节点信息及MSP信息(管理员证书, 根证书, TLS根证书)</li>
+<li>组织信息及MSP信息(管理员证书, 根证书, TLS根证书)</li>
+<li>共识算法类型</li>
+<li>区块配置信息</li>
+<li>访问控制策略</li>
+</ul>
+
+<p>
+configtxgen工具可以生成创世区块, configtxlator工具可以将区块转换成JSON格式.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6929af1" class="outline-3">
+<h3 id="org6929af1">创建channel</h3>
+<div class="outline-text-3" id="text-org6929af1">
+<p>
+<code>客户端可以通过SDK向Ordering Service发起创建channel的请求, 提交的内容是channtl配置交易</code>. configtxgen工具可以生成channel配置交易(同样, 可以转换成JSON格式的内容来查看).
+</p>
+
+<p>
+Ordering Service接收到创建channel的请求, 会检查是否是配置交易, 检查的方法是查看ChannelHeader的类型是否为HeaderType_CONFIG_UPDATE(新建和更新channel都是这个类型), 然后Ordering Service重新生成一个配置交易, 修改交易类型为HeaderType_CONFIG. 新生成的交易会利用接收消息的Orderer的私钥重新进行签名, 然后添加到系统链的交易消息队列中进行处理.
+</p>
 </div>
 </div>
 </div>
@@ -132,9 +119,9 @@ mysql -u root -p
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-14</span>
-        <span title="last modification date" class="post-info">2018-03-14</span>
-        <span title="tags" class="post-info"><a href="/tags/sql/">SQL</a></span>
+        <span title="post date" class="post-info">2018-04-13</span>
+        <span title="last modification date" class="post-info">2018-04-14</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -142,8 +129,8 @@ mysql -u root -p
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/14/ubuntu-1604-安装-mysql";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/14/ubuntu-1604-安装-mysql";
+          var disqus_identifier = "/blog/2018/04/13/五-共识";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/五-共识";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {

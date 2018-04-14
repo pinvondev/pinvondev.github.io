@@ -35,27 +35,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd706fb8">概述</a>
+<li><a href="#org76892f9">概述</a>
 <ul>
-<li><a href="#org29b66a2">读写集</a></li>
-<li><a href="#orgcaa53d2">交易验证和世界状态更新</a>
+<li><a href="#org7d294d1">读写集</a></li>
+<li><a href="#org4b41299">交易验证和世界状态更新</a>
 <ul>
-<li><a href="#org5a4527a">模拟和验证例子</a></li>
+<li><a href="#org3dfdc5e">模拟和验证例子</a></li>
 </ul>
 </li>
-<li><a href="#org12fc1f4">账本编号</a></li>
-<li><a href="#org642f155">账本数据</a>
+<li><a href="#org6f51779">账本编号</a></li>
+<li><a href="#orgab2bdf2">账本数据</a>
 <ul>
-<li><a href="#org6809972">账本数据存储</a></li>
-<li><a href="#org4f34d2e">账本数据读取</a></li>
-<li><a href="#org844e915">索引同步</a></li>
-<li><a href="#orgbbbc105">交易模拟执行</a></li>
+<li><a href="#org524e3cf">账本数据存储</a></li>
+<li><a href="#org2c936fe">账本数据读取</a></li>
+<li><a href="#org2d38f80">索引同步</a></li>
+<li><a href="#org0891a46">交易模拟执行</a></li>
 </ul>
 </li>
-<li><a href="#orgebd12a1">区块索引</a></li>
-<li><a href="#org70cb493">状态数据</a>
+<li><a href="#org46f3ae5">区块索引</a></li>
+<li><a href="#org5c8bbd7">状态数据</a>
 <ul>
-<li><a href="#orgb01262c">基于状态数据的区块验证</a></li>
+<li><a href="#org007fd02">基于状态数据的区块验证</a></li>
 </ul>
 </li>
 </ul>
@@ -64,9 +64,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgd706fb8" class="outline-2">
-<h2 id="orgd706fb8">概述</h2>
-<div class="outline-text-2" id="text-orgd706fb8">
+<div id="outline-container-org76892f9" class="outline-2">
+<h2 id="org76892f9">概述</h2>
+<div class="outline-text-2" id="text-org76892f9">
 <p>
 分布式账本技术(共享账本)通过在不同节点之间达成共识, 记录相同的账本数据.
 </p>
@@ -107,9 +107,9 @@ Hyperledger Fabric 主要包含以下元素:
 </ul>
 </div>
 
-<div id="outline-container-org29b66a2" class="outline-3">
-<h3 id="org29b66a2">读写集</h3>
-<div class="outline-text-3" id="text-org29b66a2">
+<div id="outline-container-org7d294d1" class="outline-3">
+<h3 id="org7d294d1">读写集</h3>
+<div class="outline-text-3" id="text-org7d294d1">
 <p>
 背书节点模拟执行交易时会生成读写集. 
 </p>
@@ -152,9 +152,9 @@ Hyperledger Fabric 主要包含以下元素:
 </div>
 </div>
 
-<div id="outline-container-orgcaa53d2" class="outline-3">
-<h3 id="orgcaa53d2">交易验证和世界状态更新</h3>
-<div class="outline-text-3" id="text-orgcaa53d2">
+<div id="outline-container-org4b41299" class="outline-3">
+<h3 id="org4b41299">交易验证和世界状态更新</h3>
+<div class="outline-text-3" id="text-org4b41299">
 <p>
 committer根据读集来验证交易, 根据写集来更新键的版本和值.
 </p>
@@ -173,9 +173,9 @@ committer根据读集来验证交易, 根据写集来更新键的版本和值.
 </p>
 </div>
 
-<div id="outline-container-org5a4527a" class="outline-4">
-<h4 id="org5a4527a">模拟和验证例子</h4>
-<div class="outline-text-4" id="text-org5a4527a">
+<div id="outline-container-org3dfdc5e" class="outline-4">
+<h4 id="org3dfdc5e">模拟和验证例子</h4>
+<div class="outline-text-4" id="text-org3dfdc5e">
 <p>
 假设World State中的键值对用一个三元组来表示: (k, ver, val). 其中, k是键, ver是最新版本, val是值.
 </p>
@@ -235,34 +235,34 @@ World State的键值对为: (k1, 1, v1), (k2, 1, v2), (k3, 1, v3), (k4, 1, v4), 
 </table>
 
 <p>
-Orderer按照T1-T5的顺序进行排序, 则committer节点的验证结果如下:
+orderer按照t1-t5的顺序进行排序, 则committer节点的验证结果如下:
 </p>
 <ol class="org-ol">
-<li>T1验证通过. 交易中没有读操作, 交易会更新键k1和k2, 更新后的三元组为(k1, 2, v1'), (k2, 2, v2')</li>
-<li>T2验证失败. 因为交易需要读取的键k1在T1中被修改了.</li>
-<li>T3验证通过. 因为交易中没有读操作, 更新后的三元组为(k2, 3, v2'')</li>
-<li>T4验证失败. 因为交易需要读取的键k2在T1中被修改了.</li>
-<li>T5验证通过. 因为交易需要读取的键k5在前面的交易中未被修改.</li>
+<li>t1验证通过. 交易中没有读操作, 交易会更新键k1和k2, 更新后的三元组为(k1, 2, v1'), (k2, 2, v2')</li>
+<li>t2验证失败. 因为交易需要读取的键k1在t1中被修改了.</li>
+<li>t3验证通过. 因为交易中没有读操作, 更新后的三元组为(k2, 3, v2'')</li>
+<li>t4验证失败. 因为交易需要读取的键k2在t1中被修改了.</li>
+<li>t5验证通过. 因为交易需要读取的键k5在前面的交易中未被修改.</li>
 </ol>
 </div>
 </div>
 </div>
-<div id="outline-container-org12fc1f4" class="outline-3">
-<h3 id="org12fc1f4">账本编号</h3>
+<div id="outline-container-org6f51779" class="outline-3">
+<h3 id="org6f51779">账本编号</h3>
 </div>
-<div id="outline-container-org642f155" class="outline-3">
-<h3 id="org642f155">账本数据</h3>
-<div class="outline-text-3" id="text-org642f155">
+<div id="outline-container-orgab2bdf2" class="outline-3">
+<h3 id="orgab2bdf2">账本数据</h3>
+<div class="outline-text-3" id="text-orgab2bdf2">
 </div>
-<div id="outline-container-org6809972" class="outline-4">
-<h4 id="org6809972">账本数据存储</h4>
-<div class="outline-text-4" id="text-org6809972">
+<div id="outline-container-org524e3cf" class="outline-4">
+<h4 id="org524e3cf">账本数据存储</h4>
+<div class="outline-text-4" id="text-org524e3cf">
 <p>
-账本文件以 "blockfile_" 为前缀, 默认区块文件大小上限为64MB, 一个账本能保存的最大数据量约为61TB.
+账本文件以 "blockfile_" 为前缀, 默认区块文件大小上限为64mb, 一个账本能保存的最大数据量约为61tb.
 </p>
 
 <p>
-committer节点负责维护节点本地的账本, 通过gossip模块从Orderer接收到区块以后, 将其添加到账本. 添加区块的流程如下:
+committer节点负责维护节点本地的账本, 通过gossip模块从orderer接收到区块以后, 将其添加到账本. 添加区块的流程如下:
 </p>
 
 
@@ -273,22 +273,22 @@ committer节点负责维护节点本地的账本, 通过gossip模块从Orderer�
 </div>
 </div>
 
-<div id="outline-container-org4f34d2e" class="outline-4">
-<h4 id="org4f34d2e">账本数据读取</h4>
+<div id="outline-container-org2c936fe" class="outline-4">
+<h4 id="org2c936fe">账本数据读取</h4>
 </div>
 
-<div id="outline-container-org844e915" class="outline-4">
-<h4 id="org844e915">索引同步</h4>
+<div id="outline-container-org2d38f80" class="outline-4">
+<h4 id="org2d38f80">索引同步</h4>
 </div>
 
-<div id="outline-container-orgbbbc105" class="outline-4">
-<h4 id="orgbbbc105">交易模拟执行</h4>
+<div id="outline-container-org0891a46" class="outline-4">
+<h4 id="org0891a46">交易模拟执行</h4>
 </div>
 </div>
 
-<div id="outline-container-orgebd12a1" class="outline-3">
-<h3 id="orgebd12a1">区块索引</h3>
-<div class="outline-text-3" id="text-orgebd12a1">
+<div id="outline-container-org46f3ae5" class="outline-3">
+<h3 id="org46f3ae5">区块索引</h3>
+<div class="outline-text-3" id="text-org46f3ae5">
 <p>
 有多种区块索引方式, 帮助我们快速找到需要的区块.
 </p>
@@ -303,11 +303,11 @@ committer节点负责维护节点本地的账本, 通过gossip模块从Orderer�
 </div>
 </div>
 
-<div id="outline-container-org70cb493" class="outline-3">
-<h3 id="org70cb493">状态数据</h3>
-<div class="outline-text-3" id="text-org70cb493">
+<div id="outline-container-org5c8bbd7" class="outline-3">
+<h3 id="org5c8bbd7">状态数据</h3>
+<div class="outline-text-3" id="text-org5c8bbd7">
 <p>
-World State记录交易执行结果.
+world state记录交易执行结果.
 </p>
 
 <p>
@@ -315,19 +315,19 @@ chaincode根据当前状态数据执行交易.
 </p>
 
 <p>
-为了提高chaincode的执行效率, 键的最新值都存储在状态数据库中, 状态数据库只是区块链交易日志中的索引视图, 因此可以随时根据区块链重新生成. 状态数据库在Peer节点启动时自动恢复, 重新构建完成后才接受新的交易.
+为了提高chaincode的执行效率, 键的最新值都存储在状态数据库中, 状态数据库只是区块链交易日志中的索引视图, 因此可以随时根据区块链重新生成. 状态数据库在peer节点启动时自动恢复, 重新构建完成后才接受新的交易.
 </p>
 
 <p>
-状态数据库目前可以用LevelDB和CouchDB. 不同账本的状态数据库存放在不同的目录下, 同一个账本的数据存放在一起, 不同chaincode的数据是按chaincodeid作为命名空间来划分数据的.
+状态数据库目前可以用leveldb和couchdb. 不同账本的状态数据库存放在不同的目录下, 同一个账本的数据存放在一起, 不同chaincode的数据是按chaincodeid作为命名空间来划分数据的.
 </p>
 
 <p>
-在前面, 已经说World State中的数据可以用一个三元组来表示: (k, ver, val). 读取状态数据的时候, 不能指定版本, 只能读取最新版本, 但是返回的数据里面包含了版本信息.
+在前面, 已经说world state中的数据可以用一个三元组来表示: (k, ver, val). 读取状态数据的时候, 不能指定版本, 只能读取最新版本, 但是返回的数据里面包含了版本信息.
 </p>
 
 <p>
-可以通过3种方式来查询区块数据: 查询单个键的数据GetState(), 查询多个键的数据GetStateMultipleKeys(), 查询一个范围内的数据GetStateRangeScanIterator(). 如果使用CouchDB, 还可以支持某些字段的条件查询.
+可以通过3种方式来查询区块数据: 查询单个键的数据getstate(), 查询多个键的数据getstatemultiplekeys(), 查询一个范围内的数据getstaterangescaniterator(). 如果使用couchdb, 还可以支持某些字段的条件查询.
 </p>
 
 <p>
@@ -335,9 +335,9 @@ chaincode根据当前状态数据执行交易.
 </p>
 </div>
 
-<div id="outline-container-orgb01262c" class="outline-4">
-<h4 id="orgb01262c">基于状态数据的区块验证</h4>
-<div class="outline-text-4" id="text-orgb01262c">
+<div id="outline-container-org007fd02" class="outline-4">
+<h4 id="org007fd02">基于状态数据的区块验证</h4>
+<div class="outline-text-4" id="text-org007fd02">
 <p>
 区块有两种类型: 背书交易区块, 配置交易区块.
 </p>
@@ -351,7 +351,7 @@ chaincode根据当前状态数据执行交易.
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-13</span>
-        <span title="last modification date" class="post-info">2018-04-13</span>
+        <span title="last modification date" class="post-info">2018-04-14</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
