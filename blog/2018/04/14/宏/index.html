@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>五 共识 - Pinvon&#39;s Blog</title>
+    <title>宏 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,88 +30,117 @@
 
 <div>
 <div class="post">
-<h1>五 共识</h1>
+<h1>宏</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgeb2585b">概述</a></li>
-<li><a href="#org0011ae1">实现数据隔离的multi-channel</a>
-<ul>
-<li><a href="#orgfd3959e">排序服务的初始化</a></li>
-<li><a href="#orgbb5a3c5">创建channel</a></li>
+<li><a href="#orgff1544a">开始录制</a></li>
+<li><a href="#org4a9693f">结束录制</a></li>
+<li><a href="#org7754348">使用宏</a></li>
+<li><a href="#org68e7a0c">例子</a></li>
+<li><a href="#org46e2419">录制多个宏</a></li>
+<li><a href="#org766790b">重复执行次数</a></li>
 </ul>
-</li>
-</ul>
 </div>
 </div>
 
-<div id="outline-container-orgeb2585b" class="outline-2">
-<h2 id="orgeb2585b">概述</h2>
-<div class="outline-text-2" id="text-orgeb2585b">
+<div id="outline-container-orgff1544a" class="outline-2">
+<h2 id="orgff1544a">开始录制</h2>
+<div class="outline-text-2" id="text-orgff1544a">
 <p>
-PoW, PoET, RBFT, ...
-</p>
-</div>
-</div>
-
-<div id="outline-container-org0011ae1" class="outline-2">
-<h2 id="org0011ae1">实现数据隔离的multi-channel</h2>
-<div class="outline-text-2" id="text-org0011ae1">
-<p>
-Ordering Service给客户端和Peer节点提供了一个共享通信Channel, 用来实现交易的广播服务. 客户端连接到channel上, 在通道上广播的消息最终会发送到channel内部的所有Peer节点.
+C-x (
 </p>
 
 <p>
-Ordering Service支持multi-channel, 客户端连接到一个指定的channel上, 就可以发送和获取消息了. channel是相互隔离的, 客户端连接到一个channel的时候, 并不知道其他channel的存在, 这边所说的隔离, 并不针对Orderer. 客户端可以连接到多个channel. multi-channel的例子如下:
-</p>
-
-
-<div class="figure">
-<p><img src="/assets/blog/2018/04/13/五-共识/45.png" alt="45.png" />
-</p>
-</div>
-
-<p>
-客户端获得背书节点返回的提案响应后, 构造交易, 提交给Orderer节点, Orderer节点 <code>根据交易信息里提案的请求头确定channel信息</code>, 添加到对应的队列中进行排序, 生成区块后广播给该channel内的节点.
-</p>
-
-<p>
-每个channel在节点上都有一个对应的账本.
-</p>
-</div>
-
-<div id="outline-container-orgfd3959e" class="outline-3">
-<h3 id="orgfd3959e">排序服务的初始化</h3>
-<div class="outline-text-3" id="text-orgfd3959e">
-<p>
-排序服务由多个Orderer节点组成, <code>每个Orderer启动的时候, 都需要一个创世区块</code>. 创世区块内包含的信息有:
-</p>
-<ul class="org-ul">
-<li>Orderer节点信息及MSP信息(管理员证书, 根证书, TLS根证书)</li>
-<li>组织信息及MSP信息(管理员证书, 根证书, TLS根证书)</li>
-<li>共识算法类型</li>
-<li>区块配置信息</li>
-<li>访问控制策略</li>
-</ul>
-
-<p>
-configtxgen工具可以生成创世区块, configtxlator工具可以将区块转换成JSON格式.
+或者 F3
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgbb5a3c5" class="outline-3">
-<h3 id="orgbb5a3c5">创建channel</h3>
-<div class="outline-text-3" id="text-orgbb5a3c5">
+<div id="outline-container-org4a9693f" class="outline-2">
+<h2 id="org4a9693f">结束录制</h2>
+<div class="outline-text-2" id="text-org4a9693f">
 <p>
-<code>客户端可以通过SDK向Ordering Service发起创建channel的请求, 提交的内容是channtl配置交易</code>. configtxgen工具可以生成channel配置交易(同样, 可以转换成JSON格式的内容来查看).
+C-x )
 </p>
 
 <p>
-Ordering Service接收到创建channel的请求, 会检查是否是配置交易, 检查的方法是查看ChannelHeader的类型是否为HeaderType_CONFIG_UPDATE(新建和更新channel都是这个类型), 然后Ordering Service重新生成一个配置交易, 修改交易类型为HeaderType_CONFIG. 新生成的交易会利用接收消息的Orderer的私钥重新进行签名, 然后添加到系统链的交易消息队列中进行处理.
+或者 F4
 </p>
 </div>
+</div>
+
+<div id="outline-container-org7754348" class="outline-2">
+<h2 id="org7754348">使用宏</h2>
+<div class="outline-text-2" id="text-org7754348">
+<p>
+C-u 0 C-x e
+</p>
+</div>
+</div>
+
+<div id="outline-container-org68e7a0c" class="outline-2">
+<h2 id="org68e7a0c">例子</h2>
+<div class="outline-text-2" id="text-org68e7a0c">
+<p>
+按F3开始录制
+</p>
+
+<p>
+输入: C-n C-a C-q Tab
+</p>
+
+<p>
+按F4开始录制
+</p>
+
+<p>
+C-u 0 C-x e: 执行宏, 将下面的代码使用Tab来调整.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++">int main(){
+cout &lt;&lt; "Hello" &lt;&lt; endl;
+cout &lt;&lt; "World" &lt;&lt; endl;
+cout &lt;&lt; "Test" &lt;&lt; endl;
+cout &lt;&lt; "Emacs" &lt;&lt; endl;
+cout &lt;&lt; "Macro" &lt;&lt; endl;
+return 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org46e2419" class="outline-2">
+<h2 id="org46e2419">录制多个宏</h2>
+<div class="outline-text-2" id="text-org46e2419">
+<p>
+F3 ... F4 后
+</p>
+
+<p>
+输入 M-x name-last-kbd-macro
+</p>
+
+<p>
+输入名字 test
+</p>
+
+<p>
+使用: M-x test
+</p>
+</div>
+</div>
+
+<div id="outline-container-org766790b" class="outline-2">
+<h2 id="org766790b">重复执行次数</h2>
+<div class="outline-text-2" id="text-org766790b">
+<p>
+C-u 2 M-x test: 重复执行两次test宏
+C-u 8 C-f: 前进8个字符
+</p>
 </div>
 </div>
 
@@ -119,9 +148,9 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-13</span>
+        <span title="post date" class="post-info">2018-04-14</span>
         <span title="last modification date" class="post-info">2018-04-14</span>
-        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="tags" class="post-info"><a href="/tags/emacs/">Emacs</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -129,8 +158,8 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/13/五-共识";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/五-共识";
+          var disqus_identifier = "/blog/2018/04/14/宏";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/14/宏";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
