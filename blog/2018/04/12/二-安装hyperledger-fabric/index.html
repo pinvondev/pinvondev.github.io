@@ -35,30 +35,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga538b0f">安装Hyperledger Fabric</a>
+<li><a href="#org0765b8d">安装Hyperledger Fabric</a>
 <ul>
-<li><a href="#org27aec55">下载Docker镜像文件</a></li>
-<li><a href="#orgb2502c3">部署网络</a>
+<li><a href="#org2e1db35">下载Docker镜像文件</a></li>
+<li><a href="#org829ce3c">部署网络</a>
 <ul>
-<li><a href="#org4bb327c">创建channel</a></li>
-<li><a href="#org5f4a4b7">加入channel</a></li>
-<li><a href="#orgc05a72f">安装chaincode</a></li>
-<li><a href="#orga4e77fb">实例化chaincode</a></li>
-<li><a href="#org5650f22">调用chaincode</a></li>
-<li><a href="#orge5b1e8e">调用chaincode查询</a></li>
-<li><a href="#org154d6c2">节点的配置参数传递规则</a></li>
+<li><a href="#orge1d6c31">创建channel</a></li>
+<li><a href="#org98e86e4">加入channel</a></li>
+<li><a href="#org804f008">安装chaincode</a></li>
+<li><a href="#org5f8329e">实例化chaincode</a></li>
+<li><a href="#org430976d">调用chaincode</a></li>
+<li><a href="#org8afbc39">调用chaincode查询</a></li>
+<li><a href="#org4b1f55a">节点的配置参数传递规则</a></li>
 </ul>
 </li>
-<li><a href="#orgb8276f2">yaml配置文件</a></li>
+<li><a href="#orgb737b27">yaml配置文件</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga538b0f" class="outline-2">
-<h2 id="orga538b0f">安装Hyperledger Fabric</h2>
-<div class="outline-text-2" id="text-orga538b0f">
+<div id="outline-container-org0765b8d" class="outline-2">
+<h2 id="org0765b8d">安装Hyperledger Fabric</h2>
+<div class="outline-text-2" id="text-org0765b8d">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64">安装</a>
 </p>
@@ -68,9 +68,9 @@
 </p>
 </div>
 
-<div id="outline-container-org27aec55" class="outline-3">
-<h3 id="org27aec55">下载Docker镜像文件</h3>
-<div class="outline-text-3" id="text-org27aec55">
+<div id="outline-container-org2e1db35" class="outline-3">
+<h3 id="org2e1db35">下载Docker镜像文件</h3>
+<div class="outline-text-3" id="text-org2e1db35">
 <div class="org-src-container">
 <pre class="src src-Shell">cd fabric/scripts
 
@@ -97,9 +97,9 @@ sed -i 's/curl/#curl/g' bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-orgb2502c3" class="outline-3">
-<h3 id="orgb2502c3">部署网络</h3>
-<div class="outline-text-3" id="text-orgb2502c3">
+<div id="outline-container-org829ce3c" class="outline-3">
+<h3 id="org829ce3c">部署网络</h3>
+<div class="outline-text-3" id="text-org829ce3c">
 <p>
 使用 <code>fabric-samples</code> 中已经生成的配置文件来部署网络:
 </p>
@@ -121,9 +121,9 @@ docker-compose -f docker-compose.yml up -d
 </div>
 </div>
 
-<div id="outline-container-org4bb327c" class="outline-4">
-<h4 id="org4bb327c">创建channel</h4>
-<div class="outline-text-4" id="text-org4bb327c">
+<div id="outline-container-orge1d6c31" class="outline-4">
+<h4 id="orge1d6c31">创建channel</h4>
+<div class="outline-text-4" id="text-orge1d6c31">
 <div class="org-src-container">
 <pre class="src src-Shell"># 切换到管理员用户
 docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
@@ -134,9 +134,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-org5f4a4b7" class="outline-4">
-<h4 id="org5f4a4b7">加入channel</h4>
-<div class="outline-text-4" id="text-org5f4a4b7">
+<div id="outline-container-org98e86e4" class="outline-4">
+<h4 id="org98e86e4">加入channel</h4>
+<div class="outline-text-4" id="text-org98e86e4">
 <div class="org-src-container">
 <pre class="src src-Shell">peer channel join -b mychannel.block
 </pre>
@@ -150,9 +150,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-orgc05a72f" class="outline-4">
-<h4 id="orgc05a72f">安装chaincode</h4>
-<div class="outline-text-4" id="text-orgc05a72f">
+<div id="outline-container-org804f008" class="outline-4">
+<h4 id="org804f008">安装chaincode</h4>
+<div class="outline-text-4" id="text-org804f008">
 <div class="org-src-container">
 <pre class="src src-Shell"># 退出peer0.org1.example.com容器
 exit
@@ -167,9 +167,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-orga4e77fb" class="outline-4">
-<h4 id="orga4e77fb">实例化chaincode</h4>
-<div class="outline-text-4" id="text-orga4e77fb">
+<div id="outline-container-org5f8329e" class="outline-4">
+<h4 id="org5f8329e">实例化chaincode</h4>
+<div class="outline-text-4" id="text-org5f8329e">
 <div class="org-src-container">
 <pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
 </pre>
@@ -177,9 +177,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-org5650f22" class="outline-4">
-<h4 id="org5650f22">调用chaincode</h4>
-<div class="outline-text-4" id="text-org5650f22">
+<div id="outline-container-org430976d" class="outline-4">
+<h4 id="org430976d">调用chaincode</h4>
+<div class="outline-text-4" id="text-org430976d">
 <p>
 实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
 </p>
@@ -196,9 +196,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-orge5b1e8e" class="outline-4">
-<h4 id="orge5b1e8e">调用chaincode查询</h4>
-<div class="outline-text-4" id="text-orge5b1e8e">
+<div id="outline-container-org8afbc39" class="outline-4">
+<h4 id="org8afbc39">调用chaincode查询</h4>
+<div class="outline-text-4" id="text-org8afbc39">
 <div class="org-src-container">
 <pre class="src src-Shell"># 转账
 peer chaincode invoke -C mychannel -n mycc -v v0 -c '{"Args":["invoke","a","b","10"]}'
@@ -219,9 +219,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-org154d6c2" class="outline-4">
-<h4 id="org154d6c2">节点的配置参数传递规则</h4>
-<div class="outline-text-4" id="text-org154d6c2">
+<div id="outline-container-org4b1f55a" class="outline-4">
+<h4 id="org4b1f55a">节点的配置参数传递规则</h4>
+<div class="outline-text-4" id="text-org4b1f55a">
 <p>
 程序在启动的时候, 会读取配置文件和环境变量的值, 如 <code>fabric-samples/basic-network/docker-compose.yml</code> 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
 </p>
@@ -239,9 +239,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orgb8276f2" class="outline-3">
-<h3 id="orgb8276f2">yaml配置文件</h3>
-<div class="outline-text-3" id="text-orgb8276f2">
+<div id="outline-container-orgb737b27" class="outline-3">
+<h3 id="orgb737b27">yaml配置文件</h3>
+<div class="outline-text-3" id="text-orgb737b27">
 <p>
 查看 <code>fabric/examples/e2e_cli/base/docker-compose-base.yaml</code> 配置文件. 此处给出其中一些选项的解释.
 </p>

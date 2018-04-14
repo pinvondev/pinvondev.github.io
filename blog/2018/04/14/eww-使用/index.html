@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>k-近邻算法 - Pinvon&#39;s Blog</title>
+    <title>EWW 使用 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,42 +30,143 @@
 
 <div>
 <div class="post">
-<h1>k-近邻算法</h1>
+<h1>EWW 使用</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfe32979">k-近邻算法概述</a></li>
+<li><a href="#org7df98b0">概述</a></li>
+<li><a href="#org09fc820">基本操作</a>
+<ul>
+<li><a href="#orga3dfc54">打开eww-mode</a></li>
+<li><a href="#org1d299e2">浏览网页的操作</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfe32979" class="outline-2">
-<h2 id="orgfe32979">k-近邻算法概述</h2>
-<div class="outline-text-2" id="text-orgfe32979">
+<div id="outline-container-org7df98b0" class="outline-2">
+<h2 id="org7df98b0">概述</h2>
+<div class="outline-text-2" id="text-org7df98b0">
 <p>
-\(k\) -近邻算法是监督学习算法，用于解决分类问题。
+EWW是Emacs自带的一款Web浏览器, 要使用EWW, 需要安装 <code>libxml2</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install libxml2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org09fc820" class="outline-2">
+<h2 id="org09fc820">基本操作</h2>
+<div class="outline-text-2" id="text-org09fc820">
+</div>
+<div id="outline-container-orga3dfc54" class="outline-3">
+<h3 id="orga3dfc54">打开eww-mode</h3>
+<div class="outline-text-3" id="text-orga3dfc54">
+<p>
+M-x eww RET
 </p>
 
 <p>
-对于训练集中的每个数据，其所属分类已知。输入新数据后，根据新数据的特征与训练集中的特征进行比较，得出新数据最接近的分类。而 \(k\)  这个名字的来源，是因为一般只与前 \(k\) 个最相似的数据比较，其中， \(k \leq 20\) 。
+然后会提示输入信息. 如果输入的不是URL, 则自动使用搜索引擎搜索, 否则打开URL.
 </p>
 
 <p>
-思考：如果 \(k\) 太大，有很多相似度较低的数据也参与了比较，在结果中与相似度较高的数据有同等的权重决定分类结果，会使得结果不准确。当然，也可以为这些相似度低的数据分配较低的权重，但这样也增加了复杂的复杂度。
+搜索引擎由 <code>eww-search-prefix</code> 指定, 默认使用的搜索引擎是 <a href="https://duckduckgo.com">https://duckduckgo.com</a>
 </p>
 
 <p>
-使用欧氏距离公式来计算距离。然后对距离进行排序，确定前 \(k\) 个距离的元素所在的主要分类。
+如果要打开本地文件, M-x eww-open-file
 </p>
+</div>
+</div>
 
-<p>
-使用数值归一化的情况：假如结果由两个特征决定，由于特征1的数值很大，所以特征1对结果造成的影响很大，而实际上，特征1和特征2的权重是相同的，这时候，需要对特征进行数值归一化。方法： \(new=\frac{old-min}{max-min}\) 。
-</p>
+<div id="outline-container-org1d299e2" class="outline-3">
+<h3 id="org1d299e2">浏览网页的操作</h3>
+<div class="outline-text-3" id="text-org1d299e2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
-<p>
-\(k\) -近邻算法是分类数据最简单最有效的方法，它是基于实例的学习，使用算法时我们必须有接近实际数据的训练样本数据。 \(k\) -近邻算法必须保存全部数据集，如果训练数据集很大，必须使用大量的存储空间。此外，必须对数据集中的每个数据计算距离值，实际使用时可能非常耗时。
-</p>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">按键</th>
+<th scope="col" class="org-left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">q</td>
+<td class="org-left">退出eww</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">g</td>
+<td class="org-left">重载</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">w</td>
+<td class="org-left">拷贝当前URL</td>
+</tr>
+
+<tr>
+<td class="org-left">d</td>
+<td class="org-left">下载到~/Downloads</td>
+</tr>
+
+<tr>
+<td class="org-left">l</td>
+<td class="org-left">后退</td>
+</tr>
+
+<tr>
+<td class="org-left">r</td>
+<td class="org-left">前进</td>
+</tr>
+
+<tr>
+<td class="org-left">H</td>
+<td class="org-left">历史</td>
+</tr>
+
+<tr>
+<td class="org-left">b</td>
+<td class="org-left">添加书签</td>
+</tr>
+
+<tr>
+<td class="org-left">B</td>
+<td class="org-left">显示书签列表</td>
+</tr>
+
+<tr>
+<td class="org-left">&amp;</td>
+<td class="org-left">用外部浏览器打开当前URL, 由shr-external-browser决定</td>
+</tr>
+
+<tr>
+<td class="org-left">v</td>
+<td class="org-left">页面源码</td>
+</tr>
+
+<tr>
+<td class="org-left">C</td>
+<td class="org-left">显示Cookie</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 
@@ -73,9 +174,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-01</span>
-        <span title="last modification date" class="post-info">2018-01-09</span>
-        <span title="tags" class="post-info"><a href="/tags/机器学习实战-读书笔记/">机器学习实战-读书笔记</a></span>
+        <span title="post date" class="post-info">2018-04-14</span>
+        <span title="last modification date" class="post-info">2018-04-14</span>
+        <span title="tags" class="post-info"><a href="/tags/emacs/">Emacs</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -83,8 +184,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/01/k-近邻算法";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/01/k-近邻算法";
+          var disqus_identifier = "/blog/2018/04/14/eww-使用";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/14/eww-使用";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
