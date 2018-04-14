@@ -1,0 +1,43 @@
+#+TITLE:       五 共识
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-13 五
+#+URI:         /blog/%y/%m/%d/五-共识
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+PoW, PoET, RBFT, ...
+
+* 实现数据隔离的multi-channel
+
+Ordering Service给客户端和Peer节点提供了一个共享通信Channel, 用来实现交易的广播服务. 客户端连接到channel上, 在通道上广播的消息最终会发送到channel内部的所有Peer节点.
+
+Ordering Service支持multi-channel, 客户端连接到一个指定的channel上, 就可以发送和获取消息了. channel是相互隔离的, 客户端连接到一个channel的时候, 并不知道其他channel的存在, 这边所说的隔离, 并不针对Orderer. 客户端可以连接到多个channel. multi-channel的例子如下:
+
+[[./45.png]]
+
+客户端获得背书节点返回的提案响应后, 构造交易, 提交给Orderer节点, Orderer节点 =根据交易信息里提案的请求头确定channel信息=, 添加到对应的队列中进行排序, 生成区块后广播给该channel内的节点.
+
+每个channel在节点上都有一个对应的账本.
+
+** 排序服务的初始化
+
+排序服务由多个Orderer节点组成, =每个Orderer启动的时候, 都需要一个创世区块=. 创世区块内包含的信息有:
+- Orderer节点信息及MSP信息(管理员证书, 根证书, TLS根证书)
+- 组织信息及MSP信息(管理员证书, 根证书, TLS根证书)
+- 共识算法类型
+- 区块配置信息
+- 访问控制策略
+
+configtxgen工具可以生成创世区块, configtxlator工具可以将区块转换成JSON格式.
+
+** 创建channel
+
+=客户端可以通过SDK向Ordering Service发起创建channel的请求, 提交的内容是channtl配置交易=. configtxgen工具可以生成channel配置交易(同样, 可以转换成JSON格式的内容来查看).
+
+Ordering Service接收到创建channel的请求, 会检查是否是配置交易, 检查的方法是查看ChannelHeader的类型是否为HeaderType_CONFIG_UPDATE(新建和更新channel都是这个类型), 然后Ordering Service重新生成一个配置交易, 修改交易类型为HeaderType_CONFIG. 新生成的交易会利用接收消息的Orderer的私钥重新进行签名, 然后添加到系统链的交易消息队列中进行处理.

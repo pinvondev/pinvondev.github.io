@@ -13,19 +13,111 @@
 
 ** 前提
 
-安装git, go, docker, node.js
+安装Git, Go, Docker, Node.js.
+
+仅介绍Node.js的安装
+
+*** 使用脚本工具一键下载Node.js
+
+#+BEGIN_SRC Shell
+cd ~
+curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt install nodejs
+
+# 查看node版本
+node -v
+
+# 查看npm版本
+npm -v
+
+# 为了让某些npm包能正常工作, 还要安装 build-essential
+sudo apt install build-essential
+#+END_SRC
+
+*** 下载压缩包安装Node.js
+
+可以通过浏览器下载, 然后解压, 配置环境变量即可.
+
+远程服务器只有终端窗口, 不能使用浏览器. 因此, 有两种方式下载:
+1. 使用终端上网下载
+2. 本地下载完成后, 再传送到远程服务器
+
+先介绍第1种, 使用终端上网下载:
+#+BEGIN_SRC Shell
+# 安装w3m
+sudo apt install w3m w3m-img
+
+# 测试
+w3m www.baidu.com
+
+# 如果不能显示中文
+sudo apt install zhcon
+#+END_SRC
+
+w3m的上下左右移动, 既可以使用Vim的命令, 也可以使用Emacs的命令, 非常好用.
+
+在需要输入文字的地方, 回车, 然后可以在终端的最下方输入文字.
+
+U: 重新输入网址
+B: 后退
+T: 新开一个标签页. 标签页之间的切换, 使用"{"和"}"
+C-q: 关闭当前标签页(C是Ctrl)
+
+通过终端上网, 下载所需的压缩包. 如图所示:
+[[./46.png]]
+
+第2种办法是本地电脑下载压缩包, 然后使用scp来传输:
+#+BEGIN_SRC Shell
+# 需要使用密钥private-key, 否则需要到服务器设置使用密码登录
+sudo scp -i private-key test.sh ubuntu@123.207.62.191:~/private-key
+
+# 这样test.sh就传输到了远程服务器
+#+END_SRC
+
+安装Node.js:
+#+BEGIN_SRC Shell
+xz -d node-v8.9.3-linux-x64.tar.xz 
+tar -xvf node-v8.9.3-linux-x64.tar 
+
+# 打开~/.profile文件, 添加环境变量
+export NODE_HOME=~/node
+export PATH=$NODE_HOME/bin:$PATH
+#+END_SRC
+
+*** nvm
+
+Node.js的安装到此就结束了. 但是IBM的Marbles使用的node版本只能是 =v6.2.0 - v6.11.1=, 而上面安装的node版本为v8.x, 因此, 还要对node的版本降级处理.
+
+我们使用nvm来管理node的版本.
+
+#+BEGIN_SRC Shell
+sudo apt install libssl-dev
+curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh -o install_nvm.sh
+bash install_nvm.sh
+source ~/.profile
+
+# 查看所有的node版本
+nvm ls-remote
+
+# 我们使用v6.10.0的版本
+nvm install 6.10.0
+nvm use 6.10.0
+
+# 查看已安装的所有node
+nvm ls
+#+END_SRC
 
 ** 下载代码
 
 #+BEGIN_SRC Shell
 git clone https://github.com/IBM-Blockchain/marbles.git
-cd marble
+git clone https://github.com/hyperledger/fabric-samples.git
 #+END_SRC
 
 ** 启动网络
 
 #+BEGIN_SRC Shell
-git clone https://github.com/hyperledger/fabric-samples
 cd fabric-samples
 git checkout v1.0.1
 
