@@ -44,3 +44,38 @@ cd /usr/local/opt/ssr/shadowsocksr/shadowsocks/json/
 sudo python ../local.py -c config.json -d start
 # sudo python ../local.py -c config.json -d stop
 #+END_SRC
+
+* 配置浏览器
+
+根据[[https://github.com/FelisCatus/SwitchyOmega/wiki/GFWList][说明]]进行配置.
+
+* 终端使用代理上网
+
+通过上面的配置, 已经可以在浏览器中使用代理了. 如果要在终端中使用代理上网, 继续配置.
+
+可以使用 =proxychains-ng= 这个工具来配置.
+
+#+BEGIN_SRC Shell
+git clone https://github.com/rofl0r/proxychains-ng.git
+cd proxychains-ng
+./configure
+sudo make && sudo make install
+cp ./src/proxychains.conf /etc/proxychains.conf
+#+END_SRC
+
+编辑 =proxychains-ng= 的配置文件.
+
+进入文件, 跳到最后一行, 将 =socks4 127.0.0.1 9095= 注释掉, 添加如下内容:
+#+BEGIN_SRC Shell
+socks5 127.0.0.1 1080
+#+END_SRC
+
+需要使用代理的时候, 在命令的最前面加上 =proxychains4= 即可.
+
+测试:
+#+BEGIN_SRC Shell
+proxychains4 w3m https://www.google.com
+#+END_SRC
+
+内容如下:
+[[./0.png]]
