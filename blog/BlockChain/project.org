@@ -108,6 +108,13 @@ nvm use 6.10.0
 nvm ls
 #+END_SRC
 
+由于前面安装了v8的node, 且配置了环境变量, 有时用nvm切换版本时, 会出现冲突. 解决办法:
+#+BEGIN_SRC Shell
+nvm deactivate
+ls -la $(which npm)
+rm $(which npm)
+#+END_SRC
+
 ** 下载代码
 
 #+BEGIN_SRC Shell
@@ -119,20 +126,23 @@ git clone https://github.com/hyperledger/fabric-samples.git
 
 #+BEGIN_SRC Shell
 cd fabric-samples
-git checkout v1.0.1
+curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/release-1.1/scripts/bootstrap-1.1.0-preview.sh -o setup_script.sh
+sudo bash setup_script.sh
 
-curl -sSL https://goo.gl/6wtTN5 | bash -s 1.0.0
-# 或者
-curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s 1.0.0
-
-# 设置环境变量
+# 设置环境变量 打开 ~/.bashrc 或 ~/.profile 加入下面一句
 export PATH=$PWD/bin:$PATH
+
+# 配置好环境变量后
+source ~/.bashrc
+# 或者
+source ~/.profile
 
 cd fabcar
 ./startFabric.sh
 
 # 安装依赖
-sudo npm install
+npm install
+node enrollAdmin.js
 
 # 如果要关闭网络
 cd ../bashic-network
@@ -140,7 +150,43 @@ cd ../bashic-network
 ./teardown.sh
 #+END_SRC
 
-** 启动marbles
+** 修改配置(v1.1.0)
+
+*** 复制加密材料
+
+将 =fabcar/hfc-key-store= 中的加密材料放到用户主目录下:
+#+BEGIN_SRC Shell
+cd fabric-samples/fabcar/hfc-key-store
+rm ~/.hfc-key-store/*
+cp * ~/.hfc-key-store
+#+END_SRC
+
+*** 修改配置文件
+
+修改 =marbles/config/connection_profile_local.json= 的 =client.credentialStore.path= 项:
+#+BEGIN_SRC Shell
+# 原来的路径
+"path": "/$HOME/fabric-samples/fabcar/hfc-key-store"
+
+# 改成
+"path": "/$HOME/.hfc-key-store"
+#+END_SRC
+
+*** 安装chaincode
+
+#+BEGIN_SRC Shell
+cd marbles/scripts
+node install_chaincode.js
+#+END_SRC
+
+*** 实例化chaincode
+
+#+BEGIN_SRC Shell
+cd marbles/scripts
+node instantiate_chaincode.js
+#+END_SRC
+
+** 修改配置(v1.0.0)
 
 *** chaincode
 
@@ -173,15 +219,18 @@ node install_chaincode.js
 node instantiate_chaincode.js
 #+END_SRC
 
-*** 启动marbles
+** 启动marbles
 
 #+BEGIN_SRC Shell
+cd marbles
+
  npm install gulp -g
 #  如果失败, npm config seregistry http://registry.cnpmjs.org 再执行.
+
 npm install
+
 gulp marbles_local
 #+END_SRC
-
 
 * 项目架构
 
