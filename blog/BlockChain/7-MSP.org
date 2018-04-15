@@ -1,0 +1,129 @@
+#+TITLE:       七 MSP
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-15 日
+#+URI:         /blog/%y/%m/%d/七-msp
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+MSP是一个组件, 其中定义了身份验证, 鉴权和网络准入的规则.
+
+MSP管理用户ID, 对想加入网络的客户端进行鉴权, 包括为提出交易的客户端分配密钥工作.
+
+MSP会使用CA, 由CA来验证和销毁用户的证书.
+
+MSP默认使用的是Fabric-CA API, 当然, 我们也可以使用其他的第三方CA. 因此, Fabric-CA不是必须的.
+
+一个Fabric网络可以包含多个MSP, 对应每个组织.
+
+* 工作流程
+
+User使用CA进行鉴权. CA为应用, Peer, Orderer等节点标记身份, 验证他们的密钥. 通过签名算法和签名验证算法生成签名.
+
+1. 签名的生成始于签名算法, 各实体使用跟各自身份相关的密钥生成背书信息. 生成的签名是一串字节, 绑定到具体的身份.
+
+2. 使用签名认证算法, 根据身份, 背书信息和签名, 进行认证.
+
+3. 如果签名字节串包含输入背书信息的有效签名, 则验证通过.
+
+4. 用户可以看到网络中的交易, 与网络中的其他角色进行交易.
+
+* MSP的配置
+
+** 组织与MSP之间建立映射关系
+
+一个MSP可以和一个组织对应, 也可以和多个组织对应, 还可以和一个组织内的多个部门对应. 根据MSP配置好Peer节点后, 数据同步就限制在MSP定义的范围内.
+
+*** 一个组织对应多个MSP
+
+这种情况下, 一个组织有多个部门, 从方便管理, 保护隐私的角度, 每个部门要设置不同的MSP. 每个Peer节点只设置一个MSP, 同一组织内不同MSP的Peer节点之间不能相互认证, 这样相同组织的不同部门之间不会同步数据.
+
+*** 多个组织对应一个MSP
+
+这种情况是同一个联盟的不同组织之间采用相同的成员管理架构, 数据会在不同组织之间同步.
+
+** 一个组织内部实现不同的权限控制
+
+** 不同类型的节点使用不同的MSP
+
+可能会有这样的需求, 希望给客户端, Peer节点, Orderer节点分别设置不同的MSP, 因为身份信息会包含MSP标识, 设置不同的MSP能确定身份类型.
+
+** 管理员证书和CA证书
+
+不要把CA证书设置成MSP管理员证书, 这样能把成员管理, 签发证书和验证证书等不同职责拆分开来, 方便管理与问题定位.
+
+** MSP的CA根证书与TLS的CA根证书
+
+MSP的CA根证书和TLS的CA根证书以及相关的中间CA证书需要存放在不同的文件夹中, 避免混淆不同类别的证书.
+
+** 吊销已经颁发的证书
+
+* Fabric CA
+
+** 概述
+
+用户信息的注册; 数字证书的发行; 数字证书的延期与吊销;
+
+Fabric CA架构如图所示:
+
+[[./49.png]]
+
+Fabric CA服务端提供用户登记和注册的数字证书管理功能, 数据存储后端可以是MySQL, PostgreSQL, LDAP等. Fabric CA服务能够采用无状态的集群部署, 通过HAProxy等软件实现负载均衡功能, 实现服务的高可用.
+
+Fabric CA服务端提供了RESTful的接口供客户端工具和SDK访问. 手工部署的方式可以采用客户端工具来实现, 如果集成到应用程序中, 可以采用SDK来实现. 通过SDK注册的证书有多种类型, 包括user, app, peer, orderer等.
+
+** 部署Fabric CA服务端
+
+安装Go, 设置GOPATH, 安装libtool, libtdhl-dev
+
+*** 安装Fabric CA服务端和客户端
+
+将fabric-ca-server和fabric-ca-client安装到$GOPATH/bin下:
+#+BEGIN_SRC Shell
+go get -u github.com/hyperledger/fabric-ca/cmd/......
+#+END_SRC
+
+也可以到Docker Hub下载Fabric-CA的镜像文件. 则启动的命令:
+#+BEGIN_SRC Shell
+cd $GOPATH/src/github.com/hyperledger/fabric-ca/docker/server
+
+# 修改docker-compose.yml 将image修改下下载的镜像版本
+
+# 启动
+docker-compose up -d
+#+END_SRC
+
+还可以自己编译.
+
+*** 启动Fabric CA服务
+
+#+BEGIN_SRC Shell
+fabric-ca-server init -b admin:adminpw
+#+END_SRC
+
+*** 未来学习
+
+学习如何存储到MySQL, 如何存储到PostgreSQL, 如何存储到LDAP.
+
+这三种存储方式的优劣比较, 最终根据自己的情况, 应选择哪个来存储.
+
+** Fabric CA操作
+
+访问Fabric CA服务端的方法有两种:
+1. Fabric CA 客户端
+2. RESTful API
+
+其实, Fabric CA 客户端也是调用RESTful API来访问服务端的. 本质上说只有RESTful API这种方式.
+
+*** Fabric CA 客户端
+
+[[http://hyperledger-fabric-ca.readthedocs.io/en/latest/index.html][链接]]
+
+*** Fabric CA的Restful API
+
+[[https://github.com/hyperledger/fabric-ca/blob/release-1.1/swagger/swagger-fabric-ca.json][RESTFUL API]]
