@@ -1,0 +1,41 @@
+#+TITLE:       六 多链及多通道
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-15 日
+#+URI:         /blog/%y/%m/%d/六-多链及多通道
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+在Hyperledger Fabric v0.6中, 所有的节点都属于一个链, 所有的节点都会同步相同的数据, 这会带来一些问题:
+1. 随着业务量的增加, 数据会越来越大, 每个节点都会同步和存储一些不必要的数据, 这增加了数据同步的压力, 数据存储的压力, 数据处理的压力;
+2. 网络中所有的节点都能读取到所有的数据, 一些敏感数据可能分发给其他不应该访问这些数据的节点, 这会带来数据安全隐患.
+
+在Hyperledger Fabric v1.0中, 增加了多链. 如果区块链网络中有很多Peer节点, 可能存在多个链.
+
+每个链可能由不同的节点组成, 这些节点维护着相同的数据(账本数据, 状态数据), 不同链的数据是相互隔离的.
+
+一个节点根据应用的需求, 可以加入到不同的链中, 在同步数据的时候只同步已加入链的数据. 这样可以减少数据同步的时间, 减少数据的存储空间.
+
+不同链上运行的智能合约访问的是不同的数据, 这样可以实现数据的隐私保护, 也不会受到数据依赖的限制, 提高了并行处理的效率.
+
+* 数据存储对多链的支持
+
+数据存储包含账本数据, 索引数据, 状态数据, 历史数据等几个部分, committer节点包含所有的数据, orderer只包含账本数据及其索引数据, 不包含状态数据及其历史数据.
+
+** 账本数据
+
+committer节点和orderer节点都会存储账本数据, 即区块文件.
+
+账本数据是基于文件系统存储的, 每个链的账本数据存储在不同的目录下, 只有属于某个链, 才会存在以这个链的通道命名的账本目录.
+
+账本数据的默认存储路径: /var/hyperledger/production/ledgersData/chains/chains
+如图所示:
+
+[[./48.png]]
+
+其中, /var/hyperledger/production 这个路径可以通过 =core.yaml= 文件中的 =peer.fileSystemPath= 选项来指定.
