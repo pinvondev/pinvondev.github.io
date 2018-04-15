@@ -1,0 +1,82 @@
+#+TITLE:       八 智能合约
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-15 日
+#+URI:         /blog/%y/%m/%d/八-智能合约
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        BlockChain
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+链码是可独立运行的应用程序, 运行在基于Docker的安全容器中.
+
+容器在启动时和Orderer建立gRPC连接, 在运行时通过接口和Orderer通信.
+
+链码是线下开发好再部署到链上的, 部署的时候需要一定权限.
+
+* 链码的生命周期
+
+打包, 安装, 实例化, 升级(更新).
+
+** 打包
+
+链码的内容: 源码, 实例化策略, 链码的签名
+
+链码的签名实现了3个目标: 表明链码的创建者; 允许验证链码包里的内容; 可以检测链码包是否被篡改.
+
+*** 创建链码
+
+创建带签名的链码包:
+#+BEGIN_SRC Shell
+peer chaincode package -n mycc -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -v 0 -s -S -i "AND ('OrgA.admin)" ccpack.out
+#+END_SRC
+-s: 生成一个有多个所有者签名的链码包. 如果指定了-s选项, 其他的所有者要签名时, 还要指定-S选项.
+-S: 使唤MSP(core.yaml中的localMspid)对程序包进行签名. 这是一个可选的选项.
+-i: 链码的实例化策略, 它表明哪些身份可以对链实例化. 例子中, 只允许OrgA管理员进行链码实例化. 如果没有提供任何策略, 默认只允许Peer节点MSP的管理员实例化链码.
+
+*** 链码的签名
+
+链码在创建时签名了, 才可以由其他的所有者校验签名和继续签名, 签名的过程可以在线下操作.
+
+#+BEGIN_SRC Shell
+peer chaincode signpackage ccpack.out signedccpack.out
+#+END_SRC
+ccpack.out: 输入包
+signedccpack.out: 包含一个用本地MSP对包进行的附加签名
+
+** 安装
+
+链码的安装是针对节点的, 每次安装只对单个节点有效, 需要给每个要运行链码的背书节点都安装一遍, 具体需要安装到哪些节点, 可以根据背书策略来选择. 链码的安装需要管理员权限.
+
+#+BEGIN_SRC Shell
+peer chaincode install -n ChaincodeName -v version -p ChaincodePath
+#+END_SRC
+-n: 链码的名字
+-v: 链码的版本
+-p: 链码的源码路径, 该路径必须在GOPATH目录下, 如$GOPATH/src/cc
+
+** 实例化
+
+链码在实例化之前与通道无关, 实例化的时候才和通道绑定. 链码可以和多个通道绑定, 在通道上初始化后记录到通道的状态数据库中.
+
+默认的实例化策略是通道的任何一个管理员.
+
+#+BEGIN_SRC Shell
+peer chaincode instantiate -n ChaincodeName -v version -c '{"Args":["john","0"]}' -P "OR ('Org1.member','Org2.member')"
+#+END_SRC
+-P: 背书策略
+
+** 升级
+
+升级时, 链码的名称要保持不变, 只有链码的版本需要变化.
+
+升级之前, 需要把链码安装到对应的背书节点上, 链码的升级和实例化是类似的操作, 也是绑定到通道上, 执行初始化的操作. 链码升级只会影响到指定的通道, 没有绑定新版本链码的通道, 还是使用旧版本.
+
+应用程序和链码的交互流程:
+
+[[./50.png]]
+
+* 系统链码
