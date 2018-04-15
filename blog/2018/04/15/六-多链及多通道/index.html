@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>EWW 使用 - Pinvon&#39;s Blog</title>
+    <title>六 多链及多通道 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,147 +30,83 @@
 
 <div>
 <div class="post">
-<h1>EWW 使用</h1>
+<h1>六 多链及多通道</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9bf6304">概述</a></li>
-<li><a href="#org68ec5d3">基本操作</a>
+<li><a href="#orgdd68e0c">概述</a></li>
+<li><a href="#orgeaec443">数据存储对多链的支持</a>
 <ul>
-<li><a href="#orgcfb1e49">打开eww-mode</a></li>
-<li><a href="#orgd79fc11">浏览网页的操作</a></li>
+<li><a href="#org603773c">账本数据</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9bf6304" class="outline-2">
-<h2 id="org9bf6304">概述</h2>
-<div class="outline-text-2" id="text-org9bf6304">
+<div id="outline-container-orgdd68e0c" class="outline-2">
+<h2 id="orgdd68e0c">概述</h2>
+<div class="outline-text-2" id="text-orgdd68e0c">
 <p>
-EWW是Emacs自带的一款Web浏览器, 要使用EWW, 需要安装 <code>libxml2</code>.
+在Hyperledger Fabric v0.6中, 所有的节点都属于一个链, 所有的节点都会同步相同的数据, 这会带来一些问题:
 </p>
+<ol class="org-ol">
+<li>随着业务量的增加, 数据会越来越大, 每个节点都会同步和存储一些不必要的数据, 这增加了数据同步的压力, 数据存储的压力, 数据处理的压力;</li>
+<li>网络中所有的节点都能读取到所有的数据, 一些敏感数据可能分发给其他不应该访问这些数据的节点, 这会带来数据安全隐患.</li>
+</ol>
 
-<div class="org-src-container">
-<pre class="src src-Shell">sudo apt install libxml2
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org68ec5d3" class="outline-2">
-<h2 id="org68ec5d3">基本操作</h2>
-<div class="outline-text-2" id="text-org68ec5d3">
-</div>
-<div id="outline-container-orgcfb1e49" class="outline-3">
-<h3 id="orgcfb1e49">打开eww-mode</h3>
-<div class="outline-text-3" id="text-orgcfb1e49">
 <p>
-M-x eww RET
+在Hyperledger Fabric v1.0中, 增加了多链. 如果区块链网络中有很多Peer节点, 可能存在多个链.
 </p>
 
 <p>
-然后会提示输入信息. 如果输入的不是URL, 则自动使用搜索引擎搜索, 否则打开URL.
+每个链可能由不同的节点组成, 这些节点维护着相同的数据(账本数据, 状态数据), 不同链的数据是相互隔离的.
 </p>
 
 <p>
-搜索引擎由 <code>eww-search-prefix</code> 指定, 默认使用的搜索引擎是 <a href="https://duckduckgo.com">https://duckduckgo.com</a>
+一个节点根据应用的需求, 可以加入到不同的链中, 在同步数据的时候只同步已加入链的数据. 这样可以减少数据同步的时间, 减少数据的存储空间.
 </p>
 
 <p>
-如果要打开本地文件, M-x eww-open-file
+不同链上运行的智能合约访问的是不同的数据, 这样可以实现数据的隐私保护, 也不会受到数据依赖的限制, 提高了并行处理的效率.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd79fc11" class="outline-3">
-<h3 id="orgd79fc11">浏览网页的操作</h3>
-<div class="outline-text-3" id="text-orgd79fc11">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<div id="outline-container-orgeaec443" class="outline-2">
+<h2 id="orgeaec443">数据存储对多链的支持</h2>
+<div class="outline-text-2" id="text-orgeaec443">
+<p>
+数据存储包含账本数据, 索引数据, 状态数据, 历史数据等几个部分, committer节点包含所有的数据, orderer只包含账本数据及其索引数据, 不包含状态数据及其历史数据.
+</p>
+</div>
+
+<div id="outline-container-org603773c" class="outline-3">
+<h3 id="org603773c">账本数据</h3>
+<div class="outline-text-3" id="text-org603773c">
+<p>
+committer节点和orderer节点都会存储账本数据, 即区块文件.
+</p>
+
+<p>
+账本数据是基于文件系统存储的, 每个链的账本数据存储在不同的目录下, 只有属于某个链, 才会存在以这个链的通道命名的账本目录.
+</p>
+
+<p>
+账本数据的默认存储路径: /var/hyperledger/production/ledgersData/chains/chains
+如图所示:
+</p>
 
 
-<colgroup>
-<col  class="org-left" />
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/六-多链及多通道/48.png" alt="48.png" />
+</p>
+</div>
 
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">按键</th>
-<th scope="col" class="org-left">作用</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">q</td>
-<td class="org-left">退出eww</td>
-</tr>
-</tbody>
-<tbody>
-<tr>
-<td class="org-left">g</td>
-<td class="org-left">重载</td>
-</tr>
-</tbody>
-<tbody>
-<tr>
-<td class="org-left">w</td>
-<td class="org-left">拷贝当前URL</td>
-</tr>
-
-<tr>
-<td class="org-left">d</td>
-<td class="org-left">下载到~/Downloads</td>
-</tr>
-
-<tr>
-<td class="org-left">l</td>
-<td class="org-left">后退</td>
-</tr>
-
-<tr>
-<td class="org-left">r</td>
-<td class="org-left">前进</td>
-</tr>
-
-<tr>
-<td class="org-left">H</td>
-<td class="org-left">历史</td>
-</tr>
-
-<tr>
-<td class="org-left">b</td>
-<td class="org-left">添加书签</td>
-</tr>
-
-<tr>
-<td class="org-left">B</td>
-<td class="org-left">显示书签列表</td>
-</tr>
-
-<tr>
-<td class="org-left">&amp;</td>
-<td class="org-left">用外部浏览器打开当前URL, 由shr-external-browser决定</td>
-</tr>
-
-<tr>
-<td class="org-left">v</td>
-<td class="org-left">页面源码</td>
-</tr>
-
-<tr>
-<td class="org-left">C</td>
-<td class="org-left">显示Cookie</td>
-</tr>
-
-<tr>
-<td class="org-left">G</td>
-<td class="org-left">重新输入网址</td>
-</tr>
-</tbody>
-</table>
+<p>
+其中, /var/hyperledger/production 这个路径可以通过 <code>core.yaml</code> 文件中的 <code>peer.fileSystemPath</code> 选项来指定.
+</p>
 </div>
 </div>
 </div>
@@ -179,9 +115,9 @@ M-x eww RET
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-14</span>
-        <span title="last modification date" class="post-info">2018-04-14</span>
-        <span title="tags" class="post-info"><a href="/tags/emacs/">Emacs</a></span>
+        <span title="post date" class="post-info">2018-04-15</span>
+        <span title="last modification date" class="post-info">2018-04-15</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -189,8 +125,8 @@ M-x eww RET
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/14/eww-使用";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/14/eww-使用";
+          var disqus_identifier = "/blog/2018/04/15/六-多链及多通道";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/15/六-多链及多通道";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
