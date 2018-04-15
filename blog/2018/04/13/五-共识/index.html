@@ -35,29 +35,71 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgeb2585b">概述</a></li>
-<li><a href="#org0011ae1">实现数据隔离的multi-channel</a>
+<li><a href="#org0b7f828">概述</a></li>
+<li><a href="#org5d63552">实现数据隔离的multi-channel</a>
 <ul>
-<li><a href="#orgfd3959e">排序服务的初始化</a></li>
-<li><a href="#orgbb5a3c5">创建channel</a></li>
+<li><a href="#org44ed470">排序服务的初始化</a></li>
+<li><a href="#orgd96ef0b">创建channel</a></li>
+<li><a href="#orgda91926">更新channel</a>
+<ul>
+<li><a href="#orge807974">更新通道关键点</a></li>
+<li><a href="#org6874ee6">configtxlator工具的使用</a></li>
+</ul>
+</li>
+<li><a href="#org973f270">加入channel</a></li>
+<li><a href="#orgc2d0cc8">查询channel</a></li>
+</ul>
+</li>
+<li><a href="#org93153e2">可插拔的排序服务</a>
+<ul>
+<li><a href="#org62f2c2d">排序服务接口</a>
+<ul>
+<li><a href="#org1e32c2d">创建链的接口</a></li>
+<li><a href="#org85c48fe">链消息处理的接口</a></li>
+<li><a href="#orgc21c99b">增加新的排序服务</a></li>
+</ul>
+</li>
+<li><a href="#orgd19a186">Solo</a>
+<ul>
+<li><a href="#orgff2da6e">创建链</a></li>
+<li><a href="#orgccce3ae">接收交易请求</a></li>
+<li><a href="#org9ac1f0c">错误处理</a></li>
+</ul>
+</li>
+<li><a href="#orgf6372f0">Kafka</a>
+<ul>
+<li><a href="#orgeb8f83a">创建链</a></li>
+<li><a href="#org415555a">接收交易请求</a></li>
+<li><a href="#org412edf7">错误处理</a></li>
+</ul>
+</li>
+<li><a href="#orgfa12ab5">Kafka实践</a>
+<ul>
+<li><a href="#org87d90bf">节点数</a></li>
+<li><a href="#org4601f69">创建genesis.block</a></li>
+<li><a href="#org0e54dd2">配置Kafka集群</a></li>
+<li><a href="#org1b88e4b">连接Kafka节点出现异常时的重试设置</a></li>
+<li><a href="#orge102bb0">排序服务节点和Kafka节点之间的安全传输</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgeb2585b" class="outline-2">
-<h2 id="orgeb2585b">概述</h2>
-<div class="outline-text-2" id="text-orgeb2585b">
+<div id="outline-container-org0b7f828" class="outline-2">
+<h2 id="org0b7f828">概述</h2>
+<div class="outline-text-2" id="text-org0b7f828">
 <p>
 PoW, PoET, RBFT, ...
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0011ae1" class="outline-2">
-<h2 id="org0011ae1">实现数据隔离的multi-channel</h2>
-<div class="outline-text-2" id="text-org0011ae1">
+<div id="outline-container-org5d63552" class="outline-2">
+<h2 id="org5d63552">实现数据隔离的multi-channel</h2>
+<div class="outline-text-2" id="text-org5d63552">
 <p>
 Ordering Service给客户端和Peer节点提供了一个共享通信Channel, 用来实现交易的广播服务. 客户端连接到channel上, 在通道上广播的消息最终会发送到channel内部的所有Peer节点.
 </p>
@@ -81,9 +123,9 @@ Ordering Service支持multi-channel, 客户端连接到一个指定的channel上
 </p>
 </div>
 
-<div id="outline-container-orgfd3959e" class="outline-3">
-<h3 id="orgfd3959e">排序服务的初始化</h3>
-<div class="outline-text-3" id="text-orgfd3959e">
+<div id="outline-container-org44ed470" class="outline-3">
+<h3 id="org44ed470">排序服务的初始化</h3>
+<div class="outline-text-3" id="text-org44ed470">
 <p>
 排序服务由多个Orderer节点组成, <code>每个Orderer启动的时候, 都需要一个创世区块</code>. 创世区块内包含的信息有:
 </p>
@@ -101,9 +143,9 @@ configtxgen工具可以生成创世区块, configtxlator工具可以将区块转
 </div>
 </div>
 
-<div id="outline-container-orgbb5a3c5" class="outline-3">
-<h3 id="orgbb5a3c5">创建channel</h3>
-<div class="outline-text-3" id="text-orgbb5a3c5">
+<div id="outline-container-orgd96ef0b" class="outline-3">
+<h3 id="orgd96ef0b">创建channel</h3>
+<div class="outline-text-3" id="text-orgd96ef0b">
 <p>
 <code>客户端可以通过SDK向Ordering Service发起创建channel的请求, 提交的内容是channtl配置交易</code>. configtxgen工具可以生成channel配置交易(同样, 可以转换成JSON格式的内容来查看).
 </p>
@@ -111,6 +153,327 @@ configtxgen工具可以生成创世区块, configtxlator工具可以将区块转
 <p>
 Ordering Service接收到创建channel的请求, 会检查是否是配置交易, 检查的方法是查看ChannelHeader的类型是否为HeaderType_CONFIG_UPDATE(新建和更新channel都是这个类型), 然后Ordering Service重新生成一个配置交易, 修改交易类型为HeaderType_CONFIG. 新生成的交易会利用接收消息的Orderer的私钥重新进行签名, 然后添加到系统链的交易消息队列中进行处理.
 </p>
+
+<p>
+创建一个channel就会有一个新的链. 客户端发起创建channel的请求, 创建成功后返回这个链的创世区块. 新链的创世区块中包含了channel配置交易的内容, 扩展了从系统链上保存的组织信息, Ordering Service信息等, 这样节点可以根据这个创世区块确定新链的标识, Orderer节点等, 而不用访问Orderer上的系统链.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda91926" class="outline-3">
+<h3 id="orgda91926">更新channel</h3>
+<div class="outline-text-3" id="text-orgda91926">
+<p>
+可参考博客: <a href="https://www.jianshu.com/p/eb8fe7cb6f5a">动态加入组织</a>
+</p>
+
+<p>
+大概内容如下:
+</p>
+
+<p>
+系统启动和通道创建分别要依赖于创世区块和通道文件. 可以将通道文件使用configtxlator工具转换成我们能看懂的JSON格式, 进行编辑.
+</p>
+</div>
+
+<div id="outline-container-orge807974" class="outline-4">
+<h4 id="orge807974">更新通道关键点</h4>
+<div class="outline-text-4" id="text-orge807974">
+<p>
+确定好需要修改的配置项, 离线修改后, 通过SDK或CLI发送给Orderer.
+</p>
+
+<p>
+通道配置通过一个交易的形式存储在通道的配置区块中, 并且能够直接被修改. 但是, 在Fabric v1.0.0中, 还不能使用SDK来直接修改配置. configtxlator工具提供了一个API, 可以让SDK用户能够与这个API交互来更新配置.
+</p>
+
+<p>
+更新通道的流程:
+</p>
+<ol class="org-ol">
+<li>SDK取出最新配置</li>
+<li>configtxlator工具将配置转化成我们能看懂的JSON文件</li>
+<li>客户端编辑配置文件</li>
+<li>使用configtxlator工具计算原有配置文件与现有配置文件的差异</li>
+<li>客户端使用SDK提交配置和签名</li>
+</ol>
+
+<p>
+注: 个人认为, 服务器与客户端的概念, 是相对的. 对于用户直接使用的程序来说, 服务器是使用SDK的应用程序, 对于使用SDK的应用程序来说, 服务器是Fabric.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6874ee6" class="outline-4">
+<h4 id="org6874ee6">configtxlator工具的使用</h4>
+<div class="outline-text-4" id="text-org6874ee6">
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator --help
+</pre>
+</div>
+<p>
+使用该命令了解configtxlator工具的使用.
+</p>
+
+<p>
+启动configtxlator:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator start
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org973f270" class="outline-3">
+<h3 id="org973f270">加入channel</h3>
+<div class="outline-text-3" id="text-org973f270">
+<p>
+应用程序通过SDK或CLI向节点发送JoinChain请求, 参数为该通道的创世区块, 请求类型为HeaderType_CONFIG.
+</p>
+
+<p>
+节点校验创世区块的合法性: 是否包含应用相关的配置项, 对提交者的身份进行认证和权限检查. 配置交易(创建通道所需的文件)要用客户端的私钥进行签名. 权限检查主要包含两点:
+</p>
+<ol class="org-ol">
+<li>是否有权限向节点提交请求(即检查提交者的MSP是否与本地MSP相同)</li>
+<li>是否满足加入通道请求的策略: 管理员权限才能提交加入通道请求, 管理员的证书配置在 <code>$CORE_PEER_MSPCONFIGPATH/admincerts</code> 目录下.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgc2d0cc8" class="outline-3">
+<h3 id="orgc2d0cc8">查询channel</h3>
+<div class="outline-text-3" id="text-orgc2d0cc8">
+<p>
+channel信息是节点本地维护的, 有一个值为chain的映射表, 在节点启动或有新channel加入时, 会更新这个映射表. 映射表的键为channelId, 遍历就能返回节点所加入的所有channel. 在CLI中, 可以输入 <code>peer channel list</code> 来查看.
+</p>
+
+<p>
+channel的配置也可查询, 如获取Orderer.
+</p>
+
+<p>
+进入CLI, 获取channel配置:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel fetch config config_block.pb -o orderer.example.com:7050 -c testchainid
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org93153e2" class="outline-2">
+<h2 id="org93153e2">可插拔的排序服务</h2>
+<div class="outline-text-2" id="text-org93153e2">
+<p>
+目前只有两种排序服务: Solo, Kafka.
+</p>
+</div>
+
+<div id="outline-container-org62f2c2d" class="outline-3">
+<h3 id="org62f2c2d">排序服务接口</h3>
+<div class="outline-text-3" id="text-org62f2c2d">
+<p>
+排序服务的业务需要是可以实现不同的逻辑. 主要的接口有创建链, 处理链消息, 增加新的排序服务.
+</p>
+</div>
+
+<div id="outline-container-org1e32c2d" class="outline-4">
+<h4 id="org1e32c2d">创建链的接口</h4>
+<div class="outline-text-4" id="text-org1e32c2d">
+<div class="org-src-container">
+<pre class="src src-Go">type Consenter interface {
+    HandleChain(support ConsenterSupport, metadata *cb.Metadata) (Chain, error)
+}
+</pre>
+</div>
+
+<p>
+这个接口的作用是创建一个对链的引用, 用于提供资源. 其中, 第一个参数提供交易过滤, 交易切割, 区块签名等功能; 第二个参数是一个指针, 指针链账本中最后一个提交块ORDERER的存储元数据. 如果是创世区块(genesis.block), 由于没有存储元数据字段定义, 所以该值为nil.
+</p>
+
+<p>
+当Orderer接收到创建通道的请求时, 会根据genesis.block中配置的通道类型来创建新的通道, 调用的是不同的通道的 <code>HandleChain()</code>. 
+</p>
+
+<p>
+不同排序服务的区块元数据不同, 如对于Kafka服务, 元数据中要保存Kafka的最新偏移, 而Solo则不需要, 所以 <code>排序服务不能动态切换</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org85c48fe" class="outline-4">
+<h4 id="org85c48fe">链消息处理的接口</h4>
+<div class="outline-text-4" id="text-org85c48fe">
+<p>
+排序服务接收到某个通道上的交易后, 会提交给链处理. 需要实现的接口如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Go">type Chain interface {
+    Enqueue(env *cb.Envelope) bool
+    Errored() &lt;- chan struct{}
+    Halt()
+}
+</pre>
+</div>
+
+<p>
+<code>Enqueue()</code>: 成功接收消息时, 返回true, 否则返回false
+</p>
+
+<p>
+<code>Errored()</code>: 发生错误时, 返回报错的channel, 终止客户端的等待
+</p>
+
+<p>
+<code>Halt()</code>: 用于分配链的各种资源, 并保持相关的最新状态, 包括从排序服务中读取资源, 将消息传递给区块进行拆分, 将区块结果写入账本.
+</p>
+
+<p>
+Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了可以提交消息进行排序的方法. 在实现这个接口时, 需要把排好的交易通过blockcutter.Receiver进行交易分割, 最后写到账本中. 交易的分割有两种模式:
+</p>
+<ol class="org-ol">
+<li>交易先进入消息流中, 它在消息流中是有序的, 消息流中的交易分割到不同的区块里, 最后写入到账本中, solo和kafka都是这种模式.</li>
+<li>交易分割到不同的区块中, 交易是有序的, 最后写入账本中, sbft是这种模式.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgc21c99b" class="outline-4">
+<h4 id="orgc21c99b">增加新的排序服务</h4>
+<div class="outline-text-4" id="text-orgc21c99b">
+<p>
+排序服务需要配置文件的支持和配置文件参数的识别.
+</p>
+
+<p>
+配置文件支持: 生成genesis.block的配置文件configtx.yaml中, Orderer.OrdererType可以指定排序服务类型. 假设添加了newconsenter.
+</p>
+
+<p>
+配置文件参数识别: 在initializeMulti ChainManager的consenters中增加映射. consenters["newconsenter"] = newconsenter.New(). 然后在newconsenter里实现新的排序和共识算法.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/13/五-共识/47.png" alt="47.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd19a186" class="outline-3">
+<h3 id="orgd19a186">Solo</h3>
+<div class="outline-text-3" id="text-orgd19a186">
+</div>
+<div id="outline-container-orgff2da6e" class="outline-4">
+<h4 id="orgff2da6e">创建链</h4>
+<div class="outline-text-4" id="text-orgff2da6e">
+<p>
+利用Golang的并发机制, 内部构建一个接收消息的通道sendChan, 然后返回处理交易信息的链multichain.Chain:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func newChain (support multichain.ConsenterSupport) *chain {
+    return &amp;chain {
+        batchTimeout: support.SharedConfig().BatchTimeout(),
+        support: support,
+        sendChain: make(chan *cb.Envelope),
+        exitChan: make(chan struct{}),
+    }
+}
+</pre>
+</div>
+<p>
+其中, batchTimeout是最长区块生成间隔时间; support提供交易切割和生成区块的功能, exitChan是服务异常的终止信息.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgccce3ae" class="outline-4">
+<h4 id="orgccce3ae">接收交易请求</h4>
+<div class="outline-text-4" id="text-orgccce3ae">
+<p>
+创建链以后, 通过 <code>Start()</code> 启动链的处理过程. 在Solo中, 就是启动一个线程循环的接收发送到sendChan通道的数据, 然后进行交易的切割和区块的写入.
+</p>
+
+<p>
+排序服务接收到交易请求以后, 根据不同的排序服务类型提交给不同的链进行处理, 入口函数是 <code>Enqueue</code>. Solo类型接收到消息以后, 发送给sendChan就结束了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9ac1f0c" class="outline-4">
+<h4 id="org9ac1f0c">错误处理</h4>
+<div class="outline-text-4" id="text-org9ac1f0c">
+<p>
+排序服务内部如果出现异常, 会给exitChan发送消息, 外部程序可以读取Errored返回的通道, 进行异常处理.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6372f0" class="outline-3">
+<h3 id="orgf6372f0">Kafka</h3>
+<div class="outline-text-3" id="text-orgf6372f0">
+<p>
+基于Kafka的排序服务, 利用Kafka作为交易的消息队列, 实现高吞吐量的数据分发. 每个通道都对应Kafka的一个Topic, 排序服务节点在不同阶段充当不同的角色.
+</p>
+<ol class="org-ol">
+<li>接收交易阶段: 充当Kafka的生产者(producer)</li>
+<li>消息处理阶段: 充当Kafka的消费者(consumer)</li>
+</ol>
+</div>
+
+<div id="outline-container-orgeb8f83a" class="outline-4">
+<h4 id="orgeb8f83a">创建链</h4>
+</div>
+
+<div id="outline-container-org415555a" class="outline-4">
+<h4 id="org415555a">接收交易请求</h4>
+</div>
+
+<div id="outline-container-org412edf7" class="outline-4">
+<h4 id="org412edf7">错误处理</h4>
+</div>
+</div>
+
+<div id="outline-container-orgfa12ab5" class="outline-3">
+<h3 id="orgfa12ab5">Kafka实践</h3>
+<div class="outline-text-3" id="text-orgfa12ab5">
+</div>
+<div id="outline-container-org87d90bf" class="outline-4">
+<h4 id="org87d90bf">节点数</h4>
+<div class="outline-text-4" id="text-org87d90bf">
+<p>
+Kafka节点数至少4个; Zookeeper节点数选奇数个, 至少为3.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4601f69" class="outline-4">
+<h4 id="org4601f69">创建genesis.block</h4>
+<div class="outline-text-4" id="text-org4601f69">
+<p>
+修改configtx.yaml文件. 主要是修改Orderer.OrdererType, Orderer.kafka.Brokers, Orderer.AbsoluteMaxBytes三个选项.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0e54dd2" class="outline-4">
+<h4 id="org0e54dd2">配置Kafka集群</h4>
+</div>
+
+<div id="outline-container-org1b88e4b" class="outline-4">
+<h4 id="org1b88e4b">连接Kafka节点出现异常时的重试设置</h4>
+</div>
+
+<div id="outline-container-orge102bb0" class="outline-4">
+<h4 id="orge102bb0">排序服务节点和Kafka节点之间的安全传输</h4>
 </div>
 </div>
 </div>
@@ -120,7 +483,7 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-13</span>
-        <span title="last modification date" class="post-info">2018-04-14</span>
+        <span title="last modification date" class="post-info">2018-04-15</span>
         <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
