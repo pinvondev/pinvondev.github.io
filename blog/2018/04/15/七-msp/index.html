@@ -35,37 +35,37 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgccbb560">概述</a></li>
-<li><a href="#org42bbbb7">工作流程</a></li>
-<li><a href="#org6d18840">MSP的配置</a>
+<li><a href="#org1044fd7">概述</a></li>
+<li><a href="#orgcfd0151">工作流程</a></li>
+<li><a href="#org4982180">MSP的配置</a>
 <ul>
-<li><a href="#org7fed0ff">组织与MSP之间建立映射关系</a>
+<li><a href="#orga721632">组织与MSP之间建立映射关系</a>
 <ul>
-<li><a href="#orgef228ac">一个组织对应多个MSP</a></li>
-<li><a href="#orgdc9a3d7">多个组织对应一个MSP</a></li>
+<li><a href="#org0d43f85">一个组织对应多个MSP</a></li>
+<li><a href="#orgef4491d">多个组织对应一个MSP</a></li>
 </ul>
 </li>
-<li><a href="#org54b6621">一个组织内部实现不同的权限控制</a></li>
-<li><a href="#org9251b9b">不同类型的节点使用不同的MSP</a></li>
-<li><a href="#orgd0e029e">管理员证书和CA证书</a></li>
-<li><a href="#orgc79cb34">MSP的CA根证书与TLS的CA根证书</a></li>
-<li><a href="#org7a31c86">吊销已经颁发的证书</a></li>
+<li><a href="#org1c51b61">一个组织内部实现不同的权限控制</a></li>
+<li><a href="#org1fdeb33">不同类型的节点使用不同的MSP</a></li>
+<li><a href="#orgee76abb">管理员证书和CA证书</a></li>
+<li><a href="#orgc4de873">MSP的CA根证书与TLS的CA根证书</a></li>
+<li><a href="#org9242f8a">吊销已经颁发的证书</a></li>
 </ul>
 </li>
-<li><a href="#org9929783">Fabric CA</a>
+<li><a href="#org2ae414f">Fabric CA</a>
 <ul>
-<li><a href="#orgecc4959">概述</a></li>
-<li><a href="#org7512d63">部署Fabric CA服务端</a>
+<li><a href="#orgf97465a">概述</a></li>
+<li><a href="#org42e7f7b">部署Fabric CA服务端</a>
 <ul>
-<li><a href="#org47a1be3">安装Fabric CA服务端和客户端</a></li>
-<li><a href="#orgbd1384d">启动Fabric CA服务</a></li>
-<li><a href="#org7a4254f">未来学习</a></li>
+<li><a href="#orgc108ba8">安装Fabric CA服务端和客户端</a></li>
+<li><a href="#orgb3786ac">启动Fabric CA服务</a></li>
+<li><a href="#org2434ec6">未来学习</a></li>
 </ul>
 </li>
-<li><a href="#org1b2143a">Fabric CA操作</a>
+<li><a href="#org1e3a720">Fabric CA操作</a>
 <ul>
-<li><a href="#org6d08a40">Fabric CA 客户端</a></li>
-<li><a href="#orgb045a10">Fabric CA的Restful API</a></li>
+<li><a href="#org1de77d1">Fabric CA 客户端</a></li>
+<li><a href="#orge1fd5dd">Fabric CA的Restful API</a></li>
 </ul>
 </li>
 </ul>
@@ -74,9 +74,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgccbb560" class="outline-2">
-<h2 id="orgccbb560">概述</h2>
-<div class="outline-text-2" id="text-orgccbb560">
+<div id="outline-container-org1044fd7" class="outline-2">
+<h2 id="org1044fd7">概述</h2>
+<div class="outline-text-2" id="text-org1044fd7">
 <p>
 MSP是一个组件, 其中定义了身份验证, 鉴权和网络准入的规则.
 </p>
@@ -99,9 +99,9 @@ MSP默认使用的是Fabric-CA API, 当然, 我们也可以使用其他的第三
 </div>
 </div>
 
-<div id="outline-container-org42bbbb7" class="outline-2">
-<h2 id="org42bbbb7">工作流程</h2>
-<div class="outline-text-2" id="text-org42bbbb7">
+<div id="outline-container-orgcfd0151" class="outline-2">
+<h2 id="orgcfd0151">工作流程</h2>
+<div class="outline-text-2" id="text-orgcfd0151">
 <p>
 User使用CA进行鉴权. CA为应用, Peer, Orderer等节点标记身份, 验证他们的密钥. 通过签名算法和签名验证算法生成签名.
 </p>
@@ -118,30 +118,30 @@ User使用CA进行鉴权. CA为应用, Peer, Orderer等节点标记身份, 验�
 </div>
 </div>
 
-<div id="outline-container-org6d18840" class="outline-2">
-<h2 id="org6d18840">MSP的配置</h2>
-<div class="outline-text-2" id="text-org6d18840">
+<div id="outline-container-org4982180" class="outline-2">
+<h2 id="org4982180">MSP的配置</h2>
+<div class="outline-text-2" id="text-org4982180">
 </div>
-<div id="outline-container-org7fed0ff" class="outline-3">
-<h3 id="org7fed0ff">组织与MSP之间建立映射关系</h3>
-<div class="outline-text-3" id="text-org7fed0ff">
+<div id="outline-container-orga721632" class="outline-3">
+<h3 id="orga721632">组织与MSP之间建立映射关系</h3>
+<div class="outline-text-3" id="text-orga721632">
 <p>
 一个MSP可以和一个组织对应, 也可以和多个组织对应, 还可以和一个组织内的多个部门对应. 根据MSP配置好Peer节点后, 数据同步就限制在MSP定义的范围内.
 </p>
 </div>
 
-<div id="outline-container-orgef228ac" class="outline-4">
-<h4 id="orgef228ac">一个组织对应多个MSP</h4>
-<div class="outline-text-4" id="text-orgef228ac">
+<div id="outline-container-org0d43f85" class="outline-4">
+<h4 id="org0d43f85">一个组织对应多个MSP</h4>
+<div class="outline-text-4" id="text-org0d43f85">
 <p>
 这种情况下, 一个组织有多个部门, 从方便管理, 保护隐私的角度, 每个部门要设置不同的MSP. 每个Peer节点只设置一个MSP, 同一组织内不同MSP的Peer节点之间不能相互认证, 这样相同组织的不同部门之间不会同步数据.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgdc9a3d7" class="outline-4">
-<h4 id="orgdc9a3d7">多个组织对应一个MSP</h4>
-<div class="outline-text-4" id="text-orgdc9a3d7">
+<div id="outline-container-orgef4491d" class="outline-4">
+<h4 id="orgef4491d">多个组织对应一个MSP</h4>
+<div class="outline-text-4" id="text-orgef4491d">
 <p>
 这种情况是同一个联盟的不同组织之间采用相同的成员管理架构, 数据会在不同组织之间同步.
 </p>
@@ -149,49 +149,49 @@ User使用CA进行鉴权. CA为应用, Peer, Orderer等节点标记身份, 验�
 </div>
 </div>
 
-<div id="outline-container-org54b6621" class="outline-3">
-<h3 id="org54b6621">一个组织内部实现不同的权限控制</h3>
+<div id="outline-container-org1c51b61" class="outline-3">
+<h3 id="org1c51b61">一个组织内部实现不同的权限控制</h3>
 </div>
 
-<div id="outline-container-org9251b9b" class="outline-3">
-<h3 id="org9251b9b">不同类型的节点使用不同的MSP</h3>
-<div class="outline-text-3" id="text-org9251b9b">
+<div id="outline-container-org1fdeb33" class="outline-3">
+<h3 id="org1fdeb33">不同类型的节点使用不同的MSP</h3>
+<div class="outline-text-3" id="text-org1fdeb33">
 <p>
 可能会有这样的需求, 希望给客户端, Peer节点, Orderer节点分别设置不同的MSP, 因为身份信息会包含MSP标识, 设置不同的MSP能确定身份类型.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd0e029e" class="outline-3">
-<h3 id="orgd0e029e">管理员证书和CA证书</h3>
-<div class="outline-text-3" id="text-orgd0e029e">
+<div id="outline-container-orgee76abb" class="outline-3">
+<h3 id="orgee76abb">管理员证书和CA证书</h3>
+<div class="outline-text-3" id="text-orgee76abb">
 <p>
 不要把CA证书设置成MSP管理员证书, 这样能把成员管理, 签发证书和验证证书等不同职责拆分开来, 方便管理与问题定位.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgc79cb34" class="outline-3">
-<h3 id="orgc79cb34">MSP的CA根证书与TLS的CA根证书</h3>
-<div class="outline-text-3" id="text-orgc79cb34">
+<div id="outline-container-orgc4de873" class="outline-3">
+<h3 id="orgc4de873">MSP的CA根证书与TLS的CA根证书</h3>
+<div class="outline-text-3" id="text-orgc4de873">
 <p>
 MSP的CA根证书和TLS的CA根证书以及相关的中间CA证书需要存放在不同的文件夹中, 避免混淆不同类别的证书.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org7a31c86" class="outline-3">
-<h3 id="org7a31c86">吊销已经颁发的证书</h3>
+<div id="outline-container-org9242f8a" class="outline-3">
+<h3 id="org9242f8a">吊销已经颁发的证书</h3>
 </div>
 </div>
 
-<div id="outline-container-org9929783" class="outline-2">
-<h2 id="org9929783">Fabric CA</h2>
-<div class="outline-text-2" id="text-org9929783">
+<div id="outline-container-org2ae414f" class="outline-2">
+<h2 id="org2ae414f">Fabric CA</h2>
+<div class="outline-text-2" id="text-org2ae414f">
 </div>
-<div id="outline-container-orgecc4959" class="outline-3">
-<h3 id="orgecc4959">概述</h3>
-<div class="outline-text-3" id="text-orgecc4959">
+<div id="outline-container-orgf97465a" class="outline-3">
+<h3 id="orgf97465a">概述</h3>
+<div class="outline-text-3" id="text-orgf97465a">
 <p>
 用户信息的注册; 数字证书的发行; 数字证书的延期与吊销;
 </p>
@@ -216,17 +216,17 @@ Fabric CA服务端提供了RESTful的接口供客户端工具和SDK访问. 手�
 </div>
 </div>
 
-<div id="outline-container-org7512d63" class="outline-3">
-<h3 id="org7512d63">部署Fabric CA服务端</h3>
-<div class="outline-text-3" id="text-org7512d63">
+<div id="outline-container-org42e7f7b" class="outline-3">
+<h3 id="org42e7f7b">部署Fabric CA服务端</h3>
+<div class="outline-text-3" id="text-org42e7f7b">
 <p>
 安装Go, 设置GOPATH, 安装libtool, libtdhl-dev
 </p>
 </div>
 
-<div id="outline-container-org47a1be3" class="outline-4">
-<h4 id="org47a1be3">安装Fabric CA服务端和客户端</h4>
-<div class="outline-text-4" id="text-org47a1be3">
+<div id="outline-container-orgc108ba8" class="outline-4">
+<h4 id="orgc108ba8">安装Fabric CA服务端和客户端</h4>
+<div class="outline-text-4" id="text-orgc108ba8">
 <p>
 将fabric-ca-server和fabric-ca-client安装到$GOPATH/bin下:
 </p>
@@ -254,9 +254,9 @@ docker-compose up -d
 </div>
 </div>
 
-<div id="outline-container-orgbd1384d" class="outline-4">
-<h4 id="orgbd1384d">启动Fabric CA服务</h4>
-<div class="outline-text-4" id="text-orgbd1384d">
+<div id="outline-container-orgb3786ac" class="outline-4">
+<h4 id="orgb3786ac">启动Fabric CA服务</h4>
+<div class="outline-text-4" id="text-orgb3786ac">
 <div class="org-src-container">
 <pre class="src src-Shell">fabric-ca-server init -b admin:adminpw
 </pre>
@@ -264,9 +264,9 @@ docker-compose up -d
 </div>
 </div>
 
-<div id="outline-container-org7a4254f" class="outline-4">
-<h4 id="org7a4254f">未来学习</h4>
-<div class="outline-text-4" id="text-org7a4254f">
+<div id="outline-container-org2434ec6" class="outline-4">
+<h4 id="org2434ec6">未来学习</h4>
+<div class="outline-text-4" id="text-org2434ec6">
 <p>
 学习如何存储到MySQL, 如何存储到PostgreSQL, 如何存储到LDAP.
 </p>
@@ -278,9 +278,9 @@ docker-compose up -d
 </div>
 </div>
 
-<div id="outline-container-org1b2143a" class="outline-3">
-<h3 id="org1b2143a">Fabric CA操作</h3>
-<div class="outline-text-3" id="text-org1b2143a">
+<div id="outline-container-org1e3a720" class="outline-3">
+<h3 id="org1e3a720">Fabric CA操作</h3>
+<div class="outline-text-3" id="text-org1e3a720">
 <p>
 访问Fabric CA服务端的方法有两种:
 </p>
@@ -294,18 +294,18 @@ docker-compose up -d
 </p>
 </div>
 
-<div id="outline-container-org6d08a40" class="outline-4">
-<h4 id="org6d08a40">Fabric CA 客户端</h4>
-<div class="outline-text-4" id="text-org6d08a40">
+<div id="outline-container-org1de77d1" class="outline-4">
+<h4 id="org1de77d1">Fabric CA 客户端</h4>
+<div class="outline-text-4" id="text-org1de77d1">
 <p>
 <a href="http://hyperledger-fabric-ca.readthedocs.io/en/latest/index.html">链接</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb045a10" class="outline-4">
-<h4 id="orgb045a10">Fabric CA的Restful API</h4>
-<div class="outline-text-4" id="text-orgb045a10">
+<div id="outline-container-orge1fd5dd" class="outline-4">
+<h4 id="orge1fd5dd">Fabric CA的Restful API</h4>
+<div class="outline-text-4" id="text-orge1fd5dd">
 <p>
 <a href="https://github.com/hyperledger/fabric-ca/blob/release-1.1/swagger/swagger-fabric-ca.json">RESTFUL API</a>
 </p>
@@ -330,7 +330,7 @@ docker-compose up -d
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/04/15/七-msp";
           var disqus_url = "http://pinvondev.github.io/blog/2018/04/15/七-msp";
-          var disqus_shortname = 'pinvon';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

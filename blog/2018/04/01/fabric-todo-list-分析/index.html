@@ -35,70 +35,70 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge993c26">解析</a>
+<li><a href="#org800a9e9">解析</a>
 <ul>
-<li><a href="#org34a11ed">cryptogen</a></li>
-<li><a href="#org26e5f69">configtx.yaml</a></li>
-<li><a href="#org118e06c">configtxgen</a></li>
-<li><a href="#org7635c01">配置docker-compose</a>
+<li><a href="#org27c8b2c">cryptogen</a></li>
+<li><a href="#org0e688c4">configtx.yaml</a></li>
+<li><a href="#orgab84d24">configtxgen</a></li>
+<li><a href="#org3e9f46f">配置docker-compose</a>
 <ul>
-<li><a href="#org33759f4">配置Orderer</a></li>
-<li><a href="#orged2a649">配置Peer</a></li>
-<li><a href="#orga7558ec">配置CLI</a></li>
+<li><a href="#org259acda">配置Orderer</a></li>
+<li><a href="#org6c82364">配置Peer</a></li>
+<li><a href="#org5ddf8c7">配置CLI</a></li>
 </ul>
 </li>
-<li><a href="#orga63b279">启动Fabric环境的容器</a></li>
-<li><a href="#org1637565">创建Channel</a></li>
-<li><a href="#orga6ec9da">Peer加入Channel</a></li>
-<li><a href="#orgea5a7e3">更新锚节点</a></li>
+<li><a href="#orgea1532e">启动Fabric环境的容器</a></li>
+<li><a href="#org8ee3dc6">创建Channel</a></li>
+<li><a href="#org2c3eace">Peer加入Channel</a></li>
+<li><a href="#org6e656b3">更新锚节点</a></li>
 </ul>
 </li>
-<li><a href="#org1ae6f53">启动</a>
+<li><a href="#org58daf2e">启动</a>
 <ul>
-<li><a href="#orgfc12a1d">启动网络</a></li>
-<li><a href="#org5fc12e0">chaincode</a>
+<li><a href="#org4dc0009">启动网络</a></li>
+<li><a href="#orgf389df5">chaincode</a>
 <ul>
-<li><a href="#org7f08184">安装</a></li>
-<li><a href="#org03d3762">实例化</a></li>
-<li><a href="#org772f486">在一个节点上查询并发起交易</a></li>
-<li><a href="#org4a9c73c">在另一个节点上查询交易</a></li>
+<li><a href="#orgb8a7a91">安装</a></li>
+<li><a href="#org56f5259">实例化</a></li>
+<li><a href="#org92f142a">在一个节点上查询并发起交易</a></li>
+<li><a href="#org0ca60de">在另一个节点上查询交易</a></li>
 </ul>
 </li>
-<li><a href="#org1f85002">创建通道</a></li>
+<li><a href="#org7c4dfb0">创建通道</a></li>
 </ul>
 </li>
-<li><a href="#orgbd058c5">Fabric CA</a></li>
-<li><a href="#org21606f2">流程</a></li>
-<li><a href="#org8529871">server</a>
+<li><a href="#org5de46b4">Fabric CA</a></li>
+<li><a href="#orgf086426">流程</a></li>
+<li><a href="#org04e5a95">server</a>
 <ul>
-<li><a href="#orgad435e1">enrollAdmin</a>
+<li><a href="#orgae5e81d">enrollAdmin</a>
 <ul>
-<li><a href="#org0841b6b">enroll_admin()</a></li>
+<li><a href="#org91e6562">enroll_admin()</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgf406e0e">client</a></li>
+<li><a href="#org9ccee61">client</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge993c26" class="outline-2">
-<h2 id="orge993c26">解析</h2>
-<div class="outline-text-2" id="text-orge993c26">
+<div id="outline-container-org800a9e9" class="outline-2">
+<h2 id="org800a9e9">解析</h2>
+<div class="outline-text-2" id="text-org800a9e9">
 </div>
-<div id="outline-container-org34a11ed" class="outline-3">
-<h3 id="org34a11ed">cryptogen</h3>
-<div class="outline-text-3" id="text-org34a11ed">
+<div id="outline-container-org27c8b2c" class="outline-3">
+<h3 id="org27c8b2c">cryptogen</h3>
+<div class="outline-text-3" id="text-org27c8b2c">
 <p>
 Fabric中有两种类型的公钥, 私钥和证书. 其中, Tcerts证书负责Peer之间的通讯安全, Ecerts负责用户登录和权限控制. 这些证书由CA颁发, 通常一个Org就有一个CA. 有时候在测试环境中, 没有启用CA节点, 可以使用 <code>cryptogen</code> 来颁发证书.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org26e5f69" class="outline-3">
-<h3 id="org26e5f69">configtx.yaml</h3>
-<div class="outline-text-3" id="text-org26e5f69">
+<div id="outline-container-org0e688c4" class="outline-3">
+<h3 id="org0e688c4">configtx.yaml</h3>
+<div class="outline-text-3" id="text-org0e688c4">
 <p>
 在 <code>examples/e2e_cli/configtx.yaml</code> 中配置了两个Org参与的Orderer共识配置, 以及两个Org参与的Channel配置.
 </p>
@@ -113,9 +113,9 @@ Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超
 </div>
 </div>
 
-<div id="outline-container-org118e06c" class="outline-3">
-<h3 id="org118e06c">configtxgen</h3>
-<div class="outline-text-3" id="text-org118e06c">
+<div id="outline-container-orgab84d24" class="outline-3">
+<h3 id="orgab84d24">configtxgen</h3>
+<div class="outline-text-3" id="text-orgab84d24">
 <p>
 可以使用这个工具, 根据 <code>configtx.yaml</code> 生成4个文件, 并保存在 <code>examples/e2e_cli/channel-artifacts</code> 中.
 </p>
@@ -128,17 +128,17 @@ Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超
 </div>
 </div>
 
-<div id="outline-container-org7635c01" class="outline-3">
-<h3 id="org7635c01">配置docker-compose</h3>
-<div class="outline-text-3" id="text-org7635c01">
+<div id="outline-container-org3e9f46f" class="outline-3">
+<h3 id="org3e9f46f">配置docker-compose</h3>
+<div class="outline-text-3" id="text-org3e9f46f">
 <p>
 配置docker-compose的yaml文件, 这些文件可以用于启动Fabric的Docker环境.
 </p>
 </div>
 
-<div id="outline-container-org33759f4" class="outline-4">
-<h4 id="org33759f4">配置Orderer</h4>
-<div class="outline-text-4" id="text-org33759f4">
+<div id="outline-container-org259acda" class="outline-4">
+<h4 id="org259acda">配置Orderer</h4>
+<div class="outline-text-4" id="text-org259acda">
 <p>
 Orderer的配置在 <code>base/docker-compose-base.yaml</code> 中.
 </p>
@@ -158,18 +158,18 @@ Orderer的配置在 <code>base/docker-compose-base.yaml</code> 中.
 </div>
 </div>
 
-<div id="outline-container-orged2a649" class="outline-4">
-<h4 id="orged2a649">配置Peer</h4>
-<div class="outline-text-4" id="text-orged2a649">
+<div id="outline-container-org6c82364" class="outline-4">
+<h4 id="org6c82364">配置Peer</h4>
+<div class="outline-text-4" id="text-org6c82364">
 <p>
 Peer的配置在 <code>base/docker-compose-base.yaml</code> 和 <code>peer-base.yaml</code> 里. 配置信息与Orderer的类似.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga7558ec" class="outline-4">
-<h4 id="orga7558ec">配置CLI</h4>
-<div class="outline-text-4" id="text-orga7558ec">
+<div id="outline-container-org5ddf8c7" class="outline-4">
+<h4 id="org5ddf8c7">配置CLI</h4>
+<div class="outline-text-4" id="text-org5ddf8c7">
 <p>
 CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用CLI来代替SDK, 执行各种SDK能执行的操作. CLI会和Peer通讯, 把指令发送给对应的Peer执行. CLI的配置在 <code>docker-compose-cli.yaml</code> 中.
 </p>
@@ -185,9 +185,9 @@ CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用C
 </div>
 </div>
 
-<div id="outline-container-orga63b279" class="outline-3">
-<h3 id="orga63b279">启动Fabric环境的容器</h3>
-<div class="outline-text-3" id="text-orga63b279">
+<div id="outline-container-orgea1532e" class="outline-3">
+<h3 id="orgea1532e">启动Fabric环境的容器</h3>
+<div class="outline-text-3" id="text-orgea1532e">
 <p>
 上面的文件配置好以后, 都会集成在 <code>docker-compose-cli.yaml</code> 中, 使用命令一键启动:
 </p>
@@ -198,9 +198,9 @@ CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用C
 </div>
 </div>
 
-<div id="outline-container-org1637565" class="outline-3">
-<h3 id="org1637565">创建Channel</h3>
-<div class="outline-text-3" id="text-org1637565">
+<div id="outline-container-org8ee3dc6" class="outline-3">
+<h3 id="org8ee3dc6">创建Channel</h3>
+<div class="outline-text-3" id="text-org8ee3dc6">
 <p>
 进入CLI容器里面创建.
 </p>
@@ -220,9 +220,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifa
 </div>
 </div>
 
-<div id="outline-container-orga6ec9da" class="outline-3">
-<h3 id="orga6ec9da">Peer加入Channel</h3>
-<div class="outline-text-3" id="text-orga6ec9da">
+<div id="outline-container-org2c3eace" class="outline-3">
+<h3 id="org2c3eace">Peer加入Channel</h3>
+<div class="outline-text-3" id="text-org2c3eace">
 <p>
 由于CLI默认连接的是peer0.org1.example.com, 所以将peer0.org1.example.com加入Channel会比较容易.
 </p>
@@ -249,9 +249,9 @@ peer channel join -b mychannel.block
 </div>
 </div>
 
-<div id="outline-container-orgea5a7e3" class="outline-3">
-<h3 id="orgea5a7e3">更新锚节点</h3>
-<div class="outline-text-3" id="text-orgea5a7e3">
+<div id="outline-container-org6e656b3" class="outline-3">
+<h3 id="org6e656b3">更新锚节点</h3>
+<div class="outline-text-3" id="text-org6e656b3">
 <p>
 对于Org1来说, peer0.org1.example.com是锚节点, 需要连接上它, 并进行更新:
 </p>
@@ -268,13 +268,13 @@ peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifa
 </div>
 </div>
 
-<div id="outline-container-org1ae6f53" class="outline-2">
-<h2 id="org1ae6f53">启动</h2>
-<div class="outline-text-2" id="text-org1ae6f53">
+<div id="outline-container-org58daf2e" class="outline-2">
+<h2 id="org58daf2e">启动</h2>
+<div class="outline-text-2" id="text-org58daf2e">
 </div>
-<div id="outline-container-orgfc12a1d" class="outline-3">
-<h3 id="orgfc12a1d">启动网络</h3>
-<div class="outline-text-3" id="text-orgfc12a1d">
+<div id="outline-container-org4dc0009" class="outline-3">
+<h3 id="org4dc0009">启动网络</h3>
+<div class="outline-text-3" id="text-org4dc0009">
 <div class="org-src-container">
 <pre class="src src-Shell">cd fabric-sdk-node/test/fixtures
 docker-compose -f docker-compose-networksetup.yaml up -d
@@ -283,13 +283,13 @@ docker-compose -f docker-compose-networksetup.yaml up -d
 </div>
 </div>
 
-<div id="outline-container-org5fc12e0" class="outline-3">
-<h3 id="org5fc12e0">chaincode</h3>
-<div class="outline-text-3" id="text-org5fc12e0">
+<div id="outline-container-orgf389df5" class="outline-3">
+<h3 id="orgf389df5">chaincode</h3>
+<div class="outline-text-3" id="text-orgf389df5">
 </div>
-<div id="outline-container-org7f08184" class="outline-4">
-<h4 id="org7f08184">安装</h4>
-<div class="outline-text-4" id="text-org7f08184">
+<div id="outline-container-orgb8a7a91" class="outline-4">
+<h4 id="orgb8a7a91">安装</h4>
+<div class="outline-text-4" id="text-orgb8a7a91">
 <p>
 chaincode必须在每个与交易相关的Peer上都安装. 如果有4个Peer与交易相关, 则要安装4次.
 </p>
@@ -306,9 +306,9 @@ peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/
 </div>
 </div>
 
-<div id="outline-container-org03d3762" class="outline-4">
-<h4 id="org03d3762">实例化</h4>
-<div class="outline-text-4" id="text-org03d3762">
+<div id="outline-container-org56f5259" class="outline-4">
+<h4 id="org56f5259">实例化</h4>
+<div class="outline-text-4" id="text-org56f5259">
 <p>
 实例化是生成Channel的Docker镜像和Docker容器, 在实例化时还可以指定背书策略.
 </p>
@@ -319,9 +319,9 @@ peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/
 </div>
 </div>
 
-<div id="outline-container-org772f486" class="outline-4">
-<h4 id="org772f486">在一个节点上查询并发起交易</h4>
-<div class="outline-text-4" id="text-org772f486">
+<div id="outline-container-org92f142a" class="outline-4">
+<h4 id="org92f142a">在一个节点上查询并发起交易</h4>
+<div class="outline-text-4" id="text-org92f142a">
 <p>
 在CLI容器中执行:
 </p>
@@ -333,9 +333,9 @@ peer chaincode invoke -o orderer.example.com:7050  --tls true --cafile $ORDERER_
 </div>
 </div>
 
-<div id="outline-container-org4a9c73c" class="outline-4">
-<h4 id="org4a9c73c">在另一个节点上查询交易</h4>
-<div class="outline-text-4" id="text-org4a9c73c">
+<div id="outline-container-org0ca60de" class="outline-4">
+<h4 id="org0ca60de">在另一个节点上查询交易</h4>
+<div class="outline-text-4" id="text-org0ca60de">
 <div class="org-src-container">
 <pre class="src src-Shell">CORE_PEER_LOCALMSPID="Org2MSP" 
 CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt 
@@ -355,9 +355,9 @@ peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
 </div>
 </div>
 
-<div id="outline-container-org1f85002" class="outline-3">
-<h3 id="org1f85002">创建通道</h3>
-<div class="outline-text-3" id="text-org1f85002">
+<div id="outline-container-org7c4dfb0" class="outline-3">
+<h3 id="org7c4dfb0">创建通道</h3>
+<div class="outline-text-3" id="text-org7c4dfb0">
 <div class="org-src-container">
 <pre class="src src-Shell"># pwd: fabric-sdk-node
 node test/integration/e2e/create-channel.js
@@ -367,9 +367,9 @@ node test/integration/e2e/create-channel.js
 </div>
 </div>
 
-<div id="outline-container-orgbd058c5" class="outline-2">
-<h2 id="orgbd058c5">Fabric CA</h2>
-<div class="outline-text-2" id="text-orgbd058c5">
+<div id="outline-container-org5de46b4" class="outline-2">
+<h2 id="org5de46b4">Fabric CA</h2>
+<div class="outline-text-2" id="text-org5de46b4">
 <p>
 在实际开发中, 我们应该为每个Org建立一个CA, 用CA来管理其中的用户, 而不是使用 <code>cryptogen</code> 这个工具根据 <code>crypto-config.yaml</code> 生成.
 </p>
@@ -397,9 +397,9 @@ node test/integration/e2e/create-channel.js
 </div>
 
 
-<div id="outline-container-org21606f2" class="outline-2">
-<h2 id="org21606f2">流程</h2>
-<div class="outline-text-2" id="text-org21606f2">
+<div id="outline-container-orgf086426" class="outline-2">
+<h2 id="orgf086426">流程</h2>
+<div class="outline-text-2" id="text-orgf086426">
 
 <div class="figure">
 <p><img src="/assets/blog/2018/04/01/fabric-todo-list-分析/26.png" alt="26.png" />
@@ -417,21 +417,21 @@ node test/integration/e2e/create-channel.js
 </div>
 </div>
 
-<div id="outline-container-org8529871" class="outline-2">
-<h2 id="org8529871">server</h2>
-<div class="outline-text-2" id="text-org8529871">
+<div id="outline-container-org04e5a95" class="outline-2">
+<h2 id="org04e5a95">server</h2>
+<div class="outline-text-2" id="text-org04e5a95">
 </div>
-<div id="outline-container-orgad435e1" class="outline-3">
-<h3 id="orgad435e1">enrollAdmin</h3>
-<div class="outline-text-3" id="text-orgad435e1">
+<div id="outline-container-orgae5e81d" class="outline-3">
+<h3 id="orgae5e81d">enrollAdmin</h3>
+<div class="outline-text-3" id="text-orgae5e81d">
 <p>
 Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请求, 就可以在chaincode上注册管理员. 以后, 要注册新的成员, 都是通过这个管理员来进行的.
 </p>
 </div>
 
-<div id="outline-container-org0841b6b" class="outline-4">
-<h4 id="org0841b6b">enroll_admin()</h4>
-<div class="outline-text-4" id="text-org0841b6b">
+<div id="outline-container-org91e6562" class="outline-4">
+<h4 id="org91e6562">enroll_admin()</h4>
+<div class="outline-text-4" id="text-org91e6562">
 <p>
 程序的最开始, 是向区块链网络中的CA注册管理员用户. 如果注册成功, CA会向Server发送注册证书, SDK会将该证书存储在本地的文件系统中.
 </p>
@@ -440,8 +440,8 @@ Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请
 </div>
 </div>
 
-<div id="outline-container-orgf406e0e" class="outline-2">
-<h2 id="orgf406e0e">client</h2>
+<div id="outline-container-org9ccee61" class="outline-2">
+<h2 id="org9ccee61">client</h2>
 </div>
 
 </div>
@@ -460,7 +460,7 @@ Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请
           //var disqus_developer = 1;
           var disqus_identifier = "/blog/2018/04/01/fabric-todo-list-分析";
           var disqus_url = "http://pinvondev.github.io/blog/2018/04/01/fabric-todo-list-分析";
-          var disqus_shortname = 'pinvon';
+          var disqus_shortname = 'pw lin';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
