@@ -171,3 +171,82 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 ** 通过Peer节点实例化链码
 
 实例化链码时, 会创建链码镜像, 启动链码容器, 并调用链码的Init接口初始化, 生成的交易会发送到Orderer节点, 生成区块并记录到账本中.
+
+1. 应用程序创建多个实例, 包含FabricClient实例, User实例, Channel实例, Peer实例等.
+2. 通过调用Channel实例的SendInstantiateProposal进行链码实例化.
+3. SDK会构造包含ChaincodeDeploymentSpec的ChaincodeInvocationSpec, 调用的是LSCC的deploy请求.
+4. 应用程序发送Peer节点的请求同样会用Channel关联的用户进行签名, 通过Peer实例的ProcessTransactionProposal提交生成的SignedProposal.
+5. 每次给Peer节点发送SignedProposal时, 都会新建一个gRPC的连接, 通过ProcessProposal接口提交请求.
+6. Peer节点通过SignedProposal进行验证以后, 会调用LSCC执行链码部署的操作.
+7. Peer节点返回的只是背书节点模拟执行和背书签名的结果, 还要提交给Orderer节点生成最终的区块才能生效, 调用的过程与Peer节点接入通道的过程一样.
+8. 生成的新区块会通过主节点分发给组织内的其他Peer节点.
+
+[[./65.png]]
+
+** 发起交易请求并生成区块
+
+其实, 实例化链码的过程, 也是一种交易, 所以发起交易请求其实和实例化链码很相似.
+
+不同之处在于:
+1. 普通的交易请求调用链码的Invoke接口, 实例化链码调用的是Init接口.
+2. 普通的交易请求是不嵌套的ChaincodeInvocationSpec请求, 包含通道的名称和调用链码的函数和参数等.
+3. 实例化链码的时候才开始构建链码镜像并启动链码容器, 所以速度较慢; 调用链码的背书节点已经启动了链码容器, 所以调用链码的速度较快.
+
+[[./66.png]]
+
+** 链码的开发和调试
+
+链码的SDK是shim, 链码是通过SDK和背书节点通信的, 链码的SDK只要实现接口的定义就能和背书节点交互.
+
+shim提供给链码的接口主要有:
+1. 链码调用参数解析
+2. 交易信息解析
+3. 状态数据库操作
+4. 链码调用
+5. 事件处理
+6. 辅助操作
+
+*** 链码调用参数解析
+
+| 接口名称                                      | 描述                                         |
+|-----------------------------------------------+----------------------------------------------|
+| GetArgs() byte                                | 返回调用函数名称和参数的列表, 类型是字节数组 |
+| GetStringArgs() []string                      | 返回调用函数名称和参数的列表, 类型是字符串   |
+| GetFunctionAndParameters() (string, []string) | 返回调用的函数名称和参数, 类型是字符串       |
+
+*** 交易信息解析
+
+| 接口名称                                        | 描述                                                 |
+|-------------------------------------------------+------------------------------------------------------|
+| GetTxID() string                                | 获取交易号                                           |
+| GetCreator() ([]byte, error)                    | 获取提交交易的身份信息(MSP, 证书)                    |
+| GetTransient() (map[string][]byte, error)       | 获取私密信息, 这部分信息不会写入账本数据             |
+| GetBinding() ([]byte, error)                    | 获取交易的绑定信息, 包含随机数和提交交易的身份信息等 |
+| GetSignedProposal() (*pb.SignedProposal, error) | 获取签名的Proposal, 签名者是和提交交易的身份一样的   |
+| GetTxTimestamp() (*timestamp.Timestamp, error)  | 获取提交交易的时间戳                                 |
+
+*** 状态数据操作
+
+| 接口名称                                                                                            | 描述                                             |
+|-----------------------------------------------------------------------------------------------------+--------------------------------------------------|
+| GetState(key string)([]byte, error)                                                                 | 根据指定键查询状态数据库里存储的值               |
+| PutState(key string, value []byte)error                                                             | 向状态数据库写入链值对(模拟写入)                 |
+| DelState(key string) error                                                                          | 删除状态数据库里键对应的值(模拟删除, 记账时才删) |
+| GetHistoryForKey(key string) (HistoryQueryIterator Interface, error)                                | 查询一个键的历史数据                             |
+| GetStateByRange(startKey, endKey string) (StateQueryIteratorInterface, error)                       | 查询状态数据库里链在[startKey, endKey)之间的值   |
+| CreateCompositeKey(objectType string, attributes []string)(string, error)                           | 构造组合键                                       |
+| SplitCompositeKey(compositeKey string)(string, []string, error)                                     | 分割组合键                                       |
+| GetStateByPartialCompositeKey(objectType string, keys []string)(StateQueryIteratorInterface, error) | 部分组合键查询                                   |
+| GetQueryResult(query string)(StateQueryIteratorInterface, error)                                    | 根据指定条件查询状态数据库里存储的值             |
+
+*** 链码调用
+
+| 接口名称                                                                     | 描述 |
+|------------------------------------------------------------------------------+------|
+| InvokeChaincode(chaincodeName string, args byte, channel string) pb.Response | 根据指定条件查询状态数据库里存储的值 |
+
+*** 事件处理
+
+| 接口名称                                    | 描述                 |
+|---------------------------------------------+----------------------|
+| SetEvent(name string, payload []byte) error | 设置事件的名称和内容 |
