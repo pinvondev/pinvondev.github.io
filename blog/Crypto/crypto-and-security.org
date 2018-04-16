@@ -1,0 +1,30 @@
+#+TITLE:       密码学与安全技术
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@ubuntu
+#+DATE:        2018-04-15 日
+#+URI:         /blog/%y/%m/%d/密码学与安全技术
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        密码学
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* Hash算法与数字摘要
+
+** Hash定义
+
+Hash算法能将任意长度的二进制明文串映射为较短的二进制串, 并且不同的明文很难映射为相同的Hash值.
+
+Hash值也称为指纹(fingerprint)或摘要(digest).
+
+好的Hash算法能实现如下功能:
+1. 正向快速: 给定明文和Hashh算法, 能在有限时间内和有限资源内计算得到Hash值.
+2. 逆向困难: 给定Hash值, 在有限时间内很难逆推出明文.
+3. 输入敏感: 原始输入信息发生任何改变, 新产生的Hash值就出现很大的不同.
+4. 冲突避免: 很难找到两段内容不同的明文, 使得它们的Hash值一致(Hash一致也称为碰撞).
+
+其中, "冲突避免"也称为"抗碰撞性", 如果给定明文的情况下, 无法找到与之碰撞的其他明文, 则算法具有"弱抗碰撞性"; 如果无法找到任意两个发生Hash碰撞的明文, 则称算法具有"强抗碰撞性".
+
+即:
+弱抗碰撞性: 给定明文 $M$, 要找到另一个明文 $M'$, 使得 $H(M)=H(M')$ 很难.
+强抗碰撞性: 找到两个随机明文 $M$ 和 $M'$, 使得 $H(M)=H(M')$ 很难.
