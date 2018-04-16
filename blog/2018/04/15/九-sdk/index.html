@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>九 SDK - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>九 SDK</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2e29ad2">概述</a></li>
+<li><a href="#org1579c04">FabricClient</a></li>
+<li><a href="#orga373838">Config</a></li>
+<li><a href="#org05fd247">Channel</a></li>
+<li><a href="#org48085ec">Peer</a></li>
+<li><a href="#orga433e03">Orderer</a></li>
+<li><a href="#org40e34de">User</a></li>
+<li><a href="#orgc741909">KeyValueStore</a></li>
+<li><a href="#org3ce245a">EventHub</a></li>
+<li><a href="#org6434b1d">FabricCAClient</a></li>
+<li><a href="#orgd4eda9a">UML图</a></li>
+<li><a href="#org29f5910">应用场景</a>
+<ul>
+<li><a href="#org7a608ae">用户登记和注册</a></li>
+<li><a href="#orgdf7d11d">在排序服务上创建通道</a></li>
+<li><a href="#orgbbbe357">Peer节点加入通道</a></li>
+<li><a href="#org7f743fa">安装链码</a></li>
+<li><a href="#org7996cb6">通过Peer节点实例化链码</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2e29ad2" class="outline-2">
+<h2 id="org2e29ad2">概述</h2>
+<div class="outline-text-2" id="text-org2e29ad2">
+<p>
+目前的SDK有以下几种:
+</p>
+
+<p>
+Golang: <a href="https://github.com/hyperledger/fabric-sdk-go">https://github.com/hyperledger/fabric-sdk-go</a>
+Node.js: <a href="https://github.com/hyperledger/fabric-sdk-node">https://github.com/hyperledger/fabric-sdk-node</a> (最全)
+Python: <a href="https://github.com/hyperledger/fabric-sdk-py">https://github.com/hyperledger/fabric-sdk-py</a>
+Java: <a href="https://github.com/hyperledger/fabric-sdk-java">https://github.com/hyperledger/fabric-sdk-java</a>
+</p>
+
+<p>
+主要模块: FabricClient, Config, Channel, Peer, Orderer, User, KeyValueStore, EventHub, Logger等.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1579c04" class="outline-2">
+<h2 id="org1579c04">FabricClient</h2>
+<div class="outline-text-2" id="text-org1579c04">
+<p>
+应用程序的入口模块, 提供通道管理, 链码管理, 数据存储, 密码学相关的功能. 每个FabricClient实例对应一个区块链网络, 包括记账节点, 排序节点等. 如果应用程序需要访问多个网络, 可以建立多个FabricClient实例, 不同的实例对应不同的网络.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">接口名称</th>
+<th scope="col" class="org-left">输入参数</th>
+<th scope="col" class="org-left">输出参数</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">NewChannel</td>
+<td class="org-left">(name string)</td>
+<td class="org-left">(Channel, error)</td>
+<td class="org-left">创建通道</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Channel</td>
+<td class="org-left">(name string)</td>
+<td class="org-left">(Channel)</td>
+<td class="org-left">查询指定名称的通道</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">ExtractChannelConfig</td>
+<td class="org-left">(configEnvelope []byte)</td>
+<td class="org-left">([]byte, error)</td>
+<td class="org-left">从ConfigEnvelope里解析出ConfigUpdate</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">SignChannelConfig</td>
+<td class="org-left">(config []byte)</td>
+<td class="org-left">(*common.ConfigSignature, error)</td>
+<td class="org-left">用FabricClient关联的用户身份对ExtractChannelConfig解析出来的config进行签名</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">CreateChannel</td>
+<td class="org-left">(request fab.Create ChannelRequest)</td>
+<td class="org-left">(apitxn.TransactionID, error)</td>
+<td class="org-left">创建通道, 创建通道的参数包括通道名称, 排序服务实例, 通道配置等信息, 返回包含随机数的交易号</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">QueryChannelInfo</td>
+<td class="org-left">(name string, peers []fab.Peer)</td>
+<td class="org-left">(fab.Channel, error)</td>
+<td class="org-left">从指定节点查询通道</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">StateStore</td>
+<td class="org-left">()</td>
+<td class="org-left">(fab.KeyValueStore)</td>
+<td class="org-left">返回状态存储的实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">SigningManager</td>
+<td class="org-left">()</td>
+<td class="org-left">(fab.SigningManager)</td>
+<td class="org-left">返回签名Manager实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">CryptoSuite</td>
+<td class="org-left">()</td>
+<td class="org-left">bccsp.BCCSP</td>
+<td class="org-left">返回BCCSP实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">SaveUserToStateStore</td>
+<td class="org-left">(user fab.User, skip Persistence bool)</td>
+<td class="org-left">(error)</td>
+<td class="org-left">保存用户实例到状态存储里</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">LoadUserFromStateStore</td>
+<td class="org-left">(name string)</td>
+<td class="org-left">(fab.User, error)</td>
+<td class="org-left">从状态存储里获取指定名称的用户实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">InstallChaincode</td>
+<td class="org-left">(chaincodeName string, chaincodePath string, chaincodeVersion string, chaincodePackage []byte, targets []fab.Peer)</td>
+<td class="org-left">([]*apitxn.TransactionProposal Response, string, error)</td>
+<td class="org-left">安装指定链码名称, 路径, 版本的链码到指定的节点中</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">QueryChannels</td>
+<td class="org-left">(peer fab.Peer)</td>
+<td class="org-left">(*pb.ChannelQueryResponse, error)</td>
+<td class="org-left">查询指定节点加入的所有通道</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">QueryInstalledChaincodes</td>
+<td class="org-left">(peer fab.Peer)</td>
+<td class="org-left">(*pb.ChannelQueryResponse, error)</td>
+<td class="org-left">查询指定节点安装的所有链码</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">UserContext</td>
+<td class="org-left">()</td>
+<td class="org-left">(user fab.User)</td>
+<td class="org-left">返回当前FabricClient的用户实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">SetUserContext</td>
+<td class="org-left">(user fab.User)</td>
+<td class="org-left">()</td>
+<td class="org-left">设置当前FabricClient的用户实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Config</td>
+<td class="org-left">()</td>
+<td class="org-left">(config.Config)</td>
+<td class="org-left">设置当前FabricClient的配置实例</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">NewTxnID</td>
+<td class="org-left">()</td>
+<td class="org-left">apitxn.TransactionID, error</td>
+<td class="org-left">本地生成包含随机数的交易号</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orga373838" class="outline-2">
+<h2 id="orga373838">Config</h2>
+<div class="outline-text-2" id="text-orga373838">
+<p>
+初始化FabricClient时需要离线获取配置信息, 包括可信的根证书, 排序服务节点证书和IP地址, 记账节点证书和IP地址等. Config读取后传递给FabricClient. 配置信息是动态传递的, SDK不会持久化存储, 应用程序负责维护这些配置信息.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/51.png" alt="51.png" />
+</p>
+</div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/52.png" alt="52.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org05fd247" class="outline-2">
+<h2 id="org05fd247">Channel</h2>
+<div class="outline-text-2" id="text-org05fd247">
+<p>
+通道是排序服务创建的隔离不同链上交易的实例, 加入到不同通道的节点接收到的是不同的交易. 通道在配置了排序服务节点和Peer节点后需要初始化, 初始化的时候给排序服务节点发送获取配置区块的请求.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/53.png" alt="53.png" />
+</p>
+</div>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/54.png" alt="54.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48085ec" class="outline-2">
+<h2 id="org48085ec">Peer</h2>
+<div class="outline-text-2" id="text-org48085ec">
+<p>
+Peer是客户端发送背书请求, 交易查询的节点. Peer实例包含节点名称, 地址, 角色, 注册证书等信息.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/55.png" alt="55.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga433e03" class="outline-2">
+<h2 id="orga433e03">Orderer</h2>
+<div class="outline-text-2" id="text-orga433e03">
+<p>
+Orderer是客户端发送交易进行排序的节点, Orderer实例包含了排序服务节点地址信息, 定义了发送原子广播请求和获取区块的接口.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/56.png" alt="56.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org40e34de" class="outline-2">
+<h2 id="org40e34de">User</h2>
+<div class="outline-text-2" id="text-org40e34de">
+<p>
+User表示已经生成了注册证书和签名密钥的实体, 注册证书必须是CA颁发的证书, 只有生成了注册证书的实体, 都能进行部署链码, 提交交易, 查询交易等.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/57.png" alt="57.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc741909" class="outline-2">
+<h2 id="orgc741909">KeyValueStore</h2>
+<div class="outline-text-2" id="text-orgc741909">
+<p>
+KeyValueStore提供给应用程序保存敏感信息的功能, 如用户私钥, 证书信息等.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/58.png" alt="58.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3ce245a" class="outline-2">
+<h2 id="org3ce245a">EventHub</h2>
+<div class="outline-text-2" id="text-org3ce245a">
+<p>
+EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通知事件.
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/59.png" alt="59.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6434b1d" class="outline-2">
+<h2 id="org6434b1d">FabricCAClient</h2>
+<div class="outline-text-2" id="text-org6434b1d">
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/60.png" alt="60.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd4eda9a" class="outline-2">
+<h2 id="orgd4eda9a">UML图</h2>
+<div class="outline-text-2" id="text-orgd4eda9a">
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/61.png" alt="61.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org29f5910" class="outline-2">
+<h2 id="org29f5910">应用场景</h2>
+<div class="outline-text-2" id="text-org29f5910">
+</div>
+<div id="outline-container-org7a608ae" class="outline-3">
+<h3 id="org7a608ae">用户登记和注册</h3>
+<div class="outline-text-3" id="text-org7a608ae">
+<ol class="org-ol">
+<li>应用程序根据配置文件获取CA和CSP的配置信息.</li>
+<li>应用程序根据配置信息创建FabricClient的实例, 并设置CryptoSuite和KeyValueStore等信息, FabricClient实例是整个操作的入口.</li>
+<li>应用程序获取负责提交用户资料的登记员信息Registrar, 如果不存在, 需要先初始化登记员用户, 获取登记员的注册证书和私钥信息.</li>
+<li>应用程序根据配置信息和组织信息创建FabricCAClient实例.</li>
+<li>应用程序根据需要登记的用户信息, 生成RegistrationRequest请求, 提交给FabricCAClient.</li>
+<li>登记员Registrar会提交访问Fabric-CA的POST请求, 请求的URL是/api/v1/register.</li>
+<li>Fabric-CA验证请求, 生成用户注册的密码Secret, 最终返回给应用程序, 完成用户信息登记的步骤.</li>
+<li>应用程序利用申请的用户信息和返回的注册密码, 调用FabricCAClient的enroll().</li>
+<li>FabricCAClient生成私钥和证书签名请求CSR, 调用Fabrica-CA的enroll()生成注册证书.</li>
+<li>Fabric-CA返回生成的注册证书和私钥给应用程序.</li>
+<li>应用程序可选地保存用户信息到KeyValueStore里.</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/62.png" alt="62.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdf7d11d" class="outline-3">
+<h3 id="orgdf7d11d">在排序服务上创建通道</h3>
+<div class="outline-text-3" id="text-orgdf7d11d">
+<p>
+创建通道需要先使用工具configtxgen生成通道的配置文件mychannel.tx.
+</p>
+
+<ol class="org-ol">
+<li>应用程序读取通道配置文件mychannel.tx, 这个文件是用configtxgen生成的, 包含了通道名称, 组织配置等信息.</li>
+<li>创建通道只需要和Orderer节点通信, 需要通过Orderer节点的配置, 生成Orderer实例.</li>
+<li>应用程序指定通道名称, 并通过mychannel.tx和Orderer实例, 生成创建通道请求CreateChannelRequest.</li>
+<li>应用程序创建FabricClient实例, 调用CreateChannel(CreateChannelRequest)创建通道.</li>
+<li>SDK将CreateChannelRequest转换, 生成HeaderType_CONFIG_UPDATE类型的交易common.Payload.</li>
+<li>SDK对common.Payload进行签名, 签名者需要有创建通道的管理员权限.</li>
+<li>SDK通过Orderer实例, 发送SendBroadcast请求, 提交请求给Orderer节点.</li>
+<li>Orderer节点检查提交的请求, 校验是否有权限创建新的通道, 创建通道以后, Orderer节点就可以接收新的通道请求了.</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/63.png" alt="63.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbbbe357" class="outline-3">
+<h3 id="orgbbbe357">Peer节点加入通道</h3>
+<div class="outline-text-3" id="text-orgbbbe357">
+<p>
+创建通道以后, Orderer节点上就有了新通道的基本信息, 可以对新通道的交易进行排序打包生成区块了. 现在, 将Peer节点加入到新通道中, 应用程序才能通过Peer节点发起交易请求. 将Peer节点加入通道, 需要从Orderer节点上获取genesis.block, 然后在Peer节点本地初始化链.
+</p>
+
+<ol class="org-ol">
+<li>应用程序进行必要的初始化配置, 如创建FabricClient实例, 设置发起加入通道请求的用户, Channel实例, Orderer实例等.</li>
+<li>应用程序调用GenesisBlock的请求, 获取创世区块, Channel实例会构造HeaderType_DELIVER_SEEK_INFO的请求, 通过Orderer实例发送sendDeliver请求给Orderer节点, 获取该通道的genesis.block.</li>
+<li>应用程序利用获取到的genesis.block, 构造JoinChannelRequest请求, 通过Channel实例发起JoinChannel请求.</li>
+<li>SDK的JoinChannel会根据JoinChannelRequest请求, 重新构造类型为HeaderType_ENDORSER_TRANSACTION的Proposal, Proposal会利用FabricClient实例设置的用户进行签名, 生成SignedProposal.</li>
+<li>需要为每个加入通道的Peer节点创建一个Peer实例, 通过Peer实例调用ProcessProposal向Peer节点发送加入通道的SignedProposal.</li>
+<li>SignedProposal调用CSCC的JoinChain请求, Peer节点接收到SignedProposal请求后, 会调用CSCC进行必要的消息有效性检查和权限检查, 然后在本地Peer节点初始化链. 初始化的过程会根据通道名称在本地目录创建账本数据, 写入通道的genesis.block.</li>
+<li>创建好通道的本地账本以后, Peer节点会启动Gossip服务, 从排序服务节点同步最新的区块数据. 根据Peer节点的配置, 参与主节点的选举或者直接作为主节点进行Peer节点之间的P2P通信.</li>
+<li>Peer节点初始化链以后, 就可以接收新链的交易请求了.</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/15/九-sdk/64.png" alt="64.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7f743fa" class="outline-3">
+<h3 id="org7f743fa">安装链码</h3>
+<div class="outline-text-3" id="text-org7f743fa">
+<p>
+把包含链码源码的ChaincodeDeploymentSpec上传到Peer节点.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7996cb6" class="outline-3">
+<h3 id="org7996cb6">通过Peer节点实例化链码</h3>
+<div class="outline-text-3" id="text-org7996cb6">
+<p>
+实例化链码时, 会创建链码镜像, 启动链码容器, 并调用链码的Init接口初始化, 生成的交易会发送到Orderer节点, 生成区块并记录到账本中.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-15</span>
+        <span title="last modification date" class="post-info">2018-04-16</span>
+        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/15/九-sdk";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/15/九-sdk";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
