@@ -15,3 +15,92 @@
 sudo apt install tree
 tree -L 4 pathname # -L指定层级
 #+END_SRC
+* SSH
+
+SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如果工作环境中的防火墙限制了一些网络端口的使用, 但允许SSH连接, 那么也可以通过将TCP端口转发来使用SSH进行通讯. 总的来说, SSH端口转发能够提供两大功能:
+1. 加密SSH Client到SSH Server之间的通讯数据
+2. 突破防火墙的限制完成一些之前无法建立的TCP连接
+
+** 基本用法
+
+*** 使用SSH远程登录
+
+#+BEGIN_SRC Shell
+ssh pinvon@192.168.1.104
+#+END_SRC
+
+*** 连接到目标主机的其他端口
+
+默认情况下, SSH连接到目标主机的22端口上, 我们也可以指定其他的端口:
+#+BEGIN_SRC Shell
+ssh -p 3000 pinvon@192.168.1.104
+#+END_SRC
+
+*** 构建SSH密钥对
+
+#+BEGIN_SRC Shell
+ssh-keygen -t rsa
+#+END_SRC
+
+*** 寻找主机密钥
+
+在准备添加密钥之前, 可以先检查是否已经添加对应主机的密钥:
+#+BEGIN_SRC Shell
+ssh-keygen -F 192.168.1.104
+#+END_SRC
+
+*** 删除主机密钥
+
+#+BEGIN_SRC Shell
+ssh-keygen -R 192.168.1.104
+#+END_SRC
+
+** 绑定本地端口
+
+SSH可以传送数据, 我们可以让那些不加密的网络连接, 全部改走SSH连接, 从而提高安全性.
+
+如, 要让8080端口的数据, 全部通过SSH传向远程主机:
+#+BEGIN_SRC Shell
+ssh -D 8080 pinvon@192.168.1.104
+#+END_SRC
+
+SSH会建立一个socket, 监听本地的8080端口(注意, 不是pinvon@192.168.1.104的8080端口). 一旦本地有数据传向8080端口, 就把它转移到SSH连接上, 发往pinvon@192.168.1.104
+
+如果8080端口的数据原来未加密, 现在就会对其数据进行加密.
+
+** SSH隧道
+
+命令格式:
+#+BEGIN_SRC Shell
+ssh -L <local port>:<remote host>:<remote port> <SSH hostname>
+#+END_SRC
+
+场景: A和B无法互通, C可以同时连接A和B. 现在想通过C, 让A连接到B. 其中, A, B, C都是IP地址.
+
+在A上执行:
+#+BEGIN_SRC Shell
+ssh -L 2121:B:21 C
+#+END_SRC
+它的意思是, 指定SSH绑定本地端口2121, 然后指定C将所有的数据, 转发到B的21端口.
+
+-L接受3个值, 格式为 =本地端口:目标主机:目标主机端口=.
+
+只要连接A:2121, 就等于连接上了B:21
+
+** SSH反向连接
+
+命令格式:
+#+BEGIN_SRC Shell
+ssh -R <local port>:<remote host>:<remote port> <SSH hostname>
+#+END_SRC
+
+如, client连上server, 然后把client能访问的机器地址和端口镜像到server的端口上.
+
+常用场景: 家里有一台电脑在内网, 外网的服务器无法连接访问到, 然后使用SSH反向连接, 打通一条隧道, 服务器就可以通过这条隧道进来了.
+
+内网主机IP: 192.168.1.104, 外网主机IP: 123.207.62.191, 内网另一台主机IP: 192.168.1.100
+
+让外网所有能访问到123.207.62.191的IP, 都能通过8080端口访问到192.16.1.100的80端口.
+#+BEGIN_SRC Shell
+ssh -R 123.207.62.191:8080:192.168.1.100:80 ubuntu@123.207.62.191
+#+END_SRC
