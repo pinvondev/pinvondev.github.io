@@ -11,6 +11,8 @@
 
 * 概述
 
+Fabric网络提供的是联盟链服务, 联盟由多个组织构成, 组织中的成员提供了节点服务来维护网络, 并且通过身份来进行权限管理.
+
 MSP是一个组件, 其中定义了身份验证, 鉴权和网络准入的规则.
 
 MSP管理用户ID, 对想加入网络的客户端进行鉴权, 包括为提出交易的客户端分配密钥工作.
@@ -20,6 +22,16 @@ MSP会使用CA, 由CA来验证和销毁用户的证书.
 MSP默认使用的是Fabric-CA API, 当然, 我们也可以使用其他的第三方CA. 因此, Fabric-CA不是必须的.
 
 一个Fabric网络可以包含多个MSP, 对应每个组织.
+
+** msp目录
+
+根据 crypto-config.yaml 的定义, 生成的目录结构如下图所示:
+
+[[./67.png]]
+
+其中, 最重要的是 =msp目录=, 该目录下的内容代表了实体的身份信息.
+
+[[./68.png]]
 
 * 工作流程
 
@@ -83,28 +95,75 @@ Fabric CA服务端提供了RESTful的接口供客户端工具和SDK访问. 手�
 
 *** 安装Fabric CA服务端和客户端
 
-将fabric-ca-server和fabric-ca-client安装到$GOPATH/bin下:
+本地编译Fabric-CA:
 #+BEGIN_SRC Shell
-go get -u github.com/hyperledger/fabric-ca/cmd/......
+# 配置GOPATH
+# 安装 libtool 和 libltdl-dev
+go get -u -ldflags "-linkmode external -extldflags '-static -lpthread'" github.com/hyperledger/fabric-ca/cmd/...
 #+END_SRC
 
-也可以到Docker Hub下载Fabric-CA的镜像文件. 则启动的命令:
+也可以直接到Docker Hub下载Fabric-CA的镜像:
 #+BEGIN_SRC Shell
-cd $GOPATH/src/github.com/hyperledger/fabric-ca/docker/server
-
-# 修改docker-compose.yml 将image修改下下载的镜像版本
-
-# 启动
-docker-compose up -d
+docker pull hyperledger/fabric-ca
 #+END_SRC
-
-还可以自己编译.
 
 *** 启动Fabric CA服务
 
+通过如下命令进入容器, 执行服务端或客户端命令:
 #+BEGIN_SRC Shell
+docker run -it hyperledger/fabric-ca bash
+
+# 查看fabric-ca-server使用方法
+fabric-ca-server -h
+
+# 查看fabric-ca-client使用方法
+fabric-ca-client -h
+
+# 初始化
 fabric-ca-server init -b admin:adminpw
 #+END_SRC
+
+*** 挂载本地配置文件
+
+镜像中已经将配置目录 =FABRIC_CA_SERVER_HOME= 和 =FABRIC_CA_CLIENT_HOME= 指定为Volume资源. 用户在启动容器时, 可以将本地存放配置文件的目录挂载到容器中, 以方便对证书文件和数据库进行备份和管理:
+#+BEGIN_SRC Shell
+docker run -it -v LOCAL_PATH:/etc/hyperledger/fabric-ca-server hyperledger/fabric-ca bash
+#+END_SRC
+
+*** 暴露RESTful服务
+
+容器作为CA服务使用时, 默认暴露的服务端口为7054, 为了让其他物理机能访问到容器内的服务, 可以将该端口映射到本地宿主机. 格式为 =宿主端口:容器端口=:
+#+BEGIN_SRC Shell
+docker run -it -v LOCAL_PATH:/etc/hyperledger/fabric-ca-server -p 7054:7054 hyperledger/fabric-ca bash
+#+END_SRC
+
+** 启动CA服务
+
+*** 配置读取
+
+fabric-ca-server服务所需要的相关配置项会依次尝试从命令行参数, 环境变量, 主配置目录这三个位置来读取. 这三个位置的优先级也是由高到低. 如果都没有配置, 则采用内置的默认值.
+
+*** 主配置目录
+
+主配置目录的具体路径如何获取? fabric-ca-server服务会依次尝试从环境变量FABRIC_CA_SERVER_HOME, FABRIC_CA_HOME, CA_CFG_PATH中读取. 
+
+一般推荐使用默认的 /etc/hyperledger/fabric-ca-server 路径作为主配置目录环境变量的指向路径.
+
+如果这三个环境变量都没有指定, 则使用当前目录作为主配置目录, 来搜索相关的配置文件.
+
+*** 初始化fabric-ca-server
+
+[[./69.png]]
+
+初始化后, 会生成配置文件 =fabric-ca-server-config.yaml=, 放进配置主目录.
+
+此时, 配置主目录下会生成4个文件.
+- ca-cert.pem: PEM格式的CA证书文件, 自签名
+- fabric-ca-server-config.yaml: 默认配置文件
+- fabric-ca-server.db: 存放数据的sqlite数据库
+- msp/keystore: 存放个人身份的私钥文件, 对应签名证书
+
+默认情况下, fabric-ca-server-config.yaml 配置文件中未启用TLS, 如果要启用TLS, 需要修改tls.enabled为true, 同时修改csr.cn以匹配实际主机名, 之后 可以删掉证书和私钥文件, 重新生成对应文件.
 
 *** 未来学习
 
