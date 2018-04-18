@@ -1,0 +1,64 @@
+#+TITLE:       FRP 内网穿透
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-18 三
+#+URI:         /blog/%y/%m/%d/frp-内网穿透
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        VPN
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+1. 可以让内网或防火墙后的机器对外网提供http/https服务.
+2. 支持基于域名的虚拟主机, 支持自定义域名绑定, 使多个域名可以共用一个80端口.
+3. 可以让内网或防火墙后的机器, 对外网环境提供tcp/udp服务, 可以从家里通过ssh访问处于公司内网环境的主机.
+
+* 下载
+
+https://github.com/fatedier/frp
+
+* 使用
+
+将 =frps & frps.ini= 放到公网IP的机器上.
+
+将 =frpc & frpc.ini= 放到内网IP的机器上.
+
+** 通过ssh访问公司内网机器
+
+修改 =frps.ini=:
+#+BEGIN_SRC Shell
+# frps.ini
+[common]
+bind_port = 7000
+#+END_SRC
+
+启动 =frps=:
+#+BEGIN_SRC Shell
+./frps -c ./frps.ini
+#+END_SRC
+
+修改 =frpc.ini=:
+#+BEGIN_SRC Shell
+# frpc.ini
+[common]
+server_addr = x.x.x.x
+server_port = 7000
+
+[ssh]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 22
+remote_port = 6000
+#+END_SRC
+
+启动 =frpc=:
+#+BEGIN_SRC Shell
+./frpc -c ./frpc.ini
+#+END_SRC
+
+通过ssh访问内网机器:
+#+BEGIN_SRC Shell
+ssh -oPort=6000 内网用户名@服务器IP
+#+END_SRC
