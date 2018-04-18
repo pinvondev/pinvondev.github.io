@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>地址解析协议 ARP - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>地址解析协议 ARP</h1>
+
+<div id="outline-container-org5b1ac44" class="outline-2">
+<h2 id="org5b1ac44">概述</h2>
+<div class="outline-text-2" id="text-org5b1ac44">
+<p>
+ARP协议为IP地址到对应的硬件地址之间提供动态映射.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb42e296" class="outline-2">
+<h2 id="orgb42e296">过程</h2>
+<div class="outline-text-2" id="text-orgb42e296">
+<p>
+假设网络中的计算机A要和计算机B交换数据, 首先A要得到B的IP与MAC之间的映射关系.
+</p>
+
+<ol class="org-ol">
+<li>A检查自己的高速缓存中的ARP表, 判断ARP表中是否已有B的IP和MAC之间的映射关系. 如果有, 则完成ARP地址解析; 如果没有, 则到第2步.</li>
+<li>A广播请求信息包, 数据包中含有A的IP和MAC的映射关系, 请求解析B的IP和MAC的映射关系.</li>
+<li>同一个子网内的所有计算机都会接收到广播, 这些计算机将A的IP和MAC的映射关系存入各自的ARP表中.</li>
+<li>B发送ARP响应包, 通知自己的IP和MAC的映射关系.</li>
+<li>A收到B的响应包, 将B的IP和MAC的映射关系存入自己的ARP表中. 至此, 完成B的ARP地址解析.</li>
+</ol>
+
+<p>
+注意, ARP不能通过IP路由器发送广播, 所以不能用来确定远程网络设备的硬件地址. 对于目标主机位于远程网络的情况, IP利用ARP确定默认网关(路由器)的硬件地址, 并将数据包发送到默认网关, 由路由器按它自己的方式转发数据包.
+</p>
+
+<p>
+ARP请求报文是广播的, 局域网内所有主机都能收到, ARP应答报文是单播的, 只有发送ARP请求的主机才能收到.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9d23610" class="outline-2">
+<h2 id="org9d23610">ARP报文格式</h2>
+<div class="outline-text-2" id="text-org9d23610">
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/18/arp/1.png" alt="1.png" />
+</p>
+</div>
+
+<p>
+ARP报文的长度不是固定的. 首先, 除了以太网之外, 还有其他的网络, 如令牌环等. ARP可以应用在任何网络上. 不同网络中, 物理地址长度是不一样的, 在以太网(MAC)中是6个字节.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org773a500" class="outline-2">
+<h2 id="org773a500">超时计时器</h2>
+<div class="outline-text-2" id="text-org773a500">
+<p>
+当网络中某个IP地址对应的物理地址发生变化时, ARP高速缓存表中相应的条目就要更改, 如果这些条目到了超时时间后, 还没变化过, 就会被删除, 如果中间有发生变化, 则重新计时.
+</p>
+
+<p>
+超时时间设置太短时, ARP高速缓存表中的条目频繁被删, 导致主机经常广播ARP报文, 通信太频繁. 如果超时时间设置太长, 则可能某主机的IP与MAC映射关系变化了, ARP高速缓存中的条目还未修改, 通信会出错.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga210cdb" class="outline-2">
+<h2 id="orga210cdb">漏洞</h2>
+<div class="outline-text-2" id="text-orga210cdb">
+<p>
+ARP协议建立在对局域网中主机全部信任的基础上.  即, ARP协议认为, 局域网中每个主机发送的ARP数据报文都是正确的.
+</p>
+
+<p>
+再倒回去看一下工作过程: 源主机A通过在局域网中广播的方式, 得到目的主机B的IP和MAC地址映射关系, 并存入ARP缓存表. 缓存表中的数据在存活期内可更新. 如果主机C利用主机B的IP地址, 不停地发送应答报文, 那么源主机A就会根据收到的报文, 将缓存表中相应的数据修改成B的IP地址与C的MAC地址的映射, 这样主机A再给主机B发送消息, 就都会被发送到主机C了.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-18</span>
+        <span title="last modification date" class="post-info">2018-04-18</span>
+        <span title="tags" class="post-info"><a href="/tags/计算机网络/">计算机网络</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/18/arp";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/18/arp";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
