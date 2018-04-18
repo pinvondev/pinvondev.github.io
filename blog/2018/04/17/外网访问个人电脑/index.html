@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>外网访问个人电脑 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>外网访问个人电脑</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgca655ff">原理</a>
+<ul>
+<li><a href="#orga804928">ASDL拨号上网</a></li>
+<li><a href="#org2367afd">通过路由器共享上网</a>
+<ul>
+<li><a href="#org9daeeca">端口映射</a></li>
+</ul>
+</li>
+<li><a href="#orgfc45897">私有地址范围</a></li>
+</ul>
+</li>
+<li><a href="#org2bceae9">例子</a></li>
+<li><a href="#org1454266">设置</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgca655ff" class="outline-2">
+<h2 id="orgca655ff">原理</h2>
+<div class="outline-text-2" id="text-orgca655ff">
+</div>
+<div id="outline-container-orga804928" class="outline-3">
+<h3 id="orga804928">ASDL拨号上网</h3>
+<div class="outline-text-3" id="text-orga804928">
+<p>
+这种上网方式不经过路由器等路由设备, 所以计算机直接获得公网的IP地址.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2367afd" class="outline-3">
+<h3 id="org2367afd">通过路由器共享上网</h3>
+<div class="outline-text-3" id="text-org2367afd">
+<p>
+如果使用的是路由器来上网, 则需要在路由器上做端口映射, 这样外网的计算机才能访问到内网主机.
+</p>
+</div>
+
+<div id="outline-container-org9daeeca" class="outline-4">
+<h4 id="org9daeeca">端口映射</h4>
+<div class="outline-text-4" id="text-org9daeeca">
+<p>
+在Internet中, 只有公网IP能够互相通讯.
+</p>
+
+<p>
+局域网内的私有IP之间能够互相通讯.
+</p>
+
+<p>
+公网IP和私有IP不能直接互相通讯.
+</p>
+
+<p>
+路由器有两个IP: 公网IP, 用于和公网的计算机通讯; 私有IP, 用于和内网的计算机通讯.
+</p>
+
+<p>
+内网的主机, 获取的是私有IP, 它们只能通过路由器访问外网, 和公网的其他计算机进行通讯.
+</p>
+
+<p>
+各个路由器厂商对端口映射这个功能所取的名称不同, 有的叫虚拟服务器, 有的叫NAT设置.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfc45897" class="outline-3">
+<h3 id="orgfc45897">私有地址范围</h3>
+<div class="outline-text-3" id="text-orgfc45897">
+<p>
+A类地址: 10.0.0.0-10.255.255.255
+</p>
+
+<p>
+B类地址: 172.16.0.0-172.31.255.255
+</p>
+
+<p>
+C类地址: 192.168.0.0-192.168.255.255
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2bceae9" class="outline-2">
+<h2 id="org2bceae9">例子</h2>
+<div class="outline-text-2" id="text-org2bceae9">
+<p>
+假设外网有一台ADSL直接拨号上网的主机A, 其公网IP是123.207.62.191
+</p>
+
+<p>
+现在A想要访问某个内网主机B, 其IP是192.168.1.104
+</p>
+
+<p>
+假设路由器设置了端口映射, 规则为: 将所有发向路由器的80端口的数据, 都转发到主机B上.
+</p>
+
+<p>
+访问过程:
+</p>
+<ol class="org-ol">
+<li>A向路由器(117.28.182.47)发送请求, 要求访问B的80端口.</li>
+<li>路由器收到请求后, 按照端口映射规则, 通过内网IP地址192.168.1.1把请求的数据发送到内网主机B上.</li>
+<li>B收到请求后, 把响应数据发送到路由器.</li>
+<li>路由器收到B的响应数据后, 通过公网IP117.28.182.47把它们发送到A.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org1454266" class="outline-2">
+<h2 id="org1454266">设置</h2>
+<div class="outline-text-2" id="text-org1454266">
+<p>
+进入路由器管理界面, 找到虚拟服务器功能或NAT设置功能. 如下图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/17/外网访问个人电脑/1.png" alt="1.png" />
+</p>
+</div>
+
+<p>
+填写参数, 如下图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/17/外网访问个人电脑/2.png" alt="2.png" />
+</p>
+</div>
+
+<p>
+关于端口的设置, 一般如果内网开启的服务需要哪个端口, 就映射到哪个端口. 如, 用Node.js写了一个程序, 访问3000端口, 就在内网端口那边填3000端口. 另外, 建议内网外网使用一样的端口, 省得记忆.
+</p>
+
+<p>
+设置完毕后, 百度搜索"IP"关键字, 获取路由器的外网IP.
+</p>
+
+<p>
+然后就可以通过外网IP:9000访问内网了.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-17</span>
+        <span title="last modification date" class="post-info">2018-04-17</span>
+        <span title="tags" class="post-info"><a href="/tags/vpn/">VPN</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/17/外网访问个人电脑";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/17/外网访问个人电脑";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>

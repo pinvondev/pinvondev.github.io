@@ -35,55 +35,55 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc214155">客户端程序</a>
+<li><a href="#org7a3a8f2">客户端程序</a>
 <ul>
-<li><a href="#orgfa61fd6">创建TCP套接口</a></li>
-<li><a href="#org4cf339b">指定服务器IP地址和端口</a>
+<li><a href="#org5038319">创建TCP套接口</a></li>
+<li><a href="#org49dbf76">指定服务器IP地址和端口</a>
 <ul>
-<li><a href="#org71b6d76">bzero()和memset()</a></li>
-<li><a href="#orgbd0e744">填充地址族和端口</a></li>
-<li><a href="#orgaaac329">inet_pton()和inet_addr()</a></li>
+<li><a href="#org7075e1b">bzero()和memset()</a></li>
+<li><a href="#orga8bc960">填充地址族和端口</a></li>
+<li><a href="#orga17e0e3">inet_pton()和inet_addr()</a></li>
 </ul>
 </li>
-<li><a href="#org50c9bbd">建立连接</a></li>
-<li><a href="#orgf0fe40e">读取服务器的响应并输出</a>
+<li><a href="#org8b79e5f">建立连接</a></li>
+<li><a href="#orgfb06ba0">读取服务器的响应并输出</a>
 <ul>
-<li><a href="#org392d623">read()</a></li>
-<li><a href="#org478687d">fputs()</a></li>
+<li><a href="#org9ef2923">read()</a></li>
+<li><a href="#orgad2a159">fputs()</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org74d78ef">服务器程序</a>
+<li><a href="#org1087ff0">服务器程序</a>
 <ul>
-<li><a href="#org1c5ea37">创建TCP套接口</a></li>
-<li><a href="#orgd302b45">绑定服务器的端口到套接口</a></li>
-<li><a href="#orgf4a8292">监听</a></li>
-<li><a href="#org35f8e3a">接受连接并响应</a>
+<li><a href="#org4ac3510">创建TCP套接口</a></li>
+<li><a href="#org286f2e4">绑定服务器的端口到套接口</a></li>
+<li><a href="#org357090d">监听</a></li>
+<li><a href="#org3164f8e">接受连接并响应</a>
 <ul>
-<li><a href="#org8689414">snprintf()和sprintf()</a></li>
+<li><a href="#orgd23c5dc">snprintf()和sprintf()</a></li>
 </ul>
 </li>
-<li><a href="#org1821fab">终止连接</a></li>
+<li><a href="#org3c8fc6c">终止连接</a></li>
 </ul>
 </li>
-<li><a href="#org4351378">小结</a>
+<li><a href="#orgc3d81b3">小结</a>
 <ul>
-<li><a href="#org8852221">TCP客户端</a></li>
-<li><a href="#org8d2be30">TCP服务端</a></li>
+<li><a href="#org5441b90">TCP客户端</a></li>
+<li><a href="#orge6e483a">TCP服务端</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc214155" class="outline-2">
-<h2 id="orgc214155">客户端程序</h2>
-<div class="outline-text-2" id="text-orgc214155">
+<div id="outline-container-org7a3a8f2" class="outline-2">
+<h2 id="org7a3a8f2">客户端程序</h2>
+<div class="outline-text-2" id="text-org7a3a8f2">
 </div>
-<div id="outline-container-orgfa61fd6" class="outline-3">
-<h3 id="orgfa61fd6">创建TCP套接口</h3>
-<div class="outline-text-3" id="text-orgfa61fd6">
+<div id="outline-container-org5038319" class="outline-3">
+<h3 id="org5038319">创建TCP套接口</h3>
+<div class="outline-text-3" id="text-org5038319">
 <div class="org-src-container">
 <pre class="src src-C++">if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0) 
         err_sys("socket error");
@@ -99,9 +99,9 @@ socket()的三个参数:
 </div>
 </div>
 
-<div id="outline-container-org4cf339b" class="outline-3">
-<h3 id="org4cf339b">指定服务器IP地址和端口</h3>
-<div class="outline-text-3" id="text-org4cf339b">
+<div id="outline-container-org49dbf76" class="outline-3">
+<h3 id="org49dbf76">指定服务器IP地址和端口</h3>
+<div class="outline-text-3" id="text-org49dbf76">
 <div class="org-src-container">
 <pre class="src src-C++">bzero(&amp;servaddr, sizeof(servaddr));
 servaddr.sin_family = AF_INET;
@@ -116,9 +116,9 @@ if (inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr) &lt;= 0)
 </p>
 </div>
 
-<div id="outline-container-org71b6d76" class="outline-4">
-<h4 id="org71b6d76">bzero()和memset()</h4>
-<div class="outline-text-4" id="text-org71b6d76">
+<div id="outline-container-org7075e1b" class="outline-4">
+<h4 id="org7075e1b">bzero()和memset()</h4>
+<div class="outline-text-4" id="text-org7075e1b">
 <p>
 bzero()与memset()的原型:
 </p>
@@ -138,13 +138,13 @@ memset()的功能: 将s中前n个字节替换为ch, 并返回s.
 </div>
 </div>
 
-<div id="outline-container-orgbd0e744" class="outline-4">
-<h4 id="orgbd0e744">填充地址族和端口</h4>
+<div id="outline-container-orga8bc960" class="outline-4">
+<h4 id="orga8bc960">填充地址族和端口</h4>
 </div>
 
-<div id="outline-container-orgaaac329" class="outline-4">
-<h4 id="orgaaac329">inet_pton()和inet_addr()</h4>
-<div class="outline-text-4" id="text-orgaaac329">
+<div id="outline-container-orga17e0e3" class="outline-4">
+<h4 id="orga17e0e3">inet_pton()和inet_addr()</h4>
+<div class="outline-text-4" id="text-orga17e0e3">
 <p>
 inet_pton()是一个支持IPv6的新函数, 可以把点分十进制数转换成二进制整数. inet_ntop()是反转换.
 </p>
@@ -156,9 +156,9 @@ inet_addr()则只能支持IPv4.
 </div>
 </div>
 
-<div id="outline-container-org50c9bbd" class="outline-3">
-<h3 id="org50c9bbd">建立连接</h3>
-<div class="outline-text-3" id="text-org50c9bbd">
+<div id="outline-container-org8b79e5f" class="outline-3">
+<h3 id="org8b79e5f">建立连接</h3>
+<div class="outline-text-3" id="text-org8b79e5f">
 <div class="org-src-container">
 <pre class="src src-C++">if (connect(sockfd, (SA*)&amp;servaddr, sizeof(servaddr)) &lt; 0)
     err_sys("connect error");
@@ -181,9 +181,9 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </div>
 </div>
 
-<div id="outline-container-orgf0fe40e" class="outline-3">
-<h3 id="orgf0fe40e">读取服务器的响应并输出</h3>
-<div class="outline-text-3" id="text-orgf0fe40e">
+<div id="outline-container-orgfb06ba0" class="outline-3">
+<h3 id="orgfb06ba0">读取服务器的响应并输出</h3>
+<div class="outline-text-3" id="text-orgfb06ba0">
 <div class="org-src-container">
 <pre class="src src-C++">while ((n = read(sockfd, recvline, MAXLINE)) &gt; 0) {
     recvline[n] = 0;
@@ -198,9 +198,9 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </p>
 </div>
 
-<div id="outline-container-org392d623" class="outline-4">
-<h4 id="org392d623">read()</h4>
-<div class="outline-text-4" id="text-org392d623">
+<div id="outline-container-org9ef2923" class="outline-4">
+<h4 id="org9ef2923">read()</h4>
+<div class="outline-text-4" id="text-org9ef2923">
 <div class="org-src-container">
 <pre class="src src-C++">ssize_t read(int fd, void *buf, size_t count);
 </pre>
@@ -216,9 +216,9 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </div>
 </div>
 
-<div id="outline-container-org478687d" class="outline-4">
-<h4 id="org478687d">fputs()</h4>
-<div class="outline-text-4" id="text-org478687d">
+<div id="outline-container-orgad2a159" class="outline-4">
+<h4 id="orgad2a159">fputs()</h4>
+<div class="outline-text-4" id="text-orgad2a159">
 <div class="org-src-container">
 <pre class="src src-C++">int fputs(char *string, FILE *stream);
 </pre>
@@ -236,13 +236,13 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </div>
 </div>
 
-<div id="outline-container-org74d78ef" class="outline-2">
-<h2 id="org74d78ef">服务器程序</h2>
-<div class="outline-text-2" id="text-org74d78ef">
+<div id="outline-container-org1087ff0" class="outline-2">
+<h2 id="org1087ff0">服务器程序</h2>
+<div class="outline-text-2" id="text-org1087ff0">
 </div>
-<div id="outline-container-org1c5ea37" class="outline-3">
-<h3 id="org1c5ea37">创建TCP套接口</h3>
-<div class="outline-text-3" id="text-org1c5ea37">
+<div id="outline-container-org4ac3510" class="outline-3">
+<h3 id="org4ac3510">创建TCP套接口</h3>
+<div class="outline-text-3" id="text-org4ac3510">
 <div class="org-src-container">
 <pre class="src src-c++">int Socket(int family, int type, int protocol) {
     int n;
@@ -257,9 +257,9 @@ listenfd = Socket(AF_INET, SOCK_STREAM, 0);
 </div>
 </div>
 
-<div id="outline-container-orgd302b45" class="outline-3">
-<h3 id="orgd302b45">绑定服务器的端口到套接口</h3>
-<div class="outline-text-3" id="text-orgd302b45">
+<div id="outline-container-org286f2e4" class="outline-3">
+<h3 id="org286f2e4">绑定服务器的端口到套接口</h3>
+<div class="outline-text-3" id="text-org286f2e4">
 <div class="org-src-container">
 <pre class="src src-C++">void Bind(int fd, const struct sockaddr *sa, socklen_t salen) {
     if (bind(fd, sa, salen) &lt; 0)
@@ -280,9 +280,9 @@ Bind(listenfd, (SA*)&amp;servaddr, sizeof(servaddr));
 </div>
 </div>
 
-<div id="outline-container-orgf4a8292" class="outline-3">
-<h3 id="orgf4a8292">监听</h3>
-<div class="outline-text-3" id="text-orgf4a8292">
+<div id="outline-container-org357090d" class="outline-3">
+<h3 id="org357090d">监听</h3>
+<div class="outline-text-3" id="text-org357090d">
 <div class="org-src-container">
 <pre class="src src-C++">void Listen(int fd, int backlog) {
     char *ptr;
@@ -304,9 +304,9 @@ Listen(listenfd, 1024);
 </div>
 </div>
 
-<div id="outline-container-org35f8e3a" class="outline-3">
-<h3 id="org35f8e3a">接受连接并响应</h3>
-<div class="outline-text-3" id="text-org35f8e3a">
+<div id="outline-container-org3164f8e" class="outline-3">
+<h3 id="org3164f8e">接受连接并响应</h3>
+<div class="outline-text-3" id="text-org3164f8e">
 <div class="org-src-container">
 <pre class="src src-C++">int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr) {
     int n;
@@ -349,9 +349,9 @@ snprintf()函数会在字符串末尾添加回车和换行两个字符, 然后wr
 </p>
 </div>
 
-<div id="outline-container-org8689414" class="outline-4">
-<h4 id="org8689414">snprintf()和sprintf()</h4>
-<div class="outline-text-4" id="text-org8689414">
+<div id="outline-container-orgd23c5dc" class="outline-4">
+<h4 id="orgd23c5dc">snprintf()和sprintf()</h4>
+<div class="outline-text-4" id="text-orgd23c5dc">
 <p>
 两个函数的功能都是把格式化的字符串写入缓冲区中. 但是sprintf()不 检查目标缓冲区是否溢出, snprintf()则要求其第二个参数是目标缓冲区的大小, 因此可以确保缓冲区不溢出.
 </p>
@@ -363,9 +363,9 @@ snprintf()函数会在字符串末尾添加回车和换行两个字符, 然后wr
 </div>
 </div>
 
-<div id="outline-container-org1821fab" class="outline-3">
-<h3 id="org1821fab">终止连接</h3>
-<div class="outline-text-3" id="text-org1821fab">
+<div id="outline-container-org3c8fc6c" class="outline-3">
+<h3 id="org3c8fc6c">终止连接</h3>
+<div class="outline-text-3" id="text-org3c8fc6c">
 <div class="org-src-container">
 <pre class="src src-C++">void Close(int fd) {
     if (close(fd) == -1)
@@ -381,13 +381,13 @@ Close(connfd);
 </div>
 </div>
 
-<div id="outline-container-org4351378" class="outline-2">
-<h2 id="org4351378">小结</h2>
-<div class="outline-text-2" id="text-org4351378">
+<div id="outline-container-orgc3d81b3" class="outline-2">
+<h2 id="orgc3d81b3">小结</h2>
+<div class="outline-text-2" id="text-orgc3d81b3">
 </div>
-<div id="outline-container-org8852221" class="outline-3">
-<h3 id="org8852221">TCP客户端</h3>
-<div class="outline-text-3" id="text-org8852221">
+<div id="outline-container-org5441b90" class="outline-3">
+<h3 id="org5441b90">TCP客户端</h3>
+<div class="outline-text-3" id="text-org5441b90">
 <ol class="org-ol">
 <li>socket(): 创建socket.</li>
 <li>设置远程机器的IP地址和端口.</li>
@@ -398,9 +398,9 @@ Close(connfd);
 </div>
 </div>
 
-<div id="outline-container-org8d2be30" class="outline-3">
-<h3 id="org8d2be30">TCP服务端</h3>
-<div class="outline-text-3" id="text-org8d2be30">
+<div id="outline-container-orge6e483a" class="outline-3">
+<h3 id="orge6e483a">TCP服务端</h3>
+<div class="outline-text-3" id="text-orge6e483a">
 <ol class="org-ol">
 <li>socket(): 创建socket.</li>
 <li>bind(): 绑定服务器的IP地址和端口等信息到socket.</li>

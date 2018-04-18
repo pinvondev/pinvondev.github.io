@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Ubuntu 常用操作 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>Ubuntu 常用操作</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org37d1a81">tree 查看目录结构</a></li>
+<li><a href="#orgc342a14">SSH</a>
+<ul>
+<li><a href="#org924189c">基本用法</a>
+<ul>
+<li><a href="#org662b366">使用SSH远程登录</a></li>
+<li><a href="#orga720a4a">连接到目标主机的其他端口</a></li>
+<li><a href="#org60ed267">构建SSH密钥对</a></li>
+<li><a href="#org13c183b">寻找主机密钥</a></li>
+<li><a href="#org574e1e5">删除主机密钥</a></li>
+</ul>
+</li>
+<li><a href="#orga0eb870">绑定本地端口</a></li>
+<li><a href="#org0b58b48">SSH隧道</a></li>
+<li><a href="#orgd787f19">SSH反向连接</a></li>
+</ul>
+</li>
+<li><a href="#org27919af">du 查看占用磁盘大小</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org37d1a81" class="outline-2">
+<h2 id="org37d1a81">tree 查看目录结构</h2>
+<div class="outline-text-2" id="text-org37d1a81">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install tree
+tree -L 4 pathname # -L指定层级
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc342a14" class="outline-2">
+<h2 id="orgc342a14">SSH</h2>
+<div class="outline-text-2" id="text-orgc342a14">
+<p>
+SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如果工作环境中的防火墙限制了一些网络端口的使用, 但允许SSH连接, 那么也可以通过将TCP端口转发来使用SSH进行通讯. 总的来说, SSH端口转发能够提供两大功能:
+</p>
+<ol class="org-ol">
+<li>加密SSH Client到SSH Server之间的通讯数据</li>
+<li>突破防火墙的限制完成一些之前无法建立的TCP连接</li>
+</ol>
+</div>
+
+<div id="outline-container-org924189c" class="outline-3">
+<h3 id="org924189c">基本用法</h3>
+<div class="outline-text-3" id="text-org924189c">
+</div>
+<div id="outline-container-org662b366" class="outline-4">
+<h4 id="org662b366">使用SSH远程登录</h4>
+<div class="outline-text-4" id="text-org662b366">
+<div class="org-src-container">
+<pre class="src src-Shell">ssh pinvon@192.168.1.104
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga720a4a" class="outline-4">
+<h4 id="orga720a4a">连接到目标主机的其他端口</h4>
+<div class="outline-text-4" id="text-orga720a4a">
+<p>
+默认情况下, SSH连接到目标主机的22端口上, 我们也可以指定其他的端口:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh -p 3000 pinvon@192.168.1.104
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org60ed267" class="outline-4">
+<h4 id="org60ed267">构建SSH密钥对</h4>
+<div class="outline-text-4" id="text-org60ed267">
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -t rsa
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org13c183b" class="outline-4">
+<h4 id="org13c183b">寻找主机密钥</h4>
+<div class="outline-text-4" id="text-org13c183b">
+<p>
+在准备添加密钥之前, 可以先检查是否已经添加对应主机的密钥:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -F 192.168.1.104
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org574e1e5" class="outline-4">
+<h4 id="org574e1e5">删除主机密钥</h4>
+<div class="outline-text-4" id="text-org574e1e5">
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -R 192.168.1.104
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga0eb870" class="outline-3">
+<h3 id="orga0eb870">绑定本地端口</h3>
+<div class="outline-text-3" id="text-orga0eb870">
+<p>
+SSH可以传送数据, 我们可以让那些不加密的网络连接, 全部改走SSH连接, 从而提高安全性.
+</p>
+
+<p>
+如, 要让8080端口的数据, 全部通过SSH传向远程主机:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh -D 8080 pinvon@192.168.1.104
+</pre>
+</div>
+
+<p>
+SSH会建立一个socket, 监听本地的8080端口(注意, 不是pinvon@192.168.1.104的8080端口). 一旦本地有数据传向8080端口, 就把它转移到SSH连接上, 发往pinvon@192.168.1.104
+</p>
+
+<p>
+如果8080端口的数据原来未加密, 现在就会对其数据进行加密.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0b58b48" class="outline-3">
+<h3 id="org0b58b48">SSH隧道</h3>
+<div class="outline-text-3" id="text-org0b58b48">
+<p>
+命令格式:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh -L &lt;local port&gt;:&lt;remote host&gt;:&lt;remote port&gt; &lt;SSH hostname&gt;
+</pre>
+</div>
+
+<p>
+场景: A和B无法互通, C可以同时连接A和B. 现在想通过C, 让A连接到B. 其中, A, B, C都是IP地址.
+</p>
+
+<p>
+在A上执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh -L 2121:B:21 C
+</pre>
+</div>
+<p>
+它的意思是, 指定SSH绑定本地端口2121, 然后指定C将所有的数据, 转发到B的21端口.
+</p>
+
+<p>
+-L接受3个值, 格式为 <code>本地端口:目标主机:目标主机端口</code>.
+</p>
+
+<p>
+只要连接A:2121, 就等于连接上了B:21
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd787f19" class="outline-3">
+<h3 id="orgd787f19">SSH反向连接</h3>
+<div class="outline-text-3" id="text-orgd787f19">
+<p>
+命令格式:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh -R &lt;local port&gt;:&lt;remote host&gt;:&lt;remote port&gt; &lt;SSH hostname&gt;
+</pre>
+</div>
+
+<p>
+如, client连上server, 然后把client能访问的机器地址和端口镜像到server的端口上.
+</p>
+
+<p>
+常用场景: 家里有一台电脑在内网, 外网的服务器无法连接访问到, 然后使用SSH反向连接, 打通一条隧道, 服务器就可以通过这条隧道进来了.
+</p>
+
+<p>
+内网主机IP: 192.168.1.104, 外网主机IP: 123.207.62.191, 内网另一台主机IP: 192.168.1.100
+</p>
+
+<p>
+让外网所有能访问到123.207.62.191的IP, 都能通过8080端口访问到192.16.1.100的80端口.
+#+BEGIN_SRC Shell
+ssh -R 123.207.62.191:8080:192.168.1.100:80 ubuntu@123.207.62.191
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org27919af" class="outline-2">
+<h2 id="org27919af">du 查看占用磁盘大小</h2>
+<div class="outline-text-2" id="text-org27919af">
+<p>
+du即disk usage
+</p>
+
+<p>
+查看帮助:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">du --help
+</pre>
+</div>
+
+<p>
+-h 表示结果以K, M, G为单位, 提高信息的可读性:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">du -h filename
+</pre>
+</div>
+
+<p>
+如果只想看一个文件夹下所有文件的总和, 而不要看每个子文件的占用大小, 有两种办法, 一是使用-s参数, 二是指定最大深度为0
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">du -sh filename
+
+# 或
+
+du -h --max-depth=0 filename
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-16</span>
+        <span title="last modification date" class="post-info">2018-04-17</span>
+        <span title="tags" class="post-info"><a href="/tags/ubuntu/">Ubuntu</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/16/ubuntu-常用操作";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/16/ubuntu-常用操作";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>
