@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>pgmpy使用 - Pinvon&#39;s Blog</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pinvon" />
+    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
+  </head>
+  <body class="container">
+    <div>
+      <header class="masthead">
+        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
+        <p>所见，所闻，所思，所想</p>
+        <ul>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/tags/">Tags</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="https://github.com/pinvondev">GitHub</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
+        <form method="get" id="searchform" action="//www.google.com/search">
+          <input type="text" class="field" name="q" id="s" placeholder="Search">
+          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+        </form>
+      </header>
+    </div>
+
+<div>
+<div class="post">
+<h1>pgmpy使用</h1>
+
+<div id="outline-container-org80c1ec5" class="outline-2">
+<h2 id="org80c1ec5">安装</h2>
+<div class="outline-text-2" id="text-org80c1ec5">
+</div>
+<div id="outline-container-org025a0c5" class="outline-3">
+<h3 id="org025a0c5">安装pip</h3>
+<div class="outline-text-3" id="text-org025a0c5">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt-get install python-pip
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6bde782" class="outline-3">
+<h3 id="org6bde782">安装依赖包</h3>
+<div class="outline-text-3" id="text-org6bde782">
+<div class="org-src-container">
+<pre class="src src-Shell">pip install networkx 
+pip install numpy
+pip install scipy
+pip install pandas
+pip install pyparsing
+pip install wrapt
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org89ff27b" class="outline-3">
+<h3 id="org89ff27b">安装pgmpy</h3>
+<div class="outline-text-3" id="text-org89ff27b">
+<div class="org-src-container">
+<pre class="src src-Shell">pip install pgmpy
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org629ecdc" class="outline-3">
+<h3 id="org629ecdc">测试</h3>
+<div class="outline-text-3" id="text-org629ecdc">
+<p>
+在命令行输入 <code>python</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">import pgmpy
+print(pgmpy.__file__)
+</pre>
+</div>
+
+<p>
+如果打印的内容类似下图, 说明安装成功:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2018/04/19/pgmpy使用/1.png" alt="1.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfef6128" class="outline-2">
+<h2 id="orgfef6128">使用</h2>
+<div class="outline-text-2" id="text-orgfef6128">
+</div>
+<div id="outline-container-org0bbf6bd" class="outline-3">
+<h3 id="org0bbf6bd">直观感受</h3>
+<div class="outline-text-3" id="text-org0bbf6bd">
+<p>
+创建文件 <code>test.py</code>, 将以下代码直接拷贝进去.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Python">import networkx as nx
+from pgmpy.models import BayesianModel
+from pgmpy.factors.discrete import TabularCPD
+
+import matplotlib.pyplot as plt
+
+model = BayesianModel([('D', 'G'), ('I', 'G'), ('G', 'L'), ('I', 'S')])
+
+cpd_d = TabularCPD(variable='D', variable_card=2, values=[[0.6, 0.4]])
+
+cpd_i = TabularCPD(variable='I', variable_card=2, values=[[0.7, 0.3]])
+
+cpd_g = TabularCPD(variable='G',
+                   variable_card=3,
+                   values=[[0.3, 0.05, 0.9, 0.5],
+                           [0.4, 0.25, 0.08, 0.3],
+                           [0.3, 0.7, 0.02, 0.2]],
+                   evidence=['I', 'D'],
+                   evidence_card=[2, 2])
+
+cpd_s = TabularCPD(variable='S',
+                   variable_card=2,
+                   values=[[0.95, 0.2], [0.05, 0.8]],
+                   evidence=['I'],
+                   evidence_card=[2])
+
+cpd_l = TabularCPD(variable='L',
+                   variable_card=2,
+                   values=[[0.1, 0.4, 0.99], [0.9, 0.6, 0.01]],
+                   evidence=['G'],
+                   evidence_card=[3])
+
+model.add_cpds(cpd_d, cpd_i, cpd_g, cpd_l, cpd_s)
+
+print('pinvon', model.check_model())
+
+nx.draw(model,
+        with_labels=True,
+        node_size=1000,
+        font_weight='bold',
+        node_color='y',
+        pos={"L": [4, 3], "G": [4, 5], "S": [8, 5], "D": [2, 7], "I": [6, 7]})
+plt.text(2, 7, model.get_cpds("D"), fontsize=10, color='b')
+plt.text(5, 6, model.get_cpds("I"), fontsize=10, color='b')
+plt.text(1, 4, model.get_cpds("G"), fontsize=10, color='b')
+plt.text(4.2, 2, model.get_cpds("L"), fontsize=10, color='b')
+plt.text(7, 3.4, model.get_cpds("S"), fontsize=10, color='b')
+plt.title('test')
+plt.show()
+
+</pre>
+</div>
+
+<p>
+在终端输入:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">python test.py
+</pre>
+</div>
+
+<p>
+最后会在当前目录生成一个图片, <code>eog test.png</code> 就可以对贝叶斯网有一个大概的直观认识了.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+    <div>
+      <div class="post-meta">
+        <span title="post date" class="post-info">2018-04-19</span>
+        <span title="last modification date" class="post-info">2018-04-19</span>
+        <span title="tags" class="post-info"><a href="/tags/贝叶斯网/">贝叶斯网</a></span>
+        <span title="author" class="post-info">Pinvon</span>
+      </div>
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          //var disqus_developer = 1;
+          var disqus_identifier = "/blog/2018/04/19/pgmpy使用";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/19/pgmpy使用";
+          var disqus_shortname = 'pinvon';
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+       <div id="hashover"></div>
+       <script type="text/javascript" src="/hashover.php"></script>
+       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+      </section>
+      <script src="//code.jquery.com/jquery-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="/media/js/main.js"></script>
+      <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          &nbsp;&nbsp;-&nbsp;&nbsp;
+          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>

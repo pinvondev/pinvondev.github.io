@@ -35,43 +35,43 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgeae0c87">概述</a>
+<li><a href="#org4e93904">概述</a>
 <ul>
-<li><a href="#orgb059007">启动Fabric网络的流程</a></li>
+<li><a href="#orga3a0c43">启动Fabric网络的流程</a></li>
 </ul>
 </li>
-<li><a href="#orge2d2cb6">本地部署Hyperledger Fabric</a>
+<li><a href="#org32c9f23">本地部署Hyperledger Fabric</a>
 <ul>
-<li><a href="#org88bf15a">下载Docker镜像文件</a></li>
-<li><a href="#orgbd79341">部署网络</a>
+<li><a href="#org6e7953e">下载Docker镜像文件</a></li>
+<li><a href="#org33c3c4c">部署网络</a>
 <ul>
-<li><a href="#orgb0205de">创建channel</a></li>
-<li><a href="#orgc713f7f">加入channel</a></li>
-<li><a href="#org276a421">安装chaincode</a></li>
-<li><a href="#orga0cd567">实例化chaincode</a></li>
-<li><a href="#org1273d96">调用chaincode</a></li>
-<li><a href="#org4a7ac6d">调用chaincode查询</a></li>
-<li><a href="#orgf0029cd">节点的配置参数传递规则</a></li>
+<li><a href="#org8e0cab9">创建channel</a></li>
+<li><a href="#org7babc7e">加入channel</a></li>
+<li><a href="#orgea6a2e4">安装chaincode</a></li>
+<li><a href="#org68162f9">实例化chaincode</a></li>
+<li><a href="#orga140048">调用chaincode</a></li>
+<li><a href="#org1cd6071">调用chaincode查询</a></li>
+<li><a href="#orgae218e3">节点的配置参数传递规则</a></li>
 </ul>
 </li>
-<li><a href="#orgf0a03d6">yaml配置文件</a></li>
+<li><a href="#org4844a6c">yaml配置文件</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgeae0c87" class="outline-2">
-<h2 id="orgeae0c87">概述</h2>
-<div class="outline-text-2" id="text-orgeae0c87">
+<div id="outline-container-org4e93904" class="outline-2">
+<h2 id="org4e93904">概述</h2>
+<div class="outline-text-2" id="text-org4e93904">
 <p>
 Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一条独立的系统通道负责管理网络中的各种配置信息, 并完成对其他应用通道的创建.
 </p>
 </div>
 
-<div id="outline-container-orgb059007" class="outline-3">
-<h3 id="orgb059007">启动Fabric网络的流程</h3>
-<div class="outline-text-3" id="text-orgb059007">
+<div id="outline-container-orga3a0c43" class="outline-3">
+<h3 id="orga3a0c43">启动Fabric网络的流程</h3>
+<div class="outline-text-3" id="text-orga3a0c43">
 <ol class="org-ol">
 <li>预备网络内各项配置, 包括网络中成员的组织结构和对应的身份证书; 生成系统通道的初始配置区块文件; 新建应用通道的配置更新交易文件; (如果需要)主节点配置更新交易文件.</li>
 <li>使用系统通道的初始配置区块文件启动排序节点, 排序节点启动后自动按照指定配置创建系统通道.</li>
@@ -84,9 +84,9 @@ Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一�
 </div>
 </div>
 
-<div id="outline-container-orge2d2cb6" class="outline-2">
-<h2 id="orge2d2cb6">本地部署Hyperledger Fabric</h2>
-<div class="outline-text-2" id="text-orge2d2cb6">
+<div id="outline-container-org32c9f23" class="outline-2">
+<h2 id="org32c9f23">本地部署Hyperledger Fabric</h2>
+<div class="outline-text-2" id="text-org32c9f23">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64">安装</a>
 </p>
@@ -96,9 +96,9 @@ Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一�
 </p>
 </div>
 
-<div id="outline-container-org88bf15a" class="outline-3">
-<h3 id="org88bf15a">下载Docker镜像文件</h3>
-<div class="outline-text-3" id="text-org88bf15a">
+<div id="outline-container-org6e7953e" class="outline-3">
+<h3 id="org6e7953e">下载Docker镜像文件</h3>
+<div class="outline-text-3" id="text-org6e7953e">
 <div class="org-src-container">
 <pre class="src src-Shell">cd fabric/scripts
 
@@ -125,9 +125,9 @@ sed -i 's/curl/#curl/g' bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-orgbd79341" class="outline-3">
-<h3 id="orgbd79341">部署网络</h3>
-<div class="outline-text-3" id="text-orgbd79341">
+<div id="outline-container-org33c3c4c" class="outline-3">
+<h3 id="org33c3c4c">部署网络</h3>
+<div class="outline-text-3" id="text-org33c3c4c">
 <p>
 使用 <code>fabric-samples</code> 中已经生成的配置文件来部署网络:
 </p>
@@ -149,9 +149,9 @@ docker-compose -f docker-compose.yml up -d
 </div>
 </div>
 
-<div id="outline-container-orgb0205de" class="outline-4">
-<h4 id="orgb0205de">创建channel</h4>
-<div class="outline-text-4" id="text-orgb0205de">
+<div id="outline-container-org8e0cab9" class="outline-4">
+<h4 id="org8e0cab9">创建channel</h4>
+<div class="outline-text-4" id="text-org8e0cab9">
 <div class="org-src-container">
 <pre class="src src-Shell"># 切换到管理员用户
 docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
@@ -162,9 +162,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-orgc713f7f" class="outline-4">
-<h4 id="orgc713f7f">加入channel</h4>
-<div class="outline-text-4" id="text-orgc713f7f">
+<div id="outline-container-org7babc7e" class="outline-4">
+<h4 id="org7babc7e">加入channel</h4>
+<div class="outline-text-4" id="text-org7babc7e">
 <div class="org-src-container">
 <pre class="src src-Shell">peer channel join -b mychannel.block
 </pre>
@@ -178,9 +178,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-org276a421" class="outline-4">
-<h4 id="org276a421">安装chaincode</h4>
-<div class="outline-text-4" id="text-org276a421">
+<div id="outline-container-orgea6a2e4" class="outline-4">
+<h4 id="orgea6a2e4">安装chaincode</h4>
+<div class="outline-text-4" id="text-orgea6a2e4">
 <div class="org-src-container">
 <pre class="src src-Shell"># 退出peer0.org1.example.com容器
 exit
@@ -195,9 +195,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-orga0cd567" class="outline-4">
-<h4 id="orga0cd567">实例化chaincode</h4>
-<div class="outline-text-4" id="text-orga0cd567">
+<div id="outline-container-org68162f9" class="outline-4">
+<h4 id="org68162f9">实例化chaincode</h4>
+<div class="outline-text-4" id="text-org68162f9">
 <div class="org-src-container">
 <pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
 </pre>
@@ -205,9 +205,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-org1273d96" class="outline-4">
-<h4 id="org1273d96">调用chaincode</h4>
-<div class="outline-text-4" id="text-org1273d96">
+<div id="outline-container-orga140048" class="outline-4">
+<h4 id="orga140048">调用chaincode</h4>
+<div class="outline-text-4" id="text-orga140048">
 <p>
 实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
 </p>
@@ -224,9 +224,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-org4a7ac6d" class="outline-4">
-<h4 id="org4a7ac6d">调用chaincode查询</h4>
-<div class="outline-text-4" id="text-org4a7ac6d">
+<div id="outline-container-org1cd6071" class="outline-4">
+<h4 id="org1cd6071">调用chaincode查询</h4>
+<div class="outline-text-4" id="text-org1cd6071">
 <div class="org-src-container">
 <pre class="src src-Shell"># 转账
 peer chaincode invoke -C mychannel -n mycc -v v0 -c '{"Args":["invoke","a","b","10"]}'
@@ -247,9 +247,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orgf0029cd" class="outline-4">
-<h4 id="orgf0029cd">节点的配置参数传递规则</h4>
-<div class="outline-text-4" id="text-orgf0029cd">
+<div id="outline-container-orgae218e3" class="outline-4">
+<h4 id="orgae218e3">节点的配置参数传递规则</h4>
+<div class="outline-text-4" id="text-orgae218e3">
 <p>
 程序在启动的时候, 会读取配置文件和环境变量的值, 如 <code>fabric-samples/basic-network/docker-compose.yml</code> 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
 </p>
@@ -267,9 +267,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orgf0a03d6" class="outline-3">
-<h3 id="orgf0a03d6">yaml配置文件</h3>
-<div class="outline-text-3" id="text-orgf0a03d6">
+<div id="outline-container-org4844a6c" class="outline-3">
+<h3 id="org4844a6c">yaml配置文件</h3>
+<div class="outline-text-3" id="text-org4844a6c">
 <p>
 查看 <code>fabric/examples/e2e_cli/base/docker-compose-base.yaml</code> 配置文件. 此处给出其中一些选项的解释.
 </p>
