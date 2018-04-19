@@ -35,65 +35,170 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc27940b">主观解释</a></li>
-<li><a href="#org77e7a89">多元概率分布</a>
+<li><a href="#org35543aa">概率论基础</a>
 <ul>
-<li><a href="#org94c1f38">联合概率</a></li>
-<li><a href="#orgafee086">边缘概率</a></li>
-<li><a href="#org4b0b6e5">条件概率</a></li>
+<li><a href="#org0e4478d">联合概率</a></li>
+<li><a href="#org249c80a">边缘概率</a></li>
+<li><a href="#org192534c">条件概率</a></li>
+<li><a href="#org54a87bf">条件概率分布</a></li>
+<li><a href="#org271f90d">条件独立</a></li>
+<li><a href="#org71e071d">链规则</a></li>
 </ul>
 </li>
-<li><a href="#orgc2447fd">贝叶斯定理</a></li>
+<li><a href="#org2c3abfb">贝叶斯定理</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc27940b" class="outline-2">
-<h2 id="orgc27940b">主观解释</h2>
-<div class="outline-text-2" id="text-orgc27940b">
+<div id="outline-container-org35543aa" class="outline-2">
+<h2 id="org35543aa">概率论基础</h2>
+<div class="outline-text-2" id="text-org35543aa">
 <p>
-主观解释又称为贝叶斯解释，它认为概率就是合理信度。如，巴西队赢得下届世界杯，用频率解释，则认为无意义，因为下届世界杯巴西队能赢不是一个可以重复的事件。但在主观解释中仍可以根据各种 <b>先验知识</b> 给出一个主观概率评估。
+<code>随机试验</code>: 事先不能完全预知其结果的试验.
+</p>
+
+<p>
+<code>样本空间</code>: 随机试验的所有可能结果组成的集合, 记为 \(\Omega\).
+</p>
+
+<p>
+<code>原子事件</code>: 样本空间中的点, 即随机试验的可能结果, 记为 \(\omega\).
+</p>
+
+<p>
+<code>事件</code>: 样本空间的子集, 记为 \(A, B, \ldots\). \(\Omega\) 为必然事件, \(\emptyset\) 为不可能事件.
+</p>
+
+<p>
+<code>互斥事件</code>: \(A \cap B = \emptyset\).
+</p>
+
+<p>
+<code>互补事件</code>: \(A \cap B = \emptyset\) 且 \(A \cup B = \Omega\).
+</p>
+
+<p>
+<code>概率测度</code>: 给样本空间中的每一个事件赋予一个数值(概率), \(P(A) \in [0,1]\).
+</p>
+
+<p>
+对于样本空间 \(\Omega\) 来说, 包含的事件总数为 \(2^{\Omega}\) 个. 概率测试表示的是所有事件到区间 \([0,1]\) 的一个映射. 并且满足以下公理:
+</p>
+<ol class="org-ol">
+<li>\(P(\Omega) = 1\) (规范性)</li>
+<li>\(P(A) \geq 0, \forall A \in 2^{\Omega}\) (非负性)</li>
+<li>\(P(A \cup B) = P(A) + P(B), \forall A, B \in 2^{\Omega}, A \cap B = \emptyset\) (有限可加性)</li>
+</ol>
+
+<p>
+\(P(A)\) 称为事件 \(A\) 的概率.
+</p>
+
+<p>
+<code>随机变量</code>: 定义在样本空间 \(\Omega\) 上的函数, 记为 \(X, Y, Z\).
+</p>
+
+<p>
+随机变量的取值随试验结果而定, 记为 \(x, y, z\).
+</p>
+
+<p>
+<code>状态空间</code>: 随机变量 \(X\) 的所有可能取值的集合, 记为 \(\Omega_x\).
+</p>
+
+<p>
+= \(X=x\) =: 设 \(X\) 为一随机变量, \(x\) 是它的一个取值, 在样本空间 \(\Omega\) 中, 所有使 \(X\) 取值为 \(x\) 的原子事件组成一个事件, 记为 \(\Omega_{X=x} = {\omega \in \Omega} \mid X(\omega) = x\), 简记为 \(X=x\).
+</p>
+
+<p>
+= $P(X) $=: 事件 \(X=x\) 的概率 \(P(X=x) = P(\Omega_{X=x})\) 依赖于 \(X\) 的取值 \(x\), 让 \(x\) 在 \(\Omega_X\) 上变动, \(P(X=x)\) 就称为 \(\Omega_X\) 的一个取值在 \([0,1]\) 之间的函数, 称为随机变量 \(X\) 的概率质量函数, 记为 \(P(X)\).
+</p>
+</div>
+
+<div id="outline-container-org0e4478d" class="outline-3">
+<h3 id="org0e4478d">联合概率</h3>
+<div class="outline-text-3" id="text-org0e4478d">
+<p>
+如 \(P(X_1, X_2)\), <b>包含多个条件，且所有条件同时成立</b>
+</p>
+
+<p>
+联合分布通常表示为一张表, 如下所示:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2017/12/29/概率论基础/2.png" alt="2.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org249c80a" class="outline-3">
+<h3 id="org249c80a">边缘概率</h3>
+<div class="outline-text-3" id="text-org249c80a">
+<p>
+<b>仅与单个随机变量有关</b>
+</p>
+
+<p>
+直接举个离散型随机变量的边缘分布:
+</p>
+
+
+<div class="figure">
+<p><img src="/assets/blog/2017/12/29/概率论基础/3.png" alt="3.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org192534c" class="outline-3">
+<h3 id="org192534c">条件概率</h3>
+<div class="outline-text-3" id="text-org192534c">
+<p>
+如 \(P(A \mid B) = \frac{P(A \cap B)}{P(B)}\), <b>B发生的前提下，A发生的概率</b>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org77e7a89" class="outline-2">
-<h2 id="org77e7a89">多元概率分布</h2>
-<div class="outline-text-2" id="text-org77e7a89">
-</div>
-<div id="outline-container-org94c1f38" class="outline-3">
-<h3 id="org94c1f38">联合概率</h3>
-<div class="outline-text-3" id="text-org94c1f38">
+<div id="outline-container-org54a87bf" class="outline-3">
+<h3 id="org54a87bf">条件概率分布</h3>
+<div class="outline-text-3" id="text-org54a87bf">
 <p>
-如 \(P(X_1, X_2)\) ， <b>包含多个条件，且所有条件同时成立</b>
+\(P(X=x \mid Y=y) = \frac{P(X=x, Y=y)}{P(Y=y)}\)
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgafee086" class="outline-3">
-<h3 id="orgafee086">边缘概率</h3>
-<div class="outline-text-3" id="text-orgafee086">
+<div id="outline-container-org271f90d" class="outline-3">
+<h3 id="org271f90d">条件独立</h3>
+<div class="outline-text-3" id="text-org271f90d">
 <p>
-如 \(P(X=a), P(Y=b)\) ， <b>仅与单个随机变量有关</b>
+事件 \(A, B\) 相互独立, 则:  \(P(A, B) = P(A)(B)\)
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4b0b6e5" class="outline-3">
-<h3 id="org4b0b6e5">条件概率</h3>
-<div class="outline-text-3" id="text-org4b0b6e5">
+<div id="outline-container-org71e071d" class="outline-3">
+<h3 id="org71e071d">链规则</h3>
+<div class="outline-text-3" id="text-org71e071d">
 <p>
-如 \(P(A \mid B) = \frac{P(A \cap B)}{P(B)}\) ， <b>B发生的前提下，A发生的概率</b>
+如果随机变量之间相互独立, 则有:
+</p>
+
+<p>
+\(P(X_1, X_2, \ldots, X_n) = P(X_1)P(X_2 \mid X_1) \ldots P(X_n \mid X_1, \ldots, X_{n-1})\)
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgc2447fd" class="outline-2">
-<h2 id="orgc2447fd">贝叶斯定理</h2>
-<div class="outline-text-2" id="text-orgc2447fd">
+<div id="outline-container-org2c3abfb" class="outline-2">
+<h2 id="org2c3abfb">贝叶斯定理</h2>
+<div class="outline-text-2" id="text-org2c3abfb">
 <p>
-设 \(H\) 和 \(E\) 是两个随机变量， \(H=h\) 为某一假设， \(E=e\) 为一组证据。在考虑 \(E=e\) 之前， \(P(H=h)\) 为先验概率，考虑 \(E=e\) 之后， \(P(H=h \cap E=e)\) 为后验概率。
+设 \(H\) 和 \(E\) 是两个随机变量， \(H=h\) 为某一假设， \(E=e\) 为一组证据。在考虑 \(E=e\) 之前， \(P(H=h)\) 为先验概率，考虑 \(E=e\) 之后， \(P(H=h \mid E=e)\) 为后验概率。
 </p>
 
 <p>
@@ -101,7 +206,7 @@
 </p>
 
 <p>
-\[P(H=h \cap E=e)=\frac{P(H=h)P(E=e \cap H=h)}{P(E=e)}\]
+\[P(H=h \mid E=e)=\frac{P(H=h)P(E=e \mid H=h)}{P(E=e)}\]
 </p>
 
 <p>
