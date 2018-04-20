@@ -154,3 +154,151 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 |---------------------+-----------------------------------------------------------+------------------------------|
 | extends             | service:peer-base                                         | 服务扩展, 基础服务是peer-base         |
 
+* 配置
+
+** 简介
+
+每个节点启动时, 可以通过读取本地配置文件来设置参数, 也可以通过环境变量指定的配置来设置参数, 还可以通过命令行参数来设置参数. 这三种方式可以互相结合使用. 如果三种方式都设置了某个参数, 优先级为: 命令行参数 > 环境变量 > 配置文件.
+
+默认情况下, 各个节点的主配置路径为 =FABRIC_CFG_PATH= 环境变量所指向的路径, 一般该环境变量指向 =/etc/hyperledger/fabric=.
+
+在生产环境下, =/etc= 目录下写文件, 一般要超级权限, 所以更建议指定到 =/var/hyperledger/production=.
+
+*** 节点
+
+| 节点        | 默认配置文件路径              | 配置指定方式                   | 主要功能                 |
+|-------------+-------------------------------+--------------------------------+--------------------------|
+| Peer节点    | $FABRIC_CFG_PATH/core.yaml    | 配置文件, 环境变量, 命令行参数 | 指定Peer节点运行时的参数 |
+|-------------+-------------------------------+--------------------------------+--------------------------|
+| Orderer节点 | $FABRIC_CFG_PATH/orderer.yaml | 配置文件, 环境变量, 命令行参数 | 指定Orderer运行时的参数  |
+
+*** 配置管理工具
+
+| 工具          | 默认配置文件路径               | 主要功能                         |
+|---------------+--------------------------------+----------------------------------|
+| cryptogen     | 通过命令行指定路径             | 负责生成网络中组织结构和身份文件 |
+|---------------+--------------------------------+----------------------------------|
+| configtxgen   | $FABRIC_CFG_PATH/configtx.yaml | 负责生成通道相关配置             |
+|---------------+--------------------------------+----------------------------------|
+| configtxlator |                                | 转换配置文件成可读的形式         |
+
+** Peer节点配置
+
+如果从环境变量中读取配置信息, 需要以 =CORE_= 前缀打头. 如配置 =peer.id=, 环境变量应为 =CORE_PEER_ID=.
+
+Peer节点读取配置文件时, 先查找 =$FABRIC_CFG_PATH/core.yaml=. 如果没找到, 则查找 =./core.yaml=. 如果没找到, 则查找 =/etc/hyperledger/fabric/core.yaml=.
+
+=core.yaml= 中一般包括 =logging, peer, vm, chaincode, ledger= 五个部分.
+
+*** logging
+
+** cryptogen
+
+该工具生成组织身份配置.
+
+在Fabric网络中, 需要通过证书和密钥来管理和鉴别成员身份, 所以需要进行证书生成和配置操作. 在开发环境下, Fabric提供了cryptogen工具来提高证书管理的效率. 但是在生产环境中, 我们需要使用PKI服务来手动实现单个证书的签发.
+
+cryptogen可以快速根据配置自动批量生成所需要的密钥和证书文件.
+
+*** 配置文件crypto-config.yaml
+
+=crypto-config.yaml= 会指定网络的拓扑结构. 主要包括两种组织信息:
+
+=OrdererOrgs=: 构成Orderer集群的节点所属组织
+
+=PeerOrgs=: 构成Peer集群的节点所属组织
+
+每个组织拥有:
+
+=Name=: 组织名称
+
+=Domain=: 组织的命名域
+
+=CA=: 组织的CA地址, 包括Hostname域
+
+=若干节点=: 每个节点包括 Hostname, CommonName, SANS等域. 可以用Specs字段指定一组节点, 或用Template字段指定自动生成节点的个数
+
+=User=: 自动生成除admin外的用户个数
+
+每个主机的配置一般可以通过Specs来指定或通过Template来自动顺序生成. 默认通用名为 =主机名.组织域=. 如, 域 =org1.example.com= 中, Peer节点的名称可能为 =peer0.org1.example.com=, =peer1.org1.example.com= 等.
+
+*** 例子
+
+#+BEGIN_SRC YAML
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    CA:
+        Country: US
+        Province: California
+        Locality: San Francisco
+    Specs:
+      - Hostname: orderer
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    EnableNodeOUs: true
+    CA:
+        Country: US
+        Province: California
+        Locality: San Francisco
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  - Name: Org2
+    Domain: org2.example.com
+    EnableNodeOUs: true
+    CA:
+        Country: US
+        Province: California
+        Locality: San Francisco
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+#+END_SRC
+
+例子中, Orderer组织通过Specs字段, 指定了主机名为orderer, 加上组织域, 就是orderer.example.com
+
+Peer组织则通过Template来自动生成了Count个数的主机. Users字段下的Count字段会让cryptogen工具以自动顺序生成指定个数的普通用户.
+
+*** 生成密钥和证书文件
+
+cryptogen工具生成的文件会放在当前目录下的 =crypto-config= 目录中. 目录结构如图所示:
+
+[[./70.png]]
+
+fabric v1.1中, 每个组织下都有5个目录: =ca, msp, tlsca, users, peers/orderers=.
+
+ca: 存放组织的根证书和对应的私钥文件, 默认采用EC算法, 证书为自签名(一般情况下, 根证书都是自签名). 组织内的实体将基于该证书作为根证书.
+
+msp: 存放代表该组织的身份信息. msp下有 =admincerts, cacerts, tlscacerts= 三个目录.
+- admincerts: 组织管理员的身份验证证书, 被根证书签名.
+- cacerts: 组织的根证书, 与ca目录下的文件一样.
+- tlscacerts: 用于TLS的CA证书, 自签名.
+
+tlsca: 存放tls相关的私钥和证书.
+
+users: 用户信息, 里面包括msp证书和tls证书.
+
+peers: 存放属于该组织的所有Peer节点.
+- peer0: 第1个Peer节点的信息, 包括msp证书和tls证书. msp(这个msp是peers里面的msp): 包括 =admincerts, cacerts, tlscacerts= 三个目录. =admincerts= 目录里的内容和外层的msp目录下的 =admincerts= 里的内容一样. 同理, 另外两个目录里的内容也分别和外层的msp目录下相应目录里的内容相同. =keystore= 目录下存放本节点的身份私钥, 用来签名. =signcerts= 目录下存放的是验证本节点签名的证书, 该证书被组织的根证书签名. tls: 存放tls相关的证书和私钥. ca.crt: 组织的根证书. server.crt: 验证本节点签名的证书, 被组织根证书签名. server.key: 本节点的身份私钥, 用来签名.
+- peer1: 与peer0类似.
+
+还有很多证书, 私钥等, 作用类似.
+
+最重要的是msp目录下的内容. 一般包括:
+- admincerts: 管理员的身份证书文件
+- cacerts: 信任的根证书文件
+- keystore: 节点的私钥, 用于签名
+- signcerts: 节点的证书, 用于证明自己的身份
+- tlscacerts: TLS连接用的证书
+- intermediatecerts(可选): 信任的中间证书
+- crls(可选): 证书撤销列表
+- config.yaml(可选): 记录组织中的实体信息, 包括根证书位置和ID信息
+
+这些身份文件随后分别发送到对应的Orderer节点和Peer节点上, 并放到对应的MSP路径下, 用于签名使用.
+
+
+P107
