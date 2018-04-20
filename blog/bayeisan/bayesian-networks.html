@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2018-04-19 四 20:39 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>贝叶斯网</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Pinvon" />
+<meta name="description" content="&lt;TODO: insert your description here&gt;"
+ />
+<meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">贝叶斯网</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd0aa6c0">概述</a></li>
+<li><a href="#org5ecca13">不确定性推理与联合概率分布</a>
+<ul>
+<li><a href="#org5999754">传统的使用概率方法进行不确定性推理</a>
+<ul>
+<li><a href="#orgd26dc8e">例子</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org41729d3">条件独立与联合分布的分解</a>
+<ul>
+<li><a href="#org6071005">使用条件独立降低复杂度</a></li>
+</ul>
+</li>
+<li><a href="#org1f2caba">贝叶斯网的概念</a>
+<ul>
+<li><a href="#orgb248fef">贝叶斯网的构造</a>
+<ul>
+<li><a href="#org2f1f827">确定网络结构</a></li>
+</ul>
+</li>
+<li><a href="#orgd74c6e8">确定网络参数</a></li>
+</ul>
+</li>
+<li><a href="#orgbdccedf">图分隔与变量独立</a>
+<ul>
+<li><a href="#org5a3f25e">概述</a></li>
+<li><a href="#orgfcaf308">图分隔与变量独立</a>
+<ul>
+<li><a href="#org7248860">阻塞</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd0aa6c0" class="outline-2">
+<h2 id="orgd0aa6c0">概述</h2>
+<div class="outline-text-2" id="text-orgd0aa6c0">
+<p>
+贝叶斯网: 一种帮助人们将概率统计应用于复杂领域, 进行不确定性推理和数值分析的工具. 它是概率论和图论结合的产物, 一方面用图论的语言直观揭示问题的结构, 另一方面用概率论的原则对问题结构加以利用.
+</p>
+
+<p>
+贝叶斯网学习: 从数据出发, 获得贝叶斯网的过程.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5ecca13" class="outline-2">
+<h2 id="org5ecca13">不确定性推理与联合概率分布</h2>
+<div class="outline-text-2" id="text-org5ecca13">
+<p>
+不确定性推理是人工智能研究的重要课题之一。有概率方法、非单调逻辑、确定因子、DS证据理论、模糊逻辑等方法。
+</p>
+</div>
+
+<div id="outline-container-org5999754" class="outline-3">
+<h3 id="org5999754">传统的使用概率方法进行不确定性推理</h3>
+<div class="outline-text-3" id="text-org5999754">
+<ol class="org-ol">
+<li>把问题用一组随机变量 \(X={X_1, X_2, \ldots, X_n}\) 来刻画</li>
+<li>把关于问题的知识表示为一个联合概率分布 \(P(X)\)</li>
+<li>按照概率论原则进行推理计算</li>
+</ol>
+</div>
+
+<div id="outline-container-orgd26dc8e" class="outline-4">
+<h4 id="orgd26dc8e">例子</h4>
+<div class="outline-text-4" id="text-orgd26dc8e">
+<p>
+Pearl教授家住在洛杉矶，地震和盗窃时常发生，教授家里装有警铃，地震和盗窃都有可能触发警铃。听到警铃后，两个邻居Mary和John可能会打电话给他。一天，教授接到Mary的电话，问他家被盗窃的概率。
+</p>
+
+<p>
+问题里包含5个变量：盗窃( \(B\) )、地震( \(E\) )、警铃响( \(A\) )、接到John的电话( \(J\) )和接到Mary的电话( \(M\) )；所有变量取值为 \(y\) 或 \(n\) 。这些变量间的关系存在不确定性：盗窃和地震以一定概率发生；它们发生后，以一定概率触发警铃；警铃响后，Mary和John只有一定概率听到。
+</p>
+
+<p>
+要计算的是接到Mary的电话 \((M=y)\) 后，教授家被盗 \((B=y)\) 的信度（贝叶斯理论中的概率，与频率方法的概率，是不一样的），也就是计 \(P(B=y \mid M=y)\) 
+</p>
+
+<p>
+先计算边缘分布， \(P(B,M) = \sum_{E,A,J}P(B,E,A,J,M)\) 
+</p>
+
+<p>
+再根据条件概率，得 \(P(B=y \mid M=y) = \frac{P(B=y, M=y)}{P(M=y)} = \frac{P(B=y, M=y)}{P(B=y,M=y) + P(B=n,M=y)}\)
+</p>
+
+<p>
+但是这种方法，复杂度较高，因为要计算边缘分布，首先要得到联合分布，而联合分布的计算复杂度极高，在上例中，只有5个二值随机变量，就包含 \(2^5-1=31\) 个独立参数。联合分布的复杂度相对于变量的个数，成指数增长。
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org41729d3" class="outline-2">
+<h2 id="org41729d3">条件独立与联合分布的分解</h2>
+<div class="outline-text-2" id="text-org41729d3">
+<p>
+使用链规则，例子中的联合概率分布又可以表示为：
+\[P(B,E,A,J,M)=P(B)P(E \mid B)P(A \mid B,E)P(J \mid B,E,A)P(M \mid B,E,A,J)\]
+</p>
+
+<p>
+虽然这一步并没有降低模型的复杂度，因为等式右端的5个概率分布，仍然包含同联合分布相同个数的独立参数： \(1+2+4+8+16=31\) 。但是根据问题的背景知识，做一些合理的独立假设，则可以降低复杂度。如假设 \(E\) 与 \(B\) 无关，则 \(P(E \mid B)=P(E)\) ，另外， \(M,J,B,E\) 都相互独立，因此，最后可得：
+\[P(B,E,A,J,M)=P(B)P(E)P(A \mid B,E)P(J \mid A)P(M \mid A)\]
+</p>
+
+<p>
+这样，等式右端的概率分布仅包含 \(1+1+4+2+2=10\) 个独立参数。
+</p>
+</div>
+
+<div id="outline-container-org6071005" class="outline-3">
+<h3 id="org6071005">使用条件独立降低复杂度</h3>
+<div class="outline-text-3" id="text-org6071005">
+<p>
+一个包含 \(n\) 个变量的联合分布 \(P(X_1, \ldots, X_n)\) ，可以根据链规则，写成：
+\[P(X_1, \ldots, X_n)=P(X_1)P(X_2 \mid X_1) \cdots P(X_n \mid X_1,X_2, \dots,X_{n-1})= \prod^{n}_{i=1}P(X_i \mid X_1, X_2, \cdots, X_{i-1})\]
+</p>
+
+<p>
+对于任意 \(X_i\) ，如果存在 \(\pi(X_i) \subseteq {X_1, \cdots, X_{i-1}}\), 使得 \(X_i\) 与除 \(\pi(X_i)\) 之外的变量条件独立。即：
+\[P(X_i \mid X_1, \cdots, X_{i-1}) = P(X_i \mid \pi(X_i))\]
+</p>
+
+<p>
+则有：
+\[P(X_1, \cdots, X_n) = \prod^{n}_{i-1}P(X_i \mid \pi(X_i))\]
+</p>
+
+<p>
+这样，对于任意的 \(X_i\) ，\(\pi(X_i)\) 最多包含 \(m\) 个变量。如果所有变量取二值时，独立参数最多为 \(n2^m\) 个。因此，条件独立使模型得到了简化。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f2caba" class="outline-2">
+<h2 id="org1f2caba">贝叶斯网的概念</h2>
+<div class="outline-text-2" id="text-org1f2caba">
+<p>
+构造有向图来表示变量之间的依赖和独立关系：
+</p>
+<ol class="org-ol">
+<li>把每个变量都表示为一个节点</li>
+<li>对于每个节点 \(X_i\) ，都从 \(\pi(X_i)\) 中的每个节点画一条有向边到 \(X_i\)</li>
+</ol>
+
+<p>
+如警铃那个例子， \(A\) 依赖于 \(B,E\) ， \(M,J\) 依赖于 \(A\) 。构造的有向图如下所示：
+</p>
+
+<div id="orgb0d997c" class="figure">
+<p><img src="./0.png" alt="0.png" width="400" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Alarm贝叶斯网</p>
+</div>
+
+<p>
+贝叶斯网是一个有向无环图，其中节点代表随机变量，节点间的边代表变量之间的直接依赖关系。 <b>每个节点都附有一个概率分布</b> 。根节点所附的是边缘分布 \(P(X)\) ，非根节点所附的是条件概率分布 \(P(X \mid \pi(X))\) .如果把各变量所附的概率相乘，就得到联合分布。即：
+\[P(X_1, \cdots, X_n) = \prod^{n}_{i-1}P(X_i \mid \pi(X_i))\]
+</p>
+</div>
+
+<div id="outline-container-orgb248fef" class="outline-3">
+<h3 id="orgb248fef">贝叶斯网的构造</h3>
+<div class="outline-text-3" id="text-orgb248fef">
+</div>
+<div id="outline-container-org2f1f827" class="outline-4">
+<h4 id="org2f1f827">确定网络结构</h4>
+<div class="outline-text-4" id="text-org2f1f827">
+<ol class="org-ol">
+<li>选定一组刻画问题的随机变量 \({X_1, X_2, \ldots, X_n}\)</li>
+<li>选择一个变量顺序 \(\alpha = \langle X_1, X_2, \ldots, X_n \rangle\)</li>
+<li>从一个空图出发, 按照顺序将 \(\alpha\) 逐个将变量加入 \(\delta\) 中</li>
+<li>在加入变量 \(X_i\) 时, \(\delta\) 中的变量包括 \(X_1, X_2, \ldots, X_{i-1}\). 利用背景知识, 在这些变量中选择一个尽可能小的子集 \(\pi(X_i)\), 使得假设"给定 \(\pi(X_i)\), \(X_i\) 与 \(\delta\) 中的其他变量条件独立"合理; 从 \(\pi(X_i)\) 中的每一个节点添加一条指向 \(X_i\) 的有向边.</li>
+<li>不同的变量顺序导致不同的网络结构, 不同的网络结构表示了联合分布的不同分解, 而不同的分解则意味着不同的复杂度</li>
+<li>建议用因果关系来决定变量顺序, 原因在前, 结果在后</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd74c6e8" class="outline-3">
+<h3 id="orgd74c6e8">确定网络参数</h3>
+<div class="outline-text-3" id="text-orgd74c6e8">
+<p>
+贝叶斯网的参数就是各变量的概率分布。由于参数的确定一般依靠专家，耗费人力和时间，因此要尽量减少参数的个数。
+</p>
+
+<p>
+如果变量 \(Y\) 有 \(m\) 个父节点 \(X_1, \cdots, X_m\) ，则 \(Y\) 对父节点的依赖关系为 \(P(Y \mid X_1, \cdots, X_m)\) 。当所有变量均取二值时，有 \(2^m\) 个独立参数。
+</p>
+
+<p>
+减少参数个数的方法有因果机制独立和环境独立。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbdccedf" class="outline-2">
+<h2 id="orgbdccedf">图分隔与变量独立</h2>
+<div class="outline-text-2" id="text-orgbdccedf">
+</div>
+<div id="outline-container-org5a3f25e" class="outline-3">
+<h3 id="org5a3f25e">概述</h3>
+<div class="outline-text-3" id="text-org5a3f25e">
+<p>
+贝叶斯网是概率论和图论相结合的产物. 可以从概率论的角度讨论变量间的依赖与独立, 也可以从图论的角度讨论节点间的连通与分隔, 这两者之间有着深刻的联系.
+</p>
+
+<p>
+通过图论准则, 可以判别变量之间条件独立关系.
+</p>
+
+<p>
+\(X\) 与 \(Y\) 不直接相连, 通过其他变量才 勇夺两者之间传递信息, 如果 \(X\) 与 \(Y\) 之间的所有信息通道都被阻塞, 则信息就无法继续传递.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfcaf308" class="outline-3">
+<h3 id="orgfcaf308">图分隔与变量独立</h3>
+<div class="outline-text-3" id="text-orgfcaf308">
+<p>
+变量 \(X\) 与 \(Y\) 通过第三个变量 \(Z\) 间接相连的三个情况:
+</p>
+
+
+<div class="figure">
+<p><img src="./4.png" alt="4.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7248860" class="outline-4">
+<h4 id="org7248860">阻塞</h4>
+<div class="outline-text-4" id="text-org7248860">
+<p>
+设 \(\mathbf{Z}\) 为节点集合, \(X\) 和 \(Y\) 是不在 \(\mathbf{Z}\) 中的两个节点, 考虑 \(X\) 和 \(Y\) 之间的一条通道 \(\alpha\), 如果满足以下任意一个条件, 则称 \(\alpha\) 被 \(\mathbf{Z}\) 阻塞:
+</p>
+
+<ol class="org-ol">
+<li>\(\alpha\) 上有一个在 \(\mathbf{Z}\) 中的顺连节点</li>
+<li>\(\alpha\) 上有一个在 \(\mathbf{Z}\) 中的分连节点</li>
+<li>\(\alpha\) 上有一个汇连节点 \(W\), 它和它的后代节点均不在 \(\mathbf{Z}\) 中</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="./5.png" alt="5.png" />
+</p>
+</div>
+
+<p>
+如果 \(X\) 和 \(Y\) 之间的所有通路都被 \(\mathbf{Z}\) 阻塞, 则我们称: \(\mathbf{Z}\) 有向分隔(directed separate) \(X\) 和 \(Y\), 简称 d-separate.
+</p>
+
+<p>
+<code>整体马尔科夫性</code>: 设 \(X\) 和 \(Y\) 是贝叶斯网 \(\mathcal{N}\)
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2017-12-30 六</p>
+<p class="author">Author: Pinvon</p>
+<p class="date">Created: 2018-04-19 四 20:39</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
