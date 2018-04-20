@@ -165,6 +165,14 @@ fabric-ca-server服务所需要的相关配置项会依次尝试从命令行参�
 
 默认情况下, fabric-ca-server-config.yaml 配置文件中未启用TLS, 如果要启用TLS, 需要修改tls.enabled为true, 同时修改csr.cn以匹配实际主机名, 之后 可以删掉证书和私钥文件, 重新生成对应文件.
 
+*** 启动fabric-ca-server
+
+#+BEGIN_SRC Shell
+fabric-ca-server start -b admin:adminpw -n test_ca
+#+END_SRC
+
+初始化fabric-ca-server之后, 还要启动, fabric-ca-server才会监听7054端口. 如果之前没有初始化, 这一步也会去完成初始化的工作.
+
 *** 未来学习
 
 学习如何存储到MySQL, 如何存储到PostgreSQL, 如何存储到LDAP.
@@ -181,8 +189,36 @@ fabric-ca-server服务所需要的相关配置项会依次尝试从命令行参�
 
 *** Fabric CA 客户端
 
-[[http://hyperledger-fabric-ca.readthedocs.io/en/latest/index.html][链接]]
+完整教程: [[http://hyperledger-fabric-ca.readthedocs.io/en/latest/index.html][链接]]
+
+这边举个例子. 在开启fabric-ca-server后, 再开一个终端, 进入fabric-ca容器, 发送登记命令:
+#+BEGIN_SRC Shell
+docker exec -it 容器ID bash
+fabric-ca-client enroll -u http://admin:adminpw@localhost:7054
+#+END_SRC
 
 *** Fabric CA的Restful API
 
-[[https://github.com/hyperledger/fabric-ca/blob/release-1.1/swagger/swagger-fabric-ca.json][RESTFUL API]]
+默认的RESTful服务监听在0.0.0.0:7054地址, 服务前缀为/api/v1
+
+接口定义在fabric-ca代码的 *swagger/swagger-fabric-ca.json* 文件中. 在v1.1.0版本中, 链接地址为: [[https://github.com/hyperledger/fabric-ca/blob/release-1.1/swagger/swagger-fabric-ca.json][RESTFUL API]]
+
+主要的接口有:
+
+*POST/cainfo*: 获取CA的基本信息.
+
+*POST/enroll*: 用户登记.
+
+*POST/reenroll*: 用户重新登记.
+
+*POST/register*: 用户注册.
+
+*POST/revoke*: 撤销证书.
+
+*POST/tcert*: 申请获取一批交易证书.
+
+使用方法: 重开一个终端, 使用curl发送请求.
+
+#+BEGIN_SRC Shell
+curl -X POST -d '{"caname":"test_ca"}' http://0.0.0.0:7054/api/v1/cainfo
+#+END_SRC
