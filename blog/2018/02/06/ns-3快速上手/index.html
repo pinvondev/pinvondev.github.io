@@ -1,64 +1,86 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>ns-3快速上手 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>ns-3快速上手 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="NS3" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>ns-3快速上手</h1>
+<h1 class="title">ns-3快速上手</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7f2aea5">需要的安装包</a></li>
-<li><a href="#orgb80f14c">下载ns-3</a>
+<li><a href="#orgf238b37">需要的安装包</a></li>
+<li><a href="#org196f740">下载ns-3</a>
 <ul>
-<li><a href="#org6a27568">使用mercurial</a></li>
-<li><a href="#orgac1561d">直接下载tar压缩包</a></li>
+<li><a href="#orgfaffed7">使用mercurial</a></li>
+<li><a href="#orgb11c01b">直接下载tar压缩包</a></li>
 </ul>
 </li>
-<li><a href="#org1ada21a">编译安装</a>
+<li><a href="#orgef14e70">编译安装</a>
 <ul>
-<li><a href="#org17b1cf9">使用waf进行配置</a></li>
-<li><a href="#org83d9d76">测试</a></li>
-<li><a href="#orgf9433a8">目录结构</a></li>
-<li><a href="#org207ab4e">ns-3模块</a></li>
-<li><a href="#org98bf337">ns-3模块基本流程</a></li>
-<li><a href="#org24ed4e2">代码简单介绍</a>
+<li><a href="#org3d6279e">使用waf进行配置</a></li>
+<li><a href="#org85a694e">测试</a></li>
+<li><a href="#orge85161f">目录结构</a></li>
+<li><a href="#org3b870be">ns-3模块</a></li>
+<li><a href="#org860475a">ns-3模块基本流程</a></li>
+<li><a href="#orga66ee36">代码简单介绍</a>
 <ul>
-<li><a href="#org0660eab">头文件</a></li>
-<li><a href="#org478c857">命名空间</a></li>
-<li><a href="#org3d2a4fc">日志</a></li>
-<li><a href="#orga178b8e">main()</a></li>
-<li><a href="#org0d1de93">生成网络节点</a></li>
-<li><a href="#org759aeb6">物理连接计算机</a></li>
-<li><a href="#org4072390">为计算机安装协议栈</a></li>
-<li><a href="#org7d7b713">安装应用层</a></li>
-<li><a href="#org5b9b369">启动模拟器</a></li>
-<li><a href="#org324cdf2">运行</a></li>
+<li><a href="#orge2a0065">头文件</a></li>
+<li><a href="#orgf7c6d66">命名空间</a></li>
+<li><a href="#orgb8647a8">日志</a></li>
+<li><a href="#org0e40f5d">main()</a></li>
+<li><a href="#org6b1c779">生成网络节点</a></li>
+<li><a href="#orga0a13b2">物理连接计算机</a></li>
+<li><a href="#org5c16de9">为计算机安装协议栈</a></li>
+<li><a href="#org88cedc2">安装应用层</a></li>
+<li><a href="#org4c41475">启动模拟器</a></li>
+<li><a href="#orgf4d08f6">运行</a></li>
 </ul>
 </li>
 </ul>
@@ -67,9 +89,9 @@
 </div>
 </div>
 
-<div id="outline-container-org7f2aea5" class="outline-2">
-<h2 id="org7f2aea5">需要的安装包</h2>
-<div class="outline-text-2" id="text-org7f2aea5">
+<div id="outline-container-orgf238b37" class="outline-2">
+<h2 id="orgf238b37">需要的安装包</h2>
+<div class="outline-text-2" id="text-orgf238b37">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install gcc g++ python 
 sudo apt install gcc g++ python python-dev 
@@ -100,22 +122,22 @@ sudo apt install openmpi-bin openmpi-common openmpi-doc libopenmpi-dev
 </div>
 </div>
 
-<div id="outline-container-orgb80f14c" class="outline-2">
-<h2 id="orgb80f14c">下载ns-3</h2>
-<div class="outline-text-2" id="text-orgb80f14c">
+<div id="outline-container-org196f740" class="outline-2">
+<h2 id="org196f740">下载ns-3</h2>
+<div class="outline-text-2" id="text-org196f740">
 </div>
-<div id="outline-container-org6a27568" class="outline-3">
-<h3 id="org6a27568">使用mercurial</h3>
-<div class="outline-text-3" id="text-org6a27568">
+<div id="outline-container-orgfaffed7" class="outline-3">
+<h3 id="orgfaffed7">使用mercurial</h3>
+<div class="outline-text-3" id="text-orgfaffed7">
 <p>
 mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现, 易于学习和使用, 扩展性强. 此处不使用mercurial来下载ns-3.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgac1561d" class="outline-3">
-<h3 id="orgac1561d">直接下载tar压缩包</h3>
-<div class="outline-text-3" id="text-orgac1561d">
+<div id="outline-container-orgb11c01b" class="outline-3">
+<h3 id="orgb11c01b">直接下载tar压缩包</h3>
+<div class="outline-text-3" id="text-orgb11c01b">
 <div class="org-src-container">
 <pre class="src src-Shell">wget http://www.nsnam.org/release/ns-allinone-3.24.tar.bz2
 </pre>
@@ -132,17 +154,17 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 </div>
 </div>
 
-<div id="outline-container-org1ada21a" class="outline-2">
-<h2 id="org1ada21a">编译安装</h2>
-<div class="outline-text-2" id="text-org1ada21a">
+<div id="outline-container-orgef14e70" class="outline-2">
+<h2 id="orgef14e70">编译安装</h2>
+<div class="outline-text-2" id="text-orgef14e70">
 <p>
 使用allinone环境的build.py脚本进行编译. 找到类似ns-allinone-3.24的目录, 输入 <code>./build.py</code>.
 </p>
 </div>
 
-<div id="outline-container-org17b1cf9" class="outline-3">
-<h3 id="org17b1cf9">使用waf进行配置</h3>
-<div class="outline-text-3" id="text-org17b1cf9">
+<div id="outline-container-org3d6279e" class="outline-3">
+<h3 id="org3d6279e">使用waf进行配置</h3>
+<div class="outline-text-3" id="text-org3d6279e">
 <p>
 使用waf进行配置和编译ns-3工程, 因为工程一旦已经编译过, 就不能再使用build.py脚本 了, 这时如果读者想改变原有ns-3的配置, 就需要使用交互式的waf命令, 进行重新配置和编译. 如果使用make来编译ns-3这样的庞大工程是一件痛苦的事, waf是一个基于Python语言的开源编译系统, 使用它将会轻松不少.
 </p>
@@ -182,9 +204,9 @@ mercurial是一种轻量级分布式版本控制系统, 采用Python语言实现
 </div>
 </div>
 
-<div id="outline-container-org83d9d76" class="outline-3">
-<h3 id="org83d9d76">测试</h3>
-<div class="outline-text-3" id="text-org83d9d76">
+<div id="outline-container-org85a694e" class="outline-3">
+<h3 id="org85a694e">测试</h3>
+<div class="outline-text-3" id="text-org85a694e">
 <p>
 测试ns-3发行版是否编译正确:
 </p>
@@ -206,9 +228,9 @@ sudo ./waf --run scratch-simulator
 </div>
 </div>
 
-<div id="outline-container-orgf9433a8" class="outline-3">
-<h3 id="orgf9433a8">目录结构</h3>
-<div class="outline-text-3" id="text-orgf9433a8">
+<div id="outline-container-orge85161f" class="outline-3">
+<h3 id="orge85161f">目录结构</h3>
+<div class="outline-text-3" id="text-orge85161f">
 <p>
 waf是基于Python开发的编译工具, ns-3系统本身和将要写的仿真代码都由waf负责编译运行.
 </p>
@@ -235,9 +257,9 @@ src是ns-3源代码目录, 里面的文件基本和ns-3模块相对应. 打开�
 </div>
 </div>
 
-<div id="outline-container-org207ab4e" class="outline-3">
-<h3 id="org207ab4e">ns-3模块</h3>
-<div class="outline-text-3" id="text-org207ab4e">
+<div id="outline-container-org3b870be" class="outline-3">
+<h3 id="org3b870be">ns-3模块</h3>
+<div class="outline-text-3" id="text-org3b870be">
 <p>
 core: ns-3的内核模块, 实现了ns-3的基本机制, 如智能指针, 属性, 回调, 随机变量, 日志, 追踪, 事件调度等内容.
 </p>
@@ -256,9 +278,9 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org98bf337" class="outline-3">
-<h3 id="org98bf337">ns-3模块基本流程</h3>
-<div class="outline-text-3" id="text-org98bf337">
+<div id="outline-container-org860475a" class="outline-3">
+<h3 id="org860475a">ns-3模块基本流程</h3>
+<div class="outline-text-3" id="text-org860475a">
 <ol class="org-ol">
 <li>选择或开发相应模块</li>
 <li>编写网络仿真脚本(C++或Python): 生成节点, 安装网络设备, 安装协议栈, 安装应用层协议, 其他配置, 启动仿真.</li>
@@ -268,13 +290,13 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org24ed4e2" class="outline-3">
-<h3 id="org24ed4e2">代码简单介绍</h3>
-<div class="outline-text-3" id="text-org24ed4e2">
+<div id="outline-container-orga66ee36" class="outline-3">
+<h3 id="orga66ee36">代码简单介绍</h3>
+<div class="outline-text-3" id="text-orga66ee36">
 </div>
-<div id="outline-container-org0660eab" class="outline-4">
-<h4 id="org0660eab">头文件</h4>
-<div class="outline-text-4" id="text-org0660eab">
+<div id="outline-container-orge2a0065" class="outline-4">
+<h4 id="orge2a0065">头文件</h4>
+<div class="outline-text-4" id="text-orge2a0065">
 <p>
 为了帮助高层的用户脚本处理大量系统中的include文件, 会把所有的文件根据模块功能进行大致的分类, 提供了按大致功能分类的一组include文件, 在使用时只需选择包含几个头文件即可. 如:
 </p>
@@ -291,9 +313,9 @@ Internet: 实现了关于TCP/IPv4和IPv6的相关协议簇.
 </div>
 </div>
 
-<div id="outline-container-org478c857" class="outline-4">
-<h4 id="org478c857">命名空间</h4>
-<div class="outline-text-4" id="text-org478c857">
+<div id="outline-container-orgf7c6d66" class="outline-4">
+<h4 id="orgf7c6d66">命名空间</h4>
+<div class="outline-text-4" id="text-orgf7c6d66">
 <div class="org-src-container">
 <pre class="src src-C++"><span style="color: #F92672;">using</span> <span style="color: #F92672;">namespace</span> <span style="color: #AE81FF;">ns3</span>;
 </pre>
@@ -304,9 +326,9 @@ C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用�
 </div>
 </div>
 
-<div id="outline-container-org3d2a4fc" class="outline-4">
-<h4 id="org3d2a4fc">日志</h4>
-<div class="outline-text-4" id="text-org3d2a4fc">
+<div id="outline-container-orgb8647a8" class="outline-4">
+<h4 id="orgb8647a8">日志</h4>
+<div class="outline-text-4" id="text-orgb8647a8">
 <p>
 日志要定义之后才能使用, 日志定义很简单:
 </p>
@@ -325,9 +347,9 @@ C++用using来把ns-3命名空间引入到当前(全局的)声明域中, 使用�
 </div>
 </div>
 
-<div id="outline-container-orga178b8e" class="outline-4">
-<h4 id="orga178b8e">main()</h4>
-<div class="outline-text-4" id="text-orga178b8e">
+<div id="outline-container-org0e40f5d" class="outline-4">
+<h4 id="org0e40f5d">main()</h4>
+<div class="outline-text-4" id="text-org0e40f5d">
 <div class="org-src-container">
 <pre class="src src-C++">LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoClientApplication"</span>, LOG_LEVEL_INFO);
 LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</span>, LOG_LEVEL_INFO);
@@ -339,9 +361,9 @@ LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</spa
 </div>
 </div>
 
-<div id="outline-container-org0d1de93" class="outline-4">
-<h4 id="org0d1de93">生成网络节点</h4>
-<div class="outline-text-4" id="text-org0d1de93">
+<div id="outline-container-org6b1c779" class="outline-4">
+<h4 id="org6b1c779">生成网络节点</h4>
+<div class="outline-text-4" id="text-org6b1c779">
 <div class="org-src-container">
 <pre class="src src-C++"><span style="color: #66D9EF;">NodeContainer</span> <span style="color: #FD971F;">nodes</span>;
 nodes.Create(2);
@@ -350,9 +372,9 @@ nodes.Create(2);
 </div>
 </div>
 
-<div id="outline-container-org759aeb6" class="outline-4">
-<h4 id="org759aeb6">物理连接计算机</h4>
-<div class="outline-text-4" id="text-org759aeb6">
+<div id="outline-container-orga0a13b2" class="outline-4">
+<h4 id="orga0a13b2">物理连接计算机</h4>
+<div class="outline-text-4" id="text-orga0a13b2">
 <p>
 现实中连接两台计算机需要使用网卡和网线, ns-3中将对应的物理实体抽象为网络设备和信道2个概念, 使用下面的语句实现网络节点物理连接:
 </p>
@@ -386,9 +408,9 @@ PointToPointHelper类负责设置网络设备和信道属性, 并通过Install�
 </div>
 </div>
 
-<div id="outline-container-org4072390" class="outline-4">
-<h4 id="org4072390">为计算机安装协议栈</h4>
-<div class="outline-text-4" id="text-org4072390">
+<div id="outline-container-org5c16de9" class="outline-4">
+<h4 id="org5c16de9">为计算机安装协议栈</h4>
+<div class="outline-text-4" id="text-org5c16de9">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #66D9EF;">InternetStackHelper</span> <span style="color: #FD971F;">stack</span>;
 stack.Install (nodes);
@@ -415,9 +437,9 @@ Ipv4Interface对象将一个IP地址同一个设备关联起来.
 </div>
 </div>
 
-<div id="outline-container-org7d7b713" class="outline-4">
-<h4 id="org7d7b713">安装应用层</h4>
-<div class="outline-text-4" id="text-org7d7b713">
+<div id="outline-container-org88cedc2" class="outline-4">
+<h4 id="org88cedc2">安装应用层</h4>
+<div class="outline-text-4" id="text-org88cedc2">
 <div class="org-src-container">
 <pre class="src src-C"><span style="color: #66D9EF;">UdpEchoServerHelper</span> <span style="color: #A6E22E;">echoServer</span> (9);
 <span style="color: #66D9EF;">ApplicationContainer</span> <span style="color: #FD971F;">serverApps</span> = echoServer.Install (nodes.Get (1));
@@ -469,9 +491,9 @@ PacketSize: 数据包大小.
 </div>
 </div>
 
-<div id="outline-container-org5b9b369" class="outline-4">
-<h4 id="org5b9b369">启动模拟器</h4>
-<div class="outline-text-4" id="text-org5b9b369">
+<div id="outline-container-org4c41475" class="outline-4">
+<h4 id="org4c41475">启动模拟器</h4>
+<div class="outline-text-4" id="text-org4c41475">
 <div class="org-src-container">
 <pre class="src src-C++"><span style="color: #AE81FF;">Simulator</span>::Run ();
 <span style="color: #AE81FF;">Simulator</span>::Destroy ();
@@ -480,15 +502,15 @@ PacketSize: 数据包大小.
 </div>
 </div>
 
-<div id="outline-container-org324cdf2" class="outline-4">
-<h4 id="org324cdf2">运行</h4>
-<div class="outline-text-4" id="text-org324cdf2">
+<div id="outline-container-orgf4d08f6" class="outline-4">
+<h4 id="orgf4d08f6">运行</h4>
+<div class="outline-text-4" id="text-orgf4d08f6">
 <p>
 把 <code>first.cc</code> 放到 <code>scratch</code> 目录, 执行命令 <code>./waf --run scratch/first</code>.
 </p>
 
 <div class="figure">
-<p><img src="./0.png" alt="0.png" width="500" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/02/06/ns-3快速上手/0.png" alt="0.png" width="500" />
 </p>
 <p><span class="figure-number">Figure 1: </span>first.cc运行结果</p>
 </div>
@@ -499,39 +521,69 @@ PacketSize: 数据包大小.
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-02-06</span>
-        <span title="last modification date" class="post-info">2018-03-06</span>
-        <span title="tags" class="post-info"><a href="/tags/ns3/">NS3</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-02-06</span>
+            <span title="last modification date" class="post-info">2018-03-06</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/ns3">NS3</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/02/06/ns-3快速上手";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/02/06/ns-3快速上手";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/02/06/ns-3快速上手";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/02/06/ns-3快速上手";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

@@ -1,60 +1,82 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>编写第一个Fabric应用 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>编写第一个Fabric应用 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>编写第一个Fabric应用</h1>
+<h1 class="title">编写第一个Fabric应用</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4ce1996">背景知识</a>
+<li><a href="#org515d0a2">背景知识</a>
 <ul>
-<li><a href="#orgf9ca03f">Fabric CA</a></li>
-<li><a href="#org85b0239">一些组件</a>
+<li><a href="#orgb291061">Fabric CA</a></li>
+<li><a href="#orge617ca2">一些组件</a>
 <ul>
-<li><a href="#org298e450">Peer</a></li>
-<li><a href="#org26af6b0">Org</a></li>
-<li><a href="#orgbe0bdc4">Channel</a></li>
+<li><a href="#org9ed8684">Peer</a></li>
+<li><a href="#orga880fff">Org</a></li>
+<li><a href="#org9a1d33d">Channel</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgedcefe8">编写第一个应用程序(v1.1.0 版本)</a>
+<li><a href="#org2c89e5a">编写第一个应用程序(v1.1.0 版本)</a>
 <ul>
-<li><a href="#org8a5bdf7">配置开发环境</a></li>
-<li><a href="#org9a013f6">安装客户端 &amp; 启动网络</a></li>
-<li><a href="#org88e6b64">App如何与网络交互?</a>
+<li><a href="#orgd1a0a89">配置开发环境</a></li>
+<li><a href="#orgddc5708">安装客户端 &amp; 启动网络</a></li>
+<li><a href="#orgbe709ba">App如何与网络交互?</a>
 <ul>
-<li><a href="#orgda12401">登记管理员用户</a></li>
-<li><a href="#orga9eaa9b">注册和登记User1</a></li>
-<li><a href="#orgc87510f">查询账本</a></li>
-<li><a href="#org8776405">更新账本</a></li>
+<li><a href="#orgd635255">登记管理员用户</a></li>
+<li><a href="#orgcb8d04e">注册和登记User1</a></li>
+<li><a href="#org172fefd">查询账本</a></li>
+<li><a href="#org02a1d2a">更新账本</a></li>
 </ul>
 </li>
 </ul>
@@ -63,13 +85,13 @@
 </div>
 </div>
 
-<div id="outline-container-org4ce1996" class="outline-2">
-<h2 id="org4ce1996">背景知识</h2>
-<div class="outline-text-2" id="text-org4ce1996">
+<div id="outline-container-org515d0a2" class="outline-2">
+<h2 id="org515d0a2">背景知识</h2>
+<div class="outline-text-2" id="text-org515d0a2">
 </div>
-<div id="outline-container-orgf9ca03f" class="outline-3">
-<h3 id="orgf9ca03f">Fabric CA</h3>
-<div class="outline-text-3" id="text-orgf9ca03f">
+<div id="outline-container-orgb291061" class="outline-3">
+<h3 id="orgb291061">Fabric CA</h3>
+<div class="outline-text-3" id="text-orgb291061">
 <p>
 Fabric CA是Hyperledger Fabric的证书颁发机构, 提供如下功能:
 </p>
@@ -110,13 +132,13 @@ SDK方式的API在 <code>fabric-ca/swagger/swagger-fabric-ca.json</code>.
 </div>
 </div>
 
-<div id="outline-container-org85b0239" class="outline-3">
-<h3 id="org85b0239">一些组件</h3>
-<div class="outline-text-3" id="text-org85b0239">
+<div id="outline-container-orge617ca2" class="outline-3">
+<h3 id="orge617ca2">一些组件</h3>
+<div class="outline-text-3" id="text-orge617ca2">
 </div>
-<div id="outline-container-org298e450" class="outline-4">
-<h4 id="org298e450">Peer</h4>
-<div class="outline-text-4" id="text-org298e450">
+<div id="outline-container-org9ed8684" class="outline-4">
+<h4 id="org9ed8684">Peer</h4>
+<div class="outline-text-4" id="text-org9ed8684">
 <p>
 Fabric网络中的节点(Peer), 表现为一个运行着的Docker容器. Peer可分两种:
 </p>
@@ -141,18 +163,18 @@ anchor peer
 </div>
 </div>
 
-<div id="outline-container-org26af6b0" class="outline-4">
-<h4 id="org26af6b0">Org</h4>
-<div class="outline-text-4" id="text-org26af6b0">
+<div id="outline-container-orga880fff" class="outline-4">
+<h4 id="orga880fff">Org</h4>
+<div class="outline-text-4" id="text-orga880fff">
 <p>
 Org由若干个Peer组成. 可在 <code>crypto-config.yaml</code> 中设置一个Block中的Peer数量.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgbe0bdc4" class="outline-4">
-<h4 id="orgbe0bdc4">Channel</h4>
-<div class="outline-text-4" id="text-orgbe0bdc4">
+<div id="outline-container-org9a1d33d" class="outline-4">
+<h4 id="org9a1d33d">Channel</h4>
+<div class="outline-text-4" id="text-org9a1d33d">
 <p>
 Channel有点像"子网", 可以作为两个或多个特定网络成员间的专门以机密交易为目的而建立的. 一个Channel可包含多个Org. 每个Channel拥有一个账本, 并共享给内部的Peer.
 </p>
@@ -165,9 +187,9 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 </div>
 </div>
 
-<div id="outline-container-orgedcefe8" class="outline-2">
-<h2 id="orgedcefe8">编写第一个应用程序(v1.1.0 版本)</h2>
-<div class="outline-text-2" id="text-orgedcefe8">
+<div id="outline-container-org2c89e5a" class="outline-2">
+<h2 id="org2c89e5a">编写第一个应用程序(v1.1.0 版本)</h2>
+<div class="outline-text-2" id="text-org2c89e5a">
 <p>
 主要学习如何与CA交互, 申请登记证书. 然后使用这些生成的实体来查询和更新账本.
 </p>
@@ -182,7 +204,7 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 
 
 <div class="figure">
-<p><img src="./21.png" alt="21.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/27/编写第一个fabric应用/21.png" alt="21.png" />
 </p>
 </div>
 
@@ -193,9 +215,9 @@ Channel有点像"子网", 可以作为两个或多个特定网络成员间的专
 </ul>
 </div>
 
-<div id="outline-container-org8a5bdf7" class="outline-3">
-<h3 id="org8a5bdf7">配置开发环境</h3>
-<div class="outline-text-3" id="text-org8a5bdf7">
+<div id="outline-container-orgd1a0a89" class="outline-3">
+<h3 id="orgd1a0a89">配置开发环境</h3>
+<div class="outline-text-3" id="text-orgd1a0a89">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E5%AE%89%E5%85%A8first-network/">Fabric官方案例first-network</a>中写了如何配置环境.
 </p>
@@ -217,16 +239,16 @@ docker rmi dev-peer0.org1.example.com-fabcar-1.0-5c906e402ed29f20260ae42283216aa
 </div>
 </div>
 
-<div id="outline-container-org9a013f6" class="outline-3">
-<h3 id="org9a013f6">安装客户端 &amp; 启动网络</h3>
-<div class="outline-text-3" id="text-org9a013f6">
+<div id="outline-container-orgddc5708" class="outline-3">
+<h3 id="orgddc5708">安装客户端 &amp; 启动网络</h3>
+<div class="outline-text-3" id="text-orgddc5708">
 <p>
 首先为App安装Fabric依赖. 可以打开 <code>package.json</code> 查看依赖. 如图所示:
 </p>
 
 
 <div class="figure">
-<p><img src="./22.png" alt="22.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/27/编写第一个fabric应用/22.png" alt="22.png" />
 </p>
 </div>
 
@@ -252,17 +274,17 @@ npm install
 </div>
 </div>
 
-<div id="outline-container-org88e6b64" class="outline-3">
-<h3 id="org88e6b64">App如何与网络交互?</h3>
-<div class="outline-text-3" id="text-org88e6b64">
+<div id="outline-container-orgbe709ba" class="outline-3">
+<h3 id="orgbe709ba">App如何与网络交互?</h3>
+<div class="outline-text-3" id="text-orgbe709ba">
 <p>
 更详细的内容在<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.1/understand_fabcar_network.html">Understanding the Fabcar Network</a>, 现在我们只要知道, App是通过SDK调用API来查询, 更新账本的.
 </p>
 </div>
 
-<div id="outline-container-orgda12401" class="outline-4">
-<h4 id="orgda12401">登记管理员用户</h4>
-<div class="outline-text-4" id="text-orgda12401">
+<div id="outline-container-orgd635255" class="outline-4">
+<h4 id="orgd635255">登记管理员用户</h4>
+<div class="outline-text-4" id="text-orgd635255">
 <p>
 接下来的两小节内容, 都是与CA交互的, 可以新开一个命令行窗口, 通过如下命令查看CA日志.
 </p>
@@ -287,7 +309,7 @@ node enrollAdmin.js
 
 
 <div class="figure">
-<p><img src="./23.png" alt="23.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/27/编写第一个fabric应用/23.png" alt="23.png" />
 </p>
 </div>
 
@@ -297,9 +319,9 @@ node enrollAdmin.js
 </div>
 </div>
 
-<div id="outline-container-orga9eaa9b" class="outline-4">
-<h4 id="orga9eaa9b">注册和登记User1</h4>
-<div class="outline-text-4" id="text-orga9eaa9b">
+<div id="outline-container-orgcb8d04e" class="outline-4">
+<h4 id="orgcb8d04e">注册和登记User1</h4>
+<div class="outline-text-4" id="text-orgcb8d04e">
 <p>
 连通CA Server, 使用刚刚生成的管理员证书, 注册和登记一个新用户.
 </p>
@@ -317,12 +339,12 @@ node enrollAdmin.js
 </div>
 </div>
 
-<div id="outline-container-orgc87510f" class="outline-4">
-<h4 id="orgc87510f">查询账本</h4>
-<div class="outline-text-4" id="text-orgc87510f">
+<div id="outline-container-org172fefd" class="outline-4">
+<h4 id="org172fefd">查询账本</h4>
+<div class="outline-text-4" id="text-org172fefd">
 
 <div class="figure">
-<p><img src="./24.png" alt="24.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/27/编写第一个fabric应用/24.png" alt="24.png" />
 </p>
 </div>
 
@@ -417,16 +439,16 @@ Response is  {"colour":"black","make":"Tesla","model":"S","owner":"Adriana"}
 </div>
 </div>
 
-<div id="outline-container-org8776405" class="outline-4">
-<h4 id="org8776405">更新账本</h4>
-<div class="outline-text-4" id="text-org8776405">
+<div id="outline-container-org02a1d2a" class="outline-4">
+<h4 id="org02a1d2a">更新账本</h4>
+<div class="outline-text-4" id="text-org02a1d2a">
 <p>
 更新账本的流程:
 </p>
 
 
 <div class="figure">
-<p><img src="./25.png" alt="25.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/27/编写第一个fabric应用/25.png" alt="25.png" />
 </p>
 </div>
 
@@ -521,39 +543,69 @@ Response is  {"colour":"Black","make":"Honda","model":"Accord","owner":"Tom"}
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-27</span>
-        <span title="last modification date" class="post-info">2018-03-30</span>
-        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-27</span>
+            <span title="last modification date" class="post-info">2018-03-30</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/27/编写第一个fabric应用";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/27/编写第一个fabric应用";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/27/编写第一个fabric应用";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/27/编写第一个fabric应用";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

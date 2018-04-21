@@ -1,88 +1,110 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>React-Native入门教程 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>React-Native入门教程 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="ReactNative" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>React-Native入门教程</h1>
+<h1 class="title">React-Native入门教程</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org24da80b">props(属性)</a></li>
-<li><a href="#org3c67c19">state(状态)</a></li>
-<li><a href="#orga44a39c">style(样式)</a></li>
-<li><a href="#org58b1f39">高度与宽度</a>
+<li><a href="#org2266454">props(属性)</a></li>
+<li><a href="#org7205fcd">state(状态)</a></li>
+<li><a href="#orga57d75a">style(样式)</a></li>
+<li><a href="#org54d91b1">高度与宽度</a>
 <ul>
-<li><a href="#org2a466f5">指定宽高</a></li>
-<li><a href="#orgbc761fb">弹性宽高(flex)</a></li>
+<li><a href="#org5a6044f">指定宽高</a></li>
+<li><a href="#org0e04720">弹性宽高(flex)</a></li>
 </ul>
 </li>
-<li><a href="#org90b1386">使用Flexbox布局</a>
+<li><a href="#org81f4277">使用Flexbox布局</a>
 <ul>
-<li><a href="#org247a3b6">flexDirection</a></li>
-<li><a href="#orgd545e61">justifyContent</a></li>
-<li><a href="#org453271d">alignItems</a></li>
+<li><a href="#org5dbdc78">flexDirection</a></li>
+<li><a href="#org663879a">justifyContent</a></li>
+<li><a href="#org31e7ed0">alignItems</a></li>
 </ul>
 </li>
-<li><a href="#org11ee6bb">处理文本输入</a></li>
-<li><a href="#org232f820">(ScrollView)滚动视图</a></li>
-<li><a href="#orga245b3a">长列表</a>
+<li><a href="#org76fc47f">处理文本输入</a></li>
+<li><a href="#org1b62b7b">(ScrollView)滚动视图</a></li>
+<li><a href="#org3ea247c">长列表</a>
 <ul>
-<li><a href="#orgc1e5634">FlatList</a></li>
-<li><a href="#org0d4f7bd">SectionList</a></li>
+<li><a href="#org486c33a">FlatList</a></li>
+<li><a href="#orga160cbd">SectionList</a></li>
 </ul>
 </li>
-<li><a href="#org919d153">网络</a>
+<li><a href="#org2d29450">网络</a>
 <ul>
-<li><a href="#orgefbe446">fetch</a>
+<li><a href="#orgcea649a">fetch</a>
 <ul>
-<li><a href="#org118a374">发起网络请求</a></li>
+<li><a href="#org93ca75a">发起网络请求</a></li>
 </ul>
 </li>
-<li><a href="#org2a41823">处理服务器的响应数据</a></li>
-<li><a href="#org45bb9e9">AJAX</a></li>
-<li><a href="#org9305f74">WebSocket</a></li>
+<li><a href="#org7cf37da">处理服务器的响应数据</a></li>
+<li><a href="#org50103de">AJAX</a></li>
+<li><a href="#orgbd035b6">WebSocket</a></li>
 </ul>
 </li>
-<li><a href="#org6fcd5df">Navigation</a>
+<li><a href="#org66c4944">Navigation</a>
 <ul>
-<li><a href="#org20ebe80">安装</a></li>
-<li><a href="#orgc5a3f4f">创建两个页面</a></li>
+<li><a href="#orga300267">安装</a></li>
+<li><a href="#org7fc7970">创建两个页面</a></li>
 </ul>
 </li>
-<li><a href="#org821e88f">集成到现有原生应用</a></li>
+<li><a href="#org0d1913b">集成到现有原生应用</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org24da80b" class="outline-2">
-<h2 id="org24da80b">props(属性)</h2>
-<div class="outline-text-2" id="text-org24da80b">
+<div id="outline-container-org2266454" class="outline-2">
+<h2 id="org2266454">props(属性)</h2>
+<div class="outline-text-2" id="text-org2266454">
 <p>
 大部分组件在创建的时候, 就可以使用各种参数来进行定制. 这些参数就称为 <code>props</code>.
 </p>
@@ -112,9 +134,9 @@ export default class Bananas extends Component {
 </div>
 </div>
 
-<div id="outline-container-org3c67c19" class="outline-2">
-<h2 id="org3c67c19">state(状态)</h2>
-<div class="outline-text-2" id="text-org3c67c19">
+<div id="outline-container-org7205fcd" class="outline-2">
+<h2 id="org7205fcd">state(状态)</h2>
+<div class="outline-text-2" id="text-org7205fcd">
 <p>
 <code>props</code> 一旦被指定, 在该组件的生命周期中就不再改变. 如果有组件继续了该组件, 则可以在子组件中使用 <code>state</code> 来改变.
 </p>
@@ -171,9 +193,9 @@ export default class BlinkApp extends Component {
 </div>
 </div>
 
-<div id="outline-container-orga44a39c" class="outline-2">
-<h2 id="orga44a39c">style(样式)</h2>
-<div class="outline-text-2" id="text-orga44a39c">
+<div id="outline-container-orga57d75a" class="outline-2">
+<h2 id="orga57d75a">style(样式)</h2>
+<div class="outline-text-2" id="text-orga57d75a">
 <p>
 所有核心组件都接受名为 <code>style</code> 的属性.
 </p>
@@ -216,13 +238,13 @@ AppRegistry.registerComponent('LotsOfStyles', () =&gt; LotsOfStyles);
 </div>
 </div>
 
-<div id="outline-container-org58b1f39" class="outline-2">
-<h2 id="org58b1f39">高度与宽度</h2>
-<div class="outline-text-2" id="text-org58b1f39">
+<div id="outline-container-org54d91b1" class="outline-2">
+<h2 id="org54d91b1">高度与宽度</h2>
+<div class="outline-text-2" id="text-org54d91b1">
 </div>
-<div id="outline-container-org2a466f5" class="outline-3">
-<h3 id="org2a466f5">指定宽高</h3>
-<div class="outline-text-3" id="text-org2a466f5">
+<div id="outline-container-org5a6044f" class="outline-3">
+<h3 id="org5a6044f">指定宽高</h3>
+<div class="outline-text-3" id="text-org5a6044f">
 <p>
 组件的高度与宽度决定了它在屏幕上显示的尺寸. 给组件设定尺寸的方式是在样式中指定 <code>width</code> 和 <code>height</code>. React Native中尺寸没有单位, 表示的是与设备像素密度无关的逻辑像素点.
 </p>
@@ -250,9 +272,9 @@ AppRegistry.registerComponent('AwesomeProject', () =&gt; FixedDimensionsBasics);
 </div>
 </div>
 
-<div id="outline-container-orgbc761fb" class="outline-3">
-<h3 id="orgbc761fb">弹性宽高(flex)</h3>
-<div class="outline-text-3" id="text-orgbc761fb">
+<div id="outline-container-org0e04720" class="outline-3">
+<h3 id="org0e04720">弹性宽高(flex)</h3>
+<div class="outline-text-3" id="text-org0e04720">
 <p>
 <code>flex</code> 表示在可利用的空间中动态扩张或收缩. 一般会使用 <code>flex:1</code> 来指定某个组件扩张以撑满所有剩余的空间.
 </p>
@@ -291,17 +313,17 @@ AppRegistry.registerComponent('AwesomeProject', () =&gt; FlexDimensionsBasics);
 </div>
 </div>
 
-<div id="outline-container-org90b1386" class="outline-2">
-<h2 id="org90b1386">使用Flexbox布局</h2>
-<div class="outline-text-2" id="text-org90b1386">
+<div id="outline-container-org81f4277" class="outline-2">
+<h2 id="org81f4277">使用Flexbox布局</h2>
+<div class="outline-text-2" id="text-org81f4277">
 <p>
 在React Native中, 使用flexbox规则来指定某个组件的子元素的布局. flexbox可以在不同屏幕尺寸上提供一致的布局结构.
 </p>
 </div>
 
-<div id="outline-container-org247a3b6" class="outline-3">
-<h3 id="org247a3b6">flexDirection</h3>
-<div class="outline-text-3" id="text-org247a3b6">
+<div id="outline-container-org5dbdc78" class="outline-3">
+<h3 id="org5dbdc78">flexDirection</h3>
+<div class="outline-text-3" id="text-org5dbdc78">
 <p>
 在组件的 <code>style</code> 中指定 <code>flexDirection</code> 可以决定布局的主轴. 子元素可以沿着水平排列(row), 也可以垂直排列(column), 默认为column.
 </p>
@@ -329,9 +351,9 @@ AppRegistry.registerComponent('AwesomeProject', () =&gt; FlexDirectionBasics);
 </div>
 </div>
 
-<div id="outline-container-orgd545e61" class="outline-3">
-<h3 id="orgd545e61">justifyContent</h3>
-<div class="outline-text-3" id="text-orgd545e61">
+<div id="outline-container-org663879a" class="outline-3">
+<h3 id="org663879a">justifyContent</h3>
+<div class="outline-text-3" id="text-org663879a">
 <p>
 在组件中的 <code>style</code> 中指定 <code>justifyContent</code> 可以决定子元素沿着主轴的排列方式. 如, 左对齐, 右对齐, 还是居中, 等等, 都是由它来指定.
 </p>
@@ -364,9 +386,9 @@ AppRegistry.registerComponent('AwesomeProject', () =&gt; JustifyContentBasics);
 </div>
 </div>
 
-<div id="outline-container-org453271d" class="outline-3">
-<h3 id="org453271d">alignItems</h3>
-<div class="outline-text-3" id="text-org453271d">
+<div id="outline-container-org31e7ed0" class="outline-3">
+<h3 id="org31e7ed0">alignItems</h3>
+<div class="outline-text-3" id="text-org31e7ed0">
 <p>
 在组件的 <code>style</code> 中指定 <code>alignItems</code> 可以决定其子元素沿着次轴的排列方式.
 </p>
@@ -402,9 +424,9 @@ AppRegistry.registerComponent('AwesomeProject', () =&gt; AlignItemsBasics);
 </div>
 </div>
 
-<div id="outline-container-org11ee6bb" class="outline-2">
-<h2 id="org11ee6bb">处理文本输入</h2>
-<div class="outline-text-2" id="text-org11ee6bb">
+<div id="outline-container-org76fc47f" class="outline-2">
+<h2 id="org76fc47f">处理文本输入</h2>
+<div class="outline-text-2" id="text-org76fc47f">
 <p>
 <code>TextInput</code> 是一个允许用户输入文本的基础组件. 它有一个名为 <code>onChangeText</code> 属性, 此属性接受一个函数, 而此函数会在文本变化时被调用; 有一个名为 <code>onSubmitEditing</code> 的属性, 在文件被提交后被调用.
 </p>
@@ -442,9 +464,9 @@ export default class PizzaTranslator extends Component {
 </div>
 </div>
 
-<div id="outline-container-org232f820" class="outline-2">
-<h2 id="org232f820">(ScrollView)滚动视图</h2>
-<div class="outline-text-2" id="text-org232f820">
+<div id="outline-container-org1b62b7b" class="outline-2">
+<h2 id="org1b62b7b">(ScrollView)滚动视图</h2>
+<div class="outline-text-2" id="text-org1b62b7b">
 <p>
 <code>ScrollView</code> 是一个通用的可滚动的容器, 可以在其中放入多个组件和视图, 而且这些组件并不需要是同类型的. <code>ScrollView</code> 可以水平或者垂直滚动.
 </p>
@@ -501,17 +523,17 @@ export default class IScrolledDownAndWhatHappenedNextShockedMe extends Component
 </div>
 </div>
 
-<div id="outline-container-orga245b3a" class="outline-2">
-<h2 id="orga245b3a">长列表</h2>
-<div class="outline-text-2" id="text-orga245b3a">
+<div id="outline-container-org3ea247c" class="outline-2">
+<h2 id="org3ea247c">长列表</h2>
+<div class="outline-text-2" id="text-org3ea247c">
 <p>
 React Native中有几个长列表, 一般使用 <code>FlatList</code> 或 <code>SectionList</code>.
 </p>
 </div>
 
-<div id="outline-container-orgc1e5634" class="outline-3">
-<h3 id="orgc1e5634">FlatList</h3>
-<div class="outline-text-3" id="text-orgc1e5634">
+<div id="outline-container-org486c33a" class="outline-3">
+<h3 id="org486c33a">FlatList</h3>
+<div class="outline-text-3" id="text-org486c33a">
 <p>
 用于显示一个垂直的滚动列表, 内部元素格式相同, 元素个数可增删. 它优先渲染屏幕上可见的元素.
 </p>
@@ -562,9 +584,9 @@ const styles = StyleSheet.create({
 </div>
 </div>
 
-<div id="outline-container-org0d4f7bd" class="outline-3">
-<h3 id="org0d4f7bd">SectionList</h3>
-<div class="outline-text-3" id="text-org0d4f7bd">
+<div id="outline-container-orga160cbd" class="outline-3">
+<h3 id="orga160cbd">SectionList</h3>
+<div class="outline-text-3" id="text-orga160cbd">
 <p>
 适用于渲染一组需要分组的数据, 也许还带有分组标签.
 </p>
@@ -616,25 +638,25 @@ const styles = StyleSheet.create({
 </div>
 </div>
 
-<div id="outline-container-org919d153" class="outline-2">
-<h2 id="org919d153">网络</h2>
-<div class="outline-text-2" id="text-org919d153">
+<div id="outline-container-org2d29450" class="outline-2">
+<h2 id="org2d29450">网络</h2>
+<div class="outline-text-2" id="text-org2d29450">
 <p>
 一般移动应用都要从Server中获取数据. 我们可能要给某个REST API发起POST请求, 以提交用户数据; 也可能从Server上获取一些数据.
 </p>
 </div>
 
-<div id="outline-container-orgefbe446" class="outline-3">
-<h3 id="orgefbe446">fetch</h3>
-<div class="outline-text-3" id="text-orgefbe446">
+<div id="outline-container-orgcea649a" class="outline-3">
+<h3 id="orgcea649a">fetch</h3>
+<div class="outline-text-3" id="text-orgcea649a">
 <p>
 如果学过 <code>XMLHttpRequest(ajax)</code>, 则 <code>fetch</code> 用起来比较容易上手.
 </p>
 </div>
 
-<div id="outline-container-org118a374" class="outline-4">
-<h4 id="org118a374">发起网络请求</h4>
-<div class="outline-text-4" id="text-org118a374">
+<div id="outline-container-org93ca75a" class="outline-4">
+<h4 id="org93ca75a">发起网络请求</h4>
+<div class="outline-text-4" id="text-org93ca75a">
 <p>
 从指定地址获取内容:
 </p>
@@ -677,9 +699,9 @@ const styles = StyleSheet.create({
 </div>
 </div>
 
-<div id="outline-container-org2a41823" class="outline-3">
-<h3 id="org2a41823">处理服务器的响应数据</h3>
-<div class="outline-text-3" id="text-org2a41823">
+<div id="outline-container-org7cf37da" class="outline-3">
+<h3 id="org7cf37da">处理服务器的响应数据</h3>
+<div class="outline-text-3" id="text-org7cf37da">
 <div class="org-src-container">
 <pre class="src src-JavaScript">getMoviesFromApiAsync() {
     return fetch('https://facebook.github.io/react-native/movies.json')
@@ -718,18 +740,18 @@ const styles = StyleSheet.create({
 </div>
 </div>
 
-<div id="outline-container-org45bb9e9" class="outline-3">
-<h3 id="org45bb9e9">AJAX</h3>
-<div class="outline-text-3" id="text-org45bb9e9">
+<div id="outline-container-org50103de" class="outline-3">
+<h3 id="org50103de">AJAX</h3>
+<div class="outline-text-3" id="text-org50103de">
 <p>
 此处不介绍.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org9305f74" class="outline-3">
-<h3 id="org9305f74">WebSocket</h3>
-<div class="outline-text-3" id="text-org9305f74">
+<div id="outline-container-orgbd035b6" class="outline-3">
+<h3 id="orgbd035b6">WebSocket</h3>
+<div class="outline-text-3" id="text-orgbd035b6">
 <p>
 React Native还支持 <code>WebSocket</code>.
 </p>
@@ -762,17 +784,17 @@ ws.onclose = (e) =&gt; {
 </div>
 </div>
 
-<div id="outline-container-org6fcd5df" class="outline-2">
-<h2 id="org6fcd5df">Navigation</h2>
-<div class="outline-text-2" id="text-org6fcd5df">
+<div id="outline-container-org66c4944" class="outline-2">
+<h2 id="org66c4944">Navigation</h2>
+<div class="outline-text-2" id="text-org66c4944">
 <p>
 React Native中有多种导航组件, 社区主推 <code>react-navigation</code>.
 </p>
 </div>
 
-<div id="outline-container-org20ebe80" class="outline-3">
-<h3 id="org20ebe80">安装</h3>
-<div class="outline-text-3" id="text-org20ebe80">
+<div id="outline-container-orga300267" class="outline-3">
+<h3 id="orga300267">安装</h3>
+<div class="outline-text-3" id="text-orga300267">
 <div class="org-src-container">
 <pre class="src src-Shell">yarn add react-navigation
 </pre>
@@ -780,9 +802,9 @@ React Native中有多种导航组件, 社区主推 <code>react-navigation</code>
 </div>
 </div>
 
-<div id="outline-container-orgc5a3f4f" class="outline-3">
-<h3 id="orgc5a3f4f">创建两个页面</h3>
-<div class="outline-text-3" id="text-orgc5a3f4f">
+<div id="outline-container-org7fc7970" class="outline-3">
+<h3 id="org7fc7970">创建两个页面</h3>
+<div class="outline-text-3" id="text-org7fc7970">
 <p>
 创建有两个页面(Main和Profile)的应用:
 </p>
@@ -824,9 +846,9 @@ const App = StackNavigator({
 </div>
 </div>
 
-<div id="outline-container-org821e88f" class="outline-2">
-<h2 id="org821e88f">集成到现有原生应用</h2>
-<div class="outline-text-2" id="text-org821e88f">
+<div id="outline-container-org0d1913b" class="outline-2">
+<h2 id="org0d1913b">集成到现有原生应用</h2>
+<div class="outline-text-2" id="text-org0d1913b">
 <p>
 在原生应用程序的基础上, 加上React Native写的内容. 值得学习.
 </p>
@@ -835,39 +857,69 @@ const App = StackNavigator({
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-02</span>
-        <span title="last modification date" class="post-info">2018-04-02</span>
-        <span title="tags" class="post-info"><a href="/tags/reactnative/">ReactNative</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-02</span>
+            <span title="last modification date" class="post-info">2018-04-02</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/reactnative">ReactNative</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/02/react-native入门教程";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/02/react-native入门教程";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/02/react-native入门教程";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/02/react-native入门教程";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

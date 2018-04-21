@@ -1,114 +1,136 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>1 Go基础 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>1 Go基础 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Go" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>1 Go基础</h1>
+<h1 class="title">1 Go基础</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6b0c001">包</a>
+<li><a href="#org6df1e58">包</a>
 <ul>
-<li><a href="#org4535562">函数</a></li>
-<li><a href="#org68d54eb">变量</a>
+<li><a href="#orge8a726d">函数</a></li>
+<li><a href="#orgc4b8fd4">变量</a>
 <ul>
-<li><a href="#org3abade1">初始化</a></li>
+<li><a href="#org9bfffd5">初始化</a></li>
 </ul>
 </li>
-<li><a href="#org288ae47">基本类型</a></li>
-<li><a href="#orge0b4d98">类型转换</a></li>
-<li><a href="#orgaee3d4c">类型推导</a></li>
-<li><a href="#orgfd9ea1a">常量</a></li>
+<li><a href="#org18d18b9">基本类型</a></li>
+<li><a href="#orgdc23672">类型转换</a></li>
+<li><a href="#orgc908c2e">类型推导</a></li>
+<li><a href="#org6bf31d1">常量</a></li>
 </ul>
 </li>
-<li><a href="#org8da18e4">程序控制</a>
+<li><a href="#orge3943dd">程序控制</a>
 <ul>
-<li><a href="#org6388b11">for</a></li>
-<li><a href="#org86ee30b">if</a></li>
-<li><a href="#orga95b99f">switch</a></li>
-<li><a href="#org984c9e8">defer</a></li>
+<li><a href="#org1be6fc7">for</a></li>
+<li><a href="#org06915c9">if</a></li>
+<li><a href="#org526b330">switch</a></li>
+<li><a href="#org4ba2369">defer</a></li>
 </ul>
 </li>
-<li><a href="#org828b145">复杂类型</a>
+<li><a href="#orgd9045a5">复杂类型</a>
 <ul>
-<li><a href="#org4ee37ad">指针</a></li>
-<li><a href="#org27a110d">结构体</a>
+<li><a href="#org594cfd7">指针</a></li>
+<li><a href="#org1e4b8e4">结构体</a>
 <ul>
-<li><a href="#orga1118ed">结构体的声明与初始化</a></li>
+<li><a href="#org0338d1e">结构体的声明与初始化</a></li>
 </ul>
 </li>
-<li><a href="#orga9f83a3">数组</a></li>
-<li><a href="#org7a8a2e0">slice</a>
+<li><a href="#org57cbfd5">数组</a></li>
+<li><a href="#orgd957b12">slice</a>
 <ul>
-<li><a href="#org9b43476">截取</a></li>
-<li><a href="#org4e15caf">构造</a></li>
-<li><a href="#org2d833af">添加元素</a></li>
-<li><a href="#orgc8745b7">range</a></li>
+<li><a href="#org5c5cdfd">截取</a></li>
+<li><a href="#org359bcc6">构造</a></li>
+<li><a href="#org10cc57b">添加元素</a></li>
+<li><a href="#orgec43bee">range</a></li>
 </ul>
 </li>
-<li><a href="#org36fef43">map</a>
+<li><a href="#org8e1c8d7">map</a>
 <ul>
-<li><a href="#org9d1cde6">修改</a></li>
+<li><a href="#orgd09416e">修改</a></li>
 </ul>
 </li>
-<li><a href="#orgff6febf">函数值</a>
+<li><a href="#org0e2b0f5">函数值</a>
 <ul>
-<li><a href="#org9e1d408">函数作为参数传递给另一个函数</a></li>
-<li><a href="#org3822ab7">回调函数</a></li>
-<li><a href="#orgbf3b3ba">闭包</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgdb11d2d">方法和接口</a>
-<ul>
-<li><a href="#org925e991">方法</a>
-<ul>
-<li><a href="#orgef4d586">继承</a></li>
-</ul>
-</li>
-<li><a href="#orge64b1dc">接口</a>
-<ul>
-<li><a href="#orgf36066a">关于接口的更详细内容, 有空再补</a></li>
+<li><a href="#org79b6822">函数作为参数传递给另一个函数</a></li>
+<li><a href="#org1871b91">回调函数</a></li>
+<li><a href="#orgaa24887">闭包</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org26b1524">反射</a></li>
-<li><a href="#orgf9dc031">并发</a></li>
+<li><a href="#org8caba19">方法和接口</a>
+<ul>
+<li><a href="#orgd6eddca">方法</a>
+<ul>
+<li><a href="#org37ac005">继承</a></li>
+</ul>
+</li>
+<li><a href="#org55db455">接口</a>
+<ul>
+<li><a href="#orga72baa7">关于接口的更详细内容, 有空再补</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org68d53a5">反射</a></li>
+<li><a href="#org52e0584">并发</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6b0c001" class="outline-2">
-<h2 id="org6b0c001">包</h2>
-<div class="outline-text-2" id="text-org6b0c001">
+<div id="outline-container-org6df1e58" class="outline-2">
+<h2 id="org6df1e58">包</h2>
+<div class="outline-text-2" id="text-org6df1e58">
 <p>
 每个Go程序都是由包组成的, 程序运行的入口是包 <code>main</code>. 
 </p>
@@ -147,9 +169,9 @@ import "math/rand"
 </p>
 </div>
 
-<div id="outline-container-org4535562" class="outline-3">
-<h3 id="org4535562">函数</h3>
-<div class="outline-text-3" id="text-org4535562">
+<div id="outline-container-orge8a726d" class="outline-3">
+<h3 id="orge8a726d">函数</h3>
+<div class="outline-text-3" id="text-orge8a726d">
 <p>
 函数的形式: <code>func add(x int, y int) int {...}</code>
 </p>
@@ -174,17 +196,17 @@ import "math/rand"
 </div>
 </div>
 
-<div id="outline-container-org68d54eb" class="outline-3">
-<h3 id="org68d54eb">变量</h3>
-<div class="outline-text-3" id="text-org68d54eb">
+<div id="outline-container-orgc4b8fd4" class="outline-3">
+<h3 id="orgc4b8fd4">变量</h3>
+<div class="outline-text-3" id="text-orgc4b8fd4">
 <p>
 Go里面的变量定义形式: <code>var name type</code>, 其类型是在名称后面的. 如: <code>var i int</code>, 或 <code>var c, python, java bool</code>.
 </p>
 </div>
 
-<div id="outline-container-org3abade1" class="outline-4">
-<h4 id="org3abade1">初始化</h4>
-<div class="outline-text-4" id="text-org3abade1">
+<div id="outline-container-org9bfffd5" class="outline-4">
+<h4 id="org9bfffd5">初始化</h4>
+<div class="outline-text-4" id="text-org9bfffd5">
 <div class="org-src-container">
 <pre class="src src-Golang">var i, j int = 1, 2  // 有类型声明
 var c, python, java = true, false, "no!"  // 无类型声明
@@ -213,9 +235,9 @@ var c, python, java = true, false, "no!"  // 无类型声明
 </div>
 </div>
 
-<div id="outline-container-org288ae47" class="outline-3">
-<h3 id="org288ae47">基本类型</h3>
-<div class="outline-text-3" id="text-org288ae47">
+<div id="outline-container-org18d18b9" class="outline-3">
+<h3 id="org18d18b9">基本类型</h3>
+<div class="outline-text-3" id="text-org18d18b9">
 <ul class="org-ul">
 <li>bool: true, false</li>
 <li>string</li>
@@ -244,9 +266,9 @@ var c, python, java = true, false, "no!"  // 无类型声明
 </div>
 </div>
 
-<div id="outline-container-orge0b4d98" class="outline-3">
-<h3 id="orge0b4d98">类型转换</h3>
-<div class="outline-text-3" id="text-orge0b4d98">
+<div id="outline-container-orgdc23672" class="outline-3">
+<h3 id="orgdc23672">类型转换</h3>
+<div class="outline-text-3" id="text-orgdc23672">
 <p>
 无论是什么时候, Go的类型转换都需要显式转换.
 </p>
@@ -258,9 +280,9 @@ var f float64 = float64(i)
 </div>
 </div>
 
-<div id="outline-container-orgaee3d4c" class="outline-3">
-<h3 id="orgaee3d4c">类型推导</h3>
-<div class="outline-text-3" id="text-orgaee3d4c">
+<div id="outline-container-orgc908c2e" class="outline-3">
+<h3 id="orgc908c2e">类型推导</h3>
+<div class="outline-text-3" id="text-orgc908c2e">
 <p>
 在定义一个变量, 但不指定其类型时, 变量的类型由右值推导得出.
 </p>
@@ -276,9 +298,9 @@ g := 0.867 + 0.5i  // g为complex128
 </div>
 </div>
 
-<div id="outline-container-orgfd9ea1a" class="outline-3">
-<h3 id="orgfd9ea1a">常量</h3>
-<div class="outline-text-3" id="text-orgfd9ea1a">
+<div id="outline-container-org6bf31d1" class="outline-3">
+<h3 id="org6bf31d1">常量</h3>
+<div class="outline-text-3" id="text-org6bf31d1">
 <p>
 常量使用 <code>const</code> 关键字定义, 不能使用 := 语法定义.
 </p>
@@ -289,13 +311,13 @@ g := 0.867 + 0.5i  // g为complex128
 </div>
 </div>
 </div>
-<div id="outline-container-org8da18e4" class="outline-2">
-<h2 id="org8da18e4">程序控制</h2>
-<div class="outline-text-2" id="text-org8da18e4">
+<div id="outline-container-orge3943dd" class="outline-2">
+<h2 id="orge3943dd">程序控制</h2>
+<div class="outline-text-2" id="text-orge3943dd">
 </div>
-<div id="outline-container-org6388b11" class="outline-3">
-<h3 id="org6388b11">for</h3>
-<div class="outline-text-3" id="text-org6388b11">
+<div id="outline-container-org1be6fc7" class="outline-3">
+<h3 id="org1be6fc7">for</h3>
+<div class="outline-text-3" id="text-org1be6fc7">
 <div class="org-src-container">
 <pre class="src src-Golang">for i := 0; i &lt; 10; i++ {...}
 for ; sum &lt; 1000; {...}
@@ -309,9 +331,9 @@ Go里面, for语句不能使用圆括号"()", "i := 0" 也不能写成 "var i in
 </div>
 </div>
 
-<div id="outline-container-org86ee30b" class="outline-3">
-<h3 id="org86ee30b">if</h3>
-<div class="outline-text-3" id="text-org86ee30b">
+<div id="outline-container-org06915c9" class="outline-3">
+<h3 id="org06915c9">if</h3>
+<div class="outline-text-3" id="text-org06915c9">
 <div class="org-src-container">
 <pre class="src src-Golang">if x &lt; 0 {...}  // 同样不能使用圆括号
 if x &lt; 0 {...} else {...}
@@ -332,9 +354,9 @@ if语句中, 可以使用短声明, 如:
 </div>
 </div>
 
-<div id="outline-container-orga95b99f" class="outline-3">
-<h3 id="orga95b99f">switch</h3>
-<div class="outline-text-3" id="text-orga95b99f">
+<div id="outline-container-org526b330" class="outline-3">
+<h3 id="org526b330">switch</h3>
+<div class="outline-text-3" id="text-org526b330">
 <div class="org-src-container">
 <pre class="src src-Golang">switch os := runtime.GOOS; os {
     case "darwin":
@@ -368,9 +390,9 @@ switch {
 </div>
 </div>
 
-<div id="outline-container-org984c9e8" class="outline-3">
-<h3 id="org984c9e8">defer</h3>
-<div class="outline-text-3" id="text-org984c9e8">
+<div id="outline-container-org4ba2369" class="outline-3">
+<h3 id="org4ba2369">defer</h3>
+<div class="outline-text-3" id="text-org4ba2369">
 <p>
 <code>defer</code> 会延迟函数的执行, 直到上层函数返回. 但如果上层函数有 <code>return</code>, 则在 <code>return</code> 之前要执行.
 </p>
@@ -412,13 +434,13 @@ func main() {
 </div>
 </div>
 </div>
-<div id="outline-container-org828b145" class="outline-2">
-<h2 id="org828b145">复杂类型</h2>
-<div class="outline-text-2" id="text-org828b145">
+<div id="outline-container-orgd9045a5" class="outline-2">
+<h2 id="orgd9045a5">复杂类型</h2>
+<div class="outline-text-2" id="text-orgd9045a5">
 </div>
-<div id="outline-container-org4ee37ad" class="outline-3">
-<h3 id="org4ee37ad">指针</h3>
-<div class="outline-text-3" id="text-org4ee37ad">
+<div id="outline-container-org594cfd7" class="outline-3">
+<h3 id="org594cfd7">指针</h3>
+<div class="outline-text-3" id="text-org594cfd7">
 <p>
 指针保存了变量的内存地址.
 </p>
@@ -447,9 +469,9 @@ p = &amp;i
 </div>
 </div>
 
-<div id="outline-container-org27a110d" class="outline-3">
-<h3 id="org27a110d">结构体</h3>
-<div class="outline-text-3" id="text-org27a110d">
+<div id="outline-container-org1e4b8e4" class="outline-3">
+<h3 id="org1e4b8e4">结构体</h3>
+<div class="outline-text-3" id="text-org1e4b8e4">
 <p>
 <code>struct</code> 就是一个字段的集合. 结构体字段使用点号来访问.
 </p>
@@ -482,9 +504,9 @@ p.X = 1e9
 </div>
 </div>
 
-<div id="outline-container-orga1118ed" class="outline-4">
-<h4 id="orga1118ed">结构体的声明与初始化</h4>
-<div class="outline-text-4" id="text-orga1118ed">
+<div id="outline-container-org0338d1e" class="outline-4">
+<h4 id="org0338d1e">结构体的声明与初始化</h4>
+<div class="outline-text-4" id="text-org0338d1e">
 <div class="org-src-container">
 <pre class="src src-Golang">type Vertex struct {
     X, Y int
@@ -502,9 +524,9 @@ var (
 </div>
 </div>
 
-<div id="outline-container-orga9f83a3" class="outline-3">
-<h3 id="orga9f83a3">数组</h3>
-<div class="outline-text-3" id="text-orga9f83a3">
+<div id="outline-container-org57cbfd5" class="outline-3">
+<h3 id="org57cbfd5">数组</h3>
+<div class="outline-text-3" id="text-org57cbfd5">
 <p>
 类型 <code>[n]T</code> 是一个有 <code>n</code> 个类型为 <code>T</code> 的值的数组.
 </p>
@@ -519,9 +541,9 @@ var (
 </div>
 </div>
 
-<div id="outline-container-org7a8a2e0" class="outline-3">
-<h3 id="org7a8a2e0">slice</h3>
-<div class="outline-text-3" id="text-org7a8a2e0">
+<div id="outline-container-orgd957b12" class="outline-3">
+<h3 id="orgd957b12">slice</h3>
+<div class="outline-text-3" id="text-orgd957b12">
 <p>
 slice会指向一个序列的值, 并且包含长度信息.
 </p>
@@ -551,9 +573,9 @@ array是固定长度, 不能通过删除array元素来导致长度变化; slice�
 </p>
 </div>
 
-<div id="outline-container-org9b43476" class="outline-4">
-<h4 id="org9b43476">截取</h4>
-<div class="outline-text-4" id="text-org9b43476">
+<div id="outline-container-org5c5cdfd" class="outline-4">
+<h4 id="org5c5cdfd">截取</h4>
+<div class="outline-text-4" id="text-org5c5cdfd">
 <p>
 可以对slice进行截取, 返回一个新的slice. 如:
 </p>
@@ -565,9 +587,9 @@ fmt.Println(p[1:4])
 </div>
 </div>
 
-<div id="outline-container-org4e15caf" class="outline-4">
-<h4 id="org4e15caf">构造</h4>
-<div class="outline-text-4" id="text-org4e15caf">
+<div id="outline-container-org359bcc6" class="outline-4">
+<h4 id="org359bcc6">构造</h4>
+<div class="outline-text-4" id="text-org359bcc6">
 <p>
 slice由函数 <code>make</code> 创建. 这会分配一个长度为0的数组, 并返回一个slice指向这个数组.
 </p>
@@ -592,9 +614,9 @@ cap() 可以用来查看数组或slice的容量
 </div>
 </div>
 
-<div id="outline-container-org2d833af" class="outline-4">
-<h4 id="org2d833af">添加元素</h4>
-<div class="outline-text-4" id="text-org2d833af">
+<div id="outline-container-org10cc57b" class="outline-4">
+<h4 id="org10cc57b">添加元素</h4>
+<div class="outline-text-4" id="text-org10cc57b">
 <div class="org-src-container">
 <pre class="src src-Golang">var a []int
 a = append(a, 0)
@@ -604,9 +626,9 @@ a = append(a, 2, 3, 4)
 </div>
 </div>
 
-<div id="outline-container-orgc8745b7" class="outline-4">
-<h4 id="orgc8745b7">range</h4>
-<div class="outline-text-4" id="text-orgc8745b7">
+<div id="outline-container-orgec43bee" class="outline-4">
+<h4 id="orgec43bee">range</h4>
+<div class="outline-text-4" id="text-orgec43bee">
 <p>
 <code>for</code> 循环的 <code>range</code> 格式可以对slice或map进行迭代循环.
 </p>
@@ -621,9 +643,9 @@ for i, v := range pow {
 </div>
 </div>
 
-<div id="outline-container-org36fef43" class="outline-3">
-<h3 id="org36fef43">map</h3>
-<div class="outline-text-3" id="text-org36fef43">
+<div id="outline-container-org8e1c8d7" class="outline-3">
+<h3 id="org8e1c8d7">map</h3>
+<div class="outline-text-3" id="text-org8e1c8d7">
 <p>
 <code>map</code> 在使用之前必须用 <code>make</code> 来创建, 值为 <code>nil</code> 的 <code>map</code> 是空的, 并且不能赋值.
 </p>
@@ -643,9 +665,9 @@ m := make(map[string]int)
 </div>
 </div>
 
-<div id="outline-container-org9d1cde6" class="outline-4">
-<h4 id="org9d1cde6">修改</h4>
-<div class="outline-text-4" id="text-org9d1cde6">
+<div id="outline-container-orgd09416e" class="outline-4">
+<h4 id="orgd09416e">修改</h4>
+<div class="outline-text-4" id="text-orgd09416e">
 <div class="org-src-container">
 <pre class="src src-Golang">// 插入或修改
 m[key] = elem
@@ -665,9 +687,9 @@ elem, ok = m[key]
 </div>
 </div>
 
-<div id="outline-container-orgff6febf" class="outline-3">
-<h3 id="orgff6febf">函数值</h3>
-<div class="outline-text-3" id="text-orgff6febf">
+<div id="outline-container-org0e2b0f5" class="outline-3">
+<h3 id="org0e2b0f5">函数值</h3>
+<div class="outline-text-3" id="text-org0e2b0f5">
 <p>
 函数值在其他语言里叫函数指针, 常用于回调和闭包. 函数值可以作为函数的参数或返回值. 如:
 </p>
@@ -696,9 +718,9 @@ func main() {
 </p>
 </div>
 
-<div id="outline-container-org9e1d408" class="outline-4">
-<h4 id="org9e1d408">函数作为参数传递给另一个函数</h4>
-<div class="outline-text-4" id="text-org9e1d408">
+<div id="outline-container-org79b6822" class="outline-4">
+<h4 id="org79b6822">函数作为参数传递给另一个函数</h4>
+<div class="outline-text-4" id="text-org79b6822">
 <div class="org-src-container">
 <pre class="src src-Golang">func dd(i func(int, int) int) int {
     fmt.Printf("i type: %T\n", i)
@@ -721,9 +743,9 @@ i type: func(int, int) int
 </div>
 </div>
 
-<div id="outline-container-org3822ab7" class="outline-4">
-<h4 id="org3822ab7">回调函数</h4>
-<div class="outline-text-4" id="text-org3822ab7">
+<div id="outline-container-org1871b91" class="outline-4">
+<h4 id="org1871b91">回调函数</h4>
+<div class="outline-text-4" id="text-org1871b91">
 <p>
 callback, 就是通过一个函数指针调用的函数. 如把函数A作为参数传递给函数B, 那么A就叫做回调函数, B就叫中间函数, 调用B的函数就叫起始函数.
 </p>
@@ -783,9 +805,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orgbf3b3ba" class="outline-4">
-<h4 id="orgbf3b3ba">闭包</h4>
-<div class="outline-text-4" id="text-orgbf3b3ba">
+<div id="outline-container-orgaa24887" class="outline-4">
+<h4 id="orgaa24887">闭包</h4>
+<div class="outline-text-4" id="text-orgaa24887">
 <p>
 由于变量存在作用域, 所以函数内部可以直接读取全局变量, 而函数外部无法读取函数内部声明的变量. 要想在函数外部获得函数内部的局部变量, 就要使用闭包.
 </p>
@@ -822,13 +844,13 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orgdb11d2d" class="outline-2">
-<h2 id="orgdb11d2d">方法和接口</h2>
-<div class="outline-text-2" id="text-orgdb11d2d">
+<div id="outline-container-org8caba19" class="outline-2">
+<h2 id="org8caba19">方法和接口</h2>
+<div class="outline-text-2" id="text-org8caba19">
 </div>
-<div id="outline-container-org925e991" class="outline-3">
-<h3 id="org925e991">方法</h3>
-<div class="outline-text-3" id="text-org925e991">
+<div id="outline-container-orgd6eddca" class="outline-3">
+<h3 id="orgd6eddca">方法</h3>
+<div class="outline-text-3" id="text-orgd6eddca">
 <p>
 Go中没有类, 但可以在结构体类型上定义方法, 这样效果和类很相似.
 </p>
@@ -865,9 +887,9 @@ func main() {
 </p>
 </div>
 
-<div id="outline-container-orgef4d586" class="outline-4">
-<h4 id="orgef4d586">继承</h4>
-<div class="outline-text-4" id="text-orgef4d586">
+<div id="outline-container-org37ac005" class="outline-4">
+<h4 id="org37ac005">继承</h4>
+<div class="outline-text-4" id="text-org37ac005">
 <p>
 在Go中使用结构体的嵌套来模拟d继承.
 </p>
@@ -925,9 +947,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orge64b1dc" class="outline-3">
-<h3 id="orge64b1dc">接口</h3>
-<div class="outline-text-3" id="text-orge64b1dc">
+<div id="outline-container-org55db455" class="outline-3">
+<h3 id="org55db455">接口</h3>
+<div class="outline-text-3" id="text-org55db455">
 <p>
 如果说类是对数据和方法的抽象和封装, 那么接口就是对类的抽象.
 </p>
@@ -989,55 +1011,85 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orgf36066a" class="outline-4">
-<h4 id="orgf36066a">关于接口的更详细内容, 有空再补</h4>
+<div id="outline-container-orga72baa7" class="outline-4">
+<h4 id="orga72baa7">关于接口的更详细内容, 有空再补</h4>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org26b1524" class="outline-2">
-<h2 id="org26b1524">反射</h2>
+<div id="outline-container-org68d53a5" class="outline-2">
+<h2 id="org68d53a5">反射</h2>
 </div>
 
-<div id="outline-container-orgf9dc031" class="outline-2">
-<h2 id="orgf9dc031">并发</h2>
+<div id="outline-container-org52e0584" class="outline-2">
+<h2 id="org52e0584">并发</h2>
 </div>
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-05</span>
-        <span title="last modification date" class="post-info">2018-04-05</span>
-        <span title="tags" class="post-info"><a href="/tags/go/">Go</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-05</span>
+            <span title="last modification date" class="post-info">2018-04-05</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/go">Go</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/05/1-go基础";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/05/1-go基础";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/05/1-go基础";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/05/1-go基础";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

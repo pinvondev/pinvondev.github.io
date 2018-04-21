@@ -1,67 +1,89 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>Scala基础 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>Scala基础 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Spark" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>Scala基础</h1>
+<h1 class="title">Scala基础</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge2c32a7">内容声明</a></li>
-<li><a href="#orgd8170a7">Scala的变量</a>
+<li><a href="#orgb0b7de0">内容声明</a></li>
+<li><a href="#org63e26e1">Scala的变量</a>
 <ul>
-<li><a href="#org2bc949d">val变量</a></li>
-<li><a href="#org2a36cf0">var变量</a></li>
-<li><a href="#org50075b6">一行输入多条语句</a></li>
+<li><a href="#org6ac29af">val变量</a></li>
+<li><a href="#org9af3620">var变量</a></li>
+<li><a href="#org2f14a70">一行输入多条语句</a></li>
 </ul>
 </li>
-<li><a href="#org85532e4">基本数据类型</a>
+<li><a href="#org705901f">基本数据类型</a>
 <ul>
-<li><a href="#org2ce498f">使用方法</a></li>
-<li><a href="#org825f0fa">操作符</a></li>
+<li><a href="#org7a71105">使用方法</a></li>
+<li><a href="#org8513e6a">操作符</a></li>
 </ul>
 </li>
-<li><a href="#org63ed93f">Range</a></li>
-<li><a href="#org4143e21">打印</a></li>
-<li><a href="#orgcaa46af">读写文件</a>
+<li><a href="#org52ba6f4">Range</a></li>
+<li><a href="#orgd7b4b83">打印</a></li>
+<li><a href="#org8dcc365">读写文件</a>
 <ul>
-<li><a href="#org8b0011a">写入文本文件</a></li>
-<li><a href="#orgadb4fa1">读取文本文件中的行</a></li>
+<li><a href="#orgda75d3a">写入文本文件</a></li>
+<li><a href="#orga6b32be">读取文本文件中的行</a></li>
 </ul>
 </li>
-<li><a href="#orgbeb8a0c">if条件表达式</a>
+<li><a href="#orgb1e62d5">if条件表达式</a>
 <ul>
-<li><a href="#orge6d512d">while循环</a></li>
-<li><a href="#org8804ee4">for循环</a>
+<li><a href="#org8615ce9">while循环</a></li>
+<li><a href="#orgab93450">for循环</a>
 <ul>
-<li><a href="#org69e71a3">格式</a></li>
-<li><a href="#org7feb242">例子</a></li>
+<li><a href="#orga40fc5e">格式</a></li>
+<li><a href="#orgd7a1885">例子</a></li>
 </ul>
 </li>
 </ul>
@@ -70,18 +92,18 @@
 </div>
 </div>
 
-<div id="outline-container-orge2c32a7" class="outline-2">
-<h2 id="orge2c32a7">内容声明</h2>
-<div class="outline-text-2" id="text-orge2c32a7">
+<div id="outline-container-orgb0b7de0" class="outline-2">
+<h2 id="orgb0b7de0">内容声明</h2>
+<div class="outline-text-2" id="text-orgb0b7de0">
 <p>
 学习内容来自<a href="http://dblab.xmu.edu.cn">厦门大学数据库实验室</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd8170a7" class="outline-2">
-<h2 id="orgd8170a7">Scala的变量</h2>
-<div class="outline-text-2" id="text-orgd8170a7">
+<div id="outline-container-org63e26e1" class="outline-2">
+<h2 id="org63e26e1">Scala的变量</h2>
+<div class="outline-text-2" id="text-org63e26e1">
 <p>
 Scala有两种变量， <code>val</code> 和 <code>var</code>
 </p>
@@ -95,9 +117,9 @@ Scala有两种变量， <code>val</code> 和 <code>var</code>
 </p>
 </div>
 
-<div id="outline-container-org2bc949d" class="outline-3">
-<h3 id="org2bc949d">val变量</h3>
-<div class="outline-text-3" id="text-org2bc949d">
+<div id="outline-container-org6ac29af" class="outline-3">
+<h3 id="org6ac29af">val变量</h3>
+<div class="outline-text-3" id="text-org6ac29af">
 <p>
 使用方法：
 </p>
@@ -112,9 +134,9 @@ val mystr1 : String = "hello world"
 </div>
 </div>
 
-<div id="outline-container-org2a36cf0" class="outline-3">
-<h3 id="org2a36cf0">var变量</h3>
-<div class="outline-text-3" id="text-org2a36cf0">
+<div id="outline-container-org9af3620" class="outline-3">
+<h3 id="org9af3620">var变量</h3>
+<div class="outline-text-3" id="text-org9af3620">
 <pre class="example">
 # 声明时需要初始化
 var dPrice : Double = 3.6
@@ -125,9 +147,9 @@ dPrice = 3.0
 </div>
 </div>
 
-<div id="outline-container-org50075b6" class="outline-3">
-<h3 id="org50075b6">一行输入多条语句</h3>
-<div class="outline-text-3" id="text-org50075b6">
+<div id="outline-container-org2f14a70" class="outline-3">
+<h3 id="org2f14a70">一行输入多条语句</h3>
+<div class="outline-text-3" id="text-org2f14a70">
 <p>
 使用分号分隔多条语句。
 </p>
@@ -135,9 +157,9 @@ dPrice = 3.0
 </div>
 </div>
 
-<div id="outline-container-org85532e4" class="outline-2">
-<h2 id="org85532e4">基本数据类型</h2>
-<div class="outline-text-2" id="text-org85532e4">
+<div id="outline-container-org705901f" class="outline-2">
+<h2 id="org705901f">基本数据类型</h2>
+<div class="outline-text-2" id="text-org705901f">
 <p>
 Scala的数据类型包括：Byte, Char, Short, Int, Long, Float, Double, Boolean
 </p>
@@ -151,9 +173,9 @@ Scala中的这些数据类型都是类，在包scala内
 </p>
 </div>
 
-<div id="outline-container-org2ce498f" class="outline-3">
-<h3 id="org2ce498f">使用方法</h3>
-<div class="outline-text-3" id="text-org2ce498f">
+<div id="outline-container-org7a71105" class="outline-3">
+<h3 id="org7a71105">使用方法</h3>
+<div class="outline-text-3" id="text-org7a71105">
 <div class="org-src-container">
 <pre class="src src-scala">var i = 123
 var i = 3.14
@@ -168,9 +190,9 @@ var i = "hello"
 </div>
 </div>
 
-<div id="outline-container-org825f0fa" class="outline-3">
-<h3 id="org825f0fa">操作符</h3>
-<div class="outline-text-3" id="text-org825f0fa">
+<div id="outline-container-org8513e6a" class="outline-3">
+<h3 id="org8513e6a">操作符</h3>
+<div class="outline-text-3" id="text-org8513e6a">
 <ul class="org-ul">
 <li>- * / % &gt; &lt; &gt;= &lt;= 等。</li>
 </ul>
@@ -190,9 +212,9 @@ Scala中没有++和--操作符，需要使用+=和-=。
 </div>
 </div>
 
-<div id="outline-container-org63ed93f" class="outline-2">
-<h2 id="org63ed93f">Range</h2>
-<div class="outline-text-2" id="text-org63ed93f">
+<div id="outline-container-org52ba6f4" class="outline-2">
+<h2 id="org52ba6f4">Range</h2>
+<div class="outline-text-2" id="text-org52ba6f4">
 <p>
 Range常用在循环中。
 </p>
@@ -210,9 +232,9 @@ Range常用在循环中。
 </div>
 </div>
 
-<div id="outline-container-org4143e21" class="outline-2">
-<h2 id="org4143e21">打印</h2>
-<div class="outline-text-2" id="text-org4143e21">
+<div id="outline-container-orgd7b4b83" class="outline-2">
+<h2 id="orgd7b4b83">打印</h2>
+<div class="outline-text-2" id="text-orgd7b4b83">
 <p>
 print()
 </p>
@@ -227,13 +249,13 @@ printf()
 </div>
 </div>
 
-<div id="outline-container-orgcaa46af" class="outline-2">
-<h2 id="orgcaa46af">读写文件</h2>
-<div class="outline-text-2" id="text-orgcaa46af">
+<div id="outline-container-org8dcc365" class="outline-2">
+<h2 id="org8dcc365">读写文件</h2>
+<div class="outline-text-2" id="text-org8dcc365">
 </div>
-<div id="outline-container-org8b0011a" class="outline-3">
-<h3 id="org8b0011a">写入文本文件</h3>
-<div class="outline-text-3" id="text-org8b0011a">
+<div id="outline-container-orgda75d3a" class="outline-3">
+<h3 id="orgda75d3a">写入文本文件</h3>
+<div class="outline-text-3" id="text-orgda75d3a">
 <div class="org-src-container">
 <pre class="src src-scala">import java.io.PrintWriter
 val out = new PrintWriter("output.txt")
@@ -248,9 +270,9 @@ out.close()
 </div>
 </div>
 
-<div id="outline-container-orgadb4fa1" class="outline-3">
-<h3 id="orgadb4fa1">读取文本文件中的行</h3>
-<div class="outline-text-3" id="text-orgadb4fa1">
+<div id="outline-container-orga6b32be" class="outline-3">
+<h3 id="orga6b32be">读取文本文件中的行</h3>
+<div class="outline-text-3" id="text-orga6b32be">
 <div class="org-src-container">
 <pre class="src src-scala">import scala.io.Source
 val inputFile = Source.fromFile("output.txt")
@@ -262,9 +284,9 @@ for(line &lt;- lines) println(line)
 </div>
 </div>
 
-<div id="outline-container-orgbeb8a0c" class="outline-2">
-<h2 id="orgbeb8a0c">if条件表达式</h2>
-<div class="outline-text-2" id="text-orgbeb8a0c">
+<div id="outline-container-orgb1e62d5" class="outline-2">
+<h2 id="orgb1e62d5">if条件表达式</h2>
+<div class="outline-text-2" id="text-orgb1e62d5">
 <p>
 与Java基本一样。唯一的不同：Scala中的if表达式的判断结果，可以赋值给其他变量。
 </p>
@@ -277,22 +299,22 @@ val a = if(x&gt;0) 1 else -1
 </div>
 </div>
 
-<div id="outline-container-orge6d512d" class="outline-3">
-<h3 id="orge6d512d">while循环</h3>
-<div class="outline-text-3" id="text-orge6d512d">
+<div id="outline-container-org8615ce9" class="outline-3">
+<h3 id="org8615ce9">while循环</h3>
+<div class="outline-text-3" id="text-org8615ce9">
 <p>
 while和do-while，与Java无异。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8804ee4" class="outline-3">
-<h3 id="org8804ee4">for循环</h3>
-<div class="outline-text-3" id="text-org8804ee4">
+<div id="outline-container-orgab93450" class="outline-3">
+<h3 id="orgab93450">for循环</h3>
+<div class="outline-text-3" id="text-orgab93450">
 </div>
-<div id="outline-container-org69e71a3" class="outline-4">
-<h4 id="org69e71a3">格式</h4>
-<div class="outline-text-4" id="text-org69e71a3">
+<div id="outline-container-orga40fc5e" class="outline-4">
+<h4 id="orga40fc5e">格式</h4>
+<div class="outline-text-4" id="text-orga40fc5e">
 <div class="org-src-container">
 <pre class="src src-scala">for(变量&lt;-表达式) 语句块
 </pre>
@@ -304,9 +326,9 @@ while和do-while，与Java无异。
 </div>
 </div>
 
-<div id="outline-container-org7feb242" class="outline-4">
-<h4 id="org7feb242">例子</h4>
-<div class="outline-text-4" id="text-org7feb242">
+<div id="outline-container-orgd7a1885" class="outline-4">
+<h4 id="orgd7a1885">例子</h4>
+<div class="outline-text-4" id="text-orgd7a1885">
 <div class="org-src-container">
 <pre class="src src-scala">for(i &lt;- 1 to 5) println(i)
 
@@ -328,39 +350,69 @@ yield表示对结果构建一个集合。
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-01-03</span>
-        <span title="last modification date" class="post-info">2018-01-03</span>
-        <span title="tags" class="post-info"><a href="/tags/spark/">Spark</a></span>
-        <span title="author" class="post-info">pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-01-03</span>
+            <span title="last modification date" class="post-info">2018-01-03</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/spark">Spark</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/01/03/scala-声明值和变量";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/01/03/scala-声明值和变量";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/01/03/scala-声明值和变量";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/01/03/scala-声明值和变量";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; ubuntu">pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@ubuntu">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

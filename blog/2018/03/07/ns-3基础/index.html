@@ -1,77 +1,99 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>ns-3基础 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>ns-3基础 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="NS3" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>ns-3基础</h1>
+<h1 class="title">ns-3基础</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org25086ae">关键概念</a>
+<li><a href="#orgf01be88">关键概念</a>
 <ul>
-<li><a href="#orgb1c4037">节点</a></li>
-<li><a href="#orgf646e3c">应用</a></li>
-<li><a href="#org4424ea9">信道</a></li>
-<li><a href="#orgf8ebcaf">网络设备</a></li>
-<li><a href="#org4672cec">拓扑帮助</a></li>
+<li><a href="#org8c8570b">节点</a></li>
+<li><a href="#org7c41dd1">应用</a></li>
+<li><a href="#org7157ee4">信道</a></li>
+<li><a href="#org84810e2">网络设备</a></li>
+<li><a href="#org7b2e52f">拓扑帮助</a></li>
 </ul>
 </li>
-<li><a href="#org0faf011">优化技术</a>
+<li><a href="#org4842408">优化技术</a>
 <ul>
-<li><a href="#org27295fe">Logging系统</a>
+<li><a href="#org56d8ecf">Logging系统</a>
 <ul>
-<li><a href="#orgc2f66dc">通过环境变量修改记录系统等级</a></li>
-<li><a href="#org2d62b7b">添加附加前缀</a></li>
-<li><a href="#orgdf4e8ab">自定义Logging代码</a></li>
+<li><a href="#org2525ed2">通过环境变量修改记录系统等级</a></li>
+<li><a href="#orgaea3a51">添加附加前缀</a></li>
+<li><a href="#org3efbbcf">自定义Logging代码</a></li>
 </ul>
 </li>
-<li><a href="#org8743742">命令行参数</a></li>
-<li><a href="#orgc07ea29">Tracing系统</a>
+<li><a href="#orga60fe77">命令行参数</a></li>
+<li><a href="#org31c22f7">Tracing系统</a>
 <ul>
-<li><a href="#orgcacfbd4">ASCII Tracing</a></li>
-<li><a href="#orgfcb5a08">PCAP Tracing</a></li>
+<li><a href="#orgcbbc7ff">ASCII Tracing</a></li>
+<li><a href="#orgdfae491">PCAP Tracing</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org28e6090">编写脚本</a></li>
+<li><a href="#orgfae51e2">编写脚本</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org25086ae" class="outline-2">
-<h2 id="org25086ae">关键概念</h2>
-<div class="outline-text-2" id="text-org25086ae">
+<div id="outline-container-orgf01be88" class="outline-2">
+<h2 id="orgf01be88">关键概念</h2>
+<div class="outline-text-2" id="text-orgf01be88">
 </div>
-<div id="outline-container-orgb1c4037" class="outline-3">
-<h3 id="orgb1c4037">节点</h3>
-<div class="outline-text-3" id="text-orgb1c4037">
+<div id="outline-container-org8c8570b" class="outline-3">
+<h3 id="org8c8570b">节点</h3>
+<div class="outline-text-3" id="text-org8c8570b">
 <p>
 在ns-3中, 基本计算设备被抽象为节点.
 </p>
@@ -86,9 +108,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgf646e3c" class="outline-3">
-<h3 id="orgf646e3c">应用</h3>
-<div class="outline-text-3" id="text-orgf646e3c">
+<div id="outline-container-org7c41dd1" class="outline-3">
+<h3 id="org7c41dd1">应用</h3>
+<div class="outline-text-3" id="text-org7c41dd1">
 <p>
 在ns-3中, 需要被仿真的用户程序被抽象为应用.
 </p>
@@ -99,9 +121,9 @@
 </div>
 </div>
 
-<div id="outline-container-org4424ea9" class="outline-3">
-<h3 id="org4424ea9">信道</h3>
-<div class="outline-text-3" id="text-org4424ea9">
+<div id="outline-container-org7157ee4" class="outline-3">
+<h3 id="org7157ee4">信道</h3>
+<div class="outline-text-3" id="text-org7157ee4">
 <p>
 在现实中, 通常把网络中数据流流过的媒介称为信道. 在ns-3中, 基本的通信子网被抽象成信道.
 </p>
@@ -116,9 +138,9 @@ CsmaChannel信道模拟了一个可以用于实现载波侦听多路访问通信
 </div>
 </div>
 
-<div id="outline-container-orgf8ebcaf" class="outline-3">
-<h3 id="orgf8ebcaf">网络设备</h3>
-<div class="outline-text-3" id="text-orgf8ebcaf">
+<div id="outline-container-org84810e2" class="outline-3">
+<h3 id="org84810e2">网络设备</h3>
+<div class="outline-text-3" id="text-org84810e2">
 <p>
 在ns-3中, 通常把硬件设备和软件驱动的总和抽象成网络设备. 一个节点可以通过多个网络设备同时连接到多条信道上.
 </p>
@@ -129,9 +151,9 @@ CsmaChannel信道模拟了一个可以用于实现载波侦听多路访问通信
 </div>
 </div>
 
-<div id="outline-container-org4672cec" class="outline-3">
-<h3 id="org4672cec">拓扑帮助</h3>
-<div class="outline-text-3" id="text-org4672cec">
+<div id="outline-container-org7b2e52f" class="outline-3">
+<h3 id="org7b2e52f">拓扑帮助</h3>
+<div class="outline-text-3" id="text-org7b2e52f">
 <p>
 在大型仿真网络中, 我们需要在节点, 网络设备和信道之间部署许多连接. 既然把网络设备连接到节点、信道、配置IP地址等在ns-3中是很普遍的任务, 于是ns-3直接提供了一个叫"拓扑帮助"的东西来使这项工作变得尽可能容易. 
 </p>
@@ -143,17 +165,17 @@ CsmaChannel信道模拟了一个可以用于实现载波侦听多路访问通信
 </div>
 </div>
 
-<div id="outline-container-org0faf011" class="outline-2">
-<h2 id="org0faf011">优化技术</h2>
-<div class="outline-text-2" id="text-org0faf011">
+<div id="outline-container-org4842408" class="outline-2">
+<h2 id="org4842408">优化技术</h2>
+<div class="outline-text-2" id="text-org4842408">
 <p>
 在模拟过程中, 数据跟踪与采集的方法有很多, 大体上可以分为两类: 直接将执行过程显示在命令行中(Logging系统); 将采集到的数据直接存放在一个文件中, 以便后期的处理与分析(Tracing系统). 后者更为常用.
 </p>
 </div>
 
-<div id="outline-container-org27295fe" class="outline-3">
-<h3 id="org27295fe">Logging系统</h3>
-<div class="outline-text-3" id="text-org27295fe">
+<div id="outline-container-org56d8ecf" class="outline-3">
+<h3 id="org56d8ecf">Logging系统</h3>
+<div class="outline-text-3" id="text-org56d8ecf">
 <p>
 该系统用来向用户及时反馈命令的执行情况或者系统的运行状况. Logging系统包括7个等级:
 </p>
@@ -177,9 +199,9 @@ LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</spa
 </p>
 </div>
 
-<div id="outline-container-orgc2f66dc" class="outline-4">
-<h4 id="orgc2f66dc">通过环境变量修改记录系统等级</h4>
-<div class="outline-text-4" id="text-orgc2f66dc">
+<div id="outline-container-org2525ed2" class="outline-4">
+<h4 id="org2525ed2">通过环境变量修改记录系统等级</h4>
+<div class="outline-text-4" id="text-org2525ed2">
 <p>
 如果每次调整Logging等级都要修改代码则比较繁琐, ns-3可以通过修改环境变量的方法来修改记录系统等级. 如:
 </p>
@@ -194,13 +216,13 @@ LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</spa
 </div>
 </div>
 
-<div id="outline-container-org2d62b7b" class="outline-4">
-<h4 id="org2d62b7b">添加附加前缀</h4>
-<div class="outline-text-4" id="text-org2d62b7b">
+<div id="outline-container-orgaea3a51" class="outline-4">
+<h4 id="orgaea3a51">添加附加前缀</h4>
+<div class="outline-text-4" id="text-orgaea3a51">
 </div>
 <ul class="org-ul">
-<li><a id="org6dfc808"></a>prefix_func<br />
-<div class="outline-text-5" id="text-org6dfc808">
+<li><a id="orge537478"></a>prefix_func<br />
+<div class="outline-text-5" id="text-orge537478">
 <p>
 可以为每一条信息显示其产生函数:
 </p>
@@ -212,8 +234,8 @@ LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</spa
 </div>
 </li>
 
-<li><a id="org765700b"></a>prefix_time<br />
-<div class="outline-text-5" id="text-org765700b">
+<li><a id="orgbd8da25"></a>prefix_time<br />
+<div class="outline-text-5" id="text-orgbd8da25">
 <p>
 可以为每一条信息显示其产生时间:
 </p>
@@ -227,9 +249,9 @@ LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</spa
 </ul>
 </div>
 
-<div id="outline-container-orgdf4e8ab" class="outline-4">
-<h4 id="orgdf4e8ab">自定义Logging代码</h4>
-<div class="outline-text-4" id="text-orgdf4e8ab">
+<div id="outline-container-org3efbbcf" class="outline-4">
+<h4 id="org3efbbcf">自定义Logging代码</h4>
+<div class="outline-text-4" id="text-org3efbbcf">
 <p>
 在 <code>first.cc</code> 文件中, 有一句代码如下:
 </p>
@@ -262,17 +284,17 @@ LogComponentEnable(<span style="color: #E6DB74;">"UdpEchoServerApplication"</spa
 </div>
 </div>
 
-<div id="outline-container-org8743742" class="outline-3">
-<h3 id="org8743742">命令行参数</h3>
+<div id="outline-container-orga60fe77" class="outline-3">
+<h3 id="orga60fe77">命令行参数</h3>
 </div>
 
-<div id="outline-container-orgc07ea29" class="outline-3">
-<h3 id="orgc07ea29">Tracing系统</h3>
-<div class="outline-text-3" id="text-orgc07ea29">
+<div id="outline-container-org31c22f7" class="outline-3">
+<h3 id="org31c22f7">Tracing系统</h3>
+<div class="outline-text-3" id="text-org31c22f7">
 </div>
-<div id="outline-container-orgcacfbd4" class="outline-4">
-<h4 id="orgcacfbd4">ASCII Tracing</h4>
-<div class="outline-text-4" id="text-orgcacfbd4">
+<div id="outline-container-orgcbbc7ff" class="outline-4">
+<h4 id="orgcbbc7ff">ASCII Tracing</h4>
+<div class="outline-text-4" id="text-orgcbbc7ff">
 <p>
 ASCII Tracing的意思就是以ASCII格式的信息输出.
 </p>
@@ -291,9 +313,9 @@ pointTOPoint.EnableAsciiAll(ascii.CreateFileStream(<span style="color: #E6DB74;"
 </div>
 </div>
 
-<div id="outline-container-orgfcb5a08" class="outline-4">
-<h4 id="orgfcb5a08">PCAP Tracing</h4>
-<div class="outline-text-4" id="text-orgfcb5a08">
+<div id="outline-container-orgdfae491" class="outline-4">
+<h4 id="orgdfae491">PCAP Tracing</h4>
+<div class="outline-text-4" id="text-orgdfae491">
 <div class="org-src-container">
 <pre class="src src-C++">pointToPoint.EnablePcapAll(<span style="color: #E6DB74;">"myfirst"</span>);
 </pre>
@@ -303,45 +325,75 @@ pointTOPoint.EnableAsciiAll(ascii.CreateFileStream(<span style="color: #E6DB74;"
 </div>
 </div>
 
-<div id="outline-container-org28e6090" class="outline-2">
-<h2 id="org28e6090">编写脚本</h2>
+<div id="outline-container-orgfae51e2" class="outline-2">
+<h2 id="orgfae51e2">编写脚本</h2>
 </div>
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-07</span>
-        <span title="last modification date" class="post-info">2018-03-08</span>
-        <span title="tags" class="post-info"><a href="/tags/ns3/">NS3</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-07</span>
+            <span title="last modification date" class="post-info">2018-03-08</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/ns3">NS3</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/07/ns-3基础";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/07/ns-3基础";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/07/ns-3基础";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/07/ns-3基础";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

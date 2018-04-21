@@ -1,83 +1,105 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>五 共识 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>五 共识 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>五 共识</h1>
+<h1 class="title">五 共识</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3419b3e">概述</a></li>
-<li><a href="#org905eb93">实现数据隔离的multi-channel</a>
+<li><a href="#org74af13c">概述</a></li>
+<li><a href="#org2b55a2b">实现数据隔离的multi-channel</a>
 <ul>
-<li><a href="#orgdcdd58e">排序服务的初始化</a></li>
-<li><a href="#org77c8db7">创建channel</a></li>
-<li><a href="#org06e260c">更新channel</a>
+<li><a href="#orgf0e0dab">排序服务的初始化</a></li>
+<li><a href="#org69db9bd">创建channel</a></li>
+<li><a href="#orgeade4f3">更新channel</a>
 <ul>
-<li><a href="#org67621cb">更新通道关键点</a></li>
-<li><a href="#orga8aa1be">configtxlator工具的使用</a></li>
+<li><a href="#org3b8df98">更新通道关键点</a></li>
+<li><a href="#orgcf32123">configtxlator工具的使用</a></li>
 </ul>
 </li>
-<li><a href="#orgef74fcf">加入channel</a></li>
-<li><a href="#orgfe9f442">查询channel</a></li>
+<li><a href="#orga61ea48">加入channel</a></li>
+<li><a href="#orgd26716c">查询channel</a></li>
 </ul>
 </li>
-<li><a href="#org31fb86c">可插拔的排序服务</a>
+<li><a href="#org05ee9a0">可插拔的排序服务</a>
 <ul>
-<li><a href="#org220c86d">排序服务接口</a>
+<li><a href="#org1a8a520">排序服务接口</a>
 <ul>
-<li><a href="#org3a6bfc8">创建链的接口</a></li>
-<li><a href="#orgcaa7cc0">链消息处理的接口</a></li>
-<li><a href="#orged1c971">增加新的排序服务</a></li>
+<li><a href="#org481295f">创建链的接口</a></li>
+<li><a href="#org61ffb64">链消息处理的接口</a></li>
+<li><a href="#orgbcac7f4">增加新的排序服务</a></li>
 </ul>
 </li>
-<li><a href="#org2514498">Solo</a>
+<li><a href="#org9257f47">Solo</a>
 <ul>
-<li><a href="#orgfea5f08">创建链</a></li>
-<li><a href="#org1ef6409">接收交易请求</a></li>
-<li><a href="#org7e4c7e6">错误处理</a></li>
+<li><a href="#org5eef9ea">创建链</a></li>
+<li><a href="#org7cf87b9">接收交易请求</a></li>
+<li><a href="#org473d492">错误处理</a></li>
 </ul>
 </li>
-<li><a href="#org28ea0d1">Kafka</a>
+<li><a href="#org78ad746">Kafka</a>
 <ul>
-<li><a href="#orga62d846">创建链</a></li>
-<li><a href="#org2467c36">接收交易请求</a></li>
-<li><a href="#org47cf52b">错误处理</a></li>
+<li><a href="#org60da3ef">创建链</a></li>
+<li><a href="#orgc8797bc">接收交易请求</a></li>
+<li><a href="#org8a03c0d">错误处理</a></li>
 </ul>
 </li>
-<li><a href="#orgf6173dd">Kafka实践</a>
+<li><a href="#org72412d9">Kafka实践</a>
 <ul>
-<li><a href="#orgd8575c1">节点数</a></li>
-<li><a href="#orgd9132b0">创建genesis.block</a></li>
-<li><a href="#org836bc23">配置Kafka集群</a></li>
-<li><a href="#orgd91dfe2">连接Kafka节点出现异常时的重试设置</a></li>
-<li><a href="#org1668fdd">排序服务节点和Kafka节点之间的安全传输</a></li>
+<li><a href="#orged25b4e">节点数</a></li>
+<li><a href="#org61fbaac">创建genesis.block</a></li>
+<li><a href="#orgba33ab2">配置Kafka集群</a></li>
+<li><a href="#org4eaafb6">连接Kafka节点出现异常时的重试设置</a></li>
+<li><a href="#org2a3aa1c">排序服务节点和Kafka节点之间的安全传输</a></li>
 </ul>
 </li>
 </ul>
@@ -86,9 +108,9 @@
 </div>
 </div>
 
-<div id="outline-container-org3419b3e" class="outline-2">
-<h2 id="org3419b3e">概述</h2>
-<div class="outline-text-2" id="text-org3419b3e">
+<div id="outline-container-org74af13c" class="outline-2">
+<h2 id="org74af13c">概述</h2>
+<div class="outline-text-2" id="text-org74af13c">
 <p>
 <a href="https://docs.google.com/document/d/1eRNxxQ0P8yp4Wh__Vi6ddaN_vhN2RQHP-IruHNUwyhc/edit#heading=h.hml58k6zw29h">学习Fabric共识</a>
 </p>
@@ -99,9 +121,9 @@ PoW, PoET, RBFT, ...
 </div>
 </div>
 
-<div id="outline-container-org905eb93" class="outline-2">
-<h2 id="org905eb93">实现数据隔离的multi-channel</h2>
-<div class="outline-text-2" id="text-org905eb93">
+<div id="outline-container-org2b55a2b" class="outline-2">
+<h2 id="org2b55a2b">实现数据隔离的multi-channel</h2>
+<div class="outline-text-2" id="text-org2b55a2b">
 <p>
 Ordering Service给客户端和Peer节点提供了一个共享通信Channel, 用来实现交易的广播服务. 客户端连接到channel上, 在通道上广播的消息最终会发送到channel内部的所有Peer节点.
 </p>
@@ -112,7 +134,7 @@ Ordering Service支持multi-channel, 客户端连接到一个指定的channel上
 
 
 <div class="figure">
-<p><img src="./45.png" alt="45.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/13/五-共识/45.png" alt="45.png" />
 </p>
 </div>
 
@@ -125,9 +147,9 @@ Ordering Service支持multi-channel, 客户端连接到一个指定的channel上
 </p>
 </div>
 
-<div id="outline-container-orgdcdd58e" class="outline-3">
-<h3 id="orgdcdd58e">排序服务的初始化</h3>
-<div class="outline-text-3" id="text-orgdcdd58e">
+<div id="outline-container-orgf0e0dab" class="outline-3">
+<h3 id="orgf0e0dab">排序服务的初始化</h3>
+<div class="outline-text-3" id="text-orgf0e0dab">
 <p>
 排序服务由多个Orderer节点组成, <code>每个Orderer启动的时候, 都需要一个创世区块</code>. 创世区块内包含的信息有:
 </p>
@@ -145,9 +167,9 @@ configtxgen工具可以生成创世区块, configtxlator工具可以将区块转
 </div>
 </div>
 
-<div id="outline-container-org77c8db7" class="outline-3">
-<h3 id="org77c8db7">创建channel</h3>
-<div class="outline-text-3" id="text-org77c8db7">
+<div id="outline-container-org69db9bd" class="outline-3">
+<h3 id="org69db9bd">创建channel</h3>
+<div class="outline-text-3" id="text-org69db9bd">
 <p>
 <code>客户端可以通过SDK向Ordering Service发起创建channel的请求, 提交的内容是channtl配置交易</code>. configtxgen工具可以生成channel配置交易(同样, 可以转换成JSON格式的内容来查看).
 </p>
@@ -162,9 +184,9 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
 </div>
 </div>
 
-<div id="outline-container-org06e260c" class="outline-3">
-<h3 id="org06e260c">更新channel</h3>
-<div class="outline-text-3" id="text-org06e260c">
+<div id="outline-container-orgeade4f3" class="outline-3">
+<h3 id="orgeade4f3">更新channel</h3>
+<div class="outline-text-3" id="text-orgeade4f3">
 <p>
 可参考博客: <a href="https://www.jianshu.com/p/eb8fe7cb6f5a">动态加入组织</a>
 </p>
@@ -178,9 +200,9 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
 </p>
 </div>
 
-<div id="outline-container-org67621cb" class="outline-4">
-<h4 id="org67621cb">更新通道关键点</h4>
-<div class="outline-text-4" id="text-org67621cb">
+<div id="outline-container-org3b8df98" class="outline-4">
+<h4 id="org3b8df98">更新通道关键点</h4>
+<div class="outline-text-4" id="text-org3b8df98">
 <p>
 确定好需要修改的配置项, 离线修改后, 通过SDK或CLI发送给Orderer.
 </p>
@@ -206,9 +228,9 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
 </div>
 </div>
 
-<div id="outline-container-orga8aa1be" class="outline-4">
-<h4 id="orga8aa1be">configtxlator工具的使用</h4>
-<div class="outline-text-4" id="text-orga8aa1be">
+<div id="outline-container-orgcf32123" class="outline-4">
+<h4 id="orgcf32123">configtxlator工具的使用</h4>
+<div class="outline-text-4" id="text-orgcf32123">
 <div class="org-src-container">
 <pre class="src src-Shell">configtxlator --help
 </pre>
@@ -228,9 +250,9 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
 </div>
 </div>
 
-<div id="outline-container-orgef74fcf" class="outline-3">
-<h3 id="orgef74fcf">加入channel</h3>
-<div class="outline-text-3" id="text-orgef74fcf">
+<div id="outline-container-orga61ea48" class="outline-3">
+<h3 id="orga61ea48">加入channel</h3>
+<div class="outline-text-3" id="text-orga61ea48">
 <p>
 应用程序通过SDK或CLI向节点发送JoinChain请求, 参数为该通道的创世区块, 请求类型为HeaderType_CONFIG.
 </p>
@@ -245,9 +267,9 @@ Ordering Service接收到创建channel的请求, 会检查是否是配置交易,
 </div>
 </div>
 
-<div id="outline-container-orgfe9f442" class="outline-3">
-<h3 id="orgfe9f442">查询channel</h3>
-<div class="outline-text-3" id="text-orgfe9f442">
+<div id="outline-container-orgd26716c" class="outline-3">
+<h3 id="orgd26716c">查询channel</h3>
+<div class="outline-text-3" id="text-orgd26716c">
 <p>
 channel信息是节点本地维护的, 有一个值为chain的映射表, 在节点启动或有新channel加入时, 会更新这个映射表. 映射表的键为channelId, 遍历就能返回节点所加入的所有channel. 在CLI中, 可以输入 <code>peer channel list</code> 来查看.
 </p>
@@ -267,25 +289,25 @@ channel的配置也可查询, 如获取Orderer.
 </div>
 </div>
 
-<div id="outline-container-org31fb86c" class="outline-2">
-<h2 id="org31fb86c">可插拔的排序服务</h2>
-<div class="outline-text-2" id="text-org31fb86c">
+<div id="outline-container-org05ee9a0" class="outline-2">
+<h2 id="org05ee9a0">可插拔的排序服务</h2>
+<div class="outline-text-2" id="text-org05ee9a0">
 <p>
 目前只有两种排序服务: Solo, Kafka.
 </p>
 </div>
 
-<div id="outline-container-org220c86d" class="outline-3">
-<h3 id="org220c86d">排序服务接口</h3>
-<div class="outline-text-3" id="text-org220c86d">
+<div id="outline-container-org1a8a520" class="outline-3">
+<h3 id="org1a8a520">排序服务接口</h3>
+<div class="outline-text-3" id="text-org1a8a520">
 <p>
 排序服务的业务需要是可以实现不同的逻辑. 主要的接口有创建链, 处理链消息, 增加新的排序服务.
 </p>
 </div>
 
-<div id="outline-container-org3a6bfc8" class="outline-4">
-<h4 id="org3a6bfc8">创建链的接口</h4>
-<div class="outline-text-4" id="text-org3a6bfc8">
+<div id="outline-container-org481295f" class="outline-4">
+<h4 id="org481295f">创建链的接口</h4>
+<div class="outline-text-4" id="text-org481295f">
 <div class="org-src-container">
 <pre class="src src-Go">type Consenter interface {
     HandleChain(support ConsenterSupport, metadata *cb.Metadata) (Chain, error)
@@ -307,9 +329,9 @@ channel的配置也可查询, 如获取Orderer.
 </div>
 </div>
 
-<div id="outline-container-orgcaa7cc0" class="outline-4">
-<h4 id="orgcaa7cc0">链消息处理的接口</h4>
-<div class="outline-text-4" id="text-orgcaa7cc0">
+<div id="outline-container-org61ffb64" class="outline-4">
+<h4 id="org61ffb64">链消息处理的接口</h4>
+<div class="outline-text-4" id="text-org61ffb64">
 <p>
 排序服务接收到某个通道上的交易后, 会提交给链处理. 需要实现的接口如下:
 </p>
@@ -345,9 +367,9 @@ Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了�
 </div>
 </div>
 
-<div id="outline-container-orged1c971" class="outline-4">
-<h4 id="orged1c971">增加新的排序服务</h4>
-<div class="outline-text-4" id="text-orged1c971">
+<div id="outline-container-orgbcac7f4" class="outline-4">
+<h4 id="orgbcac7f4">增加新的排序服务</h4>
+<div class="outline-text-4" id="text-orgbcac7f4">
 <p>
 排序服务需要配置文件的支持和配置文件参数的识别.
 </p>
@@ -362,20 +384,20 @@ Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了�
 
 
 <div class="figure">
-<p><img src="./47.png" alt="47.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/13/五-共识/47.png" alt="47.png" />
 </p>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2514498" class="outline-3">
-<h3 id="org2514498">Solo</h3>
-<div class="outline-text-3" id="text-org2514498">
+<div id="outline-container-org9257f47" class="outline-3">
+<h3 id="org9257f47">Solo</h3>
+<div class="outline-text-3" id="text-org9257f47">
 </div>
-<div id="outline-container-orgfea5f08" class="outline-4">
-<h4 id="orgfea5f08">创建链</h4>
-<div class="outline-text-4" id="text-orgfea5f08">
+<div id="outline-container-org5eef9ea" class="outline-4">
+<h4 id="org5eef9ea">创建链</h4>
+<div class="outline-text-4" id="text-org5eef9ea">
 <p>
 利用Golang的并发机制, 内部构建一个接收消息的通道sendChan, 然后返回处理交易信息的链multichain.Chain:
 </p>
@@ -396,9 +418,9 @@ Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了�
 </div>
 </div>
 
-<div id="outline-container-org1ef6409" class="outline-4">
-<h4 id="org1ef6409">接收交易请求</h4>
-<div class="outline-text-4" id="text-org1ef6409">
+<div id="outline-container-org7cf87b9" class="outline-4">
+<h4 id="org7cf87b9">接收交易请求</h4>
+<div class="outline-text-4" id="text-org7cf87b9">
 <p>
 创建链以后, 通过 <code>Start()</code> 启动链的处理过程. 在Solo中, 就是启动一个线程循环的接收发送到sendChan通道的数据, 然后进行交易的切割和区块的写入.
 </p>
@@ -409,9 +431,9 @@ Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了�
 </div>
 </div>
 
-<div id="outline-container-org7e4c7e6" class="outline-4">
-<h4 id="org7e4c7e6">错误处理</h4>
-<div class="outline-text-4" id="text-org7e4c7e6">
+<div id="outline-container-org473d492" class="outline-4">
+<h4 id="org473d492">错误处理</h4>
+<div class="outline-text-4" id="text-org473d492">
 <p>
 排序服务内部如果出现异常, 会给exitChan发送消息, 外部程序可以读取Errored返回的通道, 进行异常处理.
 </p>
@@ -419,9 +441,9 @@ Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了�
 </div>
 </div>
 
-<div id="outline-container-org28ea0d1" class="outline-3">
-<h3 id="org28ea0d1">Kafka</h3>
-<div class="outline-text-3" id="text-org28ea0d1">
+<div id="outline-container-org78ad746" class="outline-3">
+<h3 id="org78ad746">Kafka</h3>
+<div class="outline-text-3" id="text-org78ad746">
 <p>
 基于Kafka的排序服务, 利用Kafka作为交易的消息队列, 实现高吞吐量的数据分发. 每个通道都对应Kafka的一个Topic, 排序服务节点在不同阶段充当不同的角色.
 </p>
@@ -431,90 +453,120 @@ Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了�
 </ol>
 </div>
 
-<div id="outline-container-orga62d846" class="outline-4">
-<h4 id="orga62d846">创建链</h4>
+<div id="outline-container-org60da3ef" class="outline-4">
+<h4 id="org60da3ef">创建链</h4>
 </div>
 
-<div id="outline-container-org2467c36" class="outline-4">
-<h4 id="org2467c36">接收交易请求</h4>
+<div id="outline-container-orgc8797bc" class="outline-4">
+<h4 id="orgc8797bc">接收交易请求</h4>
 </div>
 
-<div id="outline-container-org47cf52b" class="outline-4">
-<h4 id="org47cf52b">错误处理</h4>
+<div id="outline-container-org8a03c0d" class="outline-4">
+<h4 id="org8a03c0d">错误处理</h4>
 </div>
 </div>
 
-<div id="outline-container-orgf6173dd" class="outline-3">
-<h3 id="orgf6173dd">Kafka实践</h3>
-<div class="outline-text-3" id="text-orgf6173dd">
+<div id="outline-container-org72412d9" class="outline-3">
+<h3 id="org72412d9">Kafka实践</h3>
+<div class="outline-text-3" id="text-org72412d9">
 </div>
-<div id="outline-container-orgd8575c1" class="outline-4">
-<h4 id="orgd8575c1">节点数</h4>
-<div class="outline-text-4" id="text-orgd8575c1">
+<div id="outline-container-orged25b4e" class="outline-4">
+<h4 id="orged25b4e">节点数</h4>
+<div class="outline-text-4" id="text-orged25b4e">
 <p>
 Kafka节点数至少4个; Zookeeper节点数选奇数个, 至少为3.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd9132b0" class="outline-4">
-<h4 id="orgd9132b0">创建genesis.block</h4>
-<div class="outline-text-4" id="text-orgd9132b0">
+<div id="outline-container-org61fbaac" class="outline-4">
+<h4 id="org61fbaac">创建genesis.block</h4>
+<div class="outline-text-4" id="text-org61fbaac">
 <p>
 修改configtx.yaml文件. 主要是修改Orderer.OrdererType, Orderer.kafka.Brokers, Orderer.AbsoluteMaxBytes三个选项.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org836bc23" class="outline-4">
-<h4 id="org836bc23">配置Kafka集群</h4>
+<div id="outline-container-orgba33ab2" class="outline-4">
+<h4 id="orgba33ab2">配置Kafka集群</h4>
 </div>
 
-<div id="outline-container-orgd91dfe2" class="outline-4">
-<h4 id="orgd91dfe2">连接Kafka节点出现异常时的重试设置</h4>
+<div id="outline-container-org4eaafb6" class="outline-4">
+<h4 id="org4eaafb6">连接Kafka节点出现异常时的重试设置</h4>
 </div>
 
-<div id="outline-container-org1668fdd" class="outline-4">
-<h4 id="org1668fdd">排序服务节点和Kafka节点之间的安全传输</h4>
+<div id="outline-container-org2a3aa1c" class="outline-4">
+<h4 id="org2a3aa1c">排序服务节点和Kafka节点之间的安全传输</h4>
 </div>
 </div>
 </div>
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-13</span>
-        <span title="last modification date" class="post-info">2018-04-15</span>
-        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-13</span>
+            <span title="last modification date" class="post-info">2018-04-15</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/13/五-共识";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/五-共识";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/13/五-共识";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/五-共识";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

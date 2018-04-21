@@ -1,94 +1,116 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>Elisp学习笔记 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>Elisp学习笔记 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Emacs" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>Elisp学习笔记</h1>
+<h1 class="title">Elisp学习笔记</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org86db126">Elisp基础</a>
+<li><a href="#org2d1d9a9">Elisp基础</a>
 <ul>
-<li><a href="#org8baf4dc">程序的执行方法</a></li>
-<li><a href="#orgb068dc5">打印</a></li>
-<li><a href="#orge002687">算术表达式</a></li>
-<li><a href="#org8600e57">布尔</a>
+<li><a href="#orgfa3657a">程序的执行方法</a></li>
+<li><a href="#org65bfdba">打印</a></li>
+<li><a href="#org5735fbb">算术表达式</a></li>
+<li><a href="#org4dd049e">布尔</a>
 <ul>
-<li><a href="#orgcb8fe98">布尔函数</a></li>
+<li><a href="#orgac24483">布尔函数</a></li>
 </ul>
 </li>
-<li><a href="#org3c108a1">变量</a>
+<li><a href="#org8505e4a">变量</a>
 <ul>
-<li><a href="#orgd1b580c">全局变量</a></li>
-<li><a href="#org5f5a9f7">局部变量</a></li>
+<li><a href="#orgdc54c7c">全局变量</a></li>
+<li><a href="#orgb2ab93c">局部变量</a></li>
 </ul>
 </li>
-<li><a href="#org5f17db9">程序控制</a>
+<li><a href="#org1e89042">程序控制</a>
 <ul>
-<li><a href="#orgda89a6d">if-else</a></li>
-<li><a href="#org591db8d">loop</a></li>
+<li><a href="#org576b420">if-else</a></li>
+<li><a href="#org15561b1">loop</a></li>
 </ul>
 </li>
-<li><a href="#org90fe04f">语句块</a></li>
-<li><a href="#orgd5390ed">函数</a></li>
-<li><a href="#org5f2e4ea">命令</a></li>
+<li><a href="#org6aa79e0">语句块</a></li>
+<li><a href="#orgbf32a34">函数</a></li>
+<li><a href="#org68b2839">命令</a></li>
 </ul>
 </li>
-<li><a href="#org55d481d">Elisp文本操作</a>
+<li><a href="#org4dd377e">Elisp文本操作</a>
 <ul>
-<li><a href="#org19237d4">光标位置</a></li>
-<li><a href="#org8545826">移动光标</a></li>
-<li><a href="#org7aed223">删除、插入、修改文本</a></li>
-<li><a href="#orgfae6bf1">String</a></li>
-<li><a href="#orgf1d2e9f">Buffer</a></li>
-<li><a href="#org2ce5a28">File</a></li>
+<li><a href="#org804639f">光标位置</a></li>
+<li><a href="#orgd8f44df">移动光标</a></li>
+<li><a href="#org24f36b7">删除、插入、修改文本</a></li>
+<li><a href="#org7b381ec">String</a></li>
+<li><a href="#orgd2e9fb7">Buffer</a></li>
+<li><a href="#org28a72d7">File</a></li>
 </ul>
 </li>
-<li><a href="#org421c6ac">例子</a>
+<li><a href="#orgd8a6a9f">例子</a>
 <ul>
-<li><a href="#org3365b49">插入文本</a></li>
-<li><a href="#org43effe7">在指定区域插入文本</a></li>
-<li><a href="#org5ac8182">选中指定区域</a></li>
-<li><a href="#org50503f7">替换区域内的文字</a></li>
+<li><a href="#orge5c9ef9">插入文本</a></li>
+<li><a href="#org417521c">在指定区域插入文本</a></li>
+<li><a href="#org980a00c">选中指定区域</a></li>
+<li><a href="#org8a6ab04">替换区域内的文字</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org86db126" class="outline-2">
-<h2 id="org86db126">Elisp基础</h2>
-<div class="outline-text-2" id="text-org86db126">
+<div id="outline-container-org2d1d9a9" class="outline-2">
+<h2 id="org2d1d9a9">Elisp基础</h2>
+<div class="outline-text-2" id="text-org2d1d9a9">
 </div>
-<div id="outline-container-org8baf4dc" class="outline-3">
-<h3 id="org8baf4dc">程序的执行方法</h3>
-<div class="outline-text-3" id="text-org8baf4dc">
+<div id="outline-container-orgfa3657a" class="outline-3">
+<h3 id="orgfa3657a">程序的执行方法</h3>
+<div class="outline-text-3" id="text-orgfa3657a">
 <ul class="org-ul">
 <li>写完代码后, 将光标停在右括号后面, 键入 <code>C-x C-e</code>.</li>
 <li>在 <code>*scratch*</code> 里写完代码后, 将光标停在右括号后面, 键入 <code>C-j</code>.</li>
@@ -96,9 +118,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgb068dc5" class="outline-3">
-<h3 id="orgb068dc5">打印</h3>
-<div class="outline-text-3" id="text-orgb068dc5">
+<div id="outline-container-org65bfdba" class="outline-3">
+<h3 id="org65bfdba">打印</h3>
+<div class="outline-text-3" id="text-org65bfdba">
 <div class="org-src-container">
 <pre class="src src-Elisp">(message "hi")
 (message "Her age is: %d" 16)
@@ -107,9 +129,9 @@
 </div>
 </div>
 
-<div id="outline-container-orge002687" class="outline-3">
-<h3 id="orge002687">算术表达式</h3>
-<div class="outline-text-3" id="text-orge002687">
+<div id="outline-container-org5735fbb" class="outline-3">
+<h3 id="org5735fbb">算术表达式</h3>
+<div class="outline-text-3" id="text-org5735fbb">
 <p>
 Elisp使用前缀表达式.
 </p>
@@ -138,17 +160,17 @@ Elisp使用前缀表达式.
 </div>
 </div>
 
-<div id="outline-container-org8600e57" class="outline-3">
-<h3 id="org8600e57">布尔</h3>
-<div class="outline-text-3" id="text-org8600e57">
+<div id="outline-container-org4dd049e" class="outline-3">
+<h3 id="org4dd049e">布尔</h3>
+<div class="outline-text-3" id="text-org4dd049e">
 <p>
 nil和空括号()为False, 其余都是t(也就是True). 
 </p>
 </div>
 
-<div id="outline-container-orgcb8fe98" class="outline-4">
-<h4 id="orgcb8fe98">布尔函数</h4>
-<div class="outline-text-4" id="text-orgcb8fe98">
+<div id="outline-container-orgac24483" class="outline-4">
+<h4 id="orgac24483">布尔函数</h4>
+<div class="outline-text-4" id="text-orgac24483">
 <div class="org-src-container">
 <pre class="src src-Elisp">(and t nil)
 (or t nil)
@@ -167,13 +189,13 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org3c108a1" class="outline-3">
-<h3 id="org3c108a1">变量</h3>
-<div class="outline-text-3" id="text-org3c108a1">
+<div id="outline-container-org8505e4a" class="outline-3">
+<h3 id="org8505e4a">变量</h3>
+<div class="outline-text-3" id="text-org8505e4a">
 </div>
-<div id="outline-container-orgd1b580c" class="outline-4">
-<h4 id="orgd1b580c">全局变量</h4>
-<div class="outline-text-4" id="text-orgd1b580c">
+<div id="outline-container-orgdc54c7c" class="outline-4">
+<h4 id="orgdc54c7c">全局变量</h4>
+<div class="outline-text-4" id="text-orgdc54c7c">
 <div class="org-src-container">
 <pre class="src src-Elisp">(setq x 1)
 </pre>
@@ -181,9 +203,9 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org5f5a9f7" class="outline-4">
-<h4 id="org5f5a9f7">局部变量</h4>
-<div class="outline-text-4" id="text-org5f5a9f7">
+<div id="outline-container-orgb2ab93c" class="outline-4">
+<h4 id="orgb2ab93c">局部变量</h4>
+<div class="outline-text-4" id="text-orgb2ab93c">
 <div class="org-src-container">
 <pre class="src src-Elisp">(let (a b)
   (setq a 3)
@@ -207,13 +229,13 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org5f17db9" class="outline-3">
-<h3 id="org5f17db9">程序控制</h3>
-<div class="outline-text-3" id="text-org5f17db9">
+<div id="outline-container-org1e89042" class="outline-3">
+<h3 id="org1e89042">程序控制</h3>
+<div class="outline-text-3" id="text-org1e89042">
 </div>
-<div id="outline-container-orgda89a6d" class="outline-4">
-<h4 id="orgda89a6d">if-else</h4>
-<div class="outline-text-4" id="text-orgda89a6d">
+<div id="outline-container-org576b420" class="outline-4">
+<h4 id="org576b420">if-else</h4>
+<div class="outline-text-4" id="text-org576b420">
 <p>
 (if test body)
 (if test true_body false_body)
@@ -226,9 +248,9 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org591db8d" class="outline-4">
-<h4 id="org591db8d">loop</h4>
-<div class="outline-text-4" id="text-org591db8d">
+<div id="outline-container-org15561b1" class="outline-4">
+<h4 id="org15561b1">loop</h4>
+<div class="outline-text-4" id="text-org15561b1">
 <p>
 (while test body)
 </p>
@@ -244,9 +266,9 @@ nil和空括号()为False, 其余都是t(也就是True).
 </div>
 </div>
 
-<div id="outline-container-org90fe04f" class="outline-3">
-<h3 id="org90fe04f">语句块</h3>
-<div class="outline-text-3" id="text-org90fe04f">
+<div id="outline-container-org6aa79e0" class="outline-3">
+<h3 id="org6aa79e0">语句块</h3>
+<div class="outline-text-3" id="text-org6aa79e0">
 <p>
 (progn (body1) (body2) ...)
 </p>
@@ -257,9 +279,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-orgd5390ed" class="outline-3">
-<h3 id="orgd5390ed">函数</h3>
-<div class="outline-text-3" id="text-orgd5390ed">
+<div id="outline-container-orgbf32a34" class="outline-3">
+<h3 id="orgbf32a34">函数</h3>
+<div class="outline-text-3" id="text-orgbf32a34">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun myFun ()
     "test"
@@ -269,9 +291,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org5f2e4ea" class="outline-3">
-<h3 id="org5f2e4ea">命令</h3>
-<div class="outline-text-3" id="text-org5f2e4ea">
+<div id="outline-container-org68b2839" class="outline-3">
+<h3 id="org68b2839">命令</h3>
+<div class="outline-text-3" id="text-org68b2839">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun myCom ()
     "test command"
@@ -282,13 +304,13 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 </div>
-<div id="outline-container-org55d481d" class="outline-2">
-<h2 id="org55d481d">Elisp文本操作</h2>
-<div class="outline-text-2" id="text-org55d481d">
+<div id="outline-container-org4dd377e" class="outline-2">
+<h2 id="org4dd377e">Elisp文本操作</h2>
+<div class="outline-text-2" id="text-org4dd377e">
 </div>
-<div id="outline-container-org19237d4" class="outline-3">
-<h3 id="org19237d4">光标位置</h3>
-<div class="outline-text-3" id="text-org19237d4">
+<div id="outline-container-org804639f" class="outline-3">
+<h3 id="org804639f">光标位置</h3>
+<div class="outline-text-3" id="text-org804639f">
 <div class="org-src-container">
 <pre class="src src-Elisp">(point)  ;;  返回当前光标的位置, 从1开始.
 
@@ -305,9 +327,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org8545826" class="outline-3">
-<h3 id="org8545826">移动光标</h3>
-<div class="outline-text-3" id="text-org8545826">
+<div id="outline-container-orgd8f44df" class="outline-3">
+<h3 id="orgd8f44df">移动光标</h3>
+<div class="outline-text-3" id="text-orgd8f44df">
 <div class="org-src-container">
 <pre class="src src-Elisp">(goto-char 39)  ;;  跳到第39个位置
 
@@ -327,9 +349,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org7aed223" class="outline-3">
-<h3 id="org7aed223">删除、插入、修改文本</h3>
-<div class="outline-text-3" id="text-org7aed223">
+<div id="outline-container-org24f36b7" class="outline-3">
+<h3 id="org24f36b7">删除、插入、修改文本</h3>
+<div class="outline-text-3" id="text-org24f36b7">
 <div class="org-src-container">
 <pre class="src src-Elisp">(delete-char 9)
 (delete-region 3 10)
@@ -341,9 +363,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-orgfae6bf1" class="outline-3">
-<h3 id="orgfae6bf1">String</h3>
-<div class="outline-text-3" id="text-orgfae6bf1">
+<div id="outline-container-org7b381ec" class="outline-3">
+<h3 id="org7b381ec">String</h3>
+<div class="outline-text-3" id="text-org7b381ec">
 <div class="org-src-container">
 <pre class="src src-Elisp">(length "abc")  ;;  返回字符串长度
 (substring "abcdefg" 3 4)  ;;  截取字符串
@@ -353,9 +375,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-orgf1d2e9f" class="outline-3">
-<h3 id="orgf1d2e9f">Buffer</h3>
-<div class="outline-text-3" id="text-orgf1d2e9f">
+<div id="outline-container-orgd2e9fb7" class="outline-3">
+<h3 id="orgd2e9fb7">Buffer</h3>
+<div class="outline-text-3" id="text-orgd2e9fb7">
 <div class="org-src-container">
 <pre class="src src-Elisp">(buffer-name)  ;;  返回当前buffer名称
 (buffer-file-name)  ;;  返回当前文件的完整路径
@@ -367,9 +389,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org2ce5a28" class="outline-3">
-<h3 id="org2ce5a28">File</h3>
-<div class="outline-text-3" id="text-org2ce5a28">
+<div id="outline-container-org28a72d7" class="outline-3">
+<h3 id="org28a72d7">File</h3>
+<div class="outline-text-3" id="text-org28a72d7">
 <pre class="example">
 (find-file "~/")  ;;  打开指定文件
 (write-file path)  ;;  相当于save as
@@ -387,13 +409,13 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org421c6ac" class="outline-2">
-<h2 id="org421c6ac">例子</h2>
-<div class="outline-text-2" id="text-org421c6ac">
+<div id="outline-container-orgd8a6a9f" class="outline-2">
+<h2 id="orgd8a6a9f">例子</h2>
+<div class="outline-text-2" id="text-orgd8a6a9f">
 </div>
-<div id="outline-container-org3365b49" class="outline-3">
-<h3 id="org3365b49">插入文本</h3>
-<div class="outline-text-3" id="text-org3365b49">
+<div id="outline-container-orge5c9ef9" class="outline-3">
+<h3 id="orge5c9ef9">插入文本</h3>
+<div class="outline-text-3" id="text-orge5c9ef9">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun insert-p-tag ()
   "Insert &lt;p&gt;&lt;/p&gt; at cursor point."
@@ -408,9 +430,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org43effe7" class="outline-3">
-<h3 id="org43effe7">在指定区域插入文本</h3>
-<div class="outline-text-3" id="text-org43effe7">
+<div id="outline-container-org417521c" class="outline-3">
+<h3 id="org417521c">在指定区域插入文本</h3>
+<div class="outline-text-3" id="text-org417521c">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun wrap-makup-region (start end)
   "Insert a markup &lt;b&gt;&lt;/b&gt; around a region."
@@ -423,9 +445,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org5ac8182" class="outline-3">
-<h3 id="org5ac8182">选中指定区域</h3>
-<div class="outline-text-3" id="text-org5ac8182">
+<div id="outline-container-org980a00c" class="outline-3">
+<h3 id="org980a00c">选中指定区域</h3>
+<div class="outline-text-3" id="text-org980a00c">
 <p>
 选中当前单词:
 </p>
@@ -457,9 +479,9 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 </div>
 </div>
 
-<div id="outline-container-org50503f7" class="outline-3">
-<h3 id="org50503f7">替换区域内的文字</h3>
-<div class="outline-text-3" id="text-org50503f7">
+<div id="outline-container-org8a6ab04" class="outline-3">
+<h3 id="org8a6ab04">替换区域内的文字</h3>
+<div class="outline-text-3" id="text-org8a6ab04">
 <div class="org-src-container">
 <pre class="src src-Elisp">(defun replace-greek-region (start end)
   "Replace specific words to other words in current region."
@@ -477,39 +499,69 @@ progn可以把多个表达式包含在一个语句块里, 类似于C的{...}.
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-05</span>
-        <span title="last modification date" class="post-info">2018-03-06</span>
-        <span title="tags" class="post-info"><a href="/tags/emacs/">Emacs</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-05</span>
+            <span title="last modification date" class="post-info">2018-03-06</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/emacs">Emacs</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/05/elisp学习笔记";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/05/elisp学习笔记";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/05/elisp学习笔记";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/05/elisp学习笔记";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

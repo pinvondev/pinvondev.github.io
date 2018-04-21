@@ -1,122 +1,144 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>Docker从入门到实践-笔记 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>Docker从入门到实践-笔记 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Docker" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>Docker从入门到实践-笔记</h1>
+<h1 class="title">Docker从入门到实践-笔记</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7e68636">Docker简介</a>
+<li><a href="#org86b62f9">Docker简介</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org730b214">什么是Docker</a></li>
-<li><a href="#org236352a">Docker的好处</a></li>
+<li><a href="#org0f602e6">什么是Docker</a></li>
+<li><a href="#orgbf6219c">Docker的好处</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org22eb840">基本概念</a>
+<li><a href="#org203bbde">基本概念</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org02dac01">镜像</a></li>
-<li><a href="#org19af920">容器</a></li>
-<li><a href="#org6b84cdc">仓库(Docker Registry)</a></li>
+<li><a href="#org405e1a6">镜像</a></li>
+<li><a href="#orgce251b0">容器</a></li>
+<li><a href="#orgbfda2ef">仓库(Docker Registry)</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgd13328f">安装Docker</a>
+<li><a href="#orgebe39f1">安装Docker</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgbc7f7a8">卸载旧版本</a></li>
-<li><a href="#org0eeb5b8">安装</a></li>
-<li><a href="#org8f4255f">使用镜像加速器</a></li>
+<li><a href="#org6b99c5d">卸载旧版本</a></li>
+<li><a href="#org707f7da">安装</a></li>
+<li><a href="#orgd1c400b">使用镜像加速器</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgc7834c1">使用镜像</a>
+<li><a href="#org58cece7">使用镜像</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org0d55b8b">获取镜像</a></li>
-<li><a href="#org8576709">列出镜像</a></li>
-<li><a href="#org84bfe83">删除本地镜像</a></li>
-<li><a href="#orgc83aae7">使用Dockerfile定制镜像</a></li>
+<li><a href="#orgb7dca1c">获取镜像</a></li>
+<li><a href="#org21fdeca">列出镜像</a></li>
+<li><a href="#org37a5f07">删除本地镜像</a></li>
+<li><a href="#org14b5679">使用Dockerfile定制镜像</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org8bd70d8">操作容器</a>
+<li><a href="#org1907675">操作容器</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgd031f63">启动</a></li>
-<li><a href="#orga28e661">后台运行</a></li>
-<li><a href="#org3c0a242">终止容器</a></li>
-<li><a href="#org91eeb04">进入容器</a></li>
-<li><a href="#org9841377">导入导出</a></li>
-<li><a href="#org63dd9ee">删除容器</a></li>
+<li><a href="#org3829238">启动</a></li>
+<li><a href="#org517c734">后台运行</a></li>
+<li><a href="#org4cb10e0">终止容器</a></li>
+<li><a href="#org94b1291">进入容器</a></li>
+<li><a href="#orgd44a21f">导入导出</a></li>
+<li><a href="#org957c93f">删除容器</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orga0ed6db">访问仓库</a>
+<li><a href="#orgc020879">访问仓库</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org9f837e1">Docker Hub</a></li>
+<li><a href="#orga860110">Docker Hub</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org2dcf6f8">Compose项目</a>
+<li><a href="#org8ee00fd">Compose项目</a>
 <ul>
-<li><a href="#orga2901a8">安装</a></li>
-<li><a href="#org85059fe">命令说明</a></li>
-<li><a href="#org3369a80">模板文件</a>
+<li><a href="#org4364d27">安装</a></li>
+<li><a href="#org3fe85e1">命令说明</a></li>
+<li><a href="#org24d4255">模板文件</a>
 <ul>
-<li><a href="#orgc164940">build</a></li>
-<li><a href="#org27a4096">cap_add, cap_drop</a></li>
-<li><a href="#org92410c2">command</a></li>
-<li><a href="#org2101468">container_name</a></li>
-<li><a href="#orge667739">devices</a></li>
-<li><a href="#org55aa006">depends_on</a></li>
-<li><a href="#orge0a4843">expose</a></li>
-<li><a href="#orgbe39ac5">extra_hosts</a></li>
-<li><a href="#org6c3d6b5">image</a></li>
-<li><a href="#org9a2cf06">ports</a></li>
-<li><a href="#orgc19567d">volumes</a></li>
+<li><a href="#org4889d0e">build</a></li>
+<li><a href="#org6e7704b">cap_add, cap_drop</a></li>
+<li><a href="#org19f39a3">command</a></li>
+<li><a href="#org26b0440">container_name</a></li>
+<li><a href="#org74eadd0">devices</a></li>
+<li><a href="#org6f333ab">depends_on</a></li>
+<li><a href="#org7ed2e93">expose</a></li>
+<li><a href="#orge2a1971">extra_hosts</a></li>
+<li><a href="#orge7fa631">image</a></li>
+<li><a href="#org41fa02b">ports</a></li>
+<li><a href="#org18c08e4">volumes</a></li>
 </ul>
 </li>
 </ul>
@@ -125,13 +147,13 @@
 </div>
 </div>
 
-<div id="outline-container-org7e68636" class="outline-2">
-<h2 id="org7e68636">Docker简介</h2>
-<div class="outline-text-2" id="text-org7e68636">
+<div id="outline-container-org86b62f9" class="outline-2">
+<h2 id="org86b62f9">Docker简介</h2>
+<div class="outline-text-2" id="text-org86b62f9">
 </div>
-<div id="outline-container-org730b214" class="outline-4">
-<h4 id="org730b214">什么是Docker</h4>
-<div class="outline-text-4" id="text-org730b214">
+<div id="outline-container-org0f602e6" class="outline-4">
+<h4 id="org0f602e6">什么是Docker</h4>
+<div class="outline-text-4" id="text-org0f602e6">
 <p>
 传统虚拟机技术: 虚拟出一套硬件后, 在其上运行一个完整操作系统, 在该系统上再运行所需应用进程.
 </p>
@@ -146,15 +168,15 @@ Docker: 容器内的应用进程直接运行在宿主的内核上, 容器内没�
 
 
 <div class="figure">
-<p><img src="./0.png" alt="0.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/28/docker从入门到实践-笔记/0.png" alt="0.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org236352a" class="outline-4">
-<h4 id="org236352a">Docker的好处</h4>
-<div class="outline-text-4" id="text-org236352a">
+<div id="outline-container-orgbf6219c" class="outline-4">
+<h4 id="orgbf6219c">Docker的好处</h4>
+<div class="outline-text-4" id="text-orgbf6219c">
 <p>
 更高效的利用系统资源: 不需要进行硬件虚拟及运行完整操作系统等额外开销.
 </p>
@@ -178,13 +200,13 @@ Docker: 容器内的应用进程直接运行在宿主的内核上, 容器内没�
 </div>
 </div>
 
-<div id="outline-container-org22eb840" class="outline-2">
-<h2 id="org22eb840">基本概念</h2>
-<div class="outline-text-2" id="text-org22eb840">
+<div id="outline-container-org203bbde" class="outline-2">
+<h2 id="org203bbde">基本概念</h2>
+<div class="outline-text-2" id="text-org203bbde">
 </div>
-<div id="outline-container-org02dac01" class="outline-4">
-<h4 id="org02dac01">镜像</h4>
-<div class="outline-text-4" id="text-org02dac01">
+<div id="outline-container-org405e1a6" class="outline-4">
+<h4 id="org405e1a6">镜像</h4>
+<div class="outline-text-4" id="text-org405e1a6">
 <p>
 操作系统分为内核和用户空间, 对于Linux而言, 内核启动后会挂载root文件系统为其提供用户空间支持.
 </p>
@@ -199,18 +221,18 @@ Docker镜像就是一个特殊的文件系统, 提供了容器运行时所需的
 </div>
 </div>
 
-<div id="outline-container-org19af920" class="outline-4">
-<h4 id="org19af920">容器</h4>
-<div class="outline-text-4" id="text-org19af920">
+<div id="outline-container-orgce251b0" class="outline-4">
+<h4 id="orgce251b0">容器</h4>
+<div class="outline-text-4" id="text-orgce251b0">
 <p>
 镜像和容器的关系, 就像是面向对象程序设计中的类和实例的关系一样. 镜像是静态的定义, 容器是镜像运行时的实体, 容器可以被创建, 启动, 停止, 删除, 暂停等.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org6b84cdc" class="outline-4">
-<h4 id="org6b84cdc">仓库(Docker Registry)</h4>
-<div class="outline-text-4" id="text-org6b84cdc">
+<div id="outline-container-orgbfda2ef" class="outline-4">
+<h4 id="orgbfda2ef">仓库(Docker Registry)</h4>
+<div class="outline-text-4" id="text-orgbfda2ef">
 <p>
 镜像构建完成后, 可以很容易地在当前宿主机器上运行, 而如果需要在其他主机上使用该镜像, 就需要一个集中的存储, 分发镜像的服务, Docker Registry就是这样的服务.
 </p>
@@ -239,17 +261,17 @@ Docker Registry公开服务是开放给用户使用, 允许用户管理镜像的
 </div>
 
 
-<div id="outline-container-orgd13328f" class="outline-2">
-<h2 id="orgd13328f">安装Docker</h2>
-<div class="outline-text-2" id="text-orgd13328f">
+<div id="outline-container-orgebe39f1" class="outline-2">
+<h2 id="orgebe39f1">安装Docker</h2>
+<div class="outline-text-2" id="text-orgebe39f1">
 <p>
 以Ubuntu为例.
 </p>
 </div>
 
-<div id="outline-container-orgbc7f7a8" class="outline-4">
-<h4 id="orgbc7f7a8">卸载旧版本</h4>
-<div class="outline-text-4" id="text-orgbc7f7a8">
+<div id="outline-container-org6b99c5d" class="outline-4">
+<h4 id="org6b99c5d">卸载旧版本</h4>
+<div class="outline-text-4" id="text-org6b99c5d">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt-get remove docker docker-engine docker.io
 </pre>
@@ -257,9 +279,9 @@ Docker Registry公开服务是开放给用户使用, 允许用户管理镜像的
 </div>
 </div>
 
-<div id="outline-container-org0eeb5b8" class="outline-4">
-<h4 id="org0eeb5b8">安装</h4>
-<div class="outline-text-4" id="text-org0eeb5b8">
+<div id="outline-container-org707f7da" class="outline-4">
+<h4 id="org707f7da">安装</h4>
+<div class="outline-text-4" id="text-org707f7da">
 <div class="org-src-container">
 <pre class="src src-Shell"># 将官方Docker资源库的GPG密钥添加到系统
 sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
@@ -299,9 +321,9 @@ docker
 </div>
 </div>
 
-<div id="outline-container-org8f4255f" class="outline-4">
-<h4 id="org8f4255f">使用镜像加速器</h4>
-<div class="outline-text-4" id="text-org8f4255f">
+<div id="outline-container-orgd1c400b" class="outline-4">
+<h4 id="orgd1c400b">使用镜像加速器</h4>
+<div class="outline-text-4" id="text-orgd1c400b">
 <p>
 对于Ubuntu 16.04LTS, 在 <code>/etc/docker/daemon.json</code> 中写入如下内容(若文件不存在则新建):
 </p>
@@ -335,13 +357,13 @@ sudo systemctl restart docker
 </div>
 </div>
 
-<div id="outline-container-orgc7834c1" class="outline-2">
-<h2 id="orgc7834c1">使用镜像</h2>
-<div class="outline-text-2" id="text-orgc7834c1">
+<div id="outline-container-org58cece7" class="outline-2">
+<h2 id="org58cece7">使用镜像</h2>
+<div class="outline-text-2" id="text-org58cece7">
 </div>
-<div id="outline-container-org0d55b8b" class="outline-4">
-<h4 id="org0d55b8b">获取镜像</h4>
-<div class="outline-text-4" id="text-org0d55b8b">
+<div id="outline-container-orgb7dca1c" class="outline-4">
+<h4 id="orgb7dca1c">获取镜像</h4>
+<div class="outline-text-4" id="text-orgb7dca1c">
 <p>
 从Docker镜像仓库获取镜像的命令是 <code>docker pull [选项] [Docker Registry地址[:端口号]/]仓库名[:标签]</code>.
 </p>
@@ -375,9 +397,9 @@ bash: 表示使用bash shell.
 </div>
 </div>
 
-<div id="outline-container-org8576709" class="outline-4">
-<h4 id="org8576709">列出镜像</h4>
-<div class="outline-text-4" id="text-org8576709">
+<div id="outline-container-org21fdeca" class="outline-4">
+<h4 id="org21fdeca">列出镜像</h4>
+<div class="outline-text-4" id="text-org21fdeca">
 <p>
 <code>docker images</code>.
 </p>
@@ -400,9 +422,9 @@ bash: 表示使用bash shell.
 </div>
 </div>
 
-<div id="outline-container-org84bfe83" class="outline-4">
-<h4 id="org84bfe83">删除本地镜像</h4>
-<div class="outline-text-4" id="text-org84bfe83">
+<div id="outline-container-org37a5f07" class="outline-4">
+<h4 id="org37a5f07">删除本地镜像</h4>
+<div class="outline-text-4" id="text-org37a5f07">
 <div class="org-src-container">
 <pre class="src src-Shell">docker image rmi [image-id]
 </pre>
@@ -413,9 +435,9 @@ bash: 表示使用bash shell.
 </div>
 </div>
 
-<div id="outline-container-orgc83aae7" class="outline-4">
-<h4 id="orgc83aae7">使用Dockerfile定制镜像</h4>
-<div class="outline-text-4" id="text-orgc83aae7">
+<div id="outline-container-org14b5679" class="outline-4">
+<h4 id="org14b5679">使用Dockerfile定制镜像</h4>
+<div class="outline-text-4" id="text-org14b5679">
 <p>
 镜像的定制, 实际上是定制每一层所添加的配置和文件.
 </p>
@@ -470,13 +492,13 @@ Dockerfile会为每一条指令建立一层.
 </div>
 </div>
 
-<div id="outline-container-org8bd70d8" class="outline-2">
-<h2 id="org8bd70d8">操作容器</h2>
-<div class="outline-text-2" id="text-org8bd70d8">
+<div id="outline-container-org1907675" class="outline-2">
+<h2 id="org1907675">操作容器</h2>
+<div class="outline-text-2" id="text-org1907675">
 </div>
-<div id="outline-container-orgd031f63" class="outline-4">
-<h4 id="orgd031f63">启动</h4>
-<div class="outline-text-4" id="text-orgd031f63">
+<div id="outline-container-org3829238" class="outline-4">
+<h4 id="org3829238">启动</h4>
+<div class="outline-text-4" id="text-org3829238">
 <div class="org-src-container">
 <pre class="src src-Shell">docker run -it ubuntu:16.04 bash
 </pre>
@@ -484,9 +506,9 @@ Dockerfile会为每一条指令建立一层.
 </div>
 </div>
 
-<div id="outline-container-orga28e661" class="outline-4">
-<h4 id="orga28e661">后台运行</h4>
-<div class="outline-text-4" id="text-orga28e661">
+<div id="outline-container-org517c734" class="outline-4">
+<h4 id="org517c734">后台运行</h4>
+<div class="outline-text-4" id="text-org517c734">
 <p>
 后台运行使用 <code>-d</code> 参数.
 </p>
@@ -505,9 +527,9 @@ docker container logs
 </div>
 </div>
 
-<div id="outline-container-org3c0a242" class="outline-4">
-<h4 id="org3c0a242">终止容器</h4>
-<div class="outline-text-4" id="text-org3c0a242">
+<div id="outline-container-org4cb10e0" class="outline-4">
+<h4 id="org4cb10e0">终止容器</h4>
+<div class="outline-text-4" id="text-org4cb10e0">
 <div class="org-src-container">
 <pre class="src src-Shell">docker container stop [container name]
 
@@ -524,9 +546,9 @@ docker container restart [container name]
 </div>
 </div>
 
-<div id="outline-container-org91eeb04" class="outline-4">
-<h4 id="org91eeb04">进入容器</h4>
-<div class="outline-text-4" id="text-org91eeb04">
+<div id="outline-container-org94b1291" class="outline-4">
+<h4 id="org94b1291">进入容器</h4>
+<div class="outline-text-4" id="text-org94b1291">
 <div class="org-src-container">
 <pre class="src src-Shell">docker exec -it [container name] bash
 </pre>
@@ -534,9 +556,9 @@ docker container restart [container name]
 </div>
 </div>
 
-<div id="outline-container-org9841377" class="outline-4">
-<h4 id="org9841377">导入导出</h4>
-<div class="outline-text-4" id="text-org9841377">
+<div id="outline-container-orgd44a21f" class="outline-4">
+<h4 id="orgd44a21f">导入导出</h4>
+<div class="outline-text-4" id="text-orgd44a21f">
 <p>
 导出:
 </p>
@@ -559,9 +581,9 @@ docker export 7691a814370e &gt; ubuntu.tar
 </div>
 </div>
 
-<div id="outline-container-org63dd9ee" class="outline-4">
-<h4 id="org63dd9ee">删除容器</h4>
-<div class="outline-text-4" id="text-org63dd9ee">
+<div id="outline-container-org957c93f" class="outline-4">
+<h4 id="org957c93f">删除容器</h4>
+<div class="outline-text-4" id="text-org957c93f">
 <div class="org-src-container">
 <pre class="src src-Shell"># 删除一个处于终止状态的容器
 docker container rm test
@@ -575,9 +597,9 @@ docker container prune
 </div>
 </div>
 
-<div id="outline-container-orga0ed6db" class="outline-2">
-<h2 id="orga0ed6db">访问仓库</h2>
-<div class="outline-text-2" id="text-orga0ed6db">
+<div id="outline-container-orgc020879" class="outline-2">
+<h2 id="orgc020879">访问仓库</h2>
+<div class="outline-text-2" id="text-orgc020879">
 <p>
 仓库(Repository)是集中存放镜像的地方.
 </p>
@@ -591,9 +613,9 @@ docker container prune
 </p>
 </div>
 
-<div id="outline-container-org9f837e1" class="outline-4">
-<h4 id="org9f837e1">Docker Hub</h4>
-<div class="outline-text-4" id="text-org9f837e1">
+<div id="outline-container-orga860110" class="outline-4">
+<h4 id="orga860110">Docker Hub</h4>
+<div class="outline-text-4" id="text-orga860110">
 <p>
 注册: <a href="https://cloud.docker.com/">注册Docker账号</a>
 </p>
@@ -638,9 +660,9 @@ docker search username
 </div>
 </div>
 </div>
-<div id="outline-container-org2dcf6f8" class="outline-2">
-<h2 id="org2dcf6f8">Compose项目</h2>
-<div class="outline-text-2" id="text-org2dcf6f8">
+<div id="outline-container-org8ee00fd" class="outline-2">
+<h2 id="org8ee00fd">Compose项目</h2>
+<div class="outline-text-2" id="text-org8ee00fd">
 <p>
 Docker Compose项目负责快速部署分布式应用. 其定位是"定义和运行多个Docker容器的应用".
 </p>
@@ -666,9 +688,9 @@ Compose的默认管理对象是项目, 通过子命令对项目中的一组容�
 </p>
 </div>
 
-<div id="outline-container-orga2901a8" class="outline-3">
-<h3 id="orga2901a8">安装</h3>
-<div class="outline-text-3" id="text-orga2901a8">
+<div id="outline-container-org4364d27" class="outline-3">
+<h3 id="org4364d27">安装</h3>
+<div class="outline-text-3" id="text-org4364d27">
 <p>
 直接到<a href="https://github.com/docker/compose/releases/">compose</a>下载所需版本, 赋予执行操作.
 </p>
@@ -693,9 +715,9 @@ pip uninstall docker-compose # 卸载
 </div>
 </div>
 
-<div id="outline-container-org85059fe" class="outline-3">
-<h3 id="org85059fe">命令说明</h3>
-<div class="outline-text-3" id="text-org85059fe">
+<div id="outline-container-org3fe85e1" class="outline-3">
+<h3 id="org3fe85e1">命令说明</h3>
+<div class="outline-text-3" id="text-org3fe85e1">
 <div class="org-src-container">
 <pre class="src src-Shell">docker-compose -h
 </pre>
@@ -703,9 +725,9 @@ pip uninstall docker-compose # 卸载
 </div>
 </div>
 
-<div id="outline-container-org3369a80" class="outline-3">
-<h3 id="org3369a80">模板文件</h3>
-<div class="outline-text-3" id="text-org3369a80">
+<div id="outline-container-org24d4255" class="outline-3">
+<h3 id="org24d4255">模板文件</h3>
+<div class="outline-text-3" id="text-org24d4255">
 <p>
 默认的模板文件名为: <code>docker-compose.yml</code>, 格式为YAML格式.
 </p>
@@ -735,9 +757,9 @@ services:
 </p>
 </div>
 
-<div id="outline-container-orgc164940" class="outline-4">
-<h4 id="orgc164940">build</h4>
-<div class="outline-text-4" id="text-orgc164940">
+<div id="outline-container-org4889d0e" class="outline-4">
+<h4 id="org4889d0e">build</h4>
+<div class="outline-text-4" id="text-org4889d0e">
 <p>
 指定 <code>Dockerfile</code> 所在文件夹的路径. <code>Compose</code> 将会利用它自动构建这个镜像, 然后使用这个镜像.
 </p>
@@ -767,9 +789,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-org27a4096" class="outline-4">
-<h4 id="org27a4096">cap_add, cap_drop</h4>
-<div class="outline-text-4" id="text-org27a4096">
+<div id="outline-container-org6e7704b" class="outline-4">
+<h4 id="org6e7704b">cap_add, cap_drop</h4>
+<div class="outline-text-4" id="text-org6e7704b">
 <p>
 指定容器的内核能力分配.
 </p>
@@ -794,9 +816,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-org92410c2" class="outline-4">
-<h4 id="org92410c2">command</h4>
-<div class="outline-text-4" id="text-org92410c2">
+<div id="outline-container-org19f39a3" class="outline-4">
+<h4 id="org19f39a3">command</h4>
+<div class="outline-text-4" id="text-org19f39a3">
 <p>
 容器启动后默认执行的命令.
 </p>
@@ -807,9 +829,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-org2101468" class="outline-4">
-<h4 id="org2101468">container_name</h4>
-<div class="outline-text-4" id="text-org2101468">
+<div id="outline-container-org26b0440" class="outline-4">
+<h4 id="org26b0440">container_name</h4>
+<div class="outline-text-4" id="text-org26b0440">
 <p>
 指定容器名称. 默认使用 <code>项目名称_服务名称_序号</code> 这种格式.
 </p>
@@ -820,9 +842,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-orge667739" class="outline-4">
-<h4 id="orge667739">devices</h4>
-<div class="outline-text-4" id="text-orge667739">
+<div id="outline-container-org74eadd0" class="outline-4">
+<h4 id="org74eadd0">devices</h4>
+<div class="outline-text-4" id="text-org74eadd0">
 <p>
 指定设备的映射关系:
 </p>
@@ -834,9 +856,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-org55aa006" class="outline-4">
-<h4 id="org55aa006">depends_on</h4>
-<div class="outline-text-4" id="text-org55aa006">
+<div id="outline-container-org6f333ab" class="outline-4">
+<h4 id="org6f333ab">depends_on</h4>
+<div class="outline-text-4" id="text-org6f333ab">
 <p>
 解决容器的依赖, 启动先后的问题. 先启动 <code>redis &amp; db</code>, 再启动 <code>web</code>.
 </p>
@@ -860,9 +882,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-orge0a4843" class="outline-4">
-<h4 id="orge0a4843">expose</h4>
-<div class="outline-text-4" id="text-orge0a4843">
+<div id="outline-container-org7ed2e93" class="outline-4">
+<h4 id="org7ed2e93">expose</h4>
+<div class="outline-text-4" id="text-org7ed2e93">
 <p>
 暴露端口, 但不映射到宿主机器, 只被连接的服务访问. 仅可以指定内部端口为参数.
 </p>
@@ -875,9 +897,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-orgbe39ac5" class="outline-4">
-<h4 id="orgbe39ac5">extra_hosts</h4>
-<div class="outline-text-4" id="text-orgbe39ac5">
+<div id="outline-container-orge2a1971" class="outline-4">
+<h4 id="orge2a1971">extra_hosts</h4>
+<div class="outline-text-4" id="text-orge2a1971">
 <p>
 指定额外的host名称映射信息.
 </p>
@@ -900,9 +922,9 @@ services:
 </div>
 </div>
 
-<div id="outline-container-org6c3d6b5" class="outline-4">
-<h4 id="org6c3d6b5">image</h4>
-<div class="outline-text-4" id="text-org6c3d6b5">
+<div id="outline-container-orge7fa631" class="outline-4">
+<h4 id="orge7fa631">image</h4>
+<div class="outline-text-4" id="text-orge7fa631">
 <p>
 指定镜像名称或镜像ID, 如果镜像在本地不存在, <code>Compose</code> 将会尝试拉取这个镜像.
 </p>
@@ -915,9 +937,9 @@ image: a4bc65fd
 </div>
 </div>
 
-<div id="outline-container-org9a2cf06" class="outline-4">
-<h4 id="org9a2cf06">ports</h4>
-<div class="outline-text-4" id="text-org9a2cf06">
+<div id="outline-container-org41fa02b" class="outline-4">
+<h4 id="org41fa02b">ports</h4>
+<div class="outline-text-4" id="text-org41fa02b">
 <p>
 暴露端口信息. 格式为 <code>宿主端口:容器端口</code>, 也可以只指定容器端口, 宿主将会随机选择端口.
 </p>
@@ -932,9 +954,9 @@ image: a4bc65fd
 </div>
 </div>
 
-<div id="outline-container-orgc19567d" class="outline-4">
-<h4 id="orgc19567d">volumes</h4>
-<div class="outline-text-4" id="text-orgc19567d">
+<div id="outline-container-org18c08e4" class="outline-4">
+<h4 id="org18c08e4">volumes</h4>
+<div class="outline-text-4" id="text-org18c08e4">
 <p>
 数据卷所挂载路径设置. 可以设置宿主机器路径(host:container)或加上访问模式(host:container:ro).
 </p>
@@ -957,39 +979,69 @@ image: a4bc65fd
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-28</span>
-        <span title="last modification date" class="post-info">2018-04-04</span>
-        <span title="tags" class="post-info"><a href="/tags/docker/">Docker</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-28</span>
+            <span title="last modification date" class="post-info">2018-04-04</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/docker">Docker</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/28/docker从入门到实践-笔记";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/28/docker从入门到实践-笔记";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/28/docker从入门到实践-笔记";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/28/docker从入门到实践-笔记";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

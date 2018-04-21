@@ -1,60 +1,82 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>笨方法学C--0 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>笨方法学C--0 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="笨方法学C-读书笔记" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>笨方法学C--0</h1>
+<h1 class="title">笨方法学C--0</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3b6e643">练习1: 启用编译器</a></li>
-<li><a href="#orgeabe265">练习2: 用Make来代替Python</a>
+<li><a href="#org7d4ba34">练习1: 启用编译器</a></li>
+<li><a href="#org0060560">练习2: 用Make来代替Python</a>
 <ul>
-<li><a href="#org6f4dec4">附加题</a></li>
+<li><a href="#org569575b">附加题</a></li>
 </ul>
 </li>
-<li><a href="#orgd8693c9">练习3: 格式化输出</a></li>
-<li><a href="#orga1d717c">练习4: Valgrind介绍</a>
+<li><a href="#org44d1efc">练习3: 格式化输出</a></li>
+<li><a href="#org3cfe426">练习4: Valgrind介绍</a>
 <ul>
-<li><a href="#orga7d9fe9">安装Valgrind</a></li>
-<li><a href="#org2e788c8">使用Valgrind</a></li>
+<li><a href="#org1c75e1c">安装Valgrind</a></li>
+<li><a href="#org2773985">使用Valgrind</a></li>
 </ul>
 </li>
-<li><a href="#org9033063">练习5: 一个C程序的结构</a></li>
-<li><a href="#orge493884">练习6: 变量类型</a></li>
+<li><a href="#org9cb3f3c">练习5: 一个C程序的结构</a></li>
+<li><a href="#org67d8674">练习6: 变量类型</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3b6e643" class="outline-2">
-<h2 id="org3b6e643">练习1: 启用编译器</h2>
-<div class="outline-text-2" id="text-org3b6e643">
+<div id="outline-container-org7d4ba34" class="outline-2">
+<h2 id="org7d4ba34">练习1: 启用编译器</h2>
+<div class="outline-text-2" id="text-org7d4ba34">
 <p>
 编译使用命令:
 </p>
@@ -74,9 +96,9 @@ CFLAGS="-Wall" make ex1
 </div>
 </div>
 
-<div id="outline-container-orgeabe265" class="outline-2">
-<h2 id="orgeabe265">练习2: 用Make来代替Python</h2>
-<div class="outline-text-2" id="text-orgeabe265">
+<div id="outline-container-org0060560" class="outline-2">
+<h2 id="org0060560">练习2: 用Make来代替Python</h2>
+<div class="outline-text-2" id="text-org0060560">
 <p>
 创建 <code>Makefile</code> 文件, 编辑内容:
 </p>
@@ -101,9 +123,9 @@ make ex1  # 编译
 </div>
 </div>
 
-<div id="outline-container-org6f4dec4" class="outline-3">
-<h3 id="org6f4dec4">附加题</h3>
-<div class="outline-text-3" id="text-org6f4dec4">
+<div id="outline-container-org569575b" class="outline-3">
+<h3 id="org569575b">附加题</h3>
+<div class="outline-text-3" id="text-org569575b">
 <p>
 添加目标 <code>all:ex1</code> , 可以直接使用命令 <code>make</code>, 而不用 <code>make ex1</code>.
 </p>
@@ -118,26 +140,26 @@ clean:
 </div>
 </div>
 
-<div id="outline-container-orgd8693c9" class="outline-2">
-<h2 id="orgd8693c9">练习3: 格式化输出</h2>
-<div class="outline-text-2" id="text-orgd8693c9">
+<div id="outline-container-org44d1efc" class="outline-2">
+<h2 id="org44d1efc">练习3: 格式化输出</h2>
+<div class="outline-text-2" id="text-org44d1efc">
 <p>
 了解占位符和转义符.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga1d717c" class="outline-2">
-<h2 id="orga1d717c">练习4: Valgrind介绍</h2>
-<div class="outline-text-2" id="text-orga1d717c">
+<div id="outline-container-org3cfe426" class="outline-2">
+<h2 id="org3cfe426">练习4: Valgrind介绍</h2>
+<div class="outline-text-2" id="text-org3cfe426">
 <p>
 Valgrind可以运行我们的程序, 随后报告所有我们犯下的错误.
 </p>
 </div>
 
-<div id="outline-container-orga7d9fe9" class="outline-3">
-<h3 id="orga7d9fe9">安装Valgrind</h3>
-<div class="outline-text-3" id="text-orga7d9fe9">
+<div id="outline-container-org1c75e1c" class="outline-3">
+<h3 id="org1c75e1c">安装Valgrind</h3>
+<div class="outline-text-3" id="text-org1c75e1c">
 <p>
 <a href="http://valgrind.org/downloads/current.html">官网</a>下载Valgrind.
 </p>
@@ -157,9 +179,9 @@ sudo make install
 </div>
 </div>
 
-<div id="outline-container-org2e788c8" class="outline-3">
-<h3 id="org2e788c8">使用Valgrind</h3>
-<div class="outline-text-3" id="text-org2e788c8">
+<div id="outline-container-org2773985" class="outline-3">
+<h3 id="org2773985">使用Valgrind</h3>
+<div class="outline-text-3" id="text-org2773985">
 <p>
 使用方法: <code>valgrind program_name</code>. 
 </p>
@@ -206,7 +228,7 @@ clean:
 
 <p>
 其中一个错误如下图所示:
-<img src="./0.png" alt="0.png" />
+<img src="http://pinvondev.github.io/assets/blog/2018/03/06/笨方法学c--0/0.png" alt="0.png" />
 解释:
 <code>main(ex4.c:7)</code> (为了方便, 直接在ex3.c的基础上修改了源代码): 表示在 <code>ex3.c</code> 文件的第7行中, 使用了未初始化的值, 占用的空间大小为8, 剩下的几行是栈踪迹.
 </p>
@@ -217,14 +239,14 @@ clean:
 
 <p>
 最后Valgrind会显示一份摘要, 告诉你程序有多烂, 并且会告诉你内存分配情况以及是否有内存泄露. 如下所示:
-<img src="./1.png" alt="1.png" />
+<img src="http://pinvondev.github.io/assets/blog/2018/03/06/笨方法学c--0/1.png" alt="1.png" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org9033063" class="outline-2">
-<h2 id="org9033063">练习5: 一个C程序的结构</h2>
-<div class="outline-text-2" id="text-org9033063">
+<div id="outline-container-org9cb3f3c" class="outline-2">
+<h2 id="org9cb3f3c">练习5: 一个C程序的结构</h2>
+<div class="outline-text-2" id="text-org9cb3f3c">
 <p>
 <code>int main(int argc, char *argv[])</code>: 第一个参数表示命令行参数的数量, 第二个为真正的命令行参数.
 </p>
@@ -235,9 +257,9 @@ clean:
 </div>
 </div>
 
-<div id="outline-container-orge493884" class="outline-2">
-<h2 id="orge493884">练习6: 变量类型</h2>
-<div class="outline-text-2" id="text-orge493884">
+<div id="outline-container-org67d8674" class="outline-2">
+<h2 id="org67d8674">练习6: 变量类型</h2>
+<div class="outline-text-2" id="text-org67d8674">
 <ol class="org-ol">
 <li>数组声明:</li>
 </ol>
@@ -276,39 +298,69 @@ printf(<span style="color: #E6DB74;">"%c"</span>, cNull);
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-06</span>
-        <span title="last modification date" class="post-info">2018-03-08</span>
-        <span title="tags" class="post-info"><a href="/tags/笨方法学c-读书笔记/">笨方法学C-读书笔记</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-06</span>
+            <span title="last modification date" class="post-info">2018-03-08</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/笨方法学c-读书笔记">笨方法学C-读书笔记</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/06/笨方法学c--0";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/笨方法学c--0";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/06/笨方法学c--0";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/笨方法学c--0";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

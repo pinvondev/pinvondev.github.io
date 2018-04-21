@@ -1,91 +1,113 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>Hadoop2.7.1+Ubuntu16.04安装 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>Hadoop2.7.1+Ubuntu16.04安装 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Hadoop" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>Hadoop2.7.1+Ubuntu16.04安装</h1>
+<h1 class="title">Hadoop2.7.1+Ubuntu16.04安装</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgee55db1">安装SSH 配置SSH免密码登陆</a>
+<li><a href="#org92841b8">安装SSH 配置SSH免密码登陆</a>
 <ul>
-<li><a href="#org8b8b5ae">安装SSH</a></li>
-<li><a href="#org7d3fb98">配置SSH免密码登陆</a></li>
+<li><a href="#org077e815">安装SSH</a></li>
+<li><a href="#org4a1ca43">配置SSH免密码登陆</a></li>
 </ul>
 </li>
-<li><a href="#org9fa2520">设置Linux环境变量的方法和区别</a>
+<li><a href="#org8e77b53">设置Linux环境变量的方法和区别</a>
 <ul>
-<li><a href="#org50ac360">通过文件设置</a>
+<li><a href="#orgb52d3f5">通过文件设置</a>
 <ul>
-<li><a href="#org6de70cb">全局环境变量(对所有用户生效)</a></li>
-<li><a href="#org1522470">局部环境变量(对单个用户生效)</a></li>
+<li><a href="#org4996f7e">全局环境变量(对所有用户生效)</a></li>
+<li><a href="#orga6f189d">局部环境变量(对单个用户生效)</a></li>
 </ul>
 </li>
-<li><a href="#org5cafe97">通过export设置</a></li>
+<li><a href="#orgf2ef014">通过export设置</a></li>
 </ul>
 </li>
-<li><a href="#org99f1458">安装Java环境</a>
+<li><a href="#orgf7b1384">安装Java环境</a>
 <ul>
-<li><a href="#orgbc272a6">修改系统默认JDK</a></li>
+<li><a href="#org00e63d6">修改系统默认JDK</a></li>
 </ul>
 </li>
-<li><a href="#org411b32d">Hadoop 2.7.1单机安装</a>
+<li><a href="#org535c306">Hadoop 2.7.1单机安装</a>
 <ul>
-<li><a href="#org6ff9e8c">试跑例子</a></li>
+<li><a href="#org90eff70">试跑例子</a></li>
 </ul>
 </li>
-<li><a href="#orgd0a5d01">Hadoop2.7.1伪分布式安装</a>
+<li><a href="#org8d6c312">Hadoop2.7.1伪分布式安装</a>
 <ul>
-<li><a href="#org6bd838e">配置</a></li>
-<li><a href="#org23d4ef6">设置HADOOP_HOME</a></li>
-<li><a href="#org1eb065b">格式化NameNode</a></li>
-<li><a href="#org65fc761">启动/关闭 Hadoop</a>
+<li><a href="#org4c32b20">配置</a></li>
+<li><a href="#org4af3f4e">设置HADOOP_HOME</a></li>
+<li><a href="#orgffb59de">格式化NameNode</a></li>
+<li><a href="#org0fc2c78">启动/关闭 Hadoop</a>
 <ul>
-<li><a href="#org97483be">启动</a></li>
-<li><a href="#org7e4ecfe">关闭</a></li>
+<li><a href="#org9a322e2">启动</a></li>
+<li><a href="#org930b4c5">关闭</a></li>
 </ul>
 </li>
-<li><a href="#org48891ee">运行例子</a></li>
-<li><a href="#org8651690">启动YARN</a></li>
+<li><a href="#org72d0c7d">运行例子</a></li>
+<li><a href="#org659c36f">启动YARN</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgee55db1" class="outline-2">
-<h2 id="orgee55db1">安装SSH 配置SSH免密码登陆</h2>
-<div class="outline-text-2" id="text-orgee55db1">
+<div id="outline-container-org92841b8" class="outline-2">
+<h2 id="org92841b8">安装SSH 配置SSH免密码登陆</h2>
+<div class="outline-text-2" id="text-org92841b8">
 </div>
-<div id="outline-container-org8b8b5ae" class="outline-3">
-<h3 id="org8b8b5ae">安装SSH</h3>
-<div class="outline-text-3" id="text-org8b8b5ae">
+<div id="outline-container-org077e815" class="outline-3">
+<h3 id="org077e815">安装SSH</h3>
+<div class="outline-text-3" id="text-org077e815">
 <p>
 无论是集群模式还是单节点模式, 都要用到SSH登陆, Ubuntu默认已安装 <code>SSH client</code>, 还需要自己再安装 <code>SSH server</code>.
 </p>
@@ -102,9 +124,9 @@ exit
 </div>
 </div>
 
-<div id="outline-container-org7d3fb98" class="outline-3">
-<h3 id="org7d3fb98">配置SSH免密码登陆</h3>
-<div class="outline-text-3" id="text-org7d3fb98">
+<div id="outline-container-org4a1ca43" class="outline-3">
+<h3 id="org4a1ca43">配置SSH免密码登陆</h3>
+<div class="outline-text-3" id="text-org4a1ca43">
 <p>
 进入终端, 利用 <code>ssh-keygen</code> 生成密钥, 并将密钥加入到授权中.
 </p>
@@ -122,17 +144,17 @@ cat ./id_rsa.pub &gt;&gt; ./authorized_keys  #  加入授权
 </div>
 
 
-<div id="outline-container-org9fa2520" class="outline-2">
-<h2 id="org9fa2520">设置Linux环境变量的方法和区别</h2>
-<div class="outline-text-2" id="text-org9fa2520">
+<div id="outline-container-org8e77b53" class="outline-2">
+<h2 id="org8e77b53">设置Linux环境变量的方法和区别</h2>
+<div class="outline-text-2" id="text-org8e77b53">
 </div>
-<div id="outline-container-org50ac360" class="outline-3">
-<h3 id="org50ac360">通过文件设置</h3>
-<div class="outline-text-3" id="text-org50ac360">
+<div id="outline-container-orgb52d3f5" class="outline-3">
+<h3 id="orgb52d3f5">通过文件设置</h3>
+<div class="outline-text-3" id="text-orgb52d3f5">
 </div>
-<div id="outline-container-org6de70cb" class="outline-4">
-<h4 id="org6de70cb">全局环境变量(对所有用户生效)</h4>
-<div class="outline-text-4" id="text-org6de70cb">
+<div id="outline-container-org4996f7e" class="outline-4">
+<h4 id="org4996f7e">全局环境变量(对所有用户生效)</h4>
+<div class="outline-text-4" id="text-org4996f7e">
 <p>
 <code>/etc/profile</code>: 为系统的每个用户设置环境信息. 当用户登录时, 该文件被执行一次, 从 <code>/etc/profile.d</code> 目录的配置文件中搜集 <code>shell</code> 的设置.
 </p>
@@ -147,9 +169,9 @@ cat ./id_rsa.pub &gt;&gt; ./authorized_keys  #  加入授权
 </div>
 </div>
 
-<div id="outline-container-org1522470" class="outline-4">
-<h4 id="org1522470">局部环境变量(对单个用户生效)</h4>
-<div class="outline-text-4" id="text-org1522470">
+<div id="outline-container-orga6f189d" class="outline-4">
+<h4 id="orga6f189d">局部环境变量(对单个用户生效)</h4>
+<div class="outline-text-4" id="text-orga6f189d">
 <p>
 <code>~/.bash_profile</code> 或 <code>~/.bash_login</code> 或 <code>~/.profile</code>: 当用户登录时, 该文件执行一次.
 </p>
@@ -161,9 +183,9 @@ cat ./id_rsa.pub &gt;&gt; ./authorized_keys  #  加入授权
 </div>
 </div>
 
-<div id="outline-container-org5cafe97" class="outline-3">
-<h3 id="org5cafe97">通过export设置</h3>
-<div class="outline-text-3" id="text-org5cafe97">
+<div id="outline-container-orgf2ef014" class="outline-3">
+<h3 id="orgf2ef014">通过export设置</h3>
+<div class="outline-text-3" id="text-orgf2ef014">
 <p>
 使用 <code>export</code> 设置的变量, 只对当前终端Shell有效, 如果此时新开一个终端, 则无法读取之前通过 <code>export</code> 设置的变量. 适合设置一些临时变量.
 </p>
@@ -171,9 +193,9 @@ cat ./id_rsa.pub &gt;&gt; ./authorized_keys  #  加入授权
 </div>
 </div>
 
-<div id="outline-container-org99f1458" class="outline-2">
-<h2 id="org99f1458">安装Java环境</h2>
-<div class="outline-text-2" id="text-org99f1458">
+<div id="outline-container-orgf7b1384" class="outline-2">
+<h2 id="orgf7b1384">安装Java环境</h2>
+<div class="outline-text-2" id="text-orgf7b1384">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo tar -zxvf jdk-8u161-linux-x64.tar.gz -C /usr/lib/jvm
 
@@ -186,9 +208,9 @@ export PATH=${JAVA_HOME}/bin:$PATH
 </div>
 </div>
 
-<div id="outline-container-orgbc272a6" class="outline-3">
-<h3 id="orgbc272a6">修改系统默认JDK</h3>
-<div class="outline-text-3" id="text-orgbc272a6">
+<div id="outline-container-org00e63d6" class="outline-3">
+<h3 id="org00e63d6">修改系统默认JDK</h3>
+<div class="outline-text-3" id="text-org00e63d6">
 <p>
 Ubuntu中默认安装了 <code>openJDK</code>, 我们又安装了 <code>jdk1.8.0_161</code>. 修改系统默认JDK的方式如下:
 </p>
@@ -211,9 +233,9 @@ sudo update-alternatives --config java
 </div>
 </div>
 
-<div id="outline-container-org411b32d" class="outline-2">
-<h2 id="org411b32d">Hadoop 2.7.1单机安装</h2>
-<div class="outline-text-2" id="text-org411b32d">
+<div id="outline-container-org535c306" class="outline-2">
+<h2 id="org535c306">Hadoop 2.7.1单机安装</h2>
+<div class="outline-text-2" id="text-org535c306">
 <div class="org-src-container">
 <pre class="src src-Shell"># 解压到指定目录
 tar -zxf ~/下载/hadoop-2.7.1.tar.gz -C ~
@@ -235,9 +257,9 @@ cd hadoop
 </div>
 </div>
 
-<div id="outline-container-org6ff9e8c" class="outline-3">
-<h3 id="org6ff9e8c">试跑例子</h3>
-<div class="outline-text-3" id="text-org6ff9e8c">
+<div id="outline-container-org90eff70" class="outline-3">
+<h3 id="org90eff70">试跑例子</h3>
+<div class="outline-text-3" id="text-org90eff70">
 <div class="org-src-container">
 <pre class="src src-Shell"># 查看所有例子
 ./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar 
@@ -259,13 +281,13 @@ rm -r ./output
 </div>
 </div>
 
-<div id="outline-container-orgd0a5d01" class="outline-2">
-<h2 id="orgd0a5d01">Hadoop2.7.1伪分布式安装</h2>
-<div class="outline-text-2" id="text-orgd0a5d01">
+<div id="outline-container-org8d6c312" class="outline-2">
+<h2 id="org8d6c312">Hadoop2.7.1伪分布式安装</h2>
+<div class="outline-text-2" id="text-org8d6c312">
 </div>
-<div id="outline-container-org6bd838e" class="outline-3">
-<h3 id="org6bd838e">配置</h3>
-<div class="outline-text-3" id="text-org6bd838e">
+<div id="outline-container-org4c32b20" class="outline-3">
+<h3 id="org4c32b20">配置</h3>
+<div class="outline-text-3" id="text-org4c32b20">
 <p>
 伪分布式的意思是, 我们可以在单节点上, 将Hadoop进程以分离的Java进程来运行, 节点既作为NameNode也作为DataNode, 同时, 读取的是HDFS中的文件.
 </p>
@@ -336,9 +358,9 @@ Hadoop的配置文件位于 <code>hadoop/etc/hadoop/</code> 中.
 </div>
 </div>
 
-<div id="outline-container-org23d4ef6" class="outline-3">
-<h3 id="org23d4ef6">设置HADOOP_HOME</h3>
-<div class="outline-text-3" id="text-org23d4ef6">
+<div id="outline-container-org4af3f4e" class="outline-3">
+<h3 id="org4af3f4e">设置HADOOP_HOME</h3>
+<div class="outline-text-3" id="text-org4af3f4e">
 <p>
 这一步不是必须的, 但是不设置, 在启动Hadoop时有可能会出错. 打开 <code>~/.bashrc</code>
 </p>
@@ -354,9 +376,9 @@ export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/nativeexport
 </div>
 </div>
 
-<div id="outline-container-org1eb065b" class="outline-3">
-<h3 id="org1eb065b">格式化NameNode</h3>
-<div class="outline-text-3" id="text-org1eb065b">
+<div id="outline-container-orgffb59de" class="outline-3">
+<h3 id="orgffb59de">格式化NameNode</h3>
+<div class="outline-text-3" id="text-orgffb59de">
 <div class="org-src-container">
 <pre class="src src-Shell">./bin/hdfs namenode -format
 </pre>
@@ -368,13 +390,13 @@ export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/nativeexport
 </div>
 </div>
 
-<div id="outline-container-org65fc761" class="outline-3">
-<h3 id="org65fc761">启动/关闭 Hadoop</h3>
-<div class="outline-text-3" id="text-org65fc761">
+<div id="outline-container-org0fc2c78" class="outline-3">
+<h3 id="org0fc2c78">启动/关闭 Hadoop</h3>
+<div class="outline-text-3" id="text-org0fc2c78">
 </div>
-<div id="outline-container-org97483be" class="outline-4">
-<h4 id="org97483be">启动</h4>
-<div class="outline-text-4" id="text-org97483be">
+<div id="outline-container-org9a322e2" class="outline-4">
+<h4 id="org9a322e2">启动</h4>
+<div class="outline-text-4" id="text-org9a322e2">
 <div class="org-src-container">
 <pre class="src src-Shell">./sbin/start-dfs.sh
 </pre>
@@ -401,9 +423,9 @@ JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
 </div>
 </div>
 
-<div id="outline-container-org7e4ecfe" class="outline-4">
-<h4 id="org7e4ecfe">关闭</h4>
-<div class="outline-text-4" id="text-org7e4ecfe">
+<div id="outline-container-org930b4c5" class="outline-4">
+<h4 id="org930b4c5">关闭</h4>
+<div class="outline-text-4" id="text-org930b4c5">
 <div class="org-src-container">
 <pre class="src src-Shell">./sbin/stop-dfs.sh
 </pre>
@@ -412,9 +434,9 @@ JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
 </div>
 </div>
 
-<div id="outline-container-org48891ee" class="outline-3">
-<h3 id="org48891ee">运行例子</h3>
-<div class="outline-text-3" id="text-org48891ee">
+<div id="outline-container-org72d0c7d" class="outline-3">
+<h3 id="org72d0c7d">运行例子</h3>
+<div class="outline-text-3" id="text-org72d0c7d">
 <p>
 在单机模式中读取的是本地数据, 伪分布式则使用HDFS上的数据.
 </p>
@@ -460,9 +482,9 @@ JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
 </div>
 </div>
 
-<div id="outline-container-org8651690" class="outline-3">
-<h3 id="org8651690">启动YARN</h3>
-<div class="outline-text-3" id="text-org8651690">
+<div id="outline-container-org659c36f" class="outline-3">
+<h3 id="org659c36f">启动YARN</h3>
+<div class="outline-text-3" id="text-org659c36f">
 <p>
 YARN是从MapReduce中分离出来的, 负责资源管理与任务调度. YARN运行于MapReduce之上, 提供了高可用性和高扩展性.
 </p>
@@ -552,39 +574,69 @@ YARN主要是为集群提供更好的资源管理与任务调度, 但在单机�
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-10</span>
-        <span title="last modification date" class="post-info">2018-03-12</span>
-        <span title="tags" class="post-info"><a href="/tags/hadoop/">Hadoop</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-10</span>
+            <span title="last modification date" class="post-info">2018-03-12</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/hadoop">Hadoop</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/10/hadoop271+ubuntu1604安装";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/10/hadoop271+ubuntu1604安装";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/10/hadoop271+ubuntu1604安装";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/10/hadoop271+ubuntu1604安装";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

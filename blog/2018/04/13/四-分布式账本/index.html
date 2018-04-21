@@ -1,59 +1,81 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>四 分布式账本 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>四 分布式账本 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>四 分布式账本</h1>
+<h1 class="title">四 分布式账本</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0d51847">概述</a>
+<li><a href="#orgaee4a80">概述</a>
 <ul>
-<li><a href="#org685e6ef">读写集</a></li>
-<li><a href="#org9be2f60">交易验证和世界状态更新</a>
+<li><a href="#orgc6bd6aa">读写集</a></li>
+<li><a href="#org96f5c56">交易验证和世界状态更新</a>
 <ul>
-<li><a href="#orgd1231f0">模拟和验证例子</a></li>
+<li><a href="#org170dc15">模拟和验证例子</a></li>
 </ul>
 </li>
-<li><a href="#org345221e">账本编号</a></li>
-<li><a href="#org3bc5e58">账本数据</a>
+<li><a href="#org2563162">账本编号</a></li>
+<li><a href="#orgf1a3e1d">账本数据</a>
 <ul>
-<li><a href="#orgac4b5fa">账本数据存储</a></li>
-<li><a href="#orgaa71691">账本数据读取</a></li>
-<li><a href="#orgfec82a0">索引同步</a></li>
-<li><a href="#org6a8b736">交易模拟执行</a></li>
+<li><a href="#org3109629">账本数据存储</a></li>
+<li><a href="#orgd80de1e">账本数据读取</a></li>
+<li><a href="#org04597ff">索引同步</a></li>
+<li><a href="#orgbf16528">交易模拟执行</a></li>
 </ul>
 </li>
-<li><a href="#org074690d">区块索引</a></li>
-<li><a href="#orgafcaa77">状态数据</a>
+<li><a href="#org049d155">区块索引</a></li>
+<li><a href="#org5127993">状态数据</a>
 <ul>
-<li><a href="#orgd13f11f">基于状态数据的区块验证</a></li>
+<li><a href="#org303cf70">基于状态数据的区块验证</a></li>
 </ul>
 </li>
 </ul>
@@ -62,9 +84,9 @@
 </div>
 </div>
 
-<div id="outline-container-org0d51847" class="outline-2">
-<h2 id="org0d51847">概述</h2>
-<div class="outline-text-2" id="text-org0d51847">
+<div id="outline-container-orgaee4a80" class="outline-2">
+<h2 id="orgaee4a80">概述</h2>
+<div class="outline-text-2" id="text-orgaee4a80">
 <p>
 分布式账本技术(共享账本)通过在不同节点之间达成共识, 记录相同的账本数据.
 </p>
@@ -79,7 +101,7 @@ Hyperledger Fabric采用背书/共识模型, 模拟执行chaincode和区块验�
 
 
 <div class="figure">
-<p><img src="./43.png" alt="43.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/13/四-分布式账本/43.png" alt="43.png" />
 </p>
 </div>
 
@@ -105,9 +127,9 @@ Hyperledger Fabric 主要包含以下元素:
 </ul>
 </div>
 
-<div id="outline-container-org685e6ef" class="outline-3">
-<h3 id="org685e6ef">读写集</h3>
-<div class="outline-text-3" id="text-org685e6ef">
+<div id="outline-container-orgc6bd6aa" class="outline-3">
+<h3 id="orgc6bd6aa">读写集</h3>
+<div class="outline-text-3" id="text-orgc6bd6aa">
 <p>
 背书节点模拟执行交易时会生成读写集. 
 </p>
@@ -150,9 +172,9 @@ Hyperledger Fabric 主要包含以下元素:
 </div>
 </div>
 
-<div id="outline-container-org9be2f60" class="outline-3">
-<h3 id="org9be2f60">交易验证和世界状态更新</h3>
-<div class="outline-text-3" id="text-org9be2f60">
+<div id="outline-container-org96f5c56" class="outline-3">
+<h3 id="org96f5c56">交易验证和世界状态更新</h3>
+<div class="outline-text-3" id="text-org96f5c56">
 <p>
 committer根据读集来验证交易, 根据写集来更新键的版本和值.
 </p>
@@ -171,9 +193,9 @@ committer根据读集来验证交易, 根据写集来更新键的版本和值.
 </p>
 </div>
 
-<div id="outline-container-orgd1231f0" class="outline-4">
-<h4 id="orgd1231f0">模拟和验证例子</h4>
-<div class="outline-text-4" id="text-orgd1231f0">
+<div id="outline-container-org170dc15" class="outline-4">
+<h4 id="org170dc15">模拟和验证例子</h4>
+<div class="outline-text-4" id="text-org170dc15">
 <p>
 假设World State中的键值对用一个三元组来表示: (k, ver, val). 其中, k是键, ver是最新版本, val是值.
 </p>
@@ -245,16 +267,16 @@ orderer按照t1-t5的顺序进行排序, 则committer节点的验证结果如下
 </div>
 </div>
 </div>
-<div id="outline-container-org345221e" class="outline-3">
-<h3 id="org345221e">账本编号</h3>
+<div id="outline-container-org2563162" class="outline-3">
+<h3 id="org2563162">账本编号</h3>
 </div>
-<div id="outline-container-org3bc5e58" class="outline-3">
-<h3 id="org3bc5e58">账本数据</h3>
-<div class="outline-text-3" id="text-org3bc5e58">
+<div id="outline-container-orgf1a3e1d" class="outline-3">
+<h3 id="orgf1a3e1d">账本数据</h3>
+<div class="outline-text-3" id="text-orgf1a3e1d">
 </div>
-<div id="outline-container-orgac4b5fa" class="outline-4">
-<h4 id="orgac4b5fa">账本数据存储</h4>
-<div class="outline-text-4" id="text-orgac4b5fa">
+<div id="outline-container-org3109629" class="outline-4">
+<h4 id="org3109629">账本数据存储</h4>
+<div class="outline-text-4" id="text-org3109629">
 <p>
 账本文件以 "blockfile_" 为前缀, 默认区块文件大小上限为64mb, 一个账本能保存的最大数据量约为61tb.
 </p>
@@ -265,28 +287,28 @@ committer节点负责维护节点本地的账本, 通过gossip模块从orderer�
 
 
 <div class="figure">
-<p><img src="./44.png" alt="44.png" />
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/13/四-分布式账本/44.png" alt="44.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgaa71691" class="outline-4">
-<h4 id="orgaa71691">账本数据读取</h4>
+<div id="outline-container-orgd80de1e" class="outline-4">
+<h4 id="orgd80de1e">账本数据读取</h4>
 </div>
 
-<div id="outline-container-orgfec82a0" class="outline-4">
-<h4 id="orgfec82a0">索引同步</h4>
+<div id="outline-container-org04597ff" class="outline-4">
+<h4 id="org04597ff">索引同步</h4>
 </div>
 
-<div id="outline-container-org6a8b736" class="outline-4">
-<h4 id="org6a8b736">交易模拟执行</h4>
+<div id="outline-container-orgbf16528" class="outline-4">
+<h4 id="orgbf16528">交易模拟执行</h4>
 </div>
 </div>
 
-<div id="outline-container-org074690d" class="outline-3">
-<h3 id="org074690d">区块索引</h3>
-<div class="outline-text-3" id="text-org074690d">
+<div id="outline-container-org049d155" class="outline-3">
+<h3 id="org049d155">区块索引</h3>
+<div class="outline-text-3" id="text-org049d155">
 <p>
 有多种区块索引方式, 帮助我们快速找到需要的区块.
 </p>
@@ -301,9 +323,9 @@ committer节点负责维护节点本地的账本, 通过gossip模块从orderer�
 </div>
 </div>
 
-<div id="outline-container-orgafcaa77" class="outline-3">
-<h3 id="orgafcaa77">状态数据</h3>
-<div class="outline-text-3" id="text-orgafcaa77">
+<div id="outline-container-org5127993" class="outline-3">
+<h3 id="org5127993">状态数据</h3>
+<div class="outline-text-3" id="text-org5127993">
 <p>
 world state记录交易执行结果.
 </p>
@@ -333,9 +355,9 @@ chaincode根据当前状态数据执行交易.
 </p>
 </div>
 
-<div id="outline-container-orgd13f11f" class="outline-4">
-<h4 id="orgd13f11f">基于状态数据的区块验证</h4>
-<div class="outline-text-4" id="text-orgd13f11f">
+<div id="outline-container-org303cf70" class="outline-4">
+<h4 id="org303cf70">基于状态数据的区块验证</h4>
+<div class="outline-text-4" id="text-org303cf70">
 <p>
 区块有两种类型: 背书交易区块, 配置交易区块.
 </p>
@@ -346,39 +368,69 @@ chaincode根据当前状态数据执行交易.
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-13</span>
-        <span title="last modification date" class="post-info">2018-04-14</span>
-        <span title="tags" class="post-info"><a href="/tags/blockchain/">BlockChain</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-13</span>
+            <span title="last modification date" class="post-info">2018-04-14</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/13/四-分布式账本";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/四-分布式账本";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/13/四-分布式账本";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/四-分布式账本";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>

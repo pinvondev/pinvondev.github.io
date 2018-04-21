@@ -1,85 +1,107 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <title>Hadoop基本概念 - Pinvon&#39;s Blog</title>
-    <meta charset="utf-8" />
-    <meta name="author" content="Pinvon" />
-    <meta name="description" content="&lt;TODO: insert your description here&gt;" />
-    <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
-    <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-  </head>
-  <body class="container">
-    <div>
-      <header class="masthead">
-        <h1 class="masthead-title"><a href="/">Pinvon&#39;s Blog</a></h1>
-        <p>所见，所闻，所思，所想</p>
-        <ul>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/tags/">Tags</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="https://github.com/pinvondev">GitHub</a></li>
-        </ul>
-        <form method="get" id="searchform" action="http://www.google.com/search">
-          <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="q" value="site:pinvondev.github.io">
-        </form>
-      </header>
-    </div>
+<html lang="en">
+<head>
+  <title>Hadoop基本概念 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="大数据" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
 
 <div>
 <div class="post">
-<h1>Hadoop基本概念</h1>
+<h1 class="title">Hadoop基本概念</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd55145d">Hadoop是什么</a>
+<li><a href="#org4986bf0">Hadoop是什么</a>
 <ul>
-<li><a href="#org63b4bb9">Hadoop的版本演进</a>
+<li><a href="#org0a90166">Hadoop的版本演进</a>
 <ul>
-<li><a href="#orgad58fae">Hadoop 1.0</a></li>
-<li><a href="#org174fb3c">Hadoop 2.0</a></li>
+<li><a href="#org3f71da3">Hadoop 1.0</a></li>
+<li><a href="#org16eee20">Hadoop 2.0</a></li>
 </ul>
 </li>
-<li><a href="#org5fa268f">Map与Reduce</a></li>
-<li><a href="#org132db6c">键值数据库</a></li>
+<li><a href="#org93d607c">Map与Reduce</a></li>
+<li><a href="#org5648e45">键值数据库</a></li>
 </ul>
 </li>
-<li><a href="#org16e2439">Hadoop的组成</a>
+<li><a href="#orgac217c5">Hadoop的组成</a>
 <ul>
-<li><a href="#orga2b6435">HDFS</a>
+<li><a href="#org5e9e4d5">HDFS</a>
 <ul>
-<li><a href="#org8250cb9">特征</a></li>
-<li><a href="#orgb4f4b62">缺陷</a></li>
+<li><a href="#org17fbdae">特征</a></li>
+<li><a href="#orgbf05956">缺陷</a></li>
 </ul>
 </li>
-<li><a href="#org143ee06">NameNode</a></li>
-<li><a href="#org3154e61">DataNode</a></li>
-<li><a href="#org44c72d0">Secondary NameNode</a></li>
-<li><a href="#orgd155e8b">JobTracker</a></li>
-<li><a href="#org2386848">TaskTracker</a></li>
+<li><a href="#org4d5b287">NameNode</a></li>
+<li><a href="#orgd563b2e">DataNode</a></li>
+<li><a href="#org1e68743">Secondary NameNode</a></li>
+<li><a href="#orge19c4d7">JobTracker</a></li>
+<li><a href="#orgba4a8fb">TaskTracker</a></li>
 </ul>
 </li>
-<li><a href="#orge57b9ff">HDFS的工作原理</a>
+<li><a href="#org9c974af">HDFS的工作原理</a>
 <ul>
-<li><a href="#orgbdb60d8">分离元数据和数据</a></li>
-<li><a href="#org6b5b8a4">HDFS写过程</a></li>
-<li><a href="#org1219d49">HDFS读过程</a></li>
-<li><a href="#orgf5a205c">通过副本快速恢复硬件故障</a></li>
+<li><a href="#org5c06efb">分离元数据和数据</a></li>
+<li><a href="#orgbd8769a">HDFS写过程</a></li>
+<li><a href="#orgeb80c98">HDFS读过程</a></li>
+<li><a href="#org84dc80e">通过副本快速恢复硬件故障</a></li>
 </ul>
 </li>
-<li><a href="#org68626b5">Hadoop的安装</a>
+<li><a href="#org651ad65">Hadoop的安装</a>
 <ul>
-<li><a href="#org57f03f7"></a></li>
+<li><a href="#org14fc574"></a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd55145d" class="outline-2">
-<h2 id="orgd55145d">Hadoop是什么</h2>
-<div class="outline-text-2" id="text-orgd55145d">
+<div id="outline-container-org4986bf0" class="outline-2">
+<h2 id="org4986bf0">Hadoop是什么</h2>
+<div class="outline-text-2" id="text-org4986bf0">
 <p>
 Hadoop是一个分布式计算的解决方案, 可编写和运行分布式应用, 以处理大规模数据, 是专为离线和大规模数据分析而设计的, 并不适合那种对几个记录随机读写的在线事务处理模式.
 </p>
@@ -93,13 +115,13 @@ Hadoop是一个分布式计算的解决方案, 可编写和运行分布式应用
 </p>
 </div>
 
-<div id="outline-container-org63b4bb9" class="outline-3">
-<h3 id="org63b4bb9">Hadoop的版本演进</h3>
-<div class="outline-text-3" id="text-org63b4bb9">
+<div id="outline-container-org0a90166" class="outline-3">
+<h3 id="org0a90166">Hadoop的版本演进</h3>
+<div class="outline-text-3" id="text-org0a90166">
 </div>
-<div id="outline-container-orgad58fae" class="outline-4">
-<h4 id="orgad58fae">Hadoop 1.0</h4>
-<div class="outline-text-4" id="text-orgad58fae">
+<div id="outline-container-org3f71da3" class="outline-4">
+<h4 id="org3f71da3">Hadoop 1.0</h4>
+<div class="outline-text-4" id="text-org3f71da3">
 <p>
 Hadoop1.0 = HDFS + MapReduce
 </p>
@@ -114,9 +136,9 @@ MapReduce = JobTracker + n * TaskTracker
 </div>
 </div>
 
-<div id="outline-container-org174fb3c" class="outline-4">
-<h4 id="org174fb3c">Hadoop 2.0</h4>
-<div class="outline-text-4" id="text-org174fb3c">
+<div id="outline-container-org16eee20" class="outline-4">
+<h4 id="org16eee20">Hadoop 2.0</h4>
+<div class="outline-text-4" id="text-org16eee20">
 <p>
 Hadoop 2.0 = HDFS + YARN + MapReduce
 </p>
@@ -144,9 +166,9 @@ YARN = ResourceManager + NodeManager
 </div>
 </div>
 
-<div id="outline-container-org5fa268f" class="outline-3">
-<h3 id="org5fa268f">Map与Reduce</h3>
-<div class="outline-text-3" id="text-org5fa268f">
+<div id="outline-container-org93d607c" class="outline-3">
+<h3 id="org93d607c">Map与Reduce</h3>
+<div class="outline-text-3" id="text-org93d607c">
 <p>
 以词频统计为例.
 </p>
@@ -173,9 +195,9 @@ Reduce阶段. 多台机器启动Reduce处理, 如机器A收到所有以A开头�
 </div>
 </div>
 
-<div id="outline-container-org132db6c" class="outline-3">
-<h3 id="org132db6c">键值数据库</h3>
-<div class="outline-text-3" id="text-org132db6c">
+<div id="outline-container-org5648e45" class="outline-3">
+<h3 id="org5648e45">键值数据库</h3>
+<div class="outline-text-3" id="text-org5648e45">
 <p>
 键值数据库可以快速地获取与某个Key绑定的数据. 如用身份证号, 查到与这人相关的数据. 虽然这个动作用MapReduce也能完成, 但是可能需要扫描整个数据集.
 </p>
@@ -191,17 +213,17 @@ Reduce阶段. 多台机器启动Reduce处理, 如机器A收到所有以A开头�
 </div>
 </div>
 
-<div id="outline-container-org16e2439" class="outline-2">
-<h2 id="org16e2439">Hadoop的组成</h2>
-<div class="outline-text-2" id="text-org16e2439">
+<div id="outline-container-orgac217c5" class="outline-2">
+<h2 id="orgac217c5">Hadoop的组成</h2>
+<div class="outline-text-2" id="text-orgac217c5">
 </div>
-<div id="outline-container-orga2b6435" class="outline-3">
-<h3 id="orga2b6435">HDFS</h3>
-<div class="outline-text-3" id="text-orga2b6435">
+<div id="outline-container-org5e9e4d5" class="outline-3">
+<h3 id="org5e9e4d5">HDFS</h3>
+<div class="outline-text-3" id="text-org5e9e4d5">
 </div>
-<div id="outline-container-org8250cb9" class="outline-4">
-<h4 id="org8250cb9">特征</h4>
-<div class="outline-text-4" id="text-org8250cb9">
+<div id="outline-container-org17fbdae" class="outline-4">
+<h4 id="org17fbdae">特征</h4>
+<div class="outline-text-4" id="text-org17fbdae">
 <ul class="org-ul">
 <li>将大量数据存储到大量的节点中, 支持单个大文件.</li>
 <li>高可靠(多个备份).</li>
@@ -211,9 +233,9 @@ Reduce阶段. 多台机器启动Reduce处理, 如机器A收到所有以A开头�
 </div>
 </div>
 
-<div id="outline-container-orgb4f4b62" class="outline-4">
-<h4 id="orgb4f4b62">缺陷</h4>
-<div class="outline-text-4" id="text-orgb4f4b62">
+<div id="outline-container-orgbf05956" class="outline-4">
+<h4 id="orgbf05956">缺陷</h4>
+<div class="outline-text-4" id="text-orgbf05956">
 <ul class="org-ul">
 <li>为实现高吞吐量导致延迟高.</li>
 <li>不适合小文件存取, 会占用NameNode大量内存, 寻道时间超过读取时间.</li>
@@ -223,9 +245,9 @@ Reduce阶段. 多台机器启动Reduce处理, 如机器A收到所有以A开头�
 </div>
 </div>
 
-<div id="outline-container-org143ee06" class="outline-3">
-<h3 id="org143ee06">NameNode</h3>
-<div class="outline-text-3" id="text-org143ee06">
+<div id="outline-container-org4d5b287" class="outline-3">
+<h3 id="org4d5b287">NameNode</h3>
+<div class="outline-text-3" id="text-org4d5b287">
 <ul class="org-ul">
 <li>管理文件系统的命名空间</li>
 <li>维护文件系统树</li>
@@ -247,9 +269,9 @@ Reduce阶段. 多台机器启动Reduce处理, 如机器A收到所有以A开头�
 </div>
 </div>
 
-<div id="outline-container-org3154e61" class="outline-3">
-<h3 id="org3154e61">DataNode</h3>
-<div class="outline-text-3" id="text-org3154e61">
+<div id="outline-container-orgd563b2e" class="outline-3">
+<h3 id="orgd563b2e">DataNode</h3>
+<div class="outline-text-3" id="text-orgd563b2e">
 <p>
 DataNode将HDFS数据块读取或者写入到本地文件系统的实际文件中.
 </p>
@@ -264,9 +286,9 @@ DataNode会与其他DataNode通信, 复制这些数据块以实现冗余.
 </div>
 </div>
 
-<div id="outline-container-org44c72d0" class="outline-3">
-<h3 id="org44c72d0">Secondary NameNode</h3>
-<div class="outline-text-3" id="text-org44c72d0">
+<div id="outline-container-org1e68743" class="outline-3">
+<h3 id="org1e68743">Secondary NameNode</h3>
+<div class="outline-text-3" id="text-org1e68743">
 <p>
 Secondary NameNode是一个监测HDFS集群状态的辅助守护进程, 通常独占一台服务器. 它与NameNode通信, 根据集群所配置的时间间隔获取HDFS元数据的快照.
 </p>
@@ -277,9 +299,9 @@ Secondary NameNode是一个监测HDFS集群状态的辅助守护进程, 通常�
 </div>
 </div>
 
-<div id="outline-container-orgd155e8b" class="outline-3">
-<h3 id="orgd155e8b">JobTracker</h3>
-<div class="outline-text-3" id="text-orgd155e8b">
+<div id="outline-container-orge19c4d7" class="outline-3">
+<h3 id="orge19c4d7">JobTracker</h3>
+<div class="outline-text-3" id="text-orge19c4d7">
 <p>
 JobTracker是应用程序和Hadoop之间的纽带. 一旦提交代码到集群上, JobTracker就会确定执行计划, 包括决定处理哪些文件, 为不同的任务分配节点, 监控所有任务的运行. 如果任务失败, JobTracker将自动重启任务.
 </p>
@@ -290,22 +312,22 @@ JobTracker是应用程序和Hadoop之间的纽带. 一旦提交代码到集群�
 </div>
 </div>
 
-<div id="outline-container-org2386848" class="outline-3">
-<h3 id="org2386848">TaskTracker</h3>
-<div class="outline-text-3" id="text-org2386848">
+<div id="outline-container-orgba4a8fb" class="outline-3">
+<h3 id="orgba4a8fb">TaskTracker</h3>
+<div class="outline-text-3" id="text-orgba4a8fb">
 <p>
 TaskTracker管理各个任务在每个从节点上的执行情况. 它负责与JobTracker通讯, 如果JobTracker在指定的时间内没有收到来自TaskTracker的心跳包, 就会假定TaskTracker崩溃了, 进而重新提交相应的任务到集群的其他节点中.
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orge57b9ff" class="outline-2">
-<h2 id="orge57b9ff">HDFS的工作原理</h2>
-<div class="outline-text-2" id="text-orge57b9ff">
+<div id="outline-container-org9c974af" class="outline-2">
+<h2 id="org9c974af">HDFS的工作原理</h2>
+<div class="outline-text-2" id="text-org9c974af">
 </div>
-<div id="outline-container-orgbdb60d8" class="outline-3">
-<h3 id="orgbdb60d8">分离元数据和数据</h3>
-<div class="outline-text-3" id="text-orgbdb60d8">
+<div id="outline-container-org5c06efb" class="outline-3">
+<h3 id="org5c06efb">分离元数据和数据</h3>
+<div class="outline-text-3" id="text-org5c06efb">
 <p>
 在传统的文件系统中, 因为文件系统不会跨越多台机器, 元数据和数据存储在同一台机器上.
 </p>
@@ -316,12 +338,12 @@ HDFS里, 元数据存储在NameNode上, 数据存储在DataNode的集群上.
 </div>
 </div>
 
-<div id="outline-container-org6b5b8a4" class="outline-3">
-<h3 id="org6b5b8a4">HDFS写过程</h3>
-<div class="outline-text-3" id="text-org6b5b8a4">
+<div id="outline-container-orgbd8769a" class="outline-3">
+<h3 id="orgbd8769a">HDFS写过程</h3>
+<div class="outline-text-3" id="text-orgbd8769a">
 <p>
 场景: Client要将zhou.log文件写入到HDFS. 过程如下图所示:
-<img src="./0.png" alt="0.png" />
+<img src="http://pinvondev.github.io/assets/blog/2018/03/06/hadoop基本概念/0.png" alt="0.png" />
 </p>
 <ol class="org-ol">
 <li>Client-&gt;NameNode, 告知其要将zhou.log文件写入.</li>
@@ -340,12 +362,12 @@ HDFS里, 元数据存储在NameNode上, 数据存储在DataNode的集群上.
 </div>
 </div>
 
-<div id="outline-container-org1219d49" class="outline-3">
-<h3 id="org1219d49">HDFS读过程</h3>
-<div class="outline-text-3" id="text-org1219d49">
+<div id="outline-container-orgeb80c98" class="outline-3">
+<h3 id="orgeb80c98">HDFS读过程</h3>
+<div class="outline-text-3" id="text-orgeb80c98">
 <p>
 HDFS读过程如图所示:
-<img src="./1.png" alt="1.png" />
+<img src="http://pinvondev.github.io/assets/blog/2018/03/06/hadoop基本概念/1.png" alt="1.png" />
 </p>
 <ol class="org-ol">
 <li>Client-&gt;NameNode, 询问应该从哪里读取文件.</li>
@@ -359,9 +381,9 @@ Client并行从不同的DataNode中获取文件其中的一个数据块, 然后�
 </div>
 </div>
 
-<div id="outline-container-orgf5a205c" class="outline-3">
-<h3 id="orgf5a205c">通过副本快速恢复硬件故障</h3>
-<div class="outline-text-3" id="text-orgf5a205c">
+<div id="outline-container-org84dc80e" class="outline-3">
+<h3 id="org84dc80e">通过副本快速恢复硬件故障</h3>
+<div class="outline-text-3" id="text-org84dc80e">
 <p>
 DataNode周期性(一般为3s)地发送心跳包给NameNode. 如果NameNode在预定的时间内(一般为10min)没有收到心跳信息, 则认为DataNode出现故障. 于是, DataNode被移除, 并启动一个进程来恢复数据.
 </p>
@@ -369,50 +391,80 @@ DataNode周期性(一般为3s)地发送心跳包给NameNode. 如果NameNode在�
 </div>
 </div>
 
-<div id="outline-container-org68626b5" class="outline-2">
-<h2 id="org68626b5">Hadoop的安装</h2>
-<div class="outline-text-2" id="text-org68626b5">
+<div id="outline-container-org651ad65" class="outline-2">
+<h2 id="org651ad65">Hadoop的安装</h2>
+<div class="outline-text-2" id="text-org651ad65">
 </div>
-<div id="outline-container-org57f03f7" class="outline-3">
-<h3 id="org57f03f7"></h3>
+<div id="outline-container-org14fc574" class="outline-3">
+<h3 id="org14fc574"></h3>
 </div>
 </div>
 
 </div>
 </div>
-    <div>
-      <div class="post-meta">
-        <span title="post date" class="post-info">2018-03-06</span>
-        <span title="last modification date" class="post-info">2018-03-09</span>
-        <span title="tags" class="post-info"><a href="/tags/大数据/">大数据</a></span>
-        <span title="author" class="post-info">Pinvon</span>
-      </div>
-      <section>
-        <h1>Comments</h1>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-06</span>
+            <span title="last modification date" class="post-info">2018-03-09</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/大数据">大数据</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
-          //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/03/06/hadoop基本概念";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/hadoop基本概念";
-          var disqus_shortname = 'pinvon';
-          /* * * DON'T EDIT BELOW THIS LINE * * */
-          (function() {
-          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/06/hadoop基本概念";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/06/hadoop基本概念";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-      </section>
-      <div class="footer">
-        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
         <p>
-          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
-          &nbsp;&nbsp;-&nbsp;&nbsp;
-          Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
-      </div>
     </div>
-  </body>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
 </html>
