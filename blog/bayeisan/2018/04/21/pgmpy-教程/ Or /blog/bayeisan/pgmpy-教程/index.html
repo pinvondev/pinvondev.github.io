@@ -55,34 +55,34 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2e3169f">创建贝叶斯网</a>
+<li><a href="#org314e575">创建贝叶斯网</a>
 <ul>
-<li><a href="#orgc3f9805">建立网络结构</a></li>
-<li><a href="#org314bb5d">填入参数</a></li>
-<li><a href="#org4eb7b6b">将数据加入网络</a></li>
-<li><a href="#org50b5abc">相关的检查</a></li>
+<li><a href="#org9b801ad">建立网络结构</a></li>
+<li><a href="#org6c682cf">填入参数</a></li>
+<li><a href="#org0123950">将数据加入网络</a></li>
+<li><a href="#orga18fe91">相关的检查</a></li>
 </ul>
 </li>
-<li><a href="#org27d0ddc">使用 Asia 网络进行推理</a>
+<li><a href="#orgcd686ab">使用 Asia 网络进行推理</a>
 <ul>
-<li><a href="#orge423d28">背景知识</a></li>
+<li><a href="#org768e0ad">背景知识</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2e3169f" class="outline-2">
-<h2 id="org2e3169f">创建贝叶斯网</h2>
-<div class="outline-text-2" id="text-org2e3169f">
+<div id="outline-container-org314e575" class="outline-2">
+<h2 id="org314e575">创建贝叶斯网</h2>
+<div class="outline-text-2" id="text-org314e575">
 <p>
 在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
 </p>
 </div>
 
-<div id="outline-container-orgc3f9805" class="outline-3">
-<h3 id="orgc3f9805">建立网络结构</h3>
-<div class="outline-text-3" id="text-orgc3f9805">
+<div id="outline-container-org9b801ad" class="outline-3">
+<h3 id="org9b801ad">建立网络结构</h3>
+<div class="outline-text-3" id="text-org9b801ad">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 
@@ -115,9 +115,9 @@ cancer_model = BayesianModel([('Pollution', 'Cancer'),
 </div>
 </div>
 
-<div id="outline-container-org314bb5d" class="outline-3">
-<h3 id="org314bb5d">填入参数</h3>
-<div class="outline-text-3" id="text-org314bb5d">
+<div id="outline-container-org6c682cf" class="outline-3">
+<h3 id="org6c682cf">填入参数</h3>
+<div class="outline-text-3" id="text-org6c682cf">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.factors.discrete import TabularCPD
 
@@ -225,9 +225,9 @@ Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人�
 </div>
 </div>
 
-<div id="outline-container-org4eb7b6b" class="outline-3">
-<h3 id="org4eb7b6b">将数据加入网络</h3>
-<div class="outline-text-3" id="text-org4eb7b6b">
+<div id="outline-container-org0123950" class="outline-3">
+<h3 id="org0123950">将数据加入网络</h3>
+<div class="outline-text-3" id="text-org0123950">
 <div class="org-src-container">
 <pre class="src src-Python"># Associating the parameters with the model structure.
 cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
@@ -243,9 +243,9 @@ cancer_model.check_model()
 </div>
 </div>
 
-<div id="outline-container-org50b5abc" class="outline-3">
-<h3 id="org50b5abc">相关的检查</h3>
-<div class="outline-text-3" id="text-org50b5abc">
+<div id="outline-container-orga18fe91" class="outline-3">
+<h3 id="orga18fe91">相关的检查</h3>
+<div class="outline-text-3" id="text-orga18fe91">
 <div class="org-src-container">
 <pre class="src src-Python">cancer_model.is_active_trail('Pollution', 'Smoker')  # False
 cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
@@ -273,9 +273,9 @@ cancer_model.get_independencies()
 </div>
 </div>
 
-<div id="outline-container-org27d0ddc" class="outline-2">
-<h2 id="org27d0ddc">使用 Asia 网络进行推理</h2>
-<div class="outline-text-2" id="text-org27d0ddc">
+<div id="outline-container-orgcd686ab" class="outline-2">
+<h2 id="orgcd686ab">使用 Asia 网络进行推理</h2>
+<div class="outline-text-2" id="text-orgcd686ab">
 <p>
 在构造了贝叶斯网络之后, 我们可以利用贝叶斯网络来进行推理.
 </p>
@@ -285,8 +285,8 @@ cancer_model.get_independencies()
 </p>
 </div>
 
-<div id="outline-container-orge423d28" class="outline-3">
-<h3 id="orge423d28">背景知识</h3>
+<div id="outline-container-org768e0ad" class="outline-3">
+<h3 id="org768e0ad">背景知识</h3>
 </div>
 </div>
 
