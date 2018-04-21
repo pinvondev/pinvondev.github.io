@@ -9,7 +9,8 @@
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
-* 介绍
+* Org-Page
+** 介绍
 
 org-page是一个基于org-mode的静态网站生成器。提供了以下功能：
 
@@ -25,7 +26,7 @@ org-page是一个基于org-mode的静态网站生成器。提供了以下功能�
 - 网站预览
 - 高度定制
 
-* 工作流程
+** 工作流程
 
 - 指定一个git仓库，用source分支管理org文件，用master分支管理html文件。仓库可以手动创建，也可以使用org-page的 *op/new-repository* 命令创建。
 - 指定一个基本的提交，默认是最近一次提交。org-page将从source分支读取最近的改变，并标记它们，用于发布文章。
@@ -33,98 +34,144 @@ org-page是一个基于org-mode的静态网站生成器。提供了以下功能�
 - 发布改变的内容。由于删除文章这种操作不常有，所以org-page不支持。
 - 更新所有的分类和标签。
 
-* 用法
+** 用法
 
 在doc/quick-guide.org中有详细用法。
 
+*** 安装
+
+  从melpa上安装org-page
+
+*** 配置
+
+ 如果手动安装，则将配置信息放在.emacs文件中。
+
+ #+BEGIN_SRC 
+ (require 'org-page)
+ (setq op/repository-directory "~/Blog")
+ (setq op/site-domain "http://pinvondev.github.io/")
+ ;;; for commenting, you can choose either disqus, duoshuo or hashover
+ ;;; (setq op/personal-disqus-shortname "your_disqus_shortname")
+ ;;; (setq op/personal-duoshuo-shortname "your_duoshuo_shortname")
+ (setq op/hashover-comments t)
+ ;;; the configuration below are optional
+ ;;; (setq op/personal-google-analytics-id "your_google_analytics_id")
+ (setq op/personal-github-link "https://github.com/pinvondev")
+ (setq op/site-main-title "Pinvon's Blog")
+ #+END_SRC
+
+ 使用 *op/new-repository* 指定配置中的文件夹为本地仓库。
+
+ 使用 *op/new-post* 写文章。
+
+ 在发布文章之前，先为本地仓库关联远程仓库。
+
+ #+BEGIN_SRC 
+ git remote add origin git@pinvondev.github.com/pinvondev/pinvondev.github.io.git
+ #+END_SRC
+
+*** 发布
+
+ 执行以下代码：
+ #+BEGIN_SRC 
+ (op/do-publication nil "HEAD^1" "~/org-pub/" nil)
+ #+END_SRC
+
+ 或
+
+ #+BEGIN_SRC 
+ (op/do-publication)
+ #+END_SRC
+
+ 或
+
+ *M-x op/do-publication <Enter>* 但是这样做之前，需要把org文件上传到github。
+
+
+
+*** 预览
+
+ *M-x op/do-publication-and-preview-site <Enter>* ，网站将在 *~/.op-tmp* 中发布。
+
+** 注意点
+ - 切换到source分支，编辑.org文件，上传到github。
+ - 然后op/do-publication，op/do-publication会自动切换到master分支。
+ - 如果没有上传html文件到github，则手动上传。
+
+*** 无法上传的情况
+
+ 在正确配置git的情况下，如果source分支已上传，而op/do-publication时没上传成功，则将仓库根目录下 =.git= 里面的所有文件都赋给当前用户所有操作权限。
+ #+BEGIN_SRC 
+ sudo chown -R pinvon:pinvon ./.git
+ cd .git
+ sudo chown -R pingon:pinvon *
+ #+END_SRC
+
+** 定制
+
+*** 生成页面目录
+
+ #+BEGIN_SRC 
+ #+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+ ;;; 将toc后的nil改成t即可
+ #+END_SRC
+
+
+*** 图片大小调整
+
+ 1. 将org-mode中设置的显示原图大小取消。
+ #+BEGIN_SRC 
+ (setq org-image-actual-width nil)
+ #+END_SRC
+ 2. 在org-mode中，自己填入属性值。
+ #+BEGIN_SRC 
+ #+CAPTION: 图片标题
+ #+ATTR_HTML: :width 100
+ #+ATTR_LATEX: :width 100in
+ #+END_SRC
+
+* EGO
+
+** 概述
+
+EGO 是由 org-page 和 org-webpage 派生出来的项目.
+
+我从 org-page 转向 EGO, 主要是在使用 org-page 的过程中, 出现了一些 bug, 而这些 bug, 由于不熟悉 Elisp, 我无法修复. 也许等什么时候有时间了, 再好好学一下 Elisp, 才能把这些问题修复. 最常碰到的 bug 是, source 分支已经提交了文件, 而使用 op/do-publication 时, master 分支有时可以正常提交, 有时不能正常提交.
+
+另外, 我希望调整博客显示的宽度, 但是改了 css 文件之后, 发现下次又被还原了.
+
+最重要的一点是, org-page 长时间没更新了.
+
 ** 安装
 
-从melpa上安装org-page
+从 melpa 安装.
 
-** 配置
+** 设置
 
-如果手动安装，则将配置信息放在.emacs文件中。
+参考配置:
 
-#+BEGIN_SRC 
-(require 'org-page)
-(setq op/repository-directory "~/Blog")
-(setq op/site-domain "http://pinvondev.github.io/")
-;;; for commenting, you can choose either disqus, duoshuo or hashover
-;;; (setq op/personal-disqus-shortname "your_disqus_shortname")
-;;; (setq op/personal-duoshuo-shortname "your_duoshuo_shortname")
-(setq op/hashover-comments t)
-;;; the configuration below are optional
-;;; (setq op/personal-google-analytics-id "your_google_analytics_id")
-(setq op/personal-github-link "https://github.com/pinvondev")
-(setq op/site-main-title "Pinvon's Blog")
-#+END_SRC
+#+BEGIN_SRC Elisp
+;; the following is only needed if you install EGO manually
+(add-to-list 'load-path "path/to/EGO")
 
-使用 *op/new-repository* 指定配置中的文件夹为本地仓库。
+(require 'ego)
 
-使用 *op/new-post* 写文章。
+(ego-add-to-alist 'ego-project-config-alist
+               `(("emacs-china" ; 站点工程的名字
+                 :repository-directory "~/github/emacs-china.github.io" ; 站点的本地目录
+                 :site-domain "http://emacs-china.github.io/" ; 站点的网址
+                 :site-main-title "EMACS-CHINA" ; 站点的标题
+                 :site-sub-title "=============>集思广益" ; 站点的副标题
+                 :theme (default) ; 使用的主题
+                 :summary (("years" :year :updates 10) ("authors" :authors) ("tags" :tags)) ; 导航栏的设置，有 category 和 summary 两种
+                 :source-browse-url ("Github" "https://github.com/emacs-china") ; 你的工程源代码所在的位置
+                 :personal-disqus-shortname "emacs-china" ; 使用 disqus 评论功能的话，它的短名称
+                 ;; :personal-duoshuo-shortname "emacs-china" ; 使用 多说 评论功能的话，它的短名称(由于多说已经关闭，这里就此废置)
+                 :confound-email nil ; 是否保护邮件名称呢？t 是保护，nil 是不保护，默认是保护
+                 :ignore-file-name-regexp "readme.org" ; 有些不想发布成 html 的 org 文件（但是又想被导入 git 进行管理），可以用这种正则表达的方式排除
+                 :web-server-docroot "~/webRoot/emacs-china.github.io" ; 本地测试的目录
+                 :web-server-port 5432); 本地测试的端口
 
-在发布文章之前，先为本地仓库关联远程仓库。
-
-#+BEGIN_SRC 
-git remote add origin git@pinvondev.github.com/pinvondev/pinvondev.github.io.git
-#+END_SRC
-
-** 发布
-
-执行以下代码：
-#+BEGIN_SRC 
-(op/do-publication nil "HEAD^1" "~/org-pub/" nil)
-#+END_SRC
-
-或
-
-#+BEGIN_SRC 
-(op/do-publication)
-#+END_SRC
-
-或
-
-*M-x op/do-publication <Enter>* 但是这样做之前，需要把org文件上传到github。
-
-
-
-** 预览
-
-*M-x op/do-publication-and-preview-site <Enter>* ，网站将在 *~/.op-tmp* 中发布。
-
-* 注意点
-- 切换到source分支，编辑.org文件，上传到github。
-- 然后op/do-publication，op/do-publication会自动切换到master分支。
-- 如果没有上传html文件到github，则手动上传。
-
-** 无法上传的情况
-
-在正确配置git的情况下，如果source分支已上传，而op/do-publication时没上传成功，则将仓库根目录下 =.git= 里面的所有文件都赋给当前用户所有操作权限。
-#+BEGIN_SRC 
-sudo chown -R pinvon:pinvon ./.git
-cd .git
-sudo chown -R pingon:pinvon *
-#+END_SRC
-
-* 定制
-
-** 生成页面目录
-
-#+BEGIN_SRC 
-#+OPTIONS:     H:3 num:nil toc:nil \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-;;; 将toc后的nil改成t即可
-#+END_SRC
-
-
-** 图片大小调整
-
-1. 将org-mode中设置的显示原图大小取消。
-#+BEGIN_SRC 
-(setq org-image-actual-width nil)
-#+END_SRC
-2. 在org-mode中，自己填入属性值。
-#+BEGIN_SRC 
-#+CAPTION: 图片标题
-#+ATTR_HTML: :width 100
-#+ATTR_LATEX: :width 100in
+                 ;; 你可以在此添加更多的站点设置
+               ))
 #+END_SRC
