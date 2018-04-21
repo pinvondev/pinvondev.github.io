@@ -16,3 +16,63 @@
 2. 端口.
 3. 用户名.
 4. 口令.
+
+如:
+#+BEGIN_SRC Shell
+mysql -h 127.0.0.1 -P 3306 -u root -p
+#+END_SRC
+
+* 选择数据库
+
+#+BEGIN_SRC MySQL
+SHOW DATABASES;
+USE xxx;
+#+END_SRC
+
+必须先使用 =USE= 打开数据库, 才能使用里面的数据.
+
+* 了解表
+
+** 查看表
+
+选择好数据库后, 输入:
+#+BEGIN_SRC MySQL
+SHOW TABLES;
+#+END_SRC
+
+显示表中的字段:
+#+BEGIN_SRC MySQL
+SHOW COLUMNS FROM xxx;
+
+// 或者
+
+DESCRIBE xxx;
+#+END_SRC
+=SHOW COLUMNS= 或 =DESCRIBE= 接受一个表名, 对每个字段返回一行, 行中包含包含字段名, 数据类型, 是否允许为 NULL, 键信息, 默认值以及其他信息.
+
+** 查看创建数据库/表的MySQL语句
+
+对于一个已经存在数据库或表, 可以用如下语句查看创建数据库或创建表的MySQL语句:
+#+BEGIN_SRC MySQL
+SHOW CREATE DATABASE xxx;
+SHOW CREATE TABLE xxx;
+#+END_SRC
+
+** 查看授予用户的安全权限
+
+#+BEGIN_SRC MySQL
+SHOW GRANTS;
+#+END_SRC
+
+** 查看服务器错误或警告
+
+#+BEGIN_SRC MySQL
+SHOW ERRORS;
+SHOW WARNINGS;
+#+END_SRC
+
+* MySQL日志
+
+** 错误日志
+
+/var/log/mysql/error.log

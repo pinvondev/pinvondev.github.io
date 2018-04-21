@@ -1,0 +1,55 @@
+#+TITLE:       MySQL(二) SELECT语句
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-21 六
+#+URI:         /blog/%y/%m/%d/mysql-select
+#+KEYWORDS:    <TODO: insert your keywords here>
+#+TAGS:        SQL
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+DESCRIPTION: <TODO: insert your description here>
+
+* 概述
+
+=SELECT= 语句, 至少接受两个参数: 想检索什么, 从什么地方检索.
+
+* 检索列
+
+#+BEGIN_SRC MySQL
+SELECT column_1, column_2 from table_name;
+SELECT * FROM table_name;
+#+END_SRC
+
+关于通配符*, 除非确实需要表中的每个列, 否则最好不要使用*通配符. 虽然使用通配符可能会让自己省事, 不用明确列出所需列, 但检索不需要的列通常会降低检索和应用程序的性能.
+
+当然, 通配符也有它的优点, 它可以让我们检索到名字未知的列.
+
+* 检索不同的数据(DISTINCT)
+
+直接使用 =SELECT column_name FROM table_name;= 将返回 =table_name= 中所有的 =column_name= 对应的值.
+
+如果需要, 可以使用 =DISTINCT= 关键字, 指示 MySQL 只返回不同的值.
+
+#+BEGIN_SRC MySQL
+SELECT DISTINCT column_name FROM table_name;
+#+END_SRC
+
+注意, =DISTINCE= 要放在列名的前面. 如果 =DISTINCT= 后面的列名不止一个, 则 =DISTINCT= 检查的值, 指的是所有列组合后的值.
+
+* 限制结果(LIMIT)
+
+直接使用 =SELECT= 语句, 会返回所有匹配的行, 如果只想看前几行, 可以使用 =LIMIT= 子句.
+
+#+BEGIN_SRC MySQL
+SELECT column_name FROM table_name LIMIT 5;
+#+END_SRC
+
+=LIMIT= 子句接受两个参数, 起始行和行数. 如: =LIMIT 5,5= 表示从第6行开始, 返回接下来的5行. 如果只指定了一个参数, 默认从第1行开始.
+
+* 限定名
+
+#+BEGIN_SRC MySQL
+SELECT table_name.column_name FROM database_name.table_name;
+#+END_SRC
+
+在有些情况下需要使用这种限定名的方式.
