@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Node.js Fabric - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Node.js Fabric</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7d9ec19">概述</a>
+<ul>
+<li><a href="#org6aacbd9">fabric-client</a></li>
+<li><a href="#org7c16896">fabric-ca-client</a></li>
+</ul>
+</li>
+<li><a href="#orgff7965d">配置应用程序开发环境</a>
+<ul>
+<li><a href="#orgf10f744">开发环境组成</a>
+<ul>
+<li><a href="#org6ff1315">orderer</a></li>
+<li><a href="#orge30ddaf">peer</a></li>
+<li><a href="#org15ed54d">身份</a></li>
+</ul>
+</li>
+<li><a href="#orgd866fb7">前提</a>
+<ul>
+<li><a href="#orga856005">Docker</a></li>
+<li><a href="#org3775b1a">Docker Compose</a></li>
+<li><a href="#org8b6ee91">Nodejs(v6.2.0-6.10.0)</a></li>
+</ul>
+</li>
+<li><a href="#org6e7b5b3">准备加密材料</a></li>
+<li><a href="#orgeb427d6">创世区块</a></li>
+<li><a href="#orga8eab62">启动网络</a></li>
+</ul>
+</li>
+<li><a href="#org7a04347">如何创建channel</a>
+<ul>
+<li><a href="#orgdc5aaeb">步骤</a></li>
+<li><a href="#org667b1d1">使用*.tx构建可签名的channel配置</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7d9ec19" class="outline-2">
+<h2 id="org7d9ec19">概述</h2>
+<div class="outline-text-2" id="text-org7d9ec19">
+<p>
+Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链进行交互. 使用这些API, 我们可以做到:
+</p>
+<ul class="org-ul">
+<li>创建channels</li>
+<li>将peer加入channel</li>
+<li>在peer上安装chaincode</li>
+<li>在channel上实例化chaincode</li>
+<li>通过chaincode调用事务</li>
+<li>查询账本</li>
+</ul>
+
+<p>
+为了安全起见, 在Fabric中需要使用数字签名. 用户通过证书, 要对所有的Fabric请求进行签名(用户对请求进行签名, 再附上从CA获取的数字证书, Fabric使用CA的公钥解开数字证书, 拿到用户的公钥, 这样就能证明数字签名是否真的是用户签的). <a href="http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#table-of-contents">关于Fabric CA</a>.
+</p>
+</div>
+
+<div id="outline-container-org6aacbd9" class="outline-3">
+<h3 id="org6aacbd9">fabric-client</h3>
+<div class="outline-text-3" id="text-org6aacbd9">
+<ul class="org-ul">
+<li><a href="https://fabric-sdk-node.github.io/Client.html#createChannel">创建channel</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#joinChannel">将peer加入channel</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#installChaincode">将chaincode安装到peer</a></li>
+<li>在channel上实例化chaincode, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a></li>
+<li>提交事务, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryByChaincode">查询chaincode以获得最新的应用程序状态</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInfo">查询其他的channel状态</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlock">查询块(通过number)</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlockByHash">查询块(通过hash)</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#queryChannels">peer属于哪些channel</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#queryInstalledChaincodes">peer上安装的所有chaincode</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInstantiatedChaincodes">peer上实例化的所有chaincode</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryTransaction">查询事务(通过id)</a></li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#getChannelConfig">channel的配置数据</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#connect">与peer事件建立联系</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerBlockEvent">监听块事件</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerTxEvent">监听交易事件以获知是否成功写入账本</a></li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerChaincodeEvent">自定义一些由chaincode产生的事件</a></li>
+<li><a href="https://fabric-sdk-node.github.io/User.html">序列化用户类(已经登记, 并由登记证书和签名密钥表示)</a></li>
+<li>具有多层覆盖的分层配置设置: 文件, 环境变量, 程序参数, 内存中设置</li>
+<li>内置的日志系统为winston, 也可以使用常用的log4j</li>
+<li>可插入的CryptoSuite接口描述与Fabric成功交互所需的加密操作. 提供两种实现方式: <a href="https://fabric-sdk-node.github.io/CryptoSuite_ECDSA_AES.html">Software-based ECDSA</a>和<a href="https://fabric-sdk-node.github.io/CryptoSuite_PKCS11.html">PKCS#11-compliant ECDSA</a></li>
+<li>可插拔的状态存储接口, 用于保存诸如用户的状态缓存: <a href="https://fabric-sdk-node.github.io/FileKeyValueStore.html">存储到文件</a>和<a href="https://fabric-sdk-node.github.io/CouchDBKeyValueStore.html">存储到CouchDB</a></li>
+<li><a href="https://fabric-sdk-node.github.io/CryptoKeyStore.html">可自定义的加密密钥库</a></li>
+<li>支持使用TLS(grpcs://)和非TLS(grcp://)与peer和orderer连接. 可查看<a href="https://fabric-sdk-node.github.io/Remote.html">Remote类</a>, 它是peers和orderers的父类.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7c16896" class="outline-3">
+<h3 id="org7c16896">fabric-ca-client</h3>
+<div class="outline-text-3" id="text-org7c16896">
+<ul class="org-ul">
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#register">注册新用户</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#enroll">登记一个用户, 获得Fabric CA签名的登记证书</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#revoke">通过登记ID注销用户或注销某证书</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html">自定义持久化存储</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgff7965d" class="outline-2">
+<h2 id="orgff7965d">配置应用程序开发环境</h2>
+<div class="outline-text-2" id="text-orgff7965d">
+<p>
+chaincode运行在服务器(背书节点), 客户端使用node.js编写.
+</p>
+</div>
+
+<div id="outline-container-orgf10f744" class="outline-3">
+<h3 id="orgf10f744">开发环境组成</h3>
+<div class="outline-text-3" id="text-orgf10f744">
+</div>
+<div id="outline-container-org6ff1315" class="outline-4">
+<h4 id="org6ff1315">orderer</h4>
+<div class="outline-text-4" id="text-org6ff1315">
+<p>
+orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要orderer?
+</p>
+
+<p>
+因为orderer节点维护了整个网络的关键数据, 如: 哪些组织加入了, 哪些channel创建了, 哪个组织加入了哪个channel, 对网络的改变需要遵循哪些策略. 本质上来讲, ordering service掌握了整个网络.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge30ddaf" class="outline-4">
+<h4 id="orge30ddaf">peer</h4>
+<div class="outline-text-4" id="text-orge30ddaf">
+<p>
+peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节点是否是背书节点, 需要自己配置. 而提交节点则无需配置, 因为所有的peer都是提交节点. 在实际环境中, 一个组织内的节点需要多个, 在开发阶段, 一个组织只配置一个节点, 这个节点既是背书节点, 又是提交节点. 它可以为提交的事务提案进行背书, 可以从账本中获得信息.
+</p>
+
+<p>
+另外, peer还要将事件进行广播. 只要账本新增了区块, peer节点就会广播该事件, 组织内的所有应用都可以监听到它.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org15ed54d" class="outline-4">
+<h4 id="org15ed54d">身份</h4>
+<div class="outline-text-4" id="text-org15ed54d">
+<p>
+Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进行访问控制. 在v1.0以后, 身份基于公钥基础设施(PKI)标准. 每个orderer, peer, 用户, 交易者都必须有密钥对, 其中公钥包含在CA签名的x.509证书里. 在开发阶段, 为了简便, 我们直接使用一些工具来生成证书.
+</p>
+
+<p>
+另外, 还要确定是否要在项目中加入Fabric-CA. 它是一个具有REST API的服务器, 可以支持动态身份管理, 包括注册, 登记(获取证书), 撤销和重新注册, 所以在提供用户身份时非常有用. 注意, 以这种方式配置的身份只能是 <code>MEMBER</code>, 而不是 <code>ADMIN</code>.
+</p>
+
+<p>
+<code>ADMIN</code> 可以创建/更新channel, 安装/实例化chaincode, 等等.
+</p>
+
+<p>
+如果不需要Fabric-CA, 也没有什么关系, 不过应用程序需要管理用户的证书.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd866fb7" class="outline-3">
+<h3 id="orgd866fb7">前提</h3>
+<div class="outline-text-3" id="text-orgd866fb7">
+</div>
+<div id="outline-container-orga856005" class="outline-4">
+<h4 id="orga856005">Docker</h4>
+</div>
+
+<div id="outline-container-org3775b1a" class="outline-4">
+<h4 id="org3775b1a">Docker Compose</h4>
+</div>
+
+<div id="outline-container-org8b6ee91" class="outline-4">
+<h4 id="org8b6ee91">Nodejs(v6.2.0-6.10.0)</h4>
+</div>
+</div>
+
+<div id="outline-container-org6e7b5b3" class="outline-3">
+<h3 id="org6e7b5b3">准备加密材料</h3>
+<div class="outline-text-3" id="text-org6e7b5b3">
+<p>
+身份由x.509证书建立. 我们涉及到很多身份证明:
+</p>
+<ul class="org-ul">
+<li>peer需要身份来注册背书</li>
+<li>orderer需要身份来生成交易区块, 然后供给提交节点验证与加入区块链</li>
+<li>应用程序需要身份来生成交易请求</li>
+<li>Fabric CA需要身份, 这样它们的给证书的签名都能被验证</li>
+</ul>
+
+<p>
+在开发阶段, 我们直接使用cryptogen工具来生成需要的密钥和证书.
+</p>
+
+<p>
+cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以用来启动Fabric-CA服务器(如果要将Fabric CA作为项目的一部分). 另外, 它还会生成一个 <code>ADMIN</code>, 它具有特殊的操作权限. 最后, 它还生成用于提交交易的 <code>MEMBER</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb427d6" class="outline-3">
+<h3 id="orgeb427d6">创世区块</h3>
+<div class="outline-text-3" id="text-orgeb427d6">
+<p>
+我们需要使用创世区块来启动网络. 使用configtxgen工具来生成genesis.block.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga8eab62" class="outline-3">
+<h3 id="orga8eab62">启动网络</h3>
+<div class="outline-text-3" id="text-orga8eab62">
+<p>
+使用docker-compose来启动网络.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7a04347" class="outline-2">
+<h2 id="org7a04347">如何创建channel</h2>
+<div class="outline-text-2" id="text-org7a04347">
+</div>
+<div id="outline-container-orgdc5aaeb" class="outline-3">
+<h3 id="orgdc5aaeb">步骤</h3>
+<div class="outline-text-3" id="text-orgdc5aaeb">
+<ul class="org-ul">
+<li>使用configtxgen工具, 生成genesis.block</li>
+<li>使用configtxgen工具, 生成 *.tx</li>
+<li>获取channel的可签名的配置文件</li>
+<li>使用fabric-client SDK注册channel的可签名的配置文件</li>
+<li>使用fabric-client SDK将channel可签名配置文件和签名发给orderer</li>
+<li>使用fabric-client SDK将peer加入到channel</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org667b1d1" class="outline-3">
+<h3 id="org667b1d1">使用*.tx构建可签名的channel配置</h3>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-03</span>
+            <span title="last modification date" class="post-info">2018-04-11</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/03/nodejs-fabric";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/03/nodejs-fabric";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

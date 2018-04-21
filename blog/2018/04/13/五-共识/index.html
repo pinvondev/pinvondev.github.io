@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>五 共识 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">五 共识</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb7e4214">概述</a></li>
+<li><a href="#org2ad525a">实现数据隔离的multi-channel</a>
+<ul>
+<li><a href="#orgd99ab47">排序服务的初始化</a></li>
+<li><a href="#org78ac283">创建channel</a></li>
+<li><a href="#orgf1cd88f">更新channel</a>
+<ul>
+<li><a href="#org151a784">更新通道关键点</a></li>
+<li><a href="#org19a745d">configtxlator工具的使用</a></li>
+</ul>
+</li>
+<li><a href="#org2610eea">加入channel</a></li>
+<li><a href="#orgda4e955">查询channel</a></li>
+</ul>
+</li>
+<li><a href="#orgbbfa1cc">可插拔的排序服务</a>
+<ul>
+<li><a href="#orgf374d89">排序服务接口</a>
+<ul>
+<li><a href="#org12e19b0">创建链的接口</a></li>
+<li><a href="#orgf0794bb">链消息处理的接口</a></li>
+<li><a href="#org4c46a6f">增加新的排序服务</a></li>
+</ul>
+</li>
+<li><a href="#org24155f6">Solo</a>
+<ul>
+<li><a href="#org44409c5">创建链</a></li>
+<li><a href="#org6269ca5">接收交易请求</a></li>
+<li><a href="#orgd0b9158">错误处理</a></li>
+</ul>
+</li>
+<li><a href="#orgcb99ddb">Kafka</a>
+<ul>
+<li><a href="#org269a959">创建链</a></li>
+<li><a href="#org94d44a8">接收交易请求</a></li>
+<li><a href="#org94d8474">错误处理</a></li>
+</ul>
+</li>
+<li><a href="#orga61c40f">Kafka实践</a>
+<ul>
+<li><a href="#org7ac2660">节点数</a></li>
+<li><a href="#org46157c0">创建genesis.block</a></li>
+<li><a href="#orgd8c031c">配置Kafka集群</a></li>
+<li><a href="#org2dbf1e0">连接Kafka节点出现异常时的重试设置</a></li>
+<li><a href="#org643f2c5">排序服务节点和Kafka节点之间的安全传输</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb7e4214" class="outline-2">
+<h2 id="orgb7e4214">概述</h2>
+<div class="outline-text-2" id="text-orgb7e4214">
+<p>
+<a href="https://docs.google.com/document/d/1eRNxxQ0P8yp4Wh__Vi6ddaN_vhN2RQHP-IruHNUwyhc/edit#heading=h.hml58k6zw29h">学习Fabric共识</a>
+</p>
+
+<p>
+PoW, PoET, RBFT, ...
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ad525a" class="outline-2">
+<h2 id="org2ad525a">实现数据隔离的multi-channel</h2>
+<div class="outline-text-2" id="text-org2ad525a">
+<p>
+Ordering Service给客户端和Peer节点提供了一个共享通信Channel, 用来实现交易的广播服务. 客户端连接到channel上, 在通道上广播的消息最终会发送到channel内部的所有Peer节点.
+</p>
+
+<p>
+Ordering Service支持multi-channel, 客户端连接到一个指定的channel上, 就可以发送和获取消息了. channel是相互隔离的, 客户端连接到一个channel的时候, 并不知道其他channel的存在, 这边所说的隔离, 并不针对Orderer. 客户端可以连接到多个channel. multi-channel的例子如下:
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/13/五-共识/45.png" alt="45.png" />
+</p>
+</div>
+
+<p>
+客户端获得背书节点返回的提案响应后, 构造交易, 提交给Orderer节点, Orderer节点 <code>根据交易信息里提案的请求头确定channel信息</code>, 添加到对应的队列中进行排序, 生成区块后广播给该channel内的节点.
+</p>
+
+<p>
+每个channel在节点上都有一个对应的账本.
+</p>
+</div>
+
+<div id="outline-container-orgd99ab47" class="outline-3">
+<h3 id="orgd99ab47">排序服务的初始化</h3>
+<div class="outline-text-3" id="text-orgd99ab47">
+<p>
+排序服务由多个Orderer节点组成, <code>每个Orderer启动的时候, 都需要一个创世区块</code>. 创世区块内包含的信息有:
+</p>
+<ul class="org-ul">
+<li>Orderer节点信息及MSP信息(管理员证书, 根证书, TLS根证书)</li>
+<li>组织信息及MSP信息(管理员证书, 根证书, TLS根证书)</li>
+<li>共识算法类型</li>
+<li>区块配置信息</li>
+<li>访问控制策略</li>
+</ul>
+
+<p>
+configtxgen工具可以生成创世区块, configtxlator工具可以将区块转换成JSON格式.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org78ac283" class="outline-3">
+<h3 id="org78ac283">创建channel</h3>
+<div class="outline-text-3" id="text-org78ac283">
+<p>
+<code>客户端可以通过SDK向Ordering Service发起创建channel的请求, 提交的内容是channtl配置交易</code>. configtxgen工具可以生成channel配置交易(同样, 可以转换成JSON格式的内容来查看).
+</p>
+
+<p>
+Ordering Service接收到创建channel的请求, 会检查是否是配置交易, 检查的方法是查看ChannelHeader的类型是否为HeaderType_CONFIG_UPDATE(新建和更新channel都是这个类型), 然后Ordering Service重新生成一个配置交易, 修改交易类型为HeaderType_CONFIG. 新生成的交易会利用接收消息的Orderer的私钥重新进行签名, 然后添加到系统链的交易消息队列中进行处理.
+</p>
+
+<p>
+创建一个channel就会有一个新的链. 客户端发起创建channel的请求, 创建成功后返回这个链的创世区块. 新链的创世区块中包含了channel配置交易的内容, 扩展了从系统链上保存的组织信息, Ordering Service信息等, 这样节点可以根据这个创世区块确定新链的标识, Orderer节点等, 而不用访问Orderer上的系统链.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf1cd88f" class="outline-3">
+<h3 id="orgf1cd88f">更新channel</h3>
+<div class="outline-text-3" id="text-orgf1cd88f">
+<p>
+可参考博客: <a href="https://www.jianshu.com/p/eb8fe7cb6f5a">动态加入组织</a>
+</p>
+
+<p>
+大概内容如下:
+</p>
+
+<p>
+系统启动和通道创建分别要依赖于创世区块和通道文件. 可以将通道文件使用configtxlator工具转换成我们能看懂的JSON格式, 进行编辑.
+</p>
+</div>
+
+<div id="outline-container-org151a784" class="outline-4">
+<h4 id="org151a784">更新通道关键点</h4>
+<div class="outline-text-4" id="text-org151a784">
+<p>
+确定好需要修改的配置项, 离线修改后, 通过SDK或CLI发送给Orderer.
+</p>
+
+<p>
+通道配置通过一个交易的形式存储在通道的配置区块中, 并且能够直接被修改. 但是, 在Fabric v1.0.0中, 还不能使用SDK来直接修改配置. configtxlator工具提供了一个API, 可以让SDK用户能够与这个API交互来更新配置.
+</p>
+
+<p>
+更新通道的流程:
+</p>
+<ol class="org-ol">
+<li>SDK取出最新配置</li>
+<li>configtxlator工具将配置转化成我们能看懂的JSON文件</li>
+<li>客户端编辑配置文件</li>
+<li>使用configtxlator工具计算原有配置文件与现有配置文件的差异</li>
+<li>客户端使用SDK提交配置和签名</li>
+</ol>
+
+<p>
+注: 个人认为, 服务器与客户端的概念, 是相对的. 对于用户直接使用的程序来说, 服务器是使用SDK的应用程序, 对于使用SDK的应用程序来说, 服务器是Fabric.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org19a745d" class="outline-4">
+<h4 id="org19a745d">configtxlator工具的使用</h4>
+<div class="outline-text-4" id="text-org19a745d">
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator --help
+</pre>
+</div>
+<p>
+使用该命令了解configtxlator工具的使用.
+</p>
+
+<p>
+启动configtxlator:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator start
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2610eea" class="outline-3">
+<h3 id="org2610eea">加入channel</h3>
+<div class="outline-text-3" id="text-org2610eea">
+<p>
+应用程序通过SDK或CLI向节点发送JoinChain请求, 参数为该通道的创世区块, 请求类型为HeaderType_CONFIG.
+</p>
+
+<p>
+节点校验创世区块的合法性: 是否包含应用相关的配置项, 对提交者的身份进行认证和权限检查. 配置交易(创建通道所需的文件)要用客户端的私钥进行签名. 权限检查主要包含两点:
+</p>
+<ol class="org-ol">
+<li>是否有权限向节点提交请求(即检查提交者的MSP是否与本地MSP相同)</li>
+<li>是否满足加入通道请求的策略: 管理员权限才能提交加入通道请求, 管理员的证书配置在 <code>$CORE_PEER_MSPCONFIGPATH/admincerts</code> 目录下.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgda4e955" class="outline-3">
+<h3 id="orgda4e955">查询channel</h3>
+<div class="outline-text-3" id="text-orgda4e955">
+<p>
+channel信息是节点本地维护的, 有一个值为chain的映射表, 在节点启动或有新channel加入时, 会更新这个映射表. 映射表的键为channelId, 遍历就能返回节点所加入的所有channel. 在CLI中, 可以输入 <code>peer channel list</code> 来查看.
+</p>
+
+<p>
+channel的配置也可查询, 如获取Orderer.
+</p>
+
+<p>
+进入CLI, 获取channel配置:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel fetch config config_block.pb -o orderer.example.com:7050 -c testchainid
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbbfa1cc" class="outline-2">
+<h2 id="orgbbfa1cc">可插拔的排序服务</h2>
+<div class="outline-text-2" id="text-orgbbfa1cc">
+<p>
+目前只有两种排序服务: Solo, Kafka.
+</p>
+</div>
+
+<div id="outline-container-orgf374d89" class="outline-3">
+<h3 id="orgf374d89">排序服务接口</h3>
+<div class="outline-text-3" id="text-orgf374d89">
+<p>
+排序服务的业务需要是可以实现不同的逻辑. 主要的接口有创建链, 处理链消息, 增加新的排序服务.
+</p>
+</div>
+
+<div id="outline-container-org12e19b0" class="outline-4">
+<h4 id="org12e19b0">创建链的接口</h4>
+<div class="outline-text-4" id="text-org12e19b0">
+<div class="org-src-container">
+<pre class="src src-Go">type Consenter interface {
+    HandleChain(support ConsenterSupport, metadata *cb.Metadata) (Chain, error)
+}
+</pre>
+</div>
+
+<p>
+这个接口的作用是创建一个对链的引用, 用于提供资源. 其中, 第一个参数提供交易过滤, 交易切割, 区块签名等功能; 第二个参数是一个指针, 指针链账本中最后一个提交块ORDERER的存储元数据. 如果是创世区块(genesis.block), 由于没有存储元数据字段定义, 所以该值为nil.
+</p>
+
+<p>
+当Orderer接收到创建通道的请求时, 会根据genesis.block中配置的通道类型来创建新的通道, 调用的是不同的通道的 <code>HandleChain()</code>. 
+</p>
+
+<p>
+不同排序服务的区块元数据不同, 如对于Kafka服务, 元数据中要保存Kafka的最新偏移, 而Solo则不需要, 所以 <code>排序服务不能动态切换</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf0794bb" class="outline-4">
+<h4 id="orgf0794bb">链消息处理的接口</h4>
+<div class="outline-text-4" id="text-orgf0794bb">
+<p>
+排序服务接收到某个通道上的交易后, 会提交给链处理. 需要实现的接口如下:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Go">type Chain interface {
+    Enqueue(env *cb.Envelope) bool
+    Errored() &lt;- chan struct{}
+    Halt()
+}
+</pre>
+</div>
+
+<p>
+<code>Enqueue()</code>: 成功接收消息时, 返回true, 否则返回false
+</p>
+
+<p>
+<code>Errored()</code>: 发生错误时, 返回报错的channel, 终止客户端的等待
+</p>
+
+<p>
+<code>Halt()</code>: 用于分配链的各种资源, 并保持相关的最新状态, 包括从排序服务中读取资源, 将消息传递给区块进行拆分, 将区块结果写入账本.
+</p>
+
+<p>
+Chain接口: 接收交易请求, 进行排序, 生成最终的区块, 提供了可以提交消息进行排序的方法. 在实现这个接口时, 需要把排好的交易通过blockcutter.Receiver进行交易分割, 最后写到账本中. 交易的分割有两种模式:
+</p>
+<ol class="org-ol">
+<li>交易先进入消息流中, 它在消息流中是有序的, 消息流中的交易分割到不同的区块里, 最后写入到账本中, solo和kafka都是这种模式.</li>
+<li>交易分割到不同的区块中, 交易是有序的, 最后写入账本中, sbft是这种模式.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org4c46a6f" class="outline-4">
+<h4 id="org4c46a6f">增加新的排序服务</h4>
+<div class="outline-text-4" id="text-org4c46a6f">
+<p>
+排序服务需要配置文件的支持和配置文件参数的识别.
+</p>
+
+<p>
+配置文件支持: 生成genesis.block的配置文件configtx.yaml中, Orderer.OrdererType可以指定排序服务类型. 假设添加了newconsenter.
+</p>
+
+<p>
+配置文件参数识别: 在initializeMulti ChainManager的consenters中增加映射. consenters["newconsenter"] = newconsenter.New(). 然后在newconsenter里实现新的排序和共识算法.
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/13/五-共识/47.png" alt="47.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org24155f6" class="outline-3">
+<h3 id="org24155f6">Solo</h3>
+<div class="outline-text-3" id="text-org24155f6">
+</div>
+<div id="outline-container-org44409c5" class="outline-4">
+<h4 id="org44409c5">创建链</h4>
+<div class="outline-text-4" id="text-org44409c5">
+<p>
+利用Golang的并发机制, 内部构建一个接收消息的通道sendChan, 然后返回处理交易信息的链multichain.Chain:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func newChain (support multichain.ConsenterSupport) *chain {
+    return &amp;chain {
+        batchTimeout: support.SharedConfig().BatchTimeout(),
+        support: support,
+        sendChain: make(chan *cb.Envelope),
+        exitChan: make(chan struct{}),
+    }
+}
+</pre>
+</div>
+<p>
+其中, batchTimeout是最长区块生成间隔时间; support提供交易切割和生成区块的功能, exitChan是服务异常的终止信息.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6269ca5" class="outline-4">
+<h4 id="org6269ca5">接收交易请求</h4>
+<div class="outline-text-4" id="text-org6269ca5">
+<p>
+创建链以后, 通过 <code>Start()</code> 启动链的处理过程. 在Solo中, 就是启动一个线程循环的接收发送到sendChan通道的数据, 然后进行交易的切割和区块的写入.
+</p>
+
+<p>
+排序服务接收到交易请求以后, 根据不同的排序服务类型提交给不同的链进行处理, 入口函数是 <code>Enqueue</code>. Solo类型接收到消息以后, 发送给sendChan就结束了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd0b9158" class="outline-4">
+<h4 id="orgd0b9158">错误处理</h4>
+<div class="outline-text-4" id="text-orgd0b9158">
+<p>
+排序服务内部如果出现异常, 会给exitChan发送消息, 外部程序可以读取Errored返回的通道, 进行异常处理.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb99ddb" class="outline-3">
+<h3 id="orgcb99ddb">Kafka</h3>
+<div class="outline-text-3" id="text-orgcb99ddb">
+<p>
+基于Kafka的排序服务, 利用Kafka作为交易的消息队列, 实现高吞吐量的数据分发. 每个通道都对应Kafka的一个Topic, 排序服务节点在不同阶段充当不同的角色.
+</p>
+<ol class="org-ol">
+<li>接收交易阶段: 充当Kafka的生产者(producer)</li>
+<li>消息处理阶段: 充当Kafka的消费者(consumer)</li>
+</ol>
+</div>
+
+<div id="outline-container-org269a959" class="outline-4">
+<h4 id="org269a959">创建链</h4>
+</div>
+
+<div id="outline-container-org94d44a8" class="outline-4">
+<h4 id="org94d44a8">接收交易请求</h4>
+</div>
+
+<div id="outline-container-org94d8474" class="outline-4">
+<h4 id="org94d8474">错误处理</h4>
+</div>
+</div>
+
+<div id="outline-container-orga61c40f" class="outline-3">
+<h3 id="orga61c40f">Kafka实践</h3>
+<div class="outline-text-3" id="text-orga61c40f">
+</div>
+<div id="outline-container-org7ac2660" class="outline-4">
+<h4 id="org7ac2660">节点数</h4>
+<div class="outline-text-4" id="text-org7ac2660">
+<p>
+Kafka节点数至少4个; Zookeeper节点数选奇数个, 至少为3.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org46157c0" class="outline-4">
+<h4 id="org46157c0">创建genesis.block</h4>
+<div class="outline-text-4" id="text-org46157c0">
+<p>
+修改configtx.yaml文件. 主要是修改Orderer.OrdererType, Orderer.kafka.Brokers, Orderer.AbsoluteMaxBytes三个选项.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd8c031c" class="outline-4">
+<h4 id="orgd8c031c">配置Kafka集群</h4>
+</div>
+
+<div id="outline-container-org2dbf1e0" class="outline-4">
+<h4 id="org2dbf1e0">连接Kafka节点出现异常时的重试设置</h4>
+</div>
+
+<div id="outline-container-org643f2c5" class="outline-4">
+<h4 id="org643f2c5">排序服务节点和Kafka节点之间的安全传输</h4>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-13</span>
+            <span title="last modification date" class="post-info">2018-04-15</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/13/五-共识";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/13/五-共识";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

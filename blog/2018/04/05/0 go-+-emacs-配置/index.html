@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>0 Go + Emacs 配置 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Go" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">0 Go + Emacs 配置</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3d8dcef">关于Go</a></li>
+<li><a href="#org4df9c08">安装Go</a>
+<ul>
+<li><a href="#org68406fd">下载Go</a></li>
+<li><a href="#org1b6b9b6">解压</a></li>
+<li><a href="#org4070d18">配置</a>
+<ul>
+<li><a href="#org346eab2">goimports</a></li>
+<li><a href="#orgce80437">gocode</a></li>
+<li><a href="#org947185c">godef</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org3b531fa">Emacs配置</a>
+<ul>
+<li><a href="#org9a25f99">安装go-mode</a></li>
+<li><a href="#org4905345">添加自动格式化的hook</a></li>
+<li><a href="#orga90ad51">配置自动补齐</a></li>
+<li><a href="#org7444b47">配置自动跳转</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3d8dcef" class="outline-2">
+<h2 id="org3d8dcef">关于Go</h2>
+<div class="outline-text-2" id="text-org3d8dcef">
+<p>
+Go语言的并发机制, 使它编写的程序能够非常有效地利用多核与联网的计算机, 新颖的类型系统则使程序结构变得灵活而模块化. Go代码编译成机器码不仅非常迅速, 还有方便的垃圾回收机制和强大的运行时反射机制. 它是一个快速的, 静态类型的编译型语言, 感觉却像动态类型的解释型语言.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4df9c08" class="outline-2">
+<h2 id="org4df9c08">安装Go</h2>
+<div class="outline-text-2" id="text-org4df9c08">
+</div>
+<div id="outline-container-org68406fd" class="outline-3">
+<h3 id="org68406fd">下载Go</h3>
+<div class="outline-text-3" id="text-org68406fd">
+<p>
+<a href="https://golang.org/dl/">Go官网</a>
+</p>
+
+<p>
+如果打不开, 则选择: <a href="https://golang.google.cn/dl/">Go中国</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1b6b9b6" class="outline-3">
+<h3 id="org1b6b9b6">解压</h3>
+<div class="outline-text-3" id="text-org1b6b9b6">
+<div class="org-src-container">
+<pre class="src src-Shell">tar -C /usr/local -xzf goxxx.tar.gz
+</pre>
+</div>
+
+<p>
+打开 <code>~/.profile</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export PATH=$PATH:/usr/local/go/bin
+</pre>
+</div>
+
+<p>
+测试. 创建 <code>hello.go</code>, 输入以下代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+import "fmt"
+
+func main() {
+    fmt.Printf("hello, world\n")
+}
+</pre>
+</div>
+
+<p>
+在终端执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">go run hello.go
+# 输出 hello, world 则说明正确安装.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4070d18" class="outline-3">
+<h3 id="org4070d18">配置</h3>
+<div class="outline-text-3" id="text-org4070d18">
+</div>
+<div id="outline-container-org346eab2" class="outline-4">
+<h4 id="org346eab2">goimports</h4>
+<div class="outline-text-4" id="text-org346eab2">
+<p>
+<code>goimports</code> 命令能自动格式化代码, 自动添加和移除imports, 而且与Emacs集成良好.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">go clone https://github.com/golang/tools.git
+go get golang.org/x/tools/cmd/goimports
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgce80437" class="outline-4">
+<h4 id="orgce80437">gocode</h4>
+<div class="outline-text-4" id="text-orgce80437">
+<p>
+<code>gocode</code> 命令能为代码自动补全提供后台支持, 是Emacs下Go代码补全不可少的后台.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">go get github.com/nsf/gocode
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org947185c" class="outline-4">
+<h4 id="org947185c">godef</h4>
+<div class="outline-text-4" id="text-org947185c">
+<p>
+<code>godef</code> 命令能在Go源码变量, 函数定义之间跳转.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">go get github.com/rogpeppe/godef
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3b531fa" class="outline-2">
+<h2 id="org3b531fa">Emacs配置</h2>
+<div class="outline-text-2" id="text-org3b531fa">
+</div>
+<div id="outline-container-org9a25f99" class="outline-3">
+<h3 id="org9a25f99">安装go-mode</h3>
+<div class="outline-text-3" id="text-org9a25f99">
+<p>
+<code>M-x package-list-packages</code>, 找到 <code>go-mode</code>, 安装.
+</p>
+
+<p>
+如果当前的MELPA不可用, 重新配置一个新的源.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(add-to-list 'package-archives
+'("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4905345" class="outline-3">
+<h3 id="org4905345">添加自动格式化的hook</h3>
+<div class="outline-text-3" id="text-org4905345">
+<p>
+需要先安装 <code>goimports</code> 命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">;; Call Gofmt before saving
+ (setq gofmt-command "goimports")
+ (add-hook 'before-save-hook 'gofmt-before-save)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga90ad51" class="outline-3">
+<h3 id="orga90ad51">配置自动补齐</h3>
+<div class="outline-text-3" id="text-orga90ad51">
+<p>
+需要先安装 <code>gocode</code> 命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">;;autocomplete
+(set (make-local-variable 'company-backends) '(company-go))
+(company-mode)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7444b47" class="outline-3">
+<h3 id="org7444b47">配置自动跳转</h3>
+<div class="outline-text-3" id="text-org7444b47">
+<p>
+需要先安装 <code>godef</code> 命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">;; Godef jump key binding
+ (local-set-key (kbd "M-,") 'godef-jump)
+ (local-set-key (kbd "M-.") 'pop-tag-mark)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-05</span>
+            <span title="last modification date" class="post-info">2018-04-05</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/go">Go</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/05/0 go-+-emacs-配置";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/05/0 go-+-emacs-配置";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

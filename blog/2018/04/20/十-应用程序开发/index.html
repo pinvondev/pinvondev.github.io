@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>十 应用程序开发 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">十 应用程序开发</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8e04816">概述</a>
+<ul>
+<li><a href="#org915b282">智能合约开发</a></li>
+<li><a href="#org7f8e8f0">应用程序开发</a></li>
+</ul>
+</li>
+<li><a href="#org292ff48">chaincode</a>
+<ul>
+<li><a href="#org9f0fc8c">chaincode接口</a></li>
+<li><a href="#org212f582">chaincode结构</a></li>
+<li><a href="#org25a3c18">chaincode工作流程</a></li>
+</ul>
+</li>
+<li><a href="#org5479aca">chaincode的API</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8e04816" class="outline-2">
+<h2 id="org8e04816">概述</h2>
+<div class="outline-text-2" id="text-org8e04816">
+<p>
+区块链应用一般由部署在区块链网络中的智能合约和调用这些智能合约的应用程序组成.
+</p>
+
+<p>
+智能合约可以操作账本中的状态, 这些状态往往记录着与业务相关的重要数据(如资产的属性). 应用程序通过向区块链网络发送交易来调用智能合约. 
+</p>
+
+<p>
+同一个区块链网络中可以部署多个智能合约, 应用程序通过名称, 版本号来指定具体调用哪个智能合约.
+</p>
+
+<p>
+如果需要访问控制, 则应用程序还要从CA处获取证书, 得到访问区块链网络的许可.
+</p>
+</div>
+
+<div id="outline-container-org915b282" class="outline-3">
+<h3 id="org915b282">智能合约开发</h3>
+<div class="outline-text-3" id="text-org915b282">
+<p>
+智能合约直接与账本打交道, 处于十分核心的位置. 智能合约本质上是为了对上层业务逻辑进行支持. Fabric支持了包括Go语言在内的多种高级语言, 并支持图灵完备的处理逻辑, 可以支持开发更复杂的上层应用.
+</p>
+
+<p>
+在Fabric中, chaincode延伸自智能合约的概念. chaincode会创建一些状态并写入账本, 状态带有绑定到chaincode的命名空间, 仅限于创建它的chaincode使用, 不能被其他chaincode直接访问. 不过, 在合适的许可范围内, 一个chaincode可以调用另一个chaincode, 间接访问其状态. 有时, 还要访问状态的所有历史值, 这就对存放账本状态的数据库提出了更多的要求.
+</p>
+
+<p>
+智能合约的编写, 版本管理, 安装, 实例化, 升级等, 都需要遵循规范.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7f8e8f0" class="outline-3">
+<h3 id="org7f8e8f0">应用程序开发</h3>
+<div class="outline-text-3" id="text-org7f8e8f0">
+<p>
+Fabric提供了SDK, 用来封装一系列与区块链网络打交道的基本方法, 包括发送交易, 监听网络事件, 查询区块和交易信息等, 能够提高对智能合约进行使用的效率.
+</p>
+
+<p>
+如, SDK可以通过以下4个步骤, 完成一次完整的交易.
+</p>
+<ul class="org-ul">
+<li>从CA获取合法的用户证书</li>
+<li>构造合法的交易提案, 提交给背书结点进行背书</li>
+<li>收集到足够的背书支持后, 构造合法的交易请求, 发送给Orderer节点进行排序</li>
+<li>监听事件, 确保交易已经写入账本</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org292ff48" class="outline-2">
+<h2 id="org292ff48">chaincode</h2>
+<div class="outline-text-2" id="text-org292ff48">
+</div>
+<div id="outline-container-org9f0fc8c" class="outline-3">
+<h3 id="org9f0fc8c">chaincode接口</h3>
+<div class="outline-text-3" id="text-org9f0fc8c">
+<p>
+每个chaincode都要实现 <code>Init()</code> 接口和 <code>Invoke()</code> 接口.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org212f582" class="outline-3">
+<h3 id="org212f582">chaincode结构</h3>
+<div class="outline-text-3" id="text-org212f582">
+<p>
+一个chaincode的必要结构如下所示:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+
+//引入必要的包
+import (
+    "fmt"
+    "github.com/hyperledger/fabric/core/chaincode/shim"
+    pb "github.com/hyperledger/fabric/protos/peer"
+)
+
+// 声明一个结构体
+type SimpleChaincode struct {}
+
+// 为结构体添加Init()方法
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+    // 在该方法中实现chaincode初始化或升级时的处理逻辑
+    // 编写时可灵活使用stub中的API
+}
+
+// 为结构体添加Invoke()方法
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
+    // 在该方法中实现chaincode被调用或查询时的处理逻辑
+}
+
+// 主函数 需要调用shim.Start()方法
+func main() {
+    err := shim.Start(new (SimpleChaincode))
+    if err != nil {
+        fmt.Printf("Error starting Simple chaincode: %s", err)
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25a3c18" class="outline-3">
+<h3 id="org25a3c18">chaincode工作流程</h3>
+<div class="outline-text-3" id="text-org25a3c18">
+<p>
+用户通过SDK或CLI, 向Fabric的背书节点发出调用chaincode的交易提案, 节点对提案进行检查, 通过后创建模拟执行这一交易的环境. 
+</p>
+
+<p>
+然后, 节点和chaincode容器之间通过gRPC消息来交互, 模拟执行交易, 并给出背书结论.
+</p>
+
+<p>
+客户端收到足够的背书节点的支持后, 便可以将这笔交易发送给排序节点进行排序, 并最终写入区块链.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5479aca" class="outline-2">
+<h2 id="org5479aca">chaincode的API</h2>
+<div class="outline-text-2" id="text-org5479aca">
+<p>
+chaincode需要记录的数据称为状态, 以键值对的形式存储.
+</p>
+
+<p>
+chaincode中方法的调用, 会更新交易提案的读写集合, 在提交验证阶段, 会再次执行, 跟账本状态进行比对.
+</p>
+
+<p>
+shim.api: <a href="https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim">https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim</a>
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-20</span>
+            <span title="last modification date" class="post-info">2018-04-20</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/20/十-应用程序开发";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/20/十-应用程序开发";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

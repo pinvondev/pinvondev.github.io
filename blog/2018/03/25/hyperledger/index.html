@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Hyperledger - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Hyperledger</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org83fcda9">词汇表</a></li>
+<li><a href="#org77948ce">简介</a>
+<ul>
+<li><a href="#org5179db6">分布式账本</a></li>
+<li><a href="#org2823b6d">智能合约</a></li>
+<li><a href="#org5b69b08">共识</a></li>
+<li><a href="#orga14a2a2">Hyperledger Fabric</a></li>
+</ul>
+</li>
+<li><a href="#org515ba4f">快速入门</a>
+<ul>
+<li><a href="#orga8f446e">先决条件</a>
+<ul>
+<li><a href="#org1ee39d1">Git安装</a></li>
+<li><a href="#org6cbfba5">Go语言</a></li>
+<li><a href="#orgf347ec0">Docker</a></li>
+</ul>
+</li>
+<li><a href="#org511935b">安装Hyperledger Fabric</a>
+<ul>
+<li><a href="#org4e034f0">创建GOPATH</a></li>
+<li><a href="#orgafbfa70">获取Fabric源码</a></li>
+<li><a href="#org54642cf">安装Go相关库</a></li>
+<li><a href="#org7f376e2">Orderer节点的编译</a></li>
+<li><a href="#org3d94443">Peer节点的编译</a></li>
+<li><a href="#org76007d3">编译Fabric工具</a></li>
+<li><a href="#org2b322b7">Docker镜像</a></li>
+<li><a href="#orgb4479de">其他Docker镜像</a></li>
+</ul>
+</li>
+<li><a href="#org2ecf1e0">运行</a></li>
+<li><a href="#orge86351f">手动运行</a>
+<ul>
+<li><a href="#org49d7f97">启动网络</a></li>
+<li><a href="#org965e5b6">创建Channel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org83fcda9" class="outline-2">
+<h2 id="org83fcda9">词汇表</h2>
+<div class="outline-text-2" id="text-org83fcda9">
+</div>
+<ul class="org-ul">
+<li><a id="org2a1ffd1"></a>Anchor Peer(锚节点)<br />
+<div class="outline-text-6" id="text-org2a1ffd1">
+<p>
+锚节点是通道中能被所有对等节点探测, 并能与之进行通信的一种对等节点. 通道中的每个成员都有一个(或多个, 以防单点故障)锚节点, 允许属于不同成员身份的节点来发现通道中存在的其他节点.
+</p>
+
+<p>
+注: 网络中的节点.
+</p>
+</div>
+</li>
+
+<li><a id="orgebeb63f"></a>Block(区块)<br />
+<div class="outline-text-6" id="text-orgebeb63f">
+<p>
+在一个通道上, 区块是一组有序交易的集合. 区块往往通过密码学手段(Hash)连接到前一个区块.
+</p>
+</div>
+</li>
+
+<li><a id="orgd7be165"></a>Chain(链)<br />
+<div class="outline-text-6" id="text-orgd7be165">
+<p>
+链就是区块经过"哈希连接"结构化的交易日志. 对等节点(peer)从共识服务(order service)接收区块, 并根据背书策略和并发冲突标记区块的交易是否有效, 然后将该区块追加到对等节点文件系统的哈希链上.
+</p>
+</div>
+</li>
+
+<li><a id="orge955b91"></a>Chaincode(链码)<br />
+<div class="outline-text-6" id="text-orge955b91">
+<p>
+链码是一个运行在账本上的软件, 可以对资产进行编码, 其中的交易指令(或业务逻辑)也可以用来修改资产.
+</p>
+</div>
+</li>
+
+<li><a id="org9eb8e2e"></a>Channel(通道)<br />
+<div class="outline-text-6" id="text-org9eb8e2e">
+<p>
+通道是构建在"Fabric"网络上的私有区块链, 实现了数据的隔离和保密. 通道特定的账本在通道中是与所有对等节点共享的, 并且交易方必须通过该通道的正确验证才能与账本进行交互. 通道是由一个配置块来定义的.
+</p>
+
+<p>
+注: 有点像局部网络.
+</p>
+</div>
+</li>
+
+<li><a id="org14fd208"></a>Commitment(提交)<br />
+<div class="outline-text-6" id="text-org14fd208">
+<p>
+一个通道中的每个对等节点都会验证交易的有序区块, 然后将区块提交(写或追加)到该通道上账本的各个副本, 对等节点也会标记每个区块中的每笔交易的状态是有效还是无效.
+</p>
+
+<p>
+注: 采矿成功后, 增加新区块.
+</p>
+</div>
+</li>
+
+<li><a id="org1c45c11"></a>Concurrency Control Version Check(并发控制版本检查CCVC)<br />
+<div class="outline-text-6" id="text-org1c45c11">
+<p>
+CCVC是保持通道中各对等节点状态同步的一种方法.
+</p>
+
+<p>
+对等节点并行执行交易, 在交易提交到账本之前(将交易打包成区块添加到区块链之前), 对等节点会检查交易在执行期间读到的数据是否被修改. 执行后要提交, 在这两个事件之间如果数据被改动, 就会引发CCVC冲突, 该交易会被账本中标记为无效, 不会被写入区块链中.
+</p>
+</div>
+</li>
+
+<li><a id="org8d9b47c"></a>Configuration Block(配置区块)<br />
+<div class="outline-text-6" id="text-org8d9b47c">
+<p>
+为系统链或通道定义成员和策略的配置数据. 对某个通道或整个网络的配置修改都将导致生成一个新的配置区块, 并追加到适当的链上.
+</p>
+</div>
+</li>
+
+<li><a id="orge37f097"></a>Consensus(共识)<br />
+<div class="outline-text-6" id="text-orge37f097">
+<p>
+共识是贯穿整个交易流程的广义术语, 用于产生一个对于排序的同意书和确认构成区块的交易集的正确性.
+</p>
+</div>
+</li>
+
+<li><a id="orgb68496d"></a>Current State(当前状态)<br />
+<div class="outline-text-6" id="text-orgb68496d">
+<p>
+ledger的当前状态表示其chain交易log中所有key的最新值.
+</p>
+</div>
+</li>
+
+<li><a id="org99faa6b"></a>Ordering Service(排序服务或共识服务)<br />
+<div class="outline-text-6" id="text-org99faa6b">
+<p>
+Ordering Service独立于Peer, 以先到先得的方式为网络上所有的channel做交易排序, 包含与每个Member相关的加密材料.
+</p>
+
+<p>
+Orderer为区块链写入操作提供时序保证, 具体实现可以是共识算法或分布式的消息订阅消费系统(kafka).
+</p>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org77948ce" class="outline-2">
+<h2 id="org77948ce">简介</h2>
+<div class="outline-text-2" id="text-org77948ce">
+</div>
+<div id="outline-container-org5179db6" class="outline-3">
+<h3 id="org5179db6">分布式账本</h3>
+<div class="outline-text-3" id="text-org5179db6">
+<p>
+去中心化: 在整个区块链网络中, 每个参与者都保存着一个区块链账本的副本.
+</p>
+
+<p>
+协作: 所有参与者共同维护着账本.
+</p>
+
+<p>
+不可篡改: 加密技术保证交易一旦写入账本, 就无法篡改. 不可篡改性使得信息来源的确认变得容易.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2823b6d" class="outline-3">
+<h3 id="org2823b6d">智能合约</h3>
+<div class="outline-text-3" id="text-org2823b6d">
+<p>
+区块链网络使用智能合约来实现对账本的访问和控制.
+</p>
+
+<p>
+智能合约不仅可用于在区块链网络中打包信息, 还可以用于自动执行参与者定义的特定交易操作. 如, 买卖双方可以定义一个智能合约, 以保证当卖方发货的商品运送到达时, 买方支付的货款会自动转账给卖方.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5b69b08" class="outline-3">
+<h3 id="org5b69b08">共识</h3>
+<div class="outline-text-3" id="text-org5b69b08">
+<p>
+共识就是保持网络中所有账本交易的同步流程. 它保证了账本只会在交易双方都确认后才进行更新. 同时在账本更新时, 交易双方能够在账本中的相同位置, 更新一个相同的交易信息.
+</p>
+
+<p>
+目前, 我们只需把区块链理解为一个共享的, 通过智能合约更新的多副本交易系统, 同时这个系统通过协作共识机制保证了网络中所有账本副本的同步.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga14a2a2" class="outline-3">
+<h3 id="orga14a2a2">Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-orga14a2a2">
+<p>
+2015年, Linux基金会启动了Hyperledger项目, 目标是发展跨行业的区块链技术. Hyperledger Fabric是Hyperledger的一个区块链项目.
+</p>
+
+<p>
+Hyperledger Fabric需要登录才能加入网络.
+</p>
+
+<p>
+通道功能: 允许参与者为交易新建一个单独的账本. 当网络中的一些参与者是竞争对手时, 这个功能尤为重要. 因为这些参与者并不希望所有的交易信息(如给部分客户优惠)都对网络中所有参与者公开. 只有在同一个通道中的参与者, 才会拥有该通道中的账本.
+</p>
+
+<p>
+共享账本: Hyperledger Fabric的账本子系统包含世界状态和交易记录. 世界状态组件描述了账本在特定时间点的状态, 它是账本的数据库; 交易记录组件记录了产生世界状态当前值的所有交易, 它是世界状态的更新历史.
+</p>
+
+<p>
+智能合约: 在Hyperledger Fabric中称为chaincode. 当一个区块链外部的应用程序需要访问账本时, 就会调用chaincode. 一般情况下, chaincode只会访问账本的世界状态, 不会查询交易记录. 目前使用Go编写chaincode.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org515ba4f" class="outline-2">
+<h2 id="org515ba4f">快速入门</h2>
+<div class="outline-text-2" id="text-org515ba4f">
+</div>
+<div id="outline-container-orga8f446e" class="outline-3">
+<h3 id="orga8f446e">先决条件</h3>
+<div class="outline-text-3" id="text-orga8f446e">
+<p>
+在v1.0.0发行之前, 使用Ubuntu的Vagrant来作为开发环境. 而Docker容器可以为MacOS, Windows, Linux三个平台的开发人员提供一致的体验, 因此, 现在更推荐使用Docker容器进行开发环境的搭建.
+</p>
+
+<p>
+本平台为Ubuntu 16.04LTS. 如果是其他系统, 请查看<a href="http://hyperledger-fabric.readthedocs.io/en/latest/dev-setup/devenv.html">官网的环境搭建</a>
+</p>
+</div>
+
+<div id="outline-container-org1ee39d1" class="outline-4">
+<h4 id="org1ee39d1">Git安装</h4>
+</div>
+
+<div id="outline-container-org6cbfba5" class="outline-4">
+<h4 id="org6cbfba5">Go语言</h4>
+<div class="outline-text-4" id="text-org6cbfba5">
+<p>
+安装 Go 1.9 或者更后的版本.
+</p>
+
+<p>
+首先到<a href="https://golang.org/dl/">官网</a>下载压缩包. 最好选择稳定版本.
+</p>
+
+<p>
+仅介绍Ubuntu 16.04 LTS的安装, 其他环境的安装, 请参考<a href="https://golang.org/doc/install">官网的安装教程</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 解压至/usr/local目录
+sudo tar -C /usr/local -xzf go1.9.4.linux-amd64.tar.gz
+
+# 打开配置
+emacs ~/.bashrc
+
+# 将 /usr/local/go/bin 添加到环境变量
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go # 配置GOPATH是为了后面需要
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# 使配置生效
+source ~/.bashrc
+</pre>
+</div>
+
+<p>
+测试直接输入 <code>go</code>, 会有一些go命令的说明. 如果有异常, 说明没安装成功. 
+</p>
+
+<p>
+也可以直接测试文件: 新建文件 test.go, 输入代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-GO">package main
+import "fmt"
+func main() {
+    fmt.Println("hello world")
+}
+</pre>
+</div>
+
+<p>
+运行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">go run test.go
+</pre>
+</div>
+
+<p>
+如果出现"hello world", 则说明安装成功.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf347ec0" class="outline-4">
+<h4 id="orgf347ec0">Docker</h4>
+<div class="outline-text-4" id="text-orgf347ec0">
+<p>
+Docker是一个容器, 在这个容器中, 我们可以运行我们的实例. 可以把Docker大致当成一个虚拟机, 但是Docker不需要占用那么多空间.
+</p>
+
+<p>
+每个Docker将在本地运行一个与Hyperledger网络相关的服务.
+</p>
+
+<p>
+可以使用CLI或终端来安装Docker, 这边我们需要安装两个包: docker-engine和docker-compose.
+</p>
+
+<p>
+docker-engine: 基础包, 它使得docker容器需要的所有必须的文件正常运行.
+</p>
+
+<p>
+docker-compose: 用于配置Docker.
+</p>
+
+<p>
+Ubuntu可以通过Docker官方提供的脚本进行安装:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">curl -sSL https://get.docker.com | sh
+</pre>
+</div>
+
+<p>
+修改Docker配置文件 <code>/etc/default/docker</code>, 增加Docker的socket绑定, 运行在Docker中的进程都能通过映射的Socket调用Docker的API执行镜像编译和创建容器等操作.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">DOCKER_OPTS="-s=aufs -r=true --api-cors-header='*' -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"
+</pre>
+</div>
+
+<p>
+重启Docker服务, 使得配置生效:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo service docker restart
+</pre>
+</div>
+
+<p>
+配置Docker国内镜像, 使下载速度更快. 修改 <code>/etc/default/docker</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">DOCKER_OPTS="-s=aufs -r=true --api-cors-header='*' -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --registry-mirror=https://registry.docker-cn.com"
+</pre>
+</div>
+
+<p>
+也可以把镜像地址改成阿里云的, DaoCloud等的地址. 配置完后再重启一次服务.
+</p>
+
+<p>
+docker compose能够在一个主机上创建出相互隔离的网络, 通过命令行管理多个docker容器, 快速启动, 停止和更新容器. 安装方法很多, 这边通过pip安装:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 先安装pip
+sudo apt install python-pip
+sudo apt install docker-compose
+</pre>
+</div>
+
+<p>
+docker常用命令:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">命令</th>
+<th scope="col" class="org-left">举例</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">docker images</td>
+<td class="org-left">docker images</td>
+<td class="org-left">查看主机上的镜像文件列表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker pull</td>
+<td class="org-left">docker pull hyperledger/fabric-peer</td>
+<td class="org-left">从镜像仓库中下载镜像文件</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker tag</td>
+<td class="org-left">docker tag hyperledger/fabric-tools:x86_64-1.0.0 hyperledger/fabric-tools:latest</td>
+<td class="org-left">给镜像文件打标签, x86_64-1.0.0标记为latest</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker run</td>
+<td class="org-left">docker run -it --name cli ubuntu /bin/bash</td>
+<td class="org-left">从镜像中启动容器. cli是容器名, ubuntu是镜像名, -it是以交互方式启动, /bin/bash是启动容器时执行的命令</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker logs</td>
+<td class="org-left">docker logs -f cli</td>
+<td class="org-left">查看容器日志</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker ps</td>
+<td class="org-left">docker ps -a</td>
+<td class="org-left">查看主机上的容器, -a会显示已经停止的容器</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker port</td>
+<td class="org-left">docker port peer0.org1.example.com</td>
+<td class="org-left">查看容器映射的端口</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker rm</td>
+<td class="org-left">docker rm cli</td>
+<td class="org-left">删除容器</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+docker-compose常用命令:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">命令</th>
+<th scope="col" class="org-left">举例</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">docker-compose up</td>
+<td class="org-left">docker-compose -f docker-compose-cli.yaml up -d</td>
+<td class="org-left">根据配置文件.yaml启动容器. -f指定配置文件, -d设置后台运行</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker-compose down</td>
+<td class="org-left">docker-compose -f docker-compose-cli.yaml down</td>
+<td class="org-left">停止配置文件中的容器</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">docker-compose pull</td>
+<td class="org-left">docker-compose -f docker-compose-cli.yaml pull</td>
+<td class="org-left">批量下载所需的镜像文件</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org511935b" class="outline-3">
+<h3 id="org511935b">安装Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-org511935b">
+</div>
+<div id="outline-container-org4e034f0" class="outline-4">
+<h4 id="org4e034f0">创建GOPATH</h4>
+<div class="outline-text-4" id="text-org4e034f0">
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir -p $GOPATH
+
+cd $GOPATH
+mkdir src
+cd src
+mkdir github.com
+cd github.com
+mkdir hyperledger
+cd hyperledger
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgafbfa70" class="outline-4">
+<h4 id="orgafbfa70">获取Fabric源码</h4>
+<div class="outline-text-4" id="text-orgafbfa70">
+<p>
+在hyperledger目录下, 执行如下命令:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">git clone https://github.com/hyperledger/fabric.git
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org54642cf" class="outline-4">
+<h4 id="org54642cf">安装Go相关库</h4>
+<div class="outline-text-4" id="text-org54642cf">
+<p>
+安装必要工具:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install libtool libltdl-dev
+</pre>
+</div>
+
+<p>
+如果直接使用 <code>make docker</code>, 在国内会碰到许多错误, 比如编译golint时因为下载超时报错. 这是因为hyperledger fabric是使用go语言编写的, 需要依赖一些工具或者第三方库, 但是因为谷歌有些东西被墙了, 所以要自己手动下载并安装.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir -p $GOPATH/src/golang.org/x
+cd $GOPATH/src/golang.org/x
+git clone https://github.com/golang/tools.git
+
+# 下载完成后执行以下命令
+go get github.com/kardianos/govendor
+go get github.com/golang/lint/golint
+go get golang.org/x/tools/cmd/goimports
+go get github.com/onsi/ginkgo/ginkgo
+go get github.com/axw/gocov/...
+go get github.com/client9/misspell/cmd/misspell
+go get github.com/AlekSi/gocov-xml
+go get github.com/golang/protobuf/protoc-gen-go
+</pre>
+</div>
+
+<p>
+如果出现如下问题:
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/25/hyperledger/5.png" alt="5.png" />
+</p>
+</div>
+
+<p>
+说明当前用户没有权限来运行docker. 执行以下语句:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo usermod -aG docker $USER
+# 重启
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7f376e2" class="outline-4">
+<h4 id="org7f376e2">Orderer节点的编译</h4>
+<div class="outline-text-4" id="text-org7f376e2">
+<p>
+Orderer节点容器里面运行的是Orderer服务, 要想生成Orderer镜像, 就需要先编译出Orderer程序.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make orderer
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3d94443" class="outline-4">
+<h4 id="org3d94443">Peer节点的编译</h4>
+<div class="outline-text-4" id="text-org3d94443">
+<p>
+Chaincode运行在Peer所在的机器上, 需要给Chaincode准备运行的基础环境, 即ccenv和javaenv两个镜像. 由于被墙, 需要先将之前go的工具拷贝进来.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir -p build/docker/gotools/bin/
+cp $GOPATH/src/bin/* ./build/docker/gotools/bin/
+make peer
+</pre>
+</div>
+
+<p>
+成功之后显示如下:
+<img src="http://pinvondev.github.io/assets/blog/2018/03/25/hyperledger/7.png" alt="7.png" />
+</p>
+
+
+<p>
+使用命令 <code>docker image</code> 可查看已安装的镜像文件.
+</p>
+
+<p>
+现在, 可以进入 <code>example/e2e_cli</code>, 使用脚本, 一键启动程序.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 开启
+./network_setup.sh up [channel-id is optional]
+
+# 关闭
+./network_setup.sh down
+</pre>
+</div>
+
+<p>
+为了加快部署过程, hyperledger提供了一个脚本来执行所有任务. 该脚本会生成配置结果, 本地网络, Chaincode测试.
+</p>
+
+<p>
+进入 <code>examples/e2e_cli</code> 目录, 从Docker Hub获取镜像:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 使脚本可执行
+chmod +x download-dockerimages.sh
+
+# 执行脚本
+./download-dockerimages.sh
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org76007d3" class="outline-4">
+<h4 id="org76007d3">编译Fabric工具</h4>
+<div class="outline-text-4" id="text-org76007d3">
+<p>
+configtxgen工具用来配置Fabric的通道. 它的配置参数主要由 <code>configtx.yaml</code> 文件提供.
+</p>
+
+<p>
+cryptogen工具可以快速地根据配置自动批量生成所需要的密钥及证书文件. 它的配置参数主要由 <code>crypto-config.yaml</code> 文件提供.
+</p>
+
+<p>
+在 <code>fabric</code> 目录下, 编译 <code>configtxgen</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make configtxgen
+</pre>
+</div>
+
+<p>
+如果出现下图所示的提示, 说明编译成功.
+<img src="http://pinvondev.github.io/assets/blog/2018/03/25/hyperledger/3.png" alt="3.png" />
+</p>
+
+<p>
+编译后的执行文件放在 <code>fabric/build/bin/configtxgen</code>.
+</p>
+
+<p>
+如果出现 <code>find: `/src/github.com/hyperledger/fabric/core/chaincode/shim': 没有那个文件或目录</code>, 说明 <code>GOPATH</code> 没有配置好, 或者配置了之后没有 <code>source ~/.bashrc</code>.
+</p>
+
+<p>
+cryptogen工具的编译方式也一样:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make cryptogen
+</pre>
+</div>
+
+<p>
+编译 configtxlator:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make configxlator
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b322b7" class="outline-4">
+<h4 id="org2b322b7">Docker镜像</h4>
+<div class="outline-text-4" id="text-org2b322b7">
+<p>
+前面只是生成了Fabric的二进制文件, 不能直接使用. 需要将这些文件打包到Docker镜像中.
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-Shell"># 生成Orderer镜像
+make orderer-docker
+
+# 生成Peer镜像
+make peer-docker
+
+# fabric-tools镜像
+make tools-docker
+
+# 查看docker镜像文件
+docker images
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb4479de" class="outline-4">
+<h4 id="orgb4479de">其他Docker镜像</h4>
+<div class="outline-text-4" id="text-orgb4479de">
+<p>
+CouchDB做状态数据库, Kafka做共识, Zookeeper做Kafka的高可用支持. 直接使用以下命令生成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">make docker
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2ecf1e0" class="outline-3">
+<h3 id="org2ecf1e0">运行</h3>
+<div class="outline-text-3" id="text-org2ecf1e0">
+<p>
+configtxgen工具会生成两个内容: Orderer的bootstrap block和Fabric的channel configuration transaction.
+</p>
+
+<p>
+orderer block: ordering服务的创世区块(第一个区块).
+</p>
+
+<p>
+channel transaction: 在 create channel 时会被广播给orderer.
+</p>
+
+<p>
+configtx.yaml: 给出网络的定义, 拓扑结构.
+</p>
+
+<p>
+crypto-config目录: 包含每个实体的admin证书, ca证书, 签名证书, 私钥等.
+</p>
+
+<p>
+generateArtifacts.sh: 该脚本自动为我们生成启动网络所需的配置及创世区块. 如果之前使用过 <code>network_setup.sh</code>, 则先将 <code>channel-artifact目录</code> 里的可见文件都删除, 隐藏文件不用删, 再将 <code>crypto-config</code> 目录直接删除.
+</p>
+
+<p>
+生成通道的区块和配置:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cd examples/e2e_cli
+./generateArtifacts.sh 
+</pre>
+</div>
+
+<p>
+成功后会有类似如下的输出:
+<img src="http://pinvondev.github.io/assets/blog/2018/03/25/hyperledger/4.png" alt="4.png" />
+</p>
+
+<p>
+启动网络:
+</p>
+<pre class="example">
+cd examples/e2e_cli
+./network_setup.sh up [channel-id-optional]
+</pre>
+
+<p>
+出现如下界面, 说明网络启动运行, 并测试成功:
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/25/hyperledger/8.png" alt="8.png" />
+</p>
+</div>
+
+<p>
+停止网络有两种方法:
+</p>
+
+<p>
+第一种:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 新开一个终端, 进入examples/e2e_cli
+rm -f $(docker ps -aq)
+
+# 查看镜像
+docker images
+
+# 将dev-peerx.orgx.example字样的镜像文件删除
+# 输入其image id的前6位
+docker rmi -f 07032a eb54b1 a9ad47
+
+# 删除配置结果
+rm ./ channel-artifacts/*.tx
+rm -rf crypto-config
+</pre>
+</div>
+
+<p>
+第二种:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./network_setup.sh down
+# 该命令会自动删除启动网络时生成的镜像文件和配置文件
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge86351f" class="outline-3">
+<h3 id="orge86351f">手动运行</h3>
+<div class="outline-text-3" id="text-orge86351f">
+<p>
+之前是使用脚本一键启动, 关闭. 我们可以手动来做一遍, 这样就明白背后发生了什么事.
+</p>
+
+<p>
+进入 <code>examples/e2e_cli</code> 目录.
+</p>
+
+<p>
+打开 <code>docker-compose-cli.yaml</code>, 找到启动 <code>script.sh</code> 的语句, 注释掉.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+# command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME}; sleep $TIMEOUT'
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org49d7f97" class="outline-4">
+<h4 id="org49d7f97">启动网络</h4>
+<div class="outline-text-4" id="text-org49d7f97">
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-cli.yaml up
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org965e5b6" class="outline-4">
+<h4 id="org965e5b6">创建Channel</h4>
+<div class="outline-text-4" id="text-org965e5b6">
+<p>
+Channel在逻辑上将我们自己编写的Chaincode与其他的Chaincode区分开来.
+</p>
+
+<p>
+进入Cli镜像:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it cli bash
+</pre>
+</div>
+
+<p>
+仅以peer0节点为例, 修改环境变量:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">
+</pre>
+</div>
+
+
+<div class="org-src-container">
+<pre class="src src-Shell">Having all peers join the channel...
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+CORE_PEER_LOCALMSPID=Org1MSP
+CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+CORE_PEER_ID=cli
+CORE_LOGGING_LEVEL=DEBUG
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-25</span>
+            <span title="last modification date" class="post-info">2018-04-12</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/25/hyperledger";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/25/hyperledger";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@ubuntu">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

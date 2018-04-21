@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>密码学与安全技术 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="密码学" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">密码学与安全技术</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org553557e">Hash算法与数字摘要</a>
+<ul>
+<li><a href="#org720f26b">Hash定义</a></li>
+<li><a href="#orgb6acbb9">常见算法</a></li>
+<li><a href="#org4377c2d">性能</a></li>
+<li><a href="#org4faaf16">数字摘要</a></li>
+<li><a href="#orgd3ae5cd">Hash攻击与防护</a></li>
+</ul>
+</li>
+<li><a href="#org3496799">加解密算法</a>
+<ul>
+<li><a href="#org5dcfe21">加解密系统基本组成</a></li>
+<li><a href="#org78ca9c8">对称加密算法</a></li>
+<li><a href="#orgc74bcf7">非对称加密算法</a></li>
+<li><a href="#org34da0b1">选择明文攻击</a></li>
+<li><a href="#org295ddc6">混合加密机制</a></li>
+</ul>
+</li>
+<li><a href="#org7d8b54e">消息认证码与数字签名</a>
+<ul>
+<li><a href="#org64fe2ab">消息认证码</a></li>
+<li><a href="#org2e284c8">数字签名</a></li>
+</ul>
+</li>
+<li><a href="#org69901f3">数字证书</a>
+<ul>
+<li><a href="#org17a7e36">X.509证书规范</a></li>
+<li><a href="#org0ace9a6">证书格式</a></li>
+<li><a href="#org4ce6ee5">证书信任链</a></li>
+</ul>
+</li>
+<li><a href="#org3ff2897">PKI体系</a>
+<ul>
+<li><a href="#org3945c1b">PKI基本组件</a></li>
+<li><a href="#org8e1705c">证书的签发</a></li>
+<li><a href="#org379ffc1">证书的撤销</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org553557e" class="outline-2">
+<h2 id="org553557e">Hash算法与数字摘要</h2>
+<div class="outline-text-2" id="text-org553557e">
+</div>
+<div id="outline-container-org720f26b" class="outline-3">
+<h3 id="org720f26b">Hash定义</h3>
+<div class="outline-text-3" id="text-org720f26b">
+<p>
+Hash算法能将任意长度的二进制明文串映射为较短的二进制串, 并且不同的明文很难映射为相同的Hash值.
+</p>
+
+<p>
+Hash值也称为指纹(fingerprint)或摘要(digest).
+</p>
+
+<p>
+好的Hash算法能实现如下功能:
+</p>
+<ol class="org-ol">
+<li>正向快速: 给定明文和Hashh算法, 能在有限时间内和有限资源内计算得到Hash值.</li>
+<li>逆向困难: 给定Hash值, 在有限时间内很难逆推出明文.</li>
+<li>输入敏感: 原始输入信息发生任何改变, 新产生的Hash值就出现很大的不同.</li>
+<li>冲突避免: 很难找到两段内容不同的明文, 使得它们的Hash值一致(Hash一致也称为碰撞).</li>
+</ol>
+
+<p>
+其中, "冲突避免"也称为"抗碰撞性", 如果给定明文的情况下, 无法找到与之碰撞的其他明文, 则算法具有"弱抗碰撞性"; 如果无法找到任意两个发生Hash碰撞的明文, 则称算法具有"强抗碰撞性".
+</p>
+
+<p>
+即:
+弱抗碰撞性: 给定明文 \(M\), 要找到另一个明文 \(M'\), 使得 \(H(M)=H(M')\) 很难.
+强抗碰撞性: 找到两个随机明文 \(M\) 和 \(M'\), 使得 \(H(M)=H(M')\) 很难.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb6acbb9" class="outline-3">
+<h3 id="orgb6acbb9">常见算法</h3>
+<div class="outline-text-3" id="text-orgb6acbb9">
+<p>
+MD4, MD5, SHA-1算法都被认为安全性已不足以应用于商业场景.
+</p>
+
+<p>
+目前推荐至少使用SHA2-256, SHA-384, SHA-512或者更安全的算法. 且SHA-3相关算法也慢慢被提出来.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4377c2d" class="outline-3">
+<h3 id="org4377c2d">性能</h3>
+<div class="outline-text-3" id="text-org4377c2d">
+<p>
+一般对于Hash算法来说, 计算资源是瓶颈, 主频越高的CPU运行Hash算法的速度也越快, 可以通过硬件加速来提升Hash计算的吞吐量, 如采用FPGA来计算MD5值.
+</p>
+
+<p>
+不过, 也有一些算法不是计算敏感型的, 如scrypt算法, 计算过程需要大量的内存资源, 节点不能简单增加更多CPU来获得Hash性能上的提升. 这种算法常用于避免算力攻击的场景.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4faaf16" class="outline-3">
+<h3 id="org4faaf16">数字摘要</h3>
+<div class="outline-text-3" id="text-org4faaf16">
+<p>
+数字摘要是Hash算法的一个重要用途. 利用Hash算法的抗碰撞性特点, 数字摘要可以解决确保内容未被篡改的问题.
+</p>
+
+<p>
+如, 从网站下载文件, 有些网站会提供一个相应的数字摘要, 用户下载文件后, 可在本地计算文件的摘要, 与网站提供的摘要作对比, 从而检查文件内容是否被篡改.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd3ae5cd" class="outline-3">
+<h3 id="orgd3ae5cd">Hash攻击与防护</h3>
+<div class="outline-text-3" id="text-orgd3ae5cd">
+<p>
+Hash算法不是加密算法, 不能用于对信息的保护. 但Hash算法常用来保存用户密码, 这样即使数据库泄露, 也无法从Hash值还原密码.
+</p>
+
+<p>
+关于攻击: 有些用户设置的密码过于简单, 有人专门搜集了这些常见密码, 计算对应的Hash值, 制作成字典. 这样通过Hash值可以快速反查到原始密码, 这一类型以空间换时间的攻击方法, 包括字典攻击和彩虹表(只保存一条Hash链的首尾值, 相对字典攻击, 可以节省存储空间)攻击.
+</p>
+
+<p>
+关于防护: 一般在用户输入的密码基础上, 再加上一段随机字符串, 再计算合并后的字符串的Hash值. 将Hash结果和随机字符串分别存放在不同的地方, 只要不是两者同时泄露, 攻击者就很难破解了. 这种手段一般叫做: 加盐.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3496799" class="outline-2">
+<h2 id="org3496799">加解密算法</h2>
+<div class="outline-text-2" id="text-org3496799">
+<p>
+从设计理念上, 可以分为两大基本类型.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">算法类型</th>
+<th scope="col" class="org-left">特点</th>
+<th scope="col" class="org-left">优势</th>
+<th scope="col" class="org-left">劣势</th>
+<th scope="col" class="org-left">代表算法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">对称加密</td>
+<td class="org-left">加解密的密钥相同</td>
+<td class="org-left">计算效率高, 加密强度高</td>
+<td class="org-left">需提前共享密钥, 易泄露</td>
+<td class="org-left">DES, 3DES, AES, IDEA</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">非对称加密</td>
+<td class="org-left">加解密的密钥不相关</td>
+<td class="org-left">无需提前共享密钥</td>
+<td class="org-left">计算效率低, 仍存在中间人攻击可能</td>
+<td class="org-left">RSA, ElGamal, 椭圆曲线系列算法</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-org5dcfe21" class="outline-3">
+<h3 id="org5dcfe21">加解密系统基本组成</h3>
+<div class="outline-text-3" id="text-org5dcfe21">
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/15/密码学与安全技术/2.png" alt="2.png" />
+</p>
+</div>
+
+<p>
+并非所有的加密算法的安全性都可以从数学上得到证明. 公认的高强度的加密算法和实现往往经过长时间各方面充分实践论证后, 才被大家所认可, 但也不代表其绝对不存在漏洞. 因此, 自行设计和发明未经过大规模验证的加密算法是一种不太明智的行为, 即使不公开算法加密过程, 也很容易被攻破, 无法在安全性上得到保障.
+</p>
+
+<p>
+密码学实现的安全往往是通过算法所依赖的数学问题来提供, 而并非通过对算法的实现过程进行保密.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org78ca9c8" class="outline-3">
+<h3 id="org78ca9c8">对称加密算法</h3>
+<div class="outline-text-3" id="text-org78ca9c8">
+<p>
+对称密码从实现原理上可以分为两种: 分组密码和序列密码.
+</p>
+
+<p>
+分组密码: 将明文切分成定长数据块, 作为基本加密单位.
+</p>
+
+<p>
+序列算法: 每次只对一个字节或字符进行加密处理, 且密码不断变化.
+</p>
+
+<p>
+对称密码的主要问题有两个: 一是各参与方都要提前持有密钥, 一旦有人泄露则安全性被破坏; 二是如何在不安全通道中提前分发密钥, 需要借助Diffie-Hellman协议或非对称加密方式来实现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc74bcf7" class="outline-3">
+<h3 id="orgc74bcf7">非对称加密算法</h3>
+<div class="outline-text-3" id="text-orgc74bcf7">
+<p>
+私钥一般通过随机数算法生成, 公钥可以根据私钥生成. 公钥公开, 私钥自己保管.
+</p>
+
+<p>
+非对称加密算法的安全性往往需要基于数学问题来保障, 目前主要有基于大数质因子分解(RSA), 离散对数, 椭圆曲线等经典数学难题进行保护.
+</p>
+
+<p>
+RSA类算法可能在不远的将来被破解, 如果可以, 更推荐采用高安全强度的椭圆曲线系列算法.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org34da0b1" class="outline-3">
+<h3 id="org34da0b1">选择明文攻击</h3>
+<div class="outline-text-3" id="text-org34da0b1">
+<p>
+由于公钥可以获取, 因此任何人都可以给定明文, 获取对应的密文.
+</p>
+
+<p>
+为了规避这种风险, 现有的非对称加密算法都引入了一定的保护机制, 对同样的明文使用同样密钥进行多次加密, 得到的结果完全不同, 这就避免了选择明文攻击的破坏.
+</p>
+
+<p>
+如何实现: 可以先对明文进行变形, 如添加随机的字符串或标记, 再对结果进行处理; 也可以先用随机生成的临时密钥对明文进行对称加密, 然后再对对称密钥进行加密, 即混合利用多种加密机制.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org295ddc6" class="outline-3">
+<h3 id="org295ddc6">混合加密机制</h3>
+<div class="outline-text-3" id="text-org295ddc6">
+<p>
+先用计算复杂度高的非对称加密协商出一个临时的对称加密密钥(也称为会话密钥), 然后双方再通过对称加密算法对传递的大量数据进行快速的加解密处理. 如HTTPS协议.
+</p>
+
+<p>
+HTTPS在传统的应用层和传输层之间引入TLS/SSL加密层来实现可靠的传输.
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/15/密码学与安全技术/3.png" alt="3.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>TLS握手协商过程</p>
+</div>
+
+<ol class="org-ol">
+<li>浏览器发送信息到服务器, 包括随机数R1, 支持的加解密算法类型, 协议版本, 压缩算法等, 该过程为明文.</li>
+<li>服务器返回信息, 包括随机数R2, 选定加密算法类型, 协议版本和服务器证书, 该过程为明文.</li>
+<li>浏览器检查带有服务器公钥的证书. 证书要由第三方CA来签发, 浏览器和OS会预置权威CA的根证书. 如果证书被篡改或造假, 很容易通过CA的证书验证出来.</li>
+<li>如果证书没问题, 浏览器用服务器证书中的公钥加密随机数R3(也叫Pre-MasterSecret), 发送给服务器. 此时, 浏览器和服务器都拥有R1, R2, R3信息, 基于随机数R1, R2, R3, 双方通过伪随机数函数来生成共同的对称会话密钥MasterSecret.</li>
+<li>后续浏览器和服务器的通信都通过对称加密算法(如AES)进行保护.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d8b54e" class="outline-2">
+<h2 id="org7d8b54e">消息认证码与数字签名</h2>
+<div class="outline-text-2" id="text-org7d8b54e">
+<p>
+消息认证码和数字签名技术, 通过对消息的摘要进行加密, 可用于消息防篡改和身份证明问题.
+</p>
+</div>
+
+<div id="outline-container-org64fe2ab" class="outline-3">
+<h3 id="org64fe2ab">消息认证码</h3>
+<div class="outline-text-3" id="text-org64fe2ab">
+<p>
+消息认证码全称基于Hash的消息认证码(Hash-based Message Authentication Code), 基于对称加密, 可用于对消息完整性进行保护.
+</p>
+
+<p>
+过程: 对某个消息利用提前共享的对称密钥和Hash算法进行加密处理, 得到HMAC值. HMAC值持有方可以证明自己拥有共享的对称密钥, 并且也可以利用HMAC确保消息内容未篡改.
+</p>
+
+<p>
+HMAC算法包括三个参数, 提前共享的对称密钥K, 提前商定的Hash算法H, 要处理的消息内容M.
+</p>
+
+<p>
+使用场景: A和B提前共享HMCA的密钥和Hash算法. A需要确认对方是否为B, 可发送随机消息给B. B收到消息后进行计算, 把消息HMAC值返回给A, A通过检验HMAC值的正确性, 可以确认对方是否为B.
+</p>
+
+<p>
+消息认证码使用过程中主要问题是需要共享密钥, 如果密钥被多方拥有, 无法证明消息来自某个确切的身份. 这种情况下, 使用非对称加密方式, 可以追溯到来源身份, 即数字签名.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2e284c8" class="outline-3">
+<h3 id="org2e284c8">数字签名</h3>
+<div class="outline-text-3" id="text-org2e284c8">
+<p>
+数字签名基于非对称加密, 既可以用于证实数字内容的完整性, 又可以确认来源(不可抵赖).
+</p>
+
+<p>
+使用场景: A给B发送一个文件, B如何确认这就是A发出的原始版本? A可以先对文件内容进行摘要, 然后用自己的私钥对摘要进行加密(签名), 之后同时将文件和签名都发给B. B收到文件和签名后, 用A的公钥来解密签名, 得到数字摘要, 与收到文件进行摘要后的结果进行比对, 如果一致, 说明文件确实是A发送的, 且内容未被修改.
+</p>
+
+<p>
+数字签名算法有DSA, ECSDA等.
+</p>
+
+<p>
+除了普通的数字签名应用场景外, 还有一些特殊的数字签名技术:
+</p>
+<ol class="org-ol">
+<li>盲签名: 签名者需要在无法看到原始内容的前提下对信息进行签名. 盲签名可以实现对所签名内容的保护, 防止签名者看到原始内容; 盲签名可以实现防止追踪, 签名者无法将签名内容和签名结果进行对应.</li>
+<li>多重签名</li>
+<li>群签名: 即某个群组内一个成员可以代表群组进行匿名签名, 签名可以验证来自于该群组, 但无法准确追踪到签名的是哪个成员.</li>
+<li>环签名: 一种简化的群签名.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69901f3" class="outline-2">
+<h2 id="org69901f3">数字证书</h2>
+<div class="outline-text-2" id="text-org69901f3">
+<p>
+对于非对称加密算法和数字签名来说, 很重要的一点就是公钥的分发. 理论上任何人都可以公开获取到对方的公钥.
+</p>
+
+<p>
+但是这个公钥有没有可能被伪造呢? 传输过程中有没有可能被篡改?
+</p>
+
+<p>
+如果公钥出现了问题, 则整个建立在其上的安全体系将崩溃.
+</p>
+
+<p>
+数字证书就是为了解决这个问题. 它就像现实生活中的证书一样, 可以证明所记录信息的合法性.
+</p>
+
+<p>
+根据所保护的公钥的用途, 数字证书可以分为加密数字证书和签名验证数字证书.
+</p>
+
+<p>
+加密数字证书保护用于加密信息的公钥.
+</p>
+
+<p>
+签名验证数字证书保护进行解密签名, 进行身份验证的公钥.
+</p>
+
+<p>
+这两种类型的公钥可以同时放在同一证书中.
+</p>
+
+<p>
+证书需要由权威的CA进行签发和背书, 如果是私有网络, 也可以自己搭建本地CA系统.
+</p>
+</div>
+
+<div id="outline-container-org17a7e36" class="outline-3">
+<h3 id="org17a7e36">X.509证书规范</h3>
+<div class="outline-text-3" id="text-org17a7e36">
+<p>
+数字证书的内容主要有: 基本数据(版本, 序列号), 所签名对象信息(签名算法类型, 签发者信息, 有效期, 被签发人, 签发的公开密钥), CA的数字签名.
+</p>
+
+<p>
+目前证书的内容广泛使用X.509规范.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0ace9a6" class="outline-3">
+<h3 id="org0ace9a6">证书格式</h3>
+<div class="outline-text-3" id="text-org0ace9a6">
+<p>
+X.509规范中, 一般推荐使用PEM格式来存储证书相关的文件. PEM格式采用文本方式进行存储, 一般包括首尾标记块和内容块, 内容块采用base64进行编码.
+</p>
+
+<p>
+可以使用 <code>openssl</code> 工具来查看PEM文件的内容.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">openssl x509 -in xxx.pem -noout -text
+</pre>
+</div>
+
+<p>
+如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/04/15/密码学与安全技术/4.png" alt="4.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4ce6ee5" class="outline-3">
+<h3 id="org4ce6ee5">证书信任链</h3>
+<div class="outline-text-3" id="text-org4ce6ee5">
+<p>
+证书中记录了大量的信息, 其中最重要的是"签发的公钥"和"CA数字签名"两个信息.
+</p>
+
+<p>
+只要使用CA的公钥再次对这个证书进行签名, 然后比对, 就能证明某个实体的公钥是否合法. 如果"签发的公钥"被篡改过, 比对的结果肯定不同.
+</p>
+
+<p>
+那么, 如何证明CA的公钥是否合法, 是否被篡改?
+</p>
+
+<p>
+关于CA自身的合法性: 可以通过更上层的CA颁发的证书来进行认证; 也可以通过预先颁发的根CA来实现信任基础. 目前, 主流的OS和浏览器里, 都会提前预置一些权威CA的证书(通过CA自身的私钥签名, 系统承认这些是合法的证书). 之后所有基于这些CA认证过的中间层CA(Intermediate CA)和后继CA都会被验证合法.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3ff2897" class="outline-2">
+<h2 id="org3ff2897">PKI体系</h2>
+<div class="outline-text-2" id="text-org3ff2897">
+<p>
+PKI体系提供了一套完整的证书管理框架, 包括生成, 颁发, 撤销等.
+</p>
+
+<p>
+在非对称加密中, 公钥可以通过证书机制来进行保护, 但证书的生成, 分发, 撤销等过程未在X.509规范中进行定义.
+</p>
+</div>
+
+<div id="outline-container-org3945c1b" class="outline-3">
+<h3 id="org3945c1b">PKI基本组件</h3>
+<div class="outline-text-3" id="text-org3945c1b">
+<p>
+CA: 负责证书的颁发和作废, 接收来自RA的请求
+</p>
+
+<p>
+RA: 对用户身份进行验证, 检验数据合法性, 负责登记, 审核过了就发给CA
+</p>
+
+<p>
+证书数据库: 存放证书
+</p>
+
+<p>
+流程: 用户通过RA登记申请证书, 提供身份和认证信息等, CA审核后完成证书的制造, 颁发给用户; 用户如果需要撤销证书, 需要再次向CA发出申请.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8e1705c" class="outline-3">
+<h3 id="org8e1705c">证书的签发</h3>
+<div class="outline-text-3" id="text-org8e1705c">
+<p>
+CA对用户签发证书, 实际上是对某个用户的公钥, 使用CA的私钥对其进行签名. 这样任何人都可以用CA的公钥对该证书进行合法性验证. 验证成功则认可该证书中所提供的用户公钥内容, 实现用户公钥的安全分发.
+</p>
+
+<p>
+用户证书的签发有两种方式: 一种是由CA直接生成证书(内含公钥), 将证书和对应的私钥发给用户; 另一种是由用户自己生成公钥和私钥, 由CA来对公钥进行签名.
+</p>
+
+<p>
+对于第二种情况, 用户要自行生成一个私钥和证书申请文件(CSR), 该文件中包含了用户对应的公钥和一些基本信息. CA只需要对证书请求文件进行签名, 生成证书文件, 颁发给用户即可. 这种方式中, 用户可以保持私钥信息的私密性, 不会被其他方获知(包括CA方). 但是这种情况下, 如果用户的私钥丢失, 由于CA不持有私钥信息, 无法进行恢复.
+</p>
+
+<p>
+证书申请文件的生成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">openssl req -new -keyout private.key -out for_request.csr
+</pre>
+</div>
+<p>
+生成的过程中需要输入地理位置, 组织, 通用名等信息, 生成的私钥和csr文件, 默认以PEM格式存储.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org379ffc1" class="outline-3">
+<h3 id="org379ffc1">证书的撤销</h3>
+<div class="outline-text-3" id="text-org379ffc1">
+<p>
+证书超出有效期后会作废, 用户可以主动向CA申请撤销某证书文件.
+</p>
+
+<p>
+由于CA无法强制收回已经颁发的证书, 所以还要维护一个撤销证书列表, 用户记录已经撤销的证书序号.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-15</span>
+            <span title="last modification date" class="post-info">2018-04-16</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/密码学">密码学</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/15/密码学与安全技术";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/15/密码学与安全技术";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@ubuntu">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Emacs Lisp 教程 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Emacs" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Emacs Lisp 教程</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd6f5d00">声明</a></li>
+<li><a href="#org0d7a929">执行程序</a></li>
+<li><a href="#orge552c4a">基础知识</a>
+<ul>
+<li><a href="#org9177a5b">函数和变量</a>
+<ul>
+<li><a href="#org91303d6">函数</a></li>
+<li><a href="#org71d41c2">全局变量</a></li>
+<li><a href="#org9d553df">局部变量</a></li>
+<li><a href="#org3807bc0">lambda表达式</a></li>
+</ul>
+</li>
+<li><a href="#org7dd8379">控制结构</a>
+<ul>
+<li><a href="#orgf57ccb4">顺序执行</a></li>
+<li><a href="#org1a52461">条件判断</a></li>
+<li><a href="#orga462951">循环</a></li>
+</ul>
+</li>
+<li><a href="#org4815fbe">逻辑运算</a></li>
+</ul>
+</li>
+<li><a href="#org0c1198a">数字</a>
+<ul>
+<li><a href="#orge112699">测试函数</a></li>
+<li><a href="#orge6cdcd6">数的比较</a></li>
+<li><a href="#orgdfbd1f9">数的转换</a></li>
+<li><a href="#org479b7a3">数的运算</a></li>
+</ul>
+</li>
+<li><a href="#org8848701">字符和字符串</a>
+<ul>
+<li><a href="#orgabdccee">字符</a></li>
+<li><a href="#org6ea0333">测试函数</a></li>
+<li><a href="#org3168827">构造函数</a></li>
+<li><a href="#orgf036f03">字符串比较</a></li>
+<li><a href="#org88e4a1f">转换函数</a></li>
+<li><a href="#org670f180">查找和替换</a></li>
+</ul>
+</li>
+<li><a href="#org7aa5728">cons cell和列表</a>
+<ul>
+<li><a href="#org0190db2">读入cons cell</a></li>
+<li><a href="#org792cac8">列表和cons cell的关系</a></li>
+<li><a href="#org491c82b">测试函数</a></li>
+<li><a href="#org9b27307">构造函数</a></li>
+<li><a href="#orgfa6176e">增加元素到列表</a></li>
+<li><a href="#org8820440">把列表当作数组</a></li>
+<li><a href="#orga769ee7">修改cons cell的内容</a></li>
+<li><a href="#orgb31ed44">把列表当堆栈用</a></li>
+<li><a href="#org6cd604f">重排列表</a></li>
+<li><a href="#org052639b">把列表当关联表</a></li>
+<li><a href="#orgb0b4eea">遍历列表</a></li>
+</ul>
+</li>
+<li><a href="#org4023470">数组和序列</a>
+<ul>
+<li><a href="#orgb87e2c6">测试函数</a></li>
+<li><a href="#org4be349e">序列的通用函数</a></li>
+<li><a href="#org5cfd995">数组操作</a></li>
+</ul>
+</li>
+<li><a href="#org75002ee">符号</a>
+<ul>
+<li><a href="#org2ed1b4f">创建符号</a></li>
+<li><a href="#org54275da">符号的组成</a></li>
+</ul>
+</li>
+<li><a href="#org8d2a6e0">求值规则</a></li>
+<li><a href="#org27c9b11">变量</a>
+<ul>
+<li><a href="#org4077400">buffer-local变量</a></li>
+<li><a href="#orgf5819bb">使用buffer-local的例子</a></li>
+<li><a href="#org4925910">变量的作用域</a></li>
+</ul>
+</li>
+<li><a href="#org6498075">函数和命令</a>
+<ul>
+<li><a href="#org8d14579">参数</a></li>
+<li><a href="#orgf47733b">文档</a></li>
+<li><a href="#org2470988">宏</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd6f5d00" class="outline-2">
+<h2 id="orgd6f5d00">声明</h2>
+<div class="outline-text-2" id="text-orgd6f5d00">
+<p>
+学习自<a href="http://smacs.github.io/elisp/">happierbee</a>写的教程.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0d7a929" class="outline-2">
+<h2 id="org0d7a929">执行程序</h2>
+<div class="outline-text-2" id="text-org0d7a929">
+<p>
+在*scratch*中, 写完一行代码后, 在代码最后面键入C-j, 或者C-x C-e.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge552c4a" class="outline-2">
+<h2 id="orge552c4a">基础知识</h2>
+<div class="outline-text-2" id="text-orge552c4a">
+</div>
+<div id="outline-container-org9177a5b" class="outline-3">
+<h3 id="org9177a5b">函数和变量</h3>
+<div class="outline-text-3" id="text-org9177a5b">
+</div>
+<div id="outline-container-org91303d6" class="outline-4">
+<h4 id="org91303d6">函数</h4>
+<div class="outline-text-4" id="text-org91303d6">
+<p>
+函数的例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun hello-world (name)
+  "say hello to user whose name is NAME."
+  (message "Hello, %s" name))
+
+;; 调用
+(hello-world "Emacser")
+</pre>
+</div>
+<p>
+函数的返回值是函数里的最后一个表达式.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org71d41c2" class="outline-4">
+<h4 id="org71d41c2">全局变量</h4>
+<div class="outline-text-4" id="text-org71d41c2">
+<p>
+由于Elisp中函数是全局的, 所以变量也很容易成为全局变量.
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgcccedd7"></a>setq<br />
+<div class="outline-text-5" id="text-orgcccedd7">
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo "I am Emacser") ;; "I am Emacser"
+(message foo) ;; "I am Emacser"
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org4d414c6"></a>defvar<br />
+<div class="outline-text-5" id="text-org4d414c6">
+<p>
+defvar也可以定义变量, 但是如果定义的变量在之前有赋过值, 则不起作用. 另外, defvar可以为变量提供文档字符串, 即可以使用C-h v来查看变量的说明.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defvar variable-name value
+    "document string")
+
+;; 例子
+(defvar foo "Did I have a value"
+  "A demo variable")
+(message foo) ;; "I am Emacser", 因为之前已经用setq对foo赋过值
+
+(defvar bar "I am bar"
+  "A demo variable name")
+(message bar) ;; "I am bar", 由于之前没有对bar赋值, 因此本次生效
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org9d553df" class="outline-4">
+<h4 id="org9d553df">局部变量</h4>
+<div class="outline-text-4" id="text-org9d553df">
+<p>
+Elisp中使用 <code>let</code> 或 <code>let*</code> 来对局部变量进行绑定.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun circle-area (radix)
+  (let ((pi 3.1415926)
+        area)
+    (setq area (* pi radix radix))
+    (message "直径为 %.2f 的圆面积是 %.2f" radix area)))
+(circle-area 3)
+;; 或者
+(defun circle-area (radix)
+  (let* ((pi 3.1415926)
+         (area (* pi radix radix)))
+    (message "直径为 %.2f 的圆面积是 %.2f" radix area)))
+</pre>
+</div>
+<p>
+let*和let的使用形式完全相同, 区别在于let*在声明中就能使用前面声明的变量.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3807bc0" class="outline-4">
+<h4 id="org3807bc0">lambda表达式</h4>
+<div class="outline-text-4" id="text-org3807bc0">
+<div class="org-src-container">
+<pre class="src src-Elisp">(lambda (arguments-list)
+    "documentation string"
+    body)
+;; 调用
+(funcall (lambda (name)
+    (message "Hello %s" name)) "Emacser")
+</pre>
+</div>
+<p>
+也可以把lambda表达式赋值给一个变量, 再用funcall来调用:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo (lambda (name)
+    (message "Hello %s" name)))
+(funcall foo "Emacser")
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7dd8379" class="outline-3">
+<h3 id="org7dd8379">控制结构</h3>
+<div class="outline-text-3" id="text-org7dd8379">
+</div>
+<div id="outline-container-orgf57ccb4" class="outline-4">
+<h4 id="orgf57ccb4">顺序执行</h4>
+<div class="outline-text-4" id="text-orgf57ccb4">
+<p>
+使用progn.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1a52461" class="outline-4">
+<h4 id="org1a52461">条件判断</h4>
+<div class="outline-text-4" id="text-org1a52461">
+<div class="org-src-container">
+<pre class="src src-Elisp">(if condition true_body false_body)
+</pre>
+</div>
+
+<p>
+还有一个条件判断的方法, 有点像C中的switch-case, 结构如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(cond (case1 body)
+    (case2 body)
+    ...
+    (t body)) ;; 前面的情况都不符合时, 执行这条语句
+
+;; 例子
+(defun fib (n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (t (+ (fib (- n 1)) (fib (- n 2))))))
+(fib 10) ;; returns 55
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga462951" class="outline-4">
+<h4 id="orga462951">循环</h4>
+<div class="outline-text-4" id="text-orga462951">
+<div class="org-src-container">
+<pre class="src src-Elisp">(while condition body)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4815fbe" class="outline-3">
+<h3 id="org4815fbe">逻辑运算</h3>
+<div class="outline-text-3" id="text-org4815fbe">
+<p>
+and和or具有短路性质, or常用于设置函数的默认参数, and用于参数检查. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun hello-world (&amp;optional name)
+  (or name (setq name "Emacser"))
+  (message "Hello %s" name))
+(hello-world) ;; "Hello Emacser"
+(hello-world "Vim") ;; "Hello Vim"
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun square-number-p (n)
+  (and (&gt;= n 0) (= (/ n (sqrt n)) (sqrt n)))) ;; (n &gt;= 0) &amp;&amp; (n/sqrt(n))  == (sqrt(n))
+(square-number-p -1) ;; nil
+(square-number-p 25) ;; t
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0c1198a" class="outline-2">
+<h2 id="org0c1198a">数字</h2>
+<div class="outline-text-2" id="text-org0c1198a">
+<p>
+emacs的数字分为整数和浮点数.
+</p>
+</div>
+
+<div id="outline-container-orge112699" class="outline-3">
+<h3 id="orge112699">测试函数</h3>
+<div class="outline-text-3" id="text-orge112699">
+<p>
+是否为整数类型: integerp
+是否为浮点数类型: floatp
+是否为数字类型: numberp
+是否为0: zerop
+是否为非负整数: wholenump
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge6cdcd6" class="outline-3">
+<h3 id="orge6cdcd6">数的比较</h3>
+<div class="outline-text-3" id="text-orge6cdcd6">
+<p>
+由于Elisp中的赋值是setq函数, 所以=就是比较两个数字是否相等. 还有一些跟比较有关的操作符: &gt;, &lt;, &gt;=, &lt;=
+</p>
+
+<p>
+由于精度的原因, 如果比较两个浮点数, 一般结果都是不相等, 正确的比较, 应该在一定的误差内进行比较.
+</p>
+
+<p>
+eql可以比较两个数字的值和类型是否都一致.
+</p>
+
+<p>
+注意, 不等号是/=.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdfbd1f9" class="outline-3">
+<h3 id="orgdfbd1f9">数的转换</h3>
+<div class="outline-text-3" id="text-orgdfbd1f9">
+<p>
+整数-&gt;浮点数: float
+浮点数-&gt;整数: 向上取整(ceiling), 向下取整(floor), 四舍五入(round)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org479b7a3" class="outline-3">
+<h3 id="org479b7a3">数的运算</h3>
+<div class="outline-text-3" id="text-org479b7a3">
+<p>
+与其他语言类似.
+没有++和--, 可以这样写: (setq foo (1+ foo))和(setq foo (1- foo))
+取余: %或mod函数, %要求第1个参数为整数, 而mod则没有这个要求
+绝对值: abs
+三角函数: sin, cos, tan, asin, acos, atan
+开方: sqrt
+指数: exp是以e为底的指数运算, expt可以自己指定底数
+对数: log, 底数默认为e, 也可以自己指定 (log arg &amp;optional base)
+随机数: random, (random t)可以产生新种子
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8848701" class="outline-2">
+<h2 id="org8848701">字符和字符串</h2>
+<div class="outline-text-2" id="text-org8848701">
+<p>
+Elisp中的字符串是有序的字符数组, 和C不同的是, Elisp中的字符串可以容纳任何字符, 包括\0.
+</p>
+</div>
+
+<div id="outline-container-orgabdccee" class="outline-3">
+<h3 id="orgabdccee">字符</h3>
+<div class="outline-text-3" id="text-orgabdccee">
+<p>
+字符的读入语法, 是在字符前加问号:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">?A ;; 65
+?\a ;; 转义字符, 7
+?\C-i ;; 表示键入的Ctrl-i, 9
+?\M-A ;; 表示键入的Alt-A
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6ea0333" class="outline-3">
+<h3 id="org6ea0333">测试函数</h3>
+<div class="outline-text-3" id="text-org6ea0333">
+<p>
+是否为字符串: stringp; 没有charp, 因为字符就是整数.
+string-or-null-p: 对象是一个字符或nil时, 返回t
+char-or-string-p: 对象是否为字符串或字符
+</p>
+
+<p>
+Elisp没有测试字符串是否为空的函数, 需要自定义:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun string-emptyp (str)
+    (not (string&lt; "" str)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3168827" class="outline-3">
+<h3 id="org3168827">构造函数</h3>
+<div class="outline-text-3" id="text-org3168827">
+<div class="org-src-container">
+<pre class="src src-Elisp">(make-string 5 ?x) ;; "xxxxx"
+(string ?a ?b ?c) ;; "abc"
+(substring "0123456789" 3 5) ;; "34"
+(concat "0" "1") ;; "01"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf036f03" class="outline-3">
+<h3 id="orgf036f03">字符串比较</h3>
+<div class="outline-text-3" id="text-orgf036f03">
+<p>
+char-equal: 比较两个字符是否相等. 通常case-fold-search都是t, 表示忽略大小写
+string=: 字符串比较; string-equal是别名
+string&lt;: 按字典序比较, string-less是别名
+空字符串小于所有字符串, length可以检测字符串长度, 所以也可以用length来判断字符串是否为空.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org88e4a1f" class="outline-3">
+<h3 id="org88e4a1f">转换函数</h3>
+<div class="outline-text-3" id="text-org88e4a1f">
+<p>
+string-to-char: 只返回字符串的第一个字符
+char-to-string: 字符转字符串
+string-to-number
+number-to-string: 只能转10进制的数字, 若要输出其他进制, 可以用format函数, (format "%#o" 256)
+concat: 可以把一个字符构成的列表或向量转成字符串
+vconcat: 可以把字符串转成列表
+downcase/upcase: 大小写转换
+capitalize: 第1个字符大写, 其他小写
+upcase-initials: 第1个字符大写, 其他不管
+</p>
+</div>
+</div>
+
+<div id="outline-container-org670f180" class="outline-3">
+<h3 id="org670f180">查找和替换</h3>
+<div class="outline-text-3" id="text-org670f180">
+<p>
+(string-match regexp string &amp;optional start): 从指定位置对字符串进行正则表达式匹配.
+</p>
+
+<p>
+有时需要对正则表达式进行处理:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(string-match "2*" "232*3=696")  ;; 0
+(string-match (regexp-quote "2*") "232*3=696")  ;;  2
+</pre>
+</div>
+
+<p>
+(replace-match newtext &amp;optional fixedcase literal string subexp): 替换函数
+如: (replace-match "x" nil nil str 0)
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org7aa5728" class="outline-2">
+<h2 id="org7aa5728">cons cell和列表</h2>
+<div class="outline-text-2" id="text-org7aa5728">
+<p>
+cons cell是一种数据结构, 仅包含两个元素, 第一个叫CAR, 第二个叫CDR. CAR和CDR可以引用任何对象.
+</p>
+</div>
+
+<div id="outline-container-org0190db2" class="outline-3">
+<h3 id="org0190db2">读入cons cell</h3>
+<div class="outline-text-3" id="text-org0190db2">
+<div class="org-src-container">
+<pre class="src src-Elisp">'(1 . 2)  ;;  (1 . 2)
+</pre>
+</div>
+
+<p>
+cons cell前面有个单引号的意思: 
+eval-last-sexp的步骤: 读入前一个S-表达式, 然后对这个表达式求值. 
+数字和字符串是一类特殊的S-表达式, 它们求值前和求值后都不变, 也称为自求值表达式.
+'其实是quote函数, 它的作用是将参数返回, 而不求值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org792cac8" class="outline-3">
+<h3 id="org792cac8">列表和cons cell的关系</h3>
+<div class="outline-text-3" id="text-org792cac8">
+<p>
+<code>列表 = cons cell + 空表</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">'()  ;;  nil
+</pre>
+</div>
+
+<p>
+空表不是cons cell, 因为它没有CAR和CDR两个部分. 如果一个cons cell为(1 . nil), 则可以简写成(1).
+</p>
+
+<p>
+假如有以下cons cell:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">'(1 . (2 . (3 . nil)))  ;;  (1 2 3)
+</pre>
+</div>
+<p>
+可以看出, 这个cons cell内部又嵌套了两个cons cell. 读入后输出是一个列表.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org491c82b" class="outline-3">
+<h3 id="org491c82b">测试函数</h3>
+<div class="outline-text-3" id="text-org491c82b">
+<div class="org-src-container">
+<pre class="src src-Elisp">(consp '(1 . 3))  ;;  t
+(consp '(1 3))  ;;  t
+(consp '(1 3 4))  ;;  t
+(consp nil)  ;;  nil
+(listp '(1 3 4))  ;;  t
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9b27307" class="outline-3">
+<h3 id="org9b27307">构造函数</h3>
+<div class="outline-text-3" id="text-org9b27307">
+<p>
+生成一个cons cell可以用cons函数.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(cons 1 3)  ;;  (1 . 3)
+</pre>
+</div>
+
+<p>
+在列表前面增加元素:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo '(a b))  ;;  (a b)
+(cons 'x foo)  ;;  (x a b)
+</pre>
+</div>
+
+<p>
+也可以使用宏push来加入元素:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(push 'x foo)  ;;  (x a b)
+</pre>
+</div>
+
+<p>
+list函数可以生成一个列表:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(list 1 2 3)  ;;  (1 2 3)
+</pre>
+</div>
+
+<p>
+前面几个例子中, 产生一个列表, 经常要用到quote函数, 直接使用cons或list函数来产生列表, 与使用quote函数来产生列表, 有什么区别?
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">'((+ 1 2) 3)  ;;  ((+ 1 2) 3)
+(list (+ 1 2) 3)  ;;  (3 3)
+</pre>
+</div>
+<p>
+可以看出, quote是直接把参数返回, 而不进行求值; 而list是对参数求值后再生成一个列表.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfa6176e" class="outline-3">
+<h3 id="orgfa6176e">增加元素到列表</h3>
+<div class="outline-text-3" id="text-orgfa6176e">
+<p>
+在列表前增加元素:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo '(a b))  ;;  (a b)
+(cons 'x foo)  ;;  (x a b)
+</pre>
+</div>
+
+<p>
+在列表后增加元素:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(append '(a b) '(c))  ;;  (a b c)
+</pre>
+</div>
+
+<p>
+append的参数也不一定就非要列表, 也可以是其他对象:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(append '(a b) 'c)  ;;  (a b . c)
+</pre>
+</div>
+<p>
+对这个结果再使用append函数, 会报错.
+</p>
+
+<p>
+append函数还可以将向量转成列表:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(append [a b] "cd" nil)  ;;  (a b 99 100)
+
+;;  nil是必须的, 否则结果如下
+
+(append [a b] "cd")  ;;  (a b . "cd")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8820440" class="outline-3">
+<h3 id="org8820440">把列表当作数组</h3>
+<div class="outline-text-3" id="text-org8820440">
+<p>
+对于一个列表, 可以使用car函数取第一个元素, cadr函数取第二个元素, cdr取剩下的元素.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(car '(0 1 2 3 4 5))  ;;  0
+(cadr '(0 1 2 3 4 5))  ;;  1
+(cdr '(0 1 2 3 4 5))  ;;  (1 2 3 4 5)
+</pre>
+</div>
+
+<p>
+取第n个元素, 可以使用nth函数:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(nth 3 '(0 1 2 3 4 5))  ;;  3
+</pre>
+</div>
+
+<p>
+<code>列表是由链表这种数据结构来实现的, 不适合随机访问, 如果经常要使用这些操作, 还是要用数组更合适</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga769ee7" class="outline-3">
+<h3 id="orga769ee7">修改cons cell的内容</h3>
+<div class="outline-text-3" id="text-orga769ee7">
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo '(a b c))  ;;  (a b c)
+(setcar foo 'x)  ;;  x
+foo  ;;  (x b c)
+(setcdr foo '(y z))  ;;  (y z)
+foo  ;;  (x y z)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb31ed44" class="outline-3">
+<h3 id="orgb31ed44">把列表当堆栈用</h3>
+<div class="outline-text-3" id="text-orgb31ed44">
+<p>
+后进先出
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo nil)  ;;  nil
+(push 'a foo)  ;;  (a)
+(push 'b foo)  ;;  (b a)
+(pop foo)  ;;  b
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6cd604f" class="outline-3">
+<h3 id="org6cd604f">重排列表</h3>
+<div class="outline-text-3" id="text-org6cd604f">
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo '(a b c))  ;;  (a b c)
+(reverse foo)  ;;  (c b a)
+</pre>
+</div>
+
+<p>
+sort函数是个破坏性函数, 有可能会在不知不觉间丢失列表元素.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org052639b" class="outline-3">
+<h3 id="org052639b">把列表当关联表</h3>
+<div class="outline-text-3" id="text-org052639b">
+<p>
+关联表(association list)指的是键值对. Elisp中有hash table, 但是hash table有几个缺点:
+</p>
+
+<ol class="org-ol">
+<li>hash table里的关键字key是无序的, 而关联表的关键字可以按想要的顺序排列.</li>
+<li>hash table没有列表那样丰富的函数可用.</li>
+<li>hash table没有读入语法和输入形式, 这对于调试和使用都会带来许多不便.</li>
+</ol>
+
+<p>
+hash table的优点是效率较高.
+</p>
+
+<p>
+关联表的键放在CAR中, 对应的数据放在CDR中.
+</p>
+
+<p>
+使用assq(对应eq)和assoc(对应equal)两个函数来查询键所对应的值, 再使用cdr来得到对应的数据.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(assoc "a" '(("a" 97) ("b" 98)))  ;;  ("a" 97)
+(cdr (assoc "a" '(("a" 97) ("b" 98))))  ;;  (97)
+
+(assq 'a '((a . 97) (b . 98)))  ;;  (a . 97)
+(cdr (assq 'a '((a . 97) (b . 98))))  ;;  97
+</pre>
+</div>
+
+<p>
+assoc-default可以一次性完成这样的操作:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(assoc-default "a" '(("a" 97) ("b" 98)))  ;;  (97)
+</pre>
+</div>
+
+<p>
+已知值, 查找对应的键:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(rassoc '(97) '(("a" 97) ("b" 98) ))  ;;  ("a" 97)
+(rassq '97 '((a . 97) (b . 98)))  ;;  (a . 97)
+</pre>
+</div>
+
+<p>
+修改关键字对应值的方法:
+</p>
+<ol class="org-ol">
+<li>使用cons把新的键值对加到列表的前端. 但是这样会让列表越来越长, 浪费空间.</li>
+<li>使用setcdr来更改键对应的值, 但是这要先确定键值对在这个列表中, 否则会出错.</li>
+<li>用assoc查找对应的元素, 再用delq删除该数据, 最后用cons加到列表中.</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo '(("a" . 97) ("b" . 98)))  ;;  (("a" . 97) ("b" . 98))
+
+;;  使用setcdr来修改
+(if (setq bar (assoc "a" foo))
+    (setcdr bar "this is a")
+  (setq foo (cons '("a" . "this is a") foo)))  ;;  "this is a"
+foo  ;;  (("a" . "this is a") ("b" . 98))
+
+;;  使用assoc, delq, cons来修改
+(setq foo (cons '("a" . 97)
+                (delq (assoc "a" foo) foo)))  ;;  (("a" . 97) ("b" . 98))
+</pre>
+</div>
+<p>
+推荐使用最后一种, 代码简洁.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb0b4eea" class="outline-3">
+<h3 id="orgb0b4eea">遍历列表</h3>
+<div class="outline-text-3" id="text-orgb0b4eea">
+<p>
+使用函数mapc或mapcar来遍历列表. 它们的第一个参数是一个函数, 该函数只接受一个参数, 每次处理列表里的一个元素. 区别是: 前者返回的还是输入的列表, 后者返回的是函数返回值构成的列表.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elsip">(mapc '1+ '(1 2 3))  ;;  (1 2 3)
+(mapcar '1+ '(1 2 3))  ;;  (2 3 4)
+</pre>
+</div>
+
+<p>
+还有一种遍历列表的方法: dolist.
+语法结构: (dolist (var list [result]) body...)
+</p>
+
+<p>
+var是一个临时变量, 在body里可以用来得到列表中元素的值. 如果不指定返回值, 则返回nil.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(dolist (foo '(1 2 3))
+  (1+ foo))  ;;  nil
+(setq bar nil)
+(dolist (foo '(1 2 3) bar)
+  (push (1+ foo) bar))  ;;  (4 3 2)
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4023470" class="outline-2">
+<h2 id="org4023470">数组和序列</h2>
+<div class="outline-text-2" id="text-org4023470">
+<p>
+序列=数组+列表
+数组=字符串+向量+char table和boolean vector
+</p>
+
+<ol class="org-ol">
+<li>数组的第一个元素下标为0.</li>
+<li>数组内的元素可以在常数时间内访问.</li>
+<li>数组在创建后无法改变长度.</li>
+<li>用aref访问数组, aset设置数组.</li>
+</ol>
+
+<p>
+向量可以看成是通用的数组, 它的元素是任意对象.
+</p>
+
+<p>
+字符串是特殊数组, 它的元素是字符.
+</p>
+</div>
+
+<div id="outline-container-orgb87e2c6" class="outline-3">
+<h3 id="orgb87e2c6">测试函数</h3>
+<div class="outline-text-3" id="text-orgb87e2c6">
+<p>
+sequencep: 测试是否为序列
+arrayp: 测试是否为数组
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4be349e" class="outline-3">
+<h3 id="org4be349e">序列的通用函数</h3>
+<div class="outline-text-3" id="text-org4be349e">
+<p>
+length: 得到序列长度, 不适用于点列表或环形列表
+safe-length: 可以用于点列表和环形列表
+elt: 取得序列的第n个元素
+nth: 取得列表的第n个元素
+aref: 取得数组的第n个元素
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5cfd995" class="outline-3">
+<h3 id="org5cfd995">数组操作</h3>
+<div class="outline-text-3" id="text-org5cfd995">
+<p>
+创建数组, 法一:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(vector 'foo 23 [bar baz] "rats")  ;;  [foo 23 [bar baz] "rats"]
+</pre>
+</div>
+
+<p>
+创建数组, 法二:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">foo  ;;  (a b)
+[foo]  ;;  [foo]
+(vector foo)  ;;  [(a b)]
+</pre>
+</div>
+
+<p>
+make-vector: 生成相同元素的向量
+fillarray: 把整个数组用某元素填充
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(make-vector 9 'Z)  ;;  [Z Z Z Z Z Z Z Z Z]
+(fillarray (make-vector 3 'Z) 5)  ;;  [5 5 5]
+</pre>
+</div>
+
+<p>
+aref和aset可以用于访问和修改数组的元素, 如果使用下标超出数组长度, 则会出错.
+</p>
+
+<p>
+vconcat可以把多个序列连成一个向量, 但是这个序列必须是真列表. <code>这是把列表转换成向量的方法, 向量转列表使用append</code>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Elisp">(vconcat [A B C] "aa" '(foo (6 7)))  ;;  [A B C 97 97 foo (6 7)]
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org75002ee" class="outline-2">
+<h2 id="org75002ee">符号</h2>
+<div class="outline-text-2" id="text-org75002ee">
+<p>
+符号是有名字的对象, 通过符号, 可以得到和这个符号相关联的信息, 如值, 函数, 属性列表等等.
+</p>
+
+<p>
+符号的命名规则: 可包含任何字符, 大多数符号含有字母, 数字和标点(-+=*/). 名字前缀要能把符号名和数字区分开来, 如果需要的话, 可以用\来表示这是一个符号.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Elisp">(symbolp '+1)  ;;  nil
+(symbolp '\+1)  ;;  t
+(symbol-name '\+1)  ;;  "+1"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2ed1b4f" class="outline-3">
+<h3 id="org2ed1b4f">创建符号</h3>
+<div class="outline-text-3" id="text-org2ed1b4f">
+<p>
+Elisp中会有一个表来保存符号, 这个表称为obarray, 是一个向量.
+</p>
+
+<p>
+当Emacs创建一个符号时, 首先会对这个名字求hash值, 得到一个obarray的下标.
+</p>
+
+<p>
+当Elisp读入一个符号时, 通常会先查找这个符号是否在obarray中出现过, 没出现则将该符号加入到obarray中, intern函数完成查找并加入的过程. 我们也可以指定一个obarray来装符号.
+</p>
+
+<p>
+intern-soft与intern不同的是, 当名字不在obarray中时, intern-soft会返回nil, 而intern会加入到obarray中.
+</p>
+
+<p>
+为了不污染obarray, 下面的例子使用名为foo的obarray来保存符号. 如果没有foo这个参数, 则会在obarray中进行, 结果相同.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo (make-vector 10 0))  ;;  [0 0 0 0 0 0 0 0 0 0]
+(intern-soft "abc" foo)  ;;  nil
+foo  ;;  [0 0 0 0 0 0 0 0 0 0]
+(intern "abc" foo)  ;;  abc
+foo  ;;  [0 0 0 0 0 0 0 0 0 abc]
+(intern-soft "abc" foo)  ;;  abc
+</pre>
+</div>
+
+<p>
+Elisp每读入一个符号, 都会intern到obarray中, 如果想避免, 则在符号名前加 <code>#:</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(intern-soft "abcd")  ;;  nil
+'#:abcd
+(intern-soft "abcd")  ;;  nil
+</pre>
+</div>
+
+<p>
+(unintern name &amp;optional obarray): 将name从obarray中去除, 成功去除返回t, 没有查到对应的符号则返回nil.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54275da" class="outline-3">
+<h3 id="org54275da">符号的组成</h3>
+</div>
+</div>
+<div id="outline-container-org8d2a6e0" class="outline-2">
+<h2 id="org8d2a6e0">求值规则</h2>
+<div class="outline-text-2" id="text-org8d2a6e0">
+<p>
+一个要求值的lisp对象被称为表达式. 所有的表达式可以分为三种: 符号, 列表和其他类型.
+</p>
+
+<p>
+符号表达式的求值: 结果就是符号的值, 如果它没有值则会出错.
+</p>
+
+<p>
+列表表达式的求值: 根据第一个元素, 可分为函数调用, 宏调用和特殊表达式三种.
+如果第1个元素是函数调用, 则先对列表中其他元素求值, 求值结果作为函数调用的参数.
+如果第1个元素是宏对象, 列表里的其他元素不会立即求值, 而是根据宏定义进行扩展.
+如果第1个元素是特殊表达式, 则一般用于控制结构或者变量绑定.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org27c9b11" class="outline-2">
+<h2 id="org27c9b11">变量</h2>
+<div class="outline-text-2" id="text-org27c9b11">
+<p>
+Elisp中的变量, 包括全局变量和let绑定的局部变量.
+</p>
+
+<p>
+关于let绑定的局部变量, 如果一个变量名既是全局变量也是局部变量, 或者用let多层绑定, 只有最里层的那个变量是有效的.
+</p>
+</div>
+
+<div id="outline-container-org4077400" class="outline-3">
+<h3 id="org4077400">buffer-local变量</h3>
+<div class="outline-text-3" id="text-org4077400">
+<p>
+Emacs能使各个缓冲区之间不相互冲突, 很大程度上归功于buffer-local变量.
+</p>
+
+<p>
+声明buffer-local变量的方法: make-variable-buffer-local或make-local-variable. 其中, make-variable-buffer-local会在所有缓冲区内都产生一个buffer-local变量, 而make-local-variable则在当前缓冲区内产生一个buffer-local变量. 推荐使用make-local-variable.
+</p>
+
+<p>
+(with-current-buffer buffer body)的作用是使唤其中的body表达式在buffer这个缓冲区中执行.
+</p>
+
+<p>
+(get-buffer)可以用缓冲区的名字得到对应的缓冲区对象, 如果没有这样的名字, 则返回nil.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf5819bb" class="outline-3">
+<h3 id="orgf5819bb">使用buffer-local的例子</h3>
+<div class="outline-text-3" id="text-orgf5819bb">
+<div class="org-src-container">
+<pre class="src src-Elisp">(setq foo "I'm global variable")  ;;  "I'm global variable"
+(make-local-variable 'foo)  ;;  foo
+foo  ;;  "I'm global variable"
+(setq foo "I'm buffer-local variable")  ;;  "I'm buffer-local variable"
+foo  ;;  "I'm buffer-local variable"
+(with-current-buffer "*Messages*" foo)  ;;  "I'm global variable"
+</pre>
+</div>
+<p>
+可见, 如果一个值在作为全局变量时有一个值, 使用make-local-variable将变量声明为buffer-local变量后, 对其进行的改变, 只能在当前缓冲区中生效, 而在其他缓冲区则仍使用其作为全局变量时的值. 其在作为全局变量时的值, 叫做默认值, 可以用default-value来查看.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(default-value 'foo)  ;;  "I'm global variable"
+</pre>
+</div>
+<p>
+而要修改全局变量的默认值, 可以使用setq-default来修改.
+</p>
+
+<p>
+local-variable-p: 测试是否为buffer-local
+buffer-local-value: 在当前缓冲区内得到其他缓冲区的buffer-local变量. 如: (buffer-local-value 'foo (get-buffer "<b>scratch</b>"))
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4925910" class="outline-3">
+<h3 id="org4925910">变量的作用域</h3>
+</div>
+</div>
+
+<div id="outline-container-org6498075" class="outline-2">
+<h2 id="org6498075">函数和命令</h2>
+<div class="outline-text-2" id="text-org6498075">
+</div>
+<div id="outline-container-org8d14579" class="outline-3">
+<h3 id="org8d14579">参数</h3>
+<div class="outline-text-3" id="text-org8d14579">
+<p>
+在Elisp中, 参数分为必须的, 可选的, 剩余的. 格式为: (required-vars ... &amp;optional optional-vars ... &amp;rest rest-var)
+</p>
+
+<p>
+如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun foo (var1 var2 &amp;optional opt1 opt2 &amp;rest rest)
+  (list var1 var2 opt1 opt2 rest))
+(foo 1 2)  =&gt;  (1 2 nil nil nil)
+(foo 1 2 3)  =&gt;  (1 2 3 nil nil)
+(foo 1 2 3 4 5 6)  =&gt;  (1 2 3 4 (5 6))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf47733b" class="outline-3">
+<h3 id="orgf47733b">文档</h3>
+<div class="outline-text-3" id="text-orgf47733b">
+<p>
+给函数提供一个文档说明是比较好的习惯.
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">(defun foo (var1)
+ "test"
+ (list var1))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2470988" class="outline-3">
+<h3 id="org2470988">宏</h3>
+<div class="outline-text-3" id="text-org2470988">
+<p>
+与函数类似. 但宏的参数是出现在最后扩展后的表达式中, 而函数参数是求值后才传递给这个函数. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Elisp">
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-01-15</span>
+            <span title="last modification date" class="post-info">2018-03-05</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/emacs">Emacs</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/01/15/emacs-lisp-教程";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/01/15/emacs-lisp-教程";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

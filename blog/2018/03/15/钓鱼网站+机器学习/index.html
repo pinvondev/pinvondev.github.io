@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>钓鱼网站+机器学习 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Record" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">钓鱼网站+机器学习</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd82ecb3">数据集</a></li>
+<li><a href="#org8e86f35">特征</a>
+<ul>
+<li><a href="#orgba68248">基于地址栏的特征</a>
+<ul>
+<li><a href="#orgcc33eab">IP地址</a></li>
+<li><a href="#org18ef722">长网址</a></li>
+<li><a href="#org7dc166b">使用缩略网址服务</a></li>
+<li><a href="#orgbe5d4ae">@字符</a></li>
+<li><a href="#org6a8db6e">使用//重定向</a></li>
+<li><a href="#orge5a1d63">域名中带"-"</a></li>
+<li><a href="#orgf7ea368">子域名或多子域名</a></li>
+<li><a href="#org9412950">HTTPS</a></li>
+<li><a href="#orgf3fd427">域名注册时间</a></li>
+<li><a href="#org84d3fca">favicon图标</a></li>
+<li><a href="#org9514052">使用非标准端口</a></li>
+<li><a href="#org5580023">域名中含有HTTPS或HTTP</a></li>
+</ul>
+</li>
+<li><a href="#org31761d9">基于异常</a>
+<ul>
+<li><a href="#orgdb8131e">检查Request请求</a></li>
+<li><a href="#orga250d73">URL的锚点</a></li>
+<li><a href="#orga4f8413">&lt;Meta&gt;, &lt;Script&gt;和&lt;Link&gt;标记中的链接</a></li>
+<li><a href="#org5b1afbc">服务器表单处理程序(SFH)</a></li>
+<li><a href="#org9831102">提交信息到电子邮件</a></li>
+<li><a href="#org8ddca09">异常URL</a></li>
+</ul>
+</li>
+<li><a href="#org7d286bd">基于HTML和JavaScript</a>
+<ul>
+<li><a href="#org48e5899">网站转发</a></li>
+<li><a href="#orgca40a7f">自定义状态栏</a></li>
+<li><a href="#org4f5667c">禁止右键单击</a></li>
+<li><a href="#orgd583d98">使用弹窗</a></li>
+<li><a href="#org39e4485">IFrame重定向</a></li>
+</ul>
+</li>
+<li><a href="#org03ffdff">基于域名</a>
+<ul>
+<li><a href="#orgaaf949f">域名年龄</a></li>
+<li><a href="#org081bec7">DNS记录</a></li>
+<li><a href="#org677fe09">网站流量</a></li>
+<li><a href="#org8c3ebd7">PageRank</a></li>
+<li><a href="#org0faf637">谷歌索引</a></li>
+<li><a href="#orgf501b32">指向页面的链接数量</a></li>
+<li><a href="#org1b3a1dc">基于统计报告的特征</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org84a1869">python模块</a></li>
+<li><a href="#org3929ceb">朴素贝叶斯</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd82ecb3" class="outline-2">
+<h2 id="orgd82ecb3">数据集</h2>
+<div class="outline-text-2" id="text-orgd82ecb3">
+<p>
+<a href="https://archive.ics.uci.edu/ml/datasets/Phishing+Websites">Phishing Websites Data Set</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8e86f35" class="outline-2">
+<h2 id="org8e86f35">特征</h2>
+<div class="outline-text-2" id="text-org8e86f35">
+<p>
+这边给出的关于钓鱼网站的重要特征, 已经被证明是合理有效的.
+</p>
+</div>
+
+<div id="outline-container-orgba68248" class="outline-3">
+<h3 id="orgba68248">基于地址栏的特征</h3>
+<div class="outline-text-3" id="text-orgba68248">
+</div>
+<div id="outline-container-orgcc33eab" class="outline-4">
+<h4 id="orgcc33eab">IP地址</h4>
+<div class="outline-text-4" id="text-orgcc33eab">
+<p>
+如果一个网址, 在URL中使用IP地址来替代域名, 如: "<a href="http://125.98.3.123/fake.html">http://125.98.3.123/fake.html</a>", 那么该网址有很大的概率是一个钓鱼网站, 试图窃取用户的个人信息. 这边的IP地址除了 IPv4 的, 也可能有 IPv6 的, 如: "<a href="http://0x58.0xcc.0xca.0x62/2/paypal.ca/index.html">http://0x58.0xcc.0xca.0x62/2/paypal.ca/index.html</a>".
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#22495;&#21517;&#34987;IP&#20195;&#26367;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org18ef722" class="outline-4">
+<h4 id="org18ef722">长网址</h4>
+<div class="outline-text-4" id="text-org18ef722">
+<p>
+钓鱼网站可能会使用较长的URL, 以达到隐藏其中可疑部分的目的. 如:
+<a href="http://federmacedoadv.com.br/3f/aze/ab51e2e319e51502f416dbe46b773a5e/?cmd=_home&amp;amp;dispatch=11004d58f5b74f8dc1e7c2e8dd4105e811004d58f5b74f8dc1e7c2e8dd4105e8@phishing.website.html">http://federmacedoadv.com.br/3f/aze/ab51e2e319e51502f416dbe46b773a5e/?cmd=_home&amp;amp;dispatch=11004d58f5b74f8dc1e7c2e8dd4105e811004d58f5b74f8dc1e7c2e8dd4105e8@phishing.website.html</a>
+</p>
+
+<p>
+为了提高准确度, 通过计算数据集中URL的平均长度, 得出如下结论:
+如果URL的长度超过54个字符, 则有很大概率为钓鱼网站.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> URL&#38271;&#24230; &lt; 54
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> 54 &lt;= URL&#38271;&#24230; &lt;= 75
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7dc166b" class="outline-4">
+<h4 id="org7dc166b">使用缩略网址服务</h4>
+<div class="outline-text-4" id="text-org7dc166b">
+<p>
+缩址, 指的是一种互联网上的技术与服务, 此服务可以提供一个非常短小的URL来代替原来的可能较长的URL, 将长的URL地址缩短. 当用户访问缩短后的URL时, 会被重定向到原来的URL.
+</p>
+
+<p>
+大多数的URL缩短服务都有提供API.
+</p>
+
+<p>
+由于缩短网址具有隐藏原始网址的特性, 用户无法通过短网址的"外观"得知真实网址, 因此短网址便成为有心人士利用来散播电脑病毒及有害内容的渠道. 目前已经有部分短网址服务集成信息安全厂商提供的网址检查机制, 提供用户在点击短网址时预览真实网址以进行安全性检查.
+</p>
+
+<p>
+如: "<a href="http://portal.hud.ac.uk/">http://portal.hud.ac.uk/</a>" 可以被缩短为 "bit.ly/19DXSk4".
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#32553;&#30053;&#32593;&#22336;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbe5d4ae" class="outline-4">
+<h4 id="orgbe5d4ae">@字符</h4>
+<div class="outline-text-4" id="text-orgbe5d4ae">
+<p>
+在URL中使用@字符, 会导致浏览器忽略@字符前的所有内容, 而实际地址通常跟在@字符后面.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> URL&#20013;&#21547;&#26377;@
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6a8db6e" class="outline-4">
+<h4 id="org6a8db6e">使用//重定向</h4>
+<div class="outline-text-4" id="text-org6a8db6e">
+<p>
+如果在URL中存在"<i><i>", 则用户将被重定向到其他网站. 如: "<a href="http://www.legitimate.com//http://www.phishing.com">http://www.legitimate.com//http://www.phishing.com</a>". 可以检查"</i></i>"出现的位置, 如果URL以"HTTP"开头, 则"<i><i>"应该出现在第6位, 如果URL以"HTTPS"开头, 则"</i></i>"应该出现在第7位.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> <span style="color: #CDC673;">"//"</span>&#26368;&#21518;&#20986;&#29616;&#30340;&#20301;&#32622; &gt; 7
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge5a1d63" class="outline-4">
+<h4 id="orge5a1d63">域名中带"-"</h4>
+<div class="outline-text-4" id="text-orge5a1d63">
+<p>
+"-"字符很少用在合法的URL中. 钓鱼者通常会添加以"-"来分隔域名, 使用户感觉他们正在处理合法的网页. 如: "<a href="http://www.confirme-paypal.com">http://www.confirme-paypal.com</a>".
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#22495;&#21517;&#37096;&#20998;&#21253;&#21547;<span style="color: #CDC673;">"-"</span>
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf7ea368" class="outline-4">
+<h4 id="orgf7ea368">子域名或多子域名</h4>
+<div class="outline-text-4" id="text-orgf7ea368">
+<p>
+如果有链接: "<a href="http://www.hud.ac.uk/students/">http://www.hud.ac.uk/students/</a>". 一个域名可能包含国家代码顶级域名(在这个链接中是英国:uk). "ac"是"学术"的缩写, 组合的"ac.uk"被称为二级域, "hud"是域的实际名称.
+</p>
+
+<p>
+删除"www."和".国家代码顶级域名(如果存在)"后, 计算"."的数量, 如果数量大于1, 则很有可能是钓鱼网址.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#22495;&#21517;&#20013;<span style="color: #CDC673;">"."</span>&#30340;&#25968;&#37327; == 1
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> &#22495;&#21517;&#20013;<span style="color: #CDC673;">"."</span>&#30340;&#25968;&#37327; == 2
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9412950" class="outline-4">
+<h4 id="org9412950">HTTPS</h4>
+<div class="outline-text-4" id="text-org9412950">
+<p>
+检查HTTPS证书的颁发机构及证书的年龄. 值得信赖的证书颁发机构包括:"GeoTrust, GoDaddy, Network Solutions, Thawte, Comodo, Doster, VeriSign". 另外, 通过测试数据集, 可以发现, 有信誉证书的最低年龄为2年. 
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#26426;&#26500;&#20540;&#24471;&#20449;&#36182; and &#35777;&#20070;&#24180;&#40836; &gt;= 1
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> &#26426;&#26500;&#19981;&#20540;&#24471;&#20449;&#36182;
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf3fd427" class="outline-4">
+<h4 id="orgf3fd427">域名注册时间</h4>
+<div class="outline-text-4" id="text-orgf3fd427">
+<p>
+钓鱼网站的域名一般不会注册太长时间, 而可信域名一般会提前支付几年的费用. 在数据集中, 可以发现钓鱼网站的域名最长使用时间仅1年.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#22495;&#21517;&#26399;&#38480; &lt;= 1&#24180;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org84d3fca" class="outline-4">
+<h4 id="org84d3fca">favicon图标</h4>
+<div class="outline-text-4" id="text-org84d3fca">
+<p>
+favicon是网站的缩略图(也称为收藏夹图标), 一般在地址栏会显示出来. 如图所示:
+<img src="http://pinvondev.github.io/assets/blog/2018/03/15/钓鱼网站+机器学习/0.png" alt="0.png" />
+</p>
+
+<p>
+而这些图片, 一般会托管在域名中.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> favicon&#20174;&#22495;&#22806;&#21152;&#36733;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9514052" class="outline-4">
+<h4 id="org9514052">使用非标准端口</h4>
+<div class="outline-text-4" id="text-org9514052">
+<p>
+有些钓鱼网站使用了非80端口, 因此, 从URL中获取的网站商品号是作为识别钓鱼网站的一个重要依据.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#20351;&#29992;&#20102;&#38750;&#26631;&#20934;&#21830;&#21697;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5580023" class="outline-4">
+<h4 id="org5580023">域名中含有HTTPS或HTTP</h4>
+<div class="outline-text-4" id="text-org5580023">
+<p>
+如: <a href="http://https-www-paypal-it-webapps-mpp-home.soft-hair.com/">http://https-www-paypal-it-webapps-mpp-home.soft-hair.com/</a>
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#22495;&#21517;&#20013;&#21253;&#21547;HTTP&#23383;&#31526;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org31761d9" class="outline-3">
+<h3 id="org31761d9">基于异常</h3>
+<div class="outline-text-3" id="text-org31761d9">
+</div>
+<div id="outline-container-orgdb8131e" class="outline-4">
+<h4 id="orgdb8131e">检查Request请求</h4>
+<div class="outline-text-4" id="text-orgdb8131e">
+<p>
+合法的网页中, 网页地址和网页中嵌入的大部分对象共用相同的域. 通过检查Request请求占所有请求的频率, 来判断是否为钓鱼网站.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#39057;&#29575; &lt; 22%
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> 22% &lt;= &#39057;&#29575; &lt;= 61%
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga250d73" class="outline-4">
+<h4 id="orga250d73">URL的锚点</h4>
+<div class="outline-text-4" id="text-orga250d73">
+<p>
+锚点是指&lt;a&gt;标记的元素. &lt;a&gt;元素一般就是Request请求.
+</p>
+
+<p>
+如果&lt;a&gt;标签中的网站有不同的域名, 则处理方法与 <code>检查Request请求</code> 一样. &lt;a&gt;标签也有可能不链接到任何网页.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> URL&#30340;&#38170;&#28857;&#38142;&#21040;&#22495;&#22806;&#30340;&#39057;&#29575; &lt; 22%
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> 22% &lt;= URL&#30340;&#38170;&#28857;&#38142;&#21040;&#22495;&#22806;&#30340;&#39057;&#29575; &lt;= 61%
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga4f8413" class="outline-4">
+<h4 id="orga4f8413">&lt;Meta&gt;, &lt;Script&gt;和&lt;Link&gt;标记中的链接</h4>
+<div class="outline-text-4" id="text-orga4f8413">
+<p>
+正常网页中, &lt;Meta&gt;标签提供与HTML文档相关的元数据; &lt;Script&gt;标签用于创建客户端脚本; &lt;Link&gt;标签用于获取其他网络资源.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#36825;&#19977;&#31181;&#26631;&#31614;&#20013;&#21253;&#21547;&#30340;&#26159;&#38142;&#25509; &lt; 17%
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> 17 &lt;= &#36825;&#19977;&#31181;&#26631;&#31614;&#20013;&#21253;&#21547;&#30340;&#26159;&#38142;&#25509; &lt;= 81%
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5b1afbc" class="outline-4">
+<h4 id="org5b1afbc">服务器表单处理程序(SFH)</h4>
+<div class="outline-text-4" id="text-org5b1afbc">
+<p>
+如果SFH中包含空字符或"about: blank", 则被认为是可疑的, 因为一般来说, 需要对提交的信息进行处理. 
+</p>
+
+<p>
+如果SFH中的域名与网页的域名不同, 则被认为是可疑的, 因为一般来说, 提交的信息很少由外部域处理.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> SFH is <span style="color: #CDC673;">"about: blank"</span> or SFH is Empty
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> SFH&#25351;&#21521;&#24341;&#29992;&#22806;&#37096;&#22495;
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9831102" class="outline-4">
+<h4 id="org9831102">提交信息到电子邮件</h4>
+<div class="outline-text-4" id="text-org9831102">
+<p>
+一般提交的信息直接在域内处理, 如果要将用户提交的信息重定向到个人电子邮件, 则很可能是钓鱼网站. 这种情况在脚本中, 会用到类似于mail()或mailto()这样的函数.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#20351;&#29992; mail() <span style="color: #5FD7FF;">&#25110;</span> <span style="color: #87D700;">mailto</span>() <span style="color: #5FD7FF;">&#25552;&#20132;&#29992;&#25143;&#20449;&#24687;</span>
+    <span style="color: #FF8C00;">&#38035;&#40060;&#32593;&#31449;</span>
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8ddca09" class="outline-4">
+<h4 id="org8ddca09">异常URL</h4>
+<div class="outline-text-4" id="text-org8ddca09">
+<p>
+可以通过whois来获取信息. 对于合法网站, 身份通常是URL的一部分.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#20027;&#26426;&#21517;&#19981;&#22312;URL&#20013;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7d286bd" class="outline-3">
+<h3 id="org7d286bd">基于HTML和JavaScript</h3>
+<div class="outline-text-3" id="text-org7d286bd">
+</div>
+<div id="outline-container-org48e5899" class="outline-4">
+<h4 id="org48e5899">网站转发</h4>
+<div class="outline-text-4" id="text-org48e5899">
+<p>
+通过网站被重定向的次数, 可以判断是否为钓鱼网站.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#37325;&#23450;&#21521;&#27425;&#25968; &lt;=1
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> 2&lt;= &#37325;&#23450;&#21521;&#27425;&#25968; &lt; 4
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca40a7f" class="outline-4">
+<h4 id="orgca40a7f">自定义状态栏</h4>
+<div class="outline-text-4" id="text-orgca40a7f">
+<p>
+钓鱼者可以使用JavaScript在状态栏中向用户显示一个伪造的URL. 要提取此功能, 必须挖掘网页源代码, 尤其是"onMouseOver"事件, 并检查它是否在状态栏上进行任何更改.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#36890;&#36807;onMouseover&#20107;&#20214;&#26356;&#25913;&#29366;&#24577;&#26639;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4f5667c" class="outline-4">
+<h4 id="org4f5667c">禁止右键单击</h4>
+<div class="outline-text-4" id="text-org4f5667c">
+<p>
+钓鱼者使用JavaScript来禁用右键单击功能, 使用户无法查看和保存网页源代码. 通过在网页源代码中搜索事件"event.button == 2", 并检查是否禁用了右键单击.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#31105;&#29992;&#21491;&#38190;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd583d98" class="outline-4">
+<h4 id="orgd583d98">使用弹窗</h4>
+<div class="outline-text-4" id="text-orgd583d98">
+<p>
+通过弹窗来让用户提交个人信息是不寻常的. 当然, 也有一些合法网址有弹窗, 但一般用作提醒, 而不是让用户输入信息.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#24377;&#31383;&#36755;&#20837;&#20449;&#24687;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org39e4485" class="outline-4">
+<h4 id="org39e4485">IFrame重定向</h4>
+<div class="outline-text-4" id="text-org39e4485">
+<p>
+IFrame是一个HTML标签, 可以将其他网页的内容在当前页面中显示. 钓鱼者可以将IFrame的边框隐藏, 使用户辨认不出这边显示的内容是其他网页的内容, 然后将其他域内的网页内容嵌入进来.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#26377;IFrame
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org03ffdff" class="outline-3">
+<h3 id="org03ffdff">基于域名</h3>
+<div class="outline-text-3" id="text-org03ffdff">
+</div>
+<div id="outline-container-orgaaf949f" class="outline-4">
+<h4 id="orgaaf949f">域名年龄</h4>
+<div class="outline-text-4" id="text-orgaaf949f">
+<p>
+可以从WHOIS数据库中提取该信息. 大多数钓鱼网站不会存在太久. 通过查看数据集, 可以得知合法域的最短年龄为6个月.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#22495;&#21517;&#24180;&#40836; &gt;= 6&#20010;&#26376;
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org081bec7" class="outline-4">
+<h4 id="org081bec7">DNS记录</h4>
+<div class="outline-text-4" id="text-org081bec7">
+<p>
+对于钓鱼网站, WHOIS数据库无法识别其身份, 也没有该主机名的记录.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#35813;&#22495;&#21517;&#27809;&#26377;DNS&#35760;&#24405;
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org677fe09" class="outline-4">
+<h4 id="org677fe09">网站流量</h4>
+<div class="outline-text-4" id="text-org677fe09">
+<p>
+通过确定访问者的数量和访问的页面数量来衡量网站的受欢迎程度. 由于钓鱼网站的存在时间较短, 因此它们可能无法被Alexa数据库识别. 通过测试数据集, 发现在最糟糕的情况下, 合法网站能排进前10万.
+</p>
+
+<p>
+另外, 如果该域没有流量或者没有被Alexa数据库识别, 则将其归类为"钓鱼网站".
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#32593;&#31449;&#25490;&#21517; &lt; 10,0000
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> &#32593;&#31449;&#25490;&#21517; &gt; 10,0000
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8c3ebd7" class="outline-4">
+<h4 id="org8c3ebd7">PageRank</h4>
+<div class="outline-text-4" id="text-org8c3ebd7">
+<p>
+PageRank用于衡量一个网页在互联网上的重要程度. PageRank值(在0到1之间)越大, 网页越重要. 通过测试数据集, 发现大约95%的钓鱼网页没有PageRank, 剩下的5%的PageRank可能会达到0.2.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> PageRank &lt; 0.2
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0faf637" class="outline-4">
+<h4 id="org0faf637">谷歌索引</h4>
+<div class="outline-text-4" id="text-org0faf637">
+<p>
+由于钓鱼网站只能在短时间内访问, 所以很多钓鱼网页无法在Google索引中找到.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#23384;&#22312;&#20110;Google Index
+    &#21512;&#27861;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#38035;&#40060;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf501b32" class="outline-4">
+<h4 id="orgf501b32">指向页面的链接数量</h4>
+<div class="outline-text-4" id="text-orgf501b32">
+<p>
+由于钓鱼网页存在时间短, 所以基本上没有其他网页会指向钓鱼网页(98%). 另外, 如果一个网站是合法网站, 至少有2个指向它们的外部链接.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> &#25351;&#21521;&#35813;&#39029;&#38754;&#30340;&#38142;&#25509;&#25968; == 0
+    &#38035;&#40060;&#32593;&#31449;
+<span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> 0 &lt; &#25351;&#21521;&#35813;&#39029;&#38754;&#30340;&#38142;&#25509;&#25968; &lt;= 2
+    &#21487;&#30097;&#32593;&#31449;
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1b3a1dc" class="outline-4">
+<h4 id="org1b3a1dc">基于统计报告的特征</h4>
+<div class="outline-text-4" id="text-org1b3a1dc">
+<p>
+有些机构(如PhishTank和StopBadware)会在每个给定的时间段内, 为钓鱼网站制定大量统计报告. 根据PshishTank, 我们认为前10个域名和前10个IP都是钓鱼网站, 根据StopBadware, 我们认为前50个IP都是钓鱼网站.
+</p>
+
+<p>
+规则:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">if</span> IP&#25490;&#21517; &#21069;10(PshishTank) &#21069;50(StopBadware) or <span style="color: #5FD7FF;">&#22495;&#21517;&#25490;&#21517;&#21069;10</span>
+    <span style="color: #FF8C00;">&#38035;&#40060;&#32593;&#31449;</span>
+<span style="color: #FF1493;">else</span>
+    &#21512;&#27861;&#32593;&#31449;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org84a1869" class="outline-2">
+<h2 id="org84a1869">python模块</h2>
+<div class="outline-text-2" id="text-org84a1869">
+<div class="org-src-container">
+<pre class="src src-Shell">pip3 install tldextract
+pip3 install python-whois
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3929ceb" class="outline-2">
+<h2 id="org3929ceb">朴素贝叶斯</h2>
+<div class="outline-text-2" id="text-org3929ceb">
+<p>
+\[ p(c_{i} | \vec w) = \frac{p(\vec w | c_{i}) p(c_i)}{p(\vec w)}\]
+</p>
+
+<p>
+其中, \(p(c_{i})\) 表示该网站为"钓鱼网站"的概率, 或该网站为"合法网站"的概率. \(\vec w\) 表示收集的一系列特征.
+</p>
+
+<p>
+朴素贝叶斯假设向量 \(\vec w\) 展开后的一系列特征互相独立. 因此, \(p(\vec w | c_{i}) = p(\vec w_{0} | c_{i}) p(\vec w_{1} | c_{i}) \ldots p(\vec w_{n} | c_{i})\) .
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-15</span>
+            <span title="last modification date" class="post-info">2018-03-21</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/record">Record</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/15/钓鱼网站+机器学习";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/15/钓鱼网站+机器学习";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@ubuntu">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

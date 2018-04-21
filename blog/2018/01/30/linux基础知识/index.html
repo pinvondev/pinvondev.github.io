@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Linux基础知识 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Linux C编程从入门到精通-读书笔记" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Linux基础知识</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org145dd98">命令</a>
+<ul>
+<li><a href="#org2cfce05">查找文件</a>
+<ul>
+<li><a href="#org31b5c81">find</a></li>
+<li><a href="#org95d83d6">locate</a></li>
+<li><a href="#org1eee9c5">which</a></li>
+</ul>
+</li>
+<li><a href="#org88977ef">查找文件内容</a>
+<ul>
+<li><a href="#org6d0fb49">grep</a></li>
+</ul>
+</li>
+<li><a href="#org89789a7">sort</a></li>
+<li><a href="#org3af483f">比较</a>
+<ul>
+<li><a href="#org0844bc7">comm</a></li>
+<li><a href="#orgda28171">diff</a></li>
+</ul>
+</li>
+<li><a href="#org12e0b63">统计(wc)</a></li>
+</ul>
+</li>
+<li><a href="#orga752407">目录</a>
+<ul>
+<li><a href="#org1d5935b">链接文件命令ln</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org145dd98" class="outline-2">
+<h2 id="org145dd98">命令</h2>
+<div class="outline-text-2" id="text-org145dd98">
+</div>
+<div id="outline-container-org2cfce05" class="outline-3">
+<h3 id="org2cfce05">查找文件</h3>
+<div class="outline-text-3" id="text-org2cfce05">
+</div>
+<div id="outline-container-org31b5c81" class="outline-4">
+<h4 id="org31b5c81">find</h4>
+<div class="outline-text-4" id="text-org31b5c81">
+<div class="org-src-container">
+<pre class="src src-Shell">find path filename
+</pre>
+</div>
+
+<p>
+当然, 除了按文件名查找, <code>find</code> 还可以有其他的查找选项, 如文件权限等. 在文件系统较大时, 比较消耗资源.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org95d83d6" class="outline-4">
+<h4 id="org95d83d6">locate</h4>
+<div class="outline-text-4" id="text-org95d83d6">
+<div class="org-src-container">
+<pre class="src src-Shell">locate filename
+locate /etc/sh  #  查找/etc/目录下所有以sh开头的文件.
+</pre>
+</div>
+
+<p>
+locate相当于fine -name, 但是速度快很多, 因为它从数据库中进行查找, 这个数据库中包含所有本地文件信息, Linux会自动创建这个数据库, 并且每天自动更新一次, 所以使用locate命令查找不到最新变化的文件. 可以在使用locate之前, 使用updatedb命令, 手动更新数据库.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1eee9c5" class="outline-4">
+<h4 id="org1eee9c5">which</h4>
+<div class="outline-text-4" id="text-org1eee9c5">
+<p>
+查找可执行文件.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">which executeable_name
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org88977ef" class="outline-3">
+<h3 id="org88977ef">查找文件内容</h3>
+<div class="outline-text-3" id="text-org88977ef">
+</div>
+<div id="outline-container-org6d0fb49" class="outline-4">
+<h4 id="org6d0fb49">grep</h4>
+<div class="outline-text-4" id="text-org6d0fb49">
+<div class="org-src-container">
+<pre class="src src-Shell">grep keyword -n filename
+</pre>
+</div>
+<p>
+表示在filename中查找包含keyword的内容, -n表示返回的内容包含keyword所在的行.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org89789a7" class="outline-3">
+<h3 id="org89789a7">sort</h3>
+<div class="outline-text-3" id="text-org89789a7">
+<p>
+sort的功能是对 <code>文件中</code> 的所有行进行排序.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sort 4.txt|cat -n
+sort 3.txt &gt; 5.txt
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3af483f" class="outline-3">
+<h3 id="org3af483f">比较</h3>
+<div class="outline-text-3" id="text-org3af483f">
+</div>
+<div id="outline-container-org0844bc7" class="outline-4">
+<h4 id="org0844bc7">comm</h4>
+<div class="outline-text-4" id="text-org0844bc7">
+<p>
+comm对两个有序的文件比较.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">comm [-123] file1 file2
+</pre>
+</div>
+<p>
+该命令有3列输出: 仅在file1中出现的行; 仅在file2中出现的行; 两个文件中都存在的行; -123指定抑制其中的哪些列.
+</p>
+
+<p>
+如 <code>comm -1 file1 file2</code> 表示不显示file1中出现的行, 输出剩下的两列.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda28171" class="outline-4">
+<h4 id="orgda28171">diff</h4>
+<div class="outline-text-4" id="text-orgda28171">
+<p>
+diff逐行比较两个文本文件, 但不要求其事先排好序. 以 <code>&lt;</code> 打头的行属于第1个文件, 以 <code>&gt;</code> 打头的行属于第2个文件.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org12e0b63" class="outline-3">
+<h3 id="org12e0b63">统计(wc)</h3>
+<div class="outline-text-3" id="text-org12e0b63">
+<p>
+wc命令可以统计指定文件中的字节数, 字数, 行数, 并将统计结果输出.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga752407" class="outline-2">
+<h2 id="orga752407">目录</h2>
+<div class="outline-text-2" id="text-orga752407">
+<ul class="org-ul">
+<li>/bin: 存放Linux的常用命令.</li>
+<li>/boot: 存放系统启动时要用到的程序.</li>
+<li>/dev: 存放Linux系统中使用的所有外部设备.</li>
+<li>/etc: 存放系统管理时要用到的各种配置文件和子目录.</li>
+<li>/sbin: 存放系统管理员的系统管理程序, 是root用户的可执行命令存放地.</li>
+<li>/home: 用来存放用户主目录.</li>
+<li>/lib: 用来存放系统动态链接库.</li>
+<li>/lost+found: 系统非正常关机时, 在重启后, 有些文件找不到应该存放的地方, 就存放于此目录.</li>
+<li>/mnt: 临时挂载其他文件系统.</li>
+<li>/media: 存放即插即用型存储设备的挂载点, 如USB.</li>
+<li>/opt: 存放自己下载的软件.</li>
+<li>/proc: 系统运行时, 存放进程信息及内核信息.</li>
+<li>/tmp: 用户运行程序时, 用于存放临时文件.</li>
+<li>/usr: 存放系统自带软件.</li>
+<li>/var: 存放经常变动的文件, 如系统日志.</li>
+</ul>
+</div>
+
+<div id="outline-container-org1d5935b" class="outline-3">
+<h3 id="org1d5935b">链接文件命令ln</h3>
+<div class="outline-text-3" id="text-org1d5935b">
+<p>
+ln在文件之间创建链接(可简单理解为Windows中的快捷方式, 当然, Linux中的链接还有其他更多的功能). 这种操作实际上是给系统中已有的某个文件创建别名, 对于这个别名, 可以指定不同的访问权限. 如果链接指向目录, 就可以用链接直接进入目录, 而不用输入一大堆的路径名. 如果删除这个链接, 不会对原目录产生影响.
+</p>
+
+<p>
+链接有两种, 一种为硬链接, 一种为符号链接(也有人称为软链接).
+</p>
+
+<p>
+硬链接的意思是一个文件可以有多个名称, 建立硬链接时, 链接文件和被链接文件必须位于同一个文件系统中, 并且不能建立指向目录的硬链接.
+</p>
+
+<p>
+软链接的意思是产生一个特殊的文件, 该文件的内容指向另一个文件的位置.
+</p>
+
+<p>
+通俗地讲区别: 如果有一个文件test, 其内容实际上存放在File中, 而test只是一个指针, 指向了File, 我们只能通过test对File进行操作. 创建硬链接时, 相当于创建了另一个指针, 也指向File. 创建软链接, 相当于创建了另一个指针, 指向test. 所以, 当删除源文件test时, 硬链接还能正常访问File, 而软链接则缺少test这个中间节点, 导致不能正常访问File.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">ln -option file linkname
+ln test hardlink  #  创建名为hardlink的硬链接
+ln test softlink  #  创建名为softlink的软链接
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-01-30</span>
+            <span title="last modification date" class="post-info">2018-01-31</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/linux-c编程从入门到精通-读书笔记">Linux C编程从入门到精通-读书笔记</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/01/30/linux基础知识";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/01/30/linux基础知识";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

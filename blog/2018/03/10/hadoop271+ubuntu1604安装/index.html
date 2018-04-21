@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Hadoop2.7.1+Ubuntu16.04安装 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Hadoop" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Hadoop2.7.1+Ubuntu16.04安装</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org141760b">安装SSH 配置SSH免密码登陆</a>
+<ul>
+<li><a href="#orgddbf874">安装SSH</a></li>
+<li><a href="#org40d58ca">配置SSH免密码登陆</a></li>
+</ul>
+</li>
+<li><a href="#orgfae6e86">设置Linux环境变量的方法和区别</a>
+<ul>
+<li><a href="#org0093fcf">通过文件设置</a>
+<ul>
+<li><a href="#org57493bb">全局环境变量(对所有用户生效)</a></li>
+<li><a href="#org9067f0d">局部环境变量(对单个用户生效)</a></li>
+</ul>
+</li>
+<li><a href="#orgfc900ab">通过export设置</a></li>
+</ul>
+</li>
+<li><a href="#org9fb0ebf">安装Java环境</a>
+<ul>
+<li><a href="#orgfc96de7">修改系统默认JDK</a></li>
+</ul>
+</li>
+<li><a href="#org69a5c5e">Hadoop 2.7.1单机安装</a>
+<ul>
+<li><a href="#org51661f3">试跑例子</a></li>
+</ul>
+</li>
+<li><a href="#orgbdf4a50">Hadoop2.7.1伪分布式安装</a>
+<ul>
+<li><a href="#org2135939">配置</a></li>
+<li><a href="#org0355786">设置HADOOP_HOME</a></li>
+<li><a href="#org4ab728d">格式化NameNode</a></li>
+<li><a href="#orgc652592">启动/关闭 Hadoop</a>
+<ul>
+<li><a href="#org8ff7726">启动</a></li>
+<li><a href="#orgd305d10">关闭</a></li>
+</ul>
+</li>
+<li><a href="#org418f7f7">运行例子</a></li>
+<li><a href="#org87a3f9f">启动YARN</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org141760b" class="outline-2">
+<h2 id="org141760b">安装SSH 配置SSH免密码登陆</h2>
+<div class="outline-text-2" id="text-org141760b">
+</div>
+<div id="outline-container-orgddbf874" class="outline-3">
+<h3 id="orgddbf874">安装SSH</h3>
+<div class="outline-text-3" id="text-orgddbf874">
+<p>
+无论是集群模式还是单节点模式, 都要用到SSH登陆, Ubuntu默认已安装 <code>SSH client</code>, 还需要自己再安装 <code>SSH server</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install openssh-server
+
+# 测试 首次登陆要输yes 接着要输密码
+ssh localhost
+
+# 退出
+exit
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org40d58ca" class="outline-3">
+<h3 id="org40d58ca">配置SSH免密码登陆</h3>
+<div class="outline-text-3" id="text-org40d58ca">
+<p>
+进入终端, 利用 <code>ssh-keygen</code> 生成密钥, 并将密钥加入到授权中.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cd ~/.ssh/
+ssh-keygen -t rsa  #  一路回车
+cat ./id_rsa.pub &gt;&gt; ./authorized_keys  #  加入授权
+</pre>
+</div>
+<p>
+注: 如果之前安装过 <code>Git</code>, 则已经有 <code>id_rsa.pub</code> 文件, 可直接使用.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgfae6e86" class="outline-2">
+<h2 id="orgfae6e86">设置Linux环境变量的方法和区别</h2>
+<div class="outline-text-2" id="text-orgfae6e86">
+</div>
+<div id="outline-container-org0093fcf" class="outline-3">
+<h3 id="org0093fcf">通过文件设置</h3>
+<div class="outline-text-3" id="text-org0093fcf">
+</div>
+<div id="outline-container-org57493bb" class="outline-4">
+<h4 id="org57493bb">全局环境变量(对所有用户生效)</h4>
+<div class="outline-text-4" id="text-org57493bb">
+<p>
+<code>/etc/profile</code>: 为系统的每个用户设置环境信息. 当用户登录时, 该文件被执行一次, 从 <code>/etc/profile.d</code> 目录的配置文件中搜集 <code>shell</code> 的设置.
+</p>
+
+<p>
+<code>/etc/bashrc</code>: 当 <code>bash shell</code> 被打开时, 该文件被读取.
+</p>
+
+<p>
+<code>/etc/environment</code>: 设置整个系统的环境, 而 <code>/etc/profile</code> 是设置所有用户的环境, 因为有些数据与用户无关, 与系统相关. 如果两个文件中的设置有冲突, 以 <code>/etc/profile</code> 为准.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9067f0d" class="outline-4">
+<h4 id="org9067f0d">局部环境变量(对单个用户生效)</h4>
+<div class="outline-text-4" id="text-org9067f0d">
+<p>
+<code>~/.bash_profile</code> 或 <code>~/.bash_login</code> 或 <code>~/.profile</code>: 当用户登录时, 该文件执行一次.
+</p>
+
+<p>
+<code>~/.bashrc</code>: 当用户登录且每次打开新的 <code>shell</code> 时, 该文件被读取.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfc900ab" class="outline-3">
+<h3 id="orgfc900ab">通过export设置</h3>
+<div class="outline-text-3" id="text-orgfc900ab">
+<p>
+使用 <code>export</code> 设置的变量, 只对当前终端Shell有效, 如果此时新开一个终端, 则无法读取之前通过 <code>export</code> 设置的变量. 适合设置一些临时变量.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9fb0ebf" class="outline-2">
+<h2 id="org9fb0ebf">安装Java环境</h2>
+<div class="outline-text-2" id="text-org9fb0ebf">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo tar -zxvf jdk-8u161-linux-x64.tar.gz -C /usr/lib/jvm
+
+# 修改环境变量
+export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:$PATH
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgfc96de7" class="outline-3">
+<h3 id="orgfc96de7">修改系统默认JDK</h3>
+<div class="outline-text-3" id="text-orgfc96de7">
+<p>
+Ubuntu中默认安装了 <code>openJDK</code>, 我们又安装了 <code>jdk1.8.0_161</code>. 修改系统默认JDK的方式如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo update-alternatives --display java  # 可看到openjdk的优先级
+
+# 将jdk1.8.0_161的优先级设置成比openjdk的更高
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_161/bin/java 300
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.8.0_161/bin/javac 300
+sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.8.0_161/bin/jar 300
+sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk1.8.0_161/bin/javah 300
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_161/bin/javap 300
+
+# 选择合适的JDK
+sudo update-alternatives --config java
+# 输入编号
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69a5c5e" class="outline-2">
+<h2 id="org69a5c5e">Hadoop 2.7.1单机安装</h2>
+<div class="outline-text-2" id="text-org69a5c5e">
+<div class="org-src-container">
+<pre class="src src-Shell"># 解压到指定目录
+tar -zxf ~/下载/hadoop-2.7.1.tar.gz -C ~
+cd ~
+
+# 将文件夹改名为hadoop
+mv ./hadoop-2.7.1/ ./hadoop
+
+# 查看文件权限
+ls -l
+
+# 修改文件权限
+sudo chown -R pinvon:pinvon ./hadoop/
+
+# 测试hadoop是否可用
+cd hadoop
+./bin/hadoop version
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org51661f3" class="outline-3">
+<h3 id="org51661f3">试跑例子</h3>
+<div class="outline-text-3" id="text-org51661f3">
+<div class="org-src-container">
+<pre class="src src-Shell"># 查看所有例子
+./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar 
+
+# 运行grep例子
+mkdir ./input  # 创建输入文件夹
+cp ./etc/hadoop/*.xml ./input  # 将配置文件作为输入文件
+
+./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar grep ./input/ ./output 'dfs[a-z.]+'
+
+# 查看结果
+cat ./output/*
+
+# 删除输出
+rm -r ./output
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbdf4a50" class="outline-2">
+<h2 id="orgbdf4a50">Hadoop2.7.1伪分布式安装</h2>
+<div class="outline-text-2" id="text-orgbdf4a50">
+</div>
+<div id="outline-container-org2135939" class="outline-3">
+<h3 id="org2135939">配置</h3>
+<div class="outline-text-3" id="text-org2135939">
+<p>
+伪分布式的意思是, 我们可以在单节点上, 将Hadoop进程以分离的Java进程来运行, 节点既作为NameNode也作为DataNode, 同时, 读取的是HDFS中的文件.
+</p>
+
+<p>
+Hadoop的配置文件位于 <code>hadoop/etc/hadoop/</code> 中.
+</p>
+
+<p>
+伪分布式需要修改 <code>core-site.xml</code> 和 <code>hdfs-site.xml</code>.
+</p>
+
+<p>
+<code>core-site.xml</code> 修改为:
+</p>
+<div class="org-src-container">
+<pre class="src src-XML">&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+    &lt;value&gt;file:/home/pinvon/hadoop/tmp&lt;/value&gt;
+    &lt;description&gt;Abase for other temporary directories.&lt;/description&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;fs.defaultFS&lt;/name&gt;
+    &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</pre>
+</div>
+
+<p>
+<code>hdfs-site.xml</code> 修改为:
+</p>
+<div class="org-src-container">
+<pre class="src src-XML">&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.replication&lt;/name&gt;
+    &lt;value&gt;1&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+    &lt;value&gt;file:/home/pinvon/hadoop/tmp/dfs/name&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;
+    &lt;value&gt;file:/home/pinvon/hadoop/tmp/dfs/data&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</pre>
+</div>
+
+<p>
+如果要恢复到单机模式, 则把 <code>core-site.xml</code> 中的配置删除即可.
+</p>
+
+<p>
+<code>hadoop.tmp.dir</code> 是临时目录. <code>fs.defaultFS</code> 是默认文件系统的名称, 通过其可确定文件系统的主机和端口等.
+</p>
+
+<p>
+<code>dfs.namenode.name.dir</code> 是本地磁盘目录, NameNode存储fsimage文件的地方. <code>dfs.datanode.data.dir</code> 是HDFS数据应该存储Block的地方.
+</p>
+
+<p>
+更具体的, 可进hadoop文档查看其Configuration内容.
+<a href="http://hadoop.apache.org/docs/current/">http://hadoop.apache.org/docs/current/</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0355786" class="outline-3">
+<h3 id="org0355786">设置HADOOP_HOME</h3>
+<div class="outline-text-3" id="text-org0355786">
+<p>
+这一步不是必须的, 但是不设置, 在启动Hadoop时有可能会出错. 打开 <code>~/.bashrc</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export HADOOP_HOME=/home/pinvon/hadoop
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/nativeexport 
+</pre>
+</div>
+
+<p>
+<code>source ~/.bashrc</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4ab728d" class="outline-3">
+<h3 id="org4ab728d">格式化NameNode</h3>
+<div class="outline-text-3" id="text-org4ab728d">
+<div class="org-src-container">
+<pre class="src src-Shell">./bin/hdfs namenode -format
+</pre>
+</div>
+
+<p>
+如果显示 <code>Exiting with status 0</code>, 则表示格式化成功.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc652592" class="outline-3">
+<h3 id="orgc652592">启动/关闭 Hadoop</h3>
+<div class="outline-text-3" id="text-orgc652592">
+</div>
+<div id="outline-container-org8ff7726" class="outline-4">
+<h4 id="org8ff7726">启动</h4>
+<div class="outline-text-4" id="text-org8ff7726">
+<div class="org-src-container">
+<pre class="src src-Shell">./sbin/start-dfs.sh
+</pre>
+</div>
+
+<p>
+如果提示找不到JAVA_HOME, 且确定JAVA_HOME已设置过, 则修改配置文件: <code>etc/hadoop/hadoop-env.sh</code>, 修改其中的JAVA_HOME的值:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 原来的
+JAVA_HOME=${JAVA_HOME}
+# 修改为
+JAVA_HOME=/usr/lib/jvm/jdk1.8.0_161
+</pre>
+</div>
+
+<p>
+如果启动成功, 输入 <code>jps</code> 命令后, 会显示有 <code>NameNode</code>, <code>DataNode</code>, <code>SecondaryNameNode</code> 这些进程.
+</p>
+
+<p>
+成功启动后, 还可以通过Web界面(浏览器中输入<a href="http://localhost:50070">http://localhost:50070</a>)NameNode, DataNode, HDFS等信息.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd305d10" class="outline-4">
+<h4 id="orgd305d10">关闭</h4>
+<div class="outline-text-4" id="text-orgd305d10">
+<div class="org-src-container">
+<pre class="src src-Shell">./sbin/stop-dfs.sh
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org418f7f7" class="outline-3">
+<h3 id="org418f7f7">运行例子</h3>
+<div class="outline-text-3" id="text-org418f7f7">
+<p>
+在单机模式中读取的是本地数据, 伪分布式则使用HDFS上的数据.
+</p>
+
+<p>
+在HDFS中创建用户目录:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./bin/hdfs dfs -mkdir -p /user/pinvon
+</pre>
+</div>
+
+<p>
+当Ubuntu的用户名和HDFS上创建的用户目录名称相同时, 输入时可省略这些信息. 如要在HDFS中创建input目录, 直接输入以下命令即可:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./bin/hdfs dfs -mkdir input
+</pre>
+</div>
+<p>
+此时, input目录在HDFS中的绝对路径就是: /user/pinvon/input
+</p>
+
+<p>
+将hadoop的配置文件上传到HDFS作为输入:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./bin/hdfs dfs -put ./etc/hadoop/*.xml input
+
+# 查看文件列表
+./bin/hdfs dfs -ls input
+
+# 运行例子
+./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.1.jar grep input output 'dfs[a-z.]+'
+
+# 查看结果
+./bin/hdfs dfs -cat output/*
+
+# 删除输出目录
+./bin/hdfs dfs -rm -r output
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org87a3f9f" class="outline-3">
+<h3 id="org87a3f9f">启动YARN</h3>
+<div class="outline-text-3" id="text-org87a3f9f">
+<p>
+YARN是从MapReduce中分离出来的, 负责资源管理与任务调度. YARN运行于MapReduce之上, 提供了高可用性和高扩展性.
+</p>
+
+<p>
+之前启动Hadoop, 仅仅是启动了MapReduce环境.
+</p>
+
+<p>
+要启动YARN, 首先要修改配置文件.
+</p>
+
+<p>
+mapred-site.xml:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cd ./etc/hadoop
+
+# 重命名
+mv mapred-site.xml.template mapred-site.xml
+</pre>
+</div>
+
+<p>
+编辑 <code>mapred-site.xml</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+    &lt;value&gt;yarn&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</pre>
+</div>
+
+<p>
+编辑 <code>yarn-site.xml</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;
+    &lt;value&gt;mapreduce_shuffle&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</pre>
+</div>
+
+<p>
+启动YARN:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./sbin/start-dfs.sh
+./sbin/start-yarn.sh
+./sbin/mr-jobhistory-daemon.sh start historyserver
+</pre>
+</div>
+<p>
+运行jps命令, 如果成功的话, 应该会多 <code>NodeManager</code> 和 <code>ResourceManager</code>.
+</p>
+
+<p>
+开启YARN之后, 可以在Web界面查看任务的运行情况: <a href="http://localhost:8088/cluster">http://localhost:8088/cluster</a>
+</p>
+
+<p>
+YARN主要是为集群提供更好的资源管理与任务调度, 但在单机上体现不出价值, 反而会使程序更慢, 因此在单机上是否开启YARN可根据自己的实际情况来.
+</p>
+
+<p>
+如果不想启动YARN, 就要把 <code>mapred-site.xml</code> 重命名成 <code>mapred-site.xml.template</code>.
+</p>
+
+<p>
+关闭:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./sbin/mr-jobhistory-daemon.sh stop historyserver
+./sbin/stop-dfs.sh
+./sbin/stop-yarn.sh
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-10</span>
+            <span title="last modification date" class="post-info">2018-03-12</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/hadoop">Hadoop</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/10/hadoop271+ubuntu1604安装";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/10/hadoop271+ubuntu1604安装";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

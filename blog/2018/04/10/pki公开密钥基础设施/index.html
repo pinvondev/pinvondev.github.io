@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PKI公开密钥基础设施 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="密码学" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">PKI公开密钥基础设施</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4c53d71">安全五要素</a></li>
+<li><a href="#orge86ed01">PKI</a>
+<ul>
+<li><a href="#orge2d09fb">概念</a></li>
+<li><a href="#org43f79d6">数字证书</a>
+<ul>
+<li><a href="#org5e4e194">用户公钥的生成方式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4c53d71" class="outline-2">
+<h2 id="org4c53d71">安全五要素</h2>
+<div class="outline-text-2" id="text-org4c53d71">
+<p>
+PKI可以作为支持认证, 完整性, 机密性和不可否认性的技术基础, 从技术上解决网上身份认证, 信息完整性和抗抵赖性等安全问题.
+</p>
+
+<p>
+安全五要素指: 认证, 权限, 完整, 加密, 不可否认.
+</p>
+
+<p>
+如, 在信息传递过程中, 接收数据的人是否是应该得到该信息的人? 接收数据的人是否有相应的等级来查看信息? 信息在传输和保存过程中, 是否被他人暗中修改? 数据的加密措施是否可靠? 如何保证该信息就是某人发出的?
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge86ed01" class="outline-2">
+<h2 id="orge86ed01">PKI</h2>
+<div class="outline-text-2" id="text-orge86ed01">
+</div>
+<div id="outline-container-orge2d09fb" class="outline-3">
+<h3 id="orge2d09fb">概念</h3>
+<div class="outline-text-3" id="text-orge2d09fb">
+<p>
+PKI是以公开密钥技术为基础, 来实施和提供安全服务的, 具有普适性的安全基础设施.
+</p>
+
+<p>
+PKI是软件, 加密技术和服务的组合. 用户能够使用一个PKI中的证书来确保数据的安全, 并管理来自组织内外的用户的身份验证的证书.
+</p>
+
+<p>
+PKI包括:
+</p>
+<ul class="org-ul">
+<li>数字证书</li>
+<li>密钥和证书管理工具</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org43f79d6" class="outline-3">
+<h3 id="org43f79d6">数字证书</h3>
+<div class="outline-text-3" id="text-org43f79d6">
+<p>
+数字证书相当于网络环境中的一种身份证, 用于证明某一主体的身份及其公钥的合法性.
+</p>
+
+<p>
+数字证书的主要内容:
+</p>
+<ul class="org-ul">
+<li>主题名称</li>
+<li>CA</li>
+<li>公钥</li>
+<li>CA的数字签名(CA对证书的数字签名, 保证证书的权威性, 签名之后要用CA的公钥才能验证)</li>
+<li>有效期</li>
+<li>序列号</li>
+<li>用途</li>
+</ul>
+</div>
+
+<div id="outline-container-org5e4e194" class="outline-4">
+<h4 id="org5e4e194">用户公钥的生成方式</h4>
+<div class="outline-text-4" id="text-org5e4e194">
+<ol class="org-ol">
+<li>用户自己生成密钥对, 然后将公钥以安全的方式传送给CA, 该过程必须保证用户公钥的可验证性和完整性.</li>
+<li>CA替用户生成密钥对, 然后将其以安全的方式传送给用户, 该过程必须确保密钥对的机密性, 完整性和可验证性. 由于私钥由CA生成, 因此对CA的可信性有更高的要求.</li>
+</ol>
+
+<p>
+A可以通过两种方式获取B的数字证书和公钥:
+</p>
+<ol class="org-ol">
+<li>B将数字证书随同发送的正文信息一起传送给A</li>
+<li>所有的数字证书集中存放于一个数字证书库中, A从该处取得B的数字证书</li>
+</ol>
+
+<p>
+公钥的用途:
+</p>
+<ol class="org-ol">
+<li>验证数字签名(消息接收者使用发送者的公钥对消息的数字签名进行验证)</li>
+<li>加密信息(消息发送者使用接收者的公钥加密用于加密消息的密钥, 进行数据加密密钥的传递)</li>
+</ol>
+
+<p>
+系统中需要配置用于数字签名/验证的密钥对和用于数据加密/解密的密钥对, 分别称为签名密钥对和加密密钥对. 其中, 加密密钥对通常用于分发会话密钥, 应该频繁更换, 生命周期较短.
+</p>
+
+<p>
+系统必须针对不同的用途使用不同的密钥对, 尽管有的公钥体制算法(如RSA), 既可用于加密, 又可用于签名, 但在使用中仍然必须为用户配置两对密钥, 两张数字证书, 一个用于加密, 一个用于签名.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-10</span>
+            <span title="last modification date" class="post-info">2018-04-10</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/密码学">密码学</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/10/pki公开密钥基础设施";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/04/10/pki公开密钥基础设施";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

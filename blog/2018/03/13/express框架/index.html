@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Express框架 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Web" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Express框架</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgad0b33d">声明</a></li>
+<li><a href="#org8235275">安装</a>
+<ul>
+<li><a href="#orgc5b141d">创建工程目录</a></li>
+<li><a href="#org3c86637">配置</a></li>
+<li><a href="#org9d992d1">安装</a></li>
+<li><a href="#orgc90ef6a">启动文件</a></li>
+<li><a href="#orgc7a7815">运行.</a></li>
+<li><a href="#orgf40d7c1">合理的结构</a></li>
+</ul>
+</li>
+<li><a href="#org653d8c1">运行原理</a>
+<ul>
+<li><a href="#orga32ed77">底层: http模块</a></li>
+<li><a href="#org3433f3d">中间件</a></li>
+</ul>
+</li>
+<li><a href="#orga9d0c46">Express的方法</a>
+<ul>
+<li><a href="#org805f798">all()和HTTP动词方法</a></li>
+<li><a href="#org966f1e7">set方法</a></li>
+<li><a href="#org1a9d83e">response对象</a></li>
+<li><a href="#org417c98b">request对象</a></li>
+<li><a href="#org546b2f5">搭建HTTPs服务器</a></li>
+</ul>
+</li>
+<li><a href="#org76434d8">项目开发实例</a>
+<ul>
+<li><a href="#org44e917a">配置路由</a>
+<ul>
+<li><a href="#orgf6b5584">指定特定路径</a></li>
+</ul>
+</li>
+<li><a href="#orgf62da84">静态网页模板</a></li>
+</ul>
+</li>
+<li><a href="#orgcf57742">动态网页模板</a>
+<ul>
+<li><a href="#orge7ad5b4">安装模板引擎</a></li>
+<li><a href="#orgb360211">新建数据脚本</a></li>
+<li><a href="#org2938683">新建网页模板</a></li>
+<li><a href="#org7b0f05b">渲染模板</a></li>
+<li><a href="#orgd29eae6">指定静态文件目录</a></li>
+</ul>
+</li>
+<li><a href="#orgafb74a8">Express.Router用法</a>
+<ul>
+<li><a href="#org75efb45">基本用法</a></li>
+<li><a href="#orgc0d717b">router.route()</a></li>
+<li><a href="#org57a9bc3">router中间件</a></li>
+<li><a href="#orgc9f9d5e">对路径参数的处理</a></li>
+<li><a href="#org1db79c5">app.route</a></li>
+</ul>
+</li>
+<li><a href="#orgb88b7c8">上传文件到本地目录</a>
+<ul>
+<li><a href="#org784fdeb">上传文件到Amazon S3</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgad0b33d" class="outline-2">
+<h2 id="orgad0b33d">声明</h2>
+<div class="outline-text-2" id="text-orgad0b33d">
+<p>
+学习自 <a href="http://javascript.ruanyifeng.com/nodejs/express.html">阮一峰老师的教程</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8235275" class="outline-2">
+<h2 id="org8235275">安装</h2>
+<div class="outline-text-2" id="text-org8235275">
+</div>
+<div id="outline-container-orgc5b141d" class="outline-3">
+<h3 id="orgc5b141d">创建工程目录</h3>
+<div class="outline-text-3" id="text-orgc5b141d">
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir test
+cd test
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3c86637" class="outline-3">
+<h3 id="org3c86637">配置</h3>
+<div class="outline-text-3" id="text-org3c86637">
+<p>
+在项目根目录新建文件 <code>package.json</code>, 添加基本配置.
+</p>
+<div class="org-src-container">
+<pre class="src src-JSON">{
+    "name": "hello-world",
+    "description": "hello world test app",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "express": "4.x"
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9d992d1" class="outline-3">
+<h3 id="org9d992d1">安装</h3>
+<div class="outline-text-3" id="text-org9d992d1">
+<div class="org-src-container">
+<pre class="src src-Shell">npm install
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc90ef6a" class="outline-3">
+<h3 id="orgc90ef6a">启动文件</h3>
+<div class="outline-text-3" id="text-orgc90ef6a">
+<p>
+在项目根目录新建文件 <code>index.js</code>, 作为启动文件.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var app = express();
+app.get('/', function (req, res) {
+    res.send('Hello world');
+});
+app.listen(3000);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc7a7815" class="outline-3">
+<h3 id="orgc7a7815">运行.</h3>
+<div class="outline-text-3" id="text-orgc7a7815">
+<div class="org-src-container">
+<pre class="src src-Shell">node index
+</pre>
+</div>
+
+<p>
+打开浏览器, 输入地址: <a href="http://localhost:3000">http://localhost:3000</a> , 网页将会显示Hello world.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf40d7c1" class="outline-3">
+<h3 id="orgf40d7c1">合理的结构</h3>
+<div class="outline-text-3" id="text-orgf40d7c1">
+<p>
+合理的目录结构至关重要, 方便项目管理.
+</p>
+
+<p>
+路由(用于指定不同访问路径所对应的回调函数)应该放在一个单独的目录中. 新建 <code>routes</code> 子目录, 创建文件 <code>index.js</code>, 编辑如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">module.exports = function (app) {
+  app.get('/', function (req, res) {
+    res.send('Hello world');
+  });
+  app.get('/customer', function(req, res){
+    res.send('customer page');
+  });
+  app.get('/admin', function(req, res){
+    res.send('admin page');
+  });
+};
+</pre>
+</div>
+
+<p>
+而原本的 <code>index.js</code> 文件则修改如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var app = express();
+var routes = require('./routes')(app);
+app.listen(3000);
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org653d8c1" class="outline-2">
+<h2 id="org653d8c1">运行原理</h2>
+<div class="outline-text-2" id="text-org653d8c1">
+</div>
+<div id="outline-container-orga32ed77" class="outline-3">
+<h3 id="orga32ed77">底层: http模块</h3>
+<div class="outline-text-3" id="text-orga32ed77">
+<p>
+<code>Node.js</code> 中 <code>http模块</code> 生成服务器的代码如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var http = require("http");
+var app = http.createServer(function(request, response) {
+  response.writeHead(200, {"Content-Type": "text/plain"});
+  response.end("Hello world!");
+});
+app.listen(3000, "localhost");
+</pre>
+</div>
+<p>
+代码的关键是 <code>http.createServer()</code>, 表示生成一个HTTP服务器实例. 该方法接受一个回调函数, 参数分别代表HTTP请求和HTTP回应的request对象和response对象.
+</p>
+
+<p>
+而 <code>Express</code> 框架对其进行了再包装, 上面的代码用 <code>Express</code> 改写如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var app = express();
+app.get('/', function (req, res) {
+  res.send('Hello world!');
+});
+app.listen(3000);
+</pre>
+</div>
+<p>
+原来用 <code>http.createServer()</code> 方法创建的app实例, 现在改成用 <code>Express</code> 的构造方法来生成. <code>Express框架</code> 等于是在 <code>http模块</code> 上加了一个中间层.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3433f3d" class="outline-3">
+<h3 id="org3433f3d">中间件</h3>
+<div class="outline-text-3" id="text-org3433f3d">
+<p>
+中间件是处理HTTP请求的函数. 它的特点是, 一个中间件处理完后, 才会传递给下一个中间件处理. 一种清晰的写法如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require("express");
+var http = require("http");
+
+var app = express();
+
+app.use("/home", function(request, response, next) {
+  response.writeHead(200, { "Content-Type": "text/plain" });
+  response.end("Welcome to the homepage!\n");
+});
+
+app.use("/about", function(request, response, next) {
+  response.writeHead(200, { "Content-Type": "text/plain" });
+  response.end("Welcome to the about page!\n");
+});
+
+app.use(function(request, response) {
+  response.writeHead(404, { "Content-Type": "text/plain" });
+  response.end("404 error!\n");
+});
+
+http.createServer(app).listen(1337);
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9d0c46" class="outline-2">
+<h2 id="orga9d0c46">Express的方法</h2>
+<div class="outline-text-2" id="text-orga9d0c46">
+</div>
+<div id="outline-container-org805f798" class="outline-3">
+<h3 id="org805f798">all()和HTTP动词方法</h3>
+<div class="outline-text-3" id="text-org805f798">
+<p>
+因为HTTP有多种请求, 如: GET, POST, PUT, DELETE, 为了使程序更加清晰, Express框架不建议统一使用 <code>use()</code>, 它提供了 <code>use()</code> 方法的一些别名, 根据不同的请求进行调用. 因此, 上面的代码还可以改成如下形式:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require("express");
+var http = require("http");
+var app = express();
+
+app.all("*", function(request, response, next) {
+  response.writeHead(200, { "Content-Type": "text/plain" });
+  next();
+});
+
+app.get("/", function(request, response) {
+  response.end("Welcome to the homepage!");
+});
+
+app.get("/about", function(request, response) {
+  response.end("Welcome to the about page!");
+});
+
+app.get("*", function(request, response) {
+  response.end("404!");
+});
+
+http.createServer(app).listen(1337);
+</pre>
+</div>
+<p>
+<code>all()</code> 表示, 所有请求都必须通过该中间件, 参数中的 <code>*</code> 表示对所有路径都有效. 这样其他的中间件可以省去很多重复的代码. <code>get()</code> 表示只有HTTP请求方式为GET时, 才通过该中间件, 它的第一个参数是请求的路径, 由于 <code>get()</code> 的回调函数没有调用 <code>next()</code>, 所以只要有一个中间件被调用了, 后面的中间件就不会再被调用.
+</p>
+
+<p>
+对于请求的路径, 除了使用绝对匹配外, 还可以模式匹配. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get("/hello/:who", function(req, res) {
+    res.end("hello, " + req.params.who + ".");
+});
+</pre>
+</div>
+<p>
+上面的代码可以匹配"/hello/alice"网址, 网址中的alice将被捕获, 作为 <code>req.params.who</code> 属性的值. 需要注意的是, 捕获后一般需要对网址进行检查, 过滤不安全字符, 上面的写法只是为了演示, 实际生产中不应该这样直接使用用户提供的值.
+</p>
+
+<p>
+如果在模式参数后面加上问号, 表示该参数可选.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get('/hello/:who?',function(req,res) {
+    if(req.params.id) {
+        res.end("Hello, " + req.params.who + ".");
+    }
+    else {
+        res.send("Hello, Guest.");
+    }
+});
+</pre>
+</div>
+
+<p>
+更复杂的例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get('/forum/:fid/thread/:tid', middleware)
+
+// 匹配/commits/71dbb9c
+// 或/commits/71dbb9c..4c084f9这样的git格式的网址
+app.get(/^\/commits\/(\w+)(?:\.\.(\w+))?$/, function(req, res){
+  var from = req.params[0];
+  var to = req.params[1] || 'HEAD';
+  res.send('commit range ' + from + '..' + to);
+});
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org966f1e7" class="outline-3">
+<h3 id="org966f1e7">set方法</h3>
+<div class="outline-text-3" id="text-org966f1e7">
+<p>
+用于指定变量的值.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.set("views", __dirname + "/views");
+app.set("view engine", "jade");
+</pre>
+</div>
+<p>
+该代码使用 <code>set()</code>, 为系统变量"views"和"view engin"指定值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1a9d83e" class="outline-3">
+<h3 id="org1a9d83e">response对象</h3>
+<div class="outline-text-3" id="text-org1a9d83e">
+<p>
+response.redirect(): 网址重定向. 如: response.redirect("/hello/anime");
+response.sendFile(): 发送文件. 如: response.sendFile("/path/to/anime.mp4");
+response.render(): 渲染网页模板. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get("/", function(request, response) {
+  response.render("index", { message: "Hello World" });
+});
+</pre>
+</div>
+<p>
+该代码使用 <code>render()</code> 方法, 把 <code>message</code> 变量传入index模板, 渲染成HTML网页.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org417c98b" class="outline-3">
+<h3 id="org417c98b">request对象</h3>
+<div class="outline-text-3" id="text-org417c98b">
+<p>
+request.ip: 属性, 用于获得HTTP请求的IP地址.
+request.files: 用于获取上传的文件.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org546b2f5" class="outline-3">
+<h3 id="org546b2f5">搭建HTTPs服务器</h3>
+<div class="outline-text-3" id="text-org546b2f5">
+<p>
+使用Express搭建HTTPs加密服务器.
+</p>
+<div class="org-src-container">
+<pre class="src src-Javascript">var fs = require('fs');
+var options = {
+  key: fs.readFileSync('E:/ssl/myserver.key'),
+  cert: fs.readFileSync('E:/ssl/myserver.crt'),
+  passphrase: '1234'
+};
+
+var https = require('https');
+var express = require('express');
+var app = express();
+
+app.get('/', function(req, res){
+  res.send('Hello World Expressjs');
+});
+
+var server = https.createServer(options, app);
+server.listen(8084);
+console.log('Server is running on port 8084');
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org76434d8" class="outline-2">
+<h2 id="org76434d8">项目开发实例</h2>
+<div class="outline-text-2" id="text-org76434d8">
+<p>
+首先创建工程目录, 配置, 配置文件如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JSON">{
+   "name": "demo",
+   "description": "My First Express App",
+   "version": "0.0.1",
+   "dependencies": {
+      "express": "3.x"
+   }
+}
+</pre>
+</div>
+
+<p>
+安装, 编写启动文件 <code>app.js</code>. 内容如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var path = require('path');
+var app = express();
+
+// 设定port变量，意为访问端口
+app.set('port', process.env.PORT || 3000);
+
+// 设定views变量，意为视图存放的目录
+app.set('views', path.join(__dirname, 'views'));
+
+// 设定view engine变量，意为网页模板引擎
+app.set('view engine', 'jade');
+
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(app.router);
+
+// 设定静态文件目录，比如本地文件
+// 目录为demo/public/images，访问
+// 网址则显示为http://localhost:3000/images
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.listen(app.get('port'));
+</pre>
+</div>
+
+<p>
+<code>set()</code> 用于设定内部变量, <code>use()</code> 用于调用express的中间件.
+</p>
+
+<p>
+在浏览器中访问: <a href="http://localhost:3000">http://localhost:3000</a> , 网页提示"Cannot GET /", 表示没有为网站的根路径指定可以显示的内容. 所以下一步开始配置路由.
+</p>
+</div>
+
+<div id="outline-container-org44e917a" class="outline-3">
+<h3 id="org44e917a">配置路由</h3>
+<div class="outline-text-3" id="text-org44e917a">
+<p>
+所谓"路由", 就是指为不同的访问路径, 指定不同的处理方法.
+</p>
+
+<p>
+在 <code>app.js</code> 中, 指定根路径的处理方法.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get('/', function(req, res) {
+   res.send('Hello World');
+});
+</pre>
+</div>
+<p>
+再通过浏览器访问, 就会显示"Hello World".
+</p>
+
+<p>
+如果需要指定HTTP头信息, 回调函数就必须换一种写法:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get('/', function(req, res){
+  var body = 'Hello World';
+  res.setHeader('Content-Type', 'text/plain');
+  res.setHeader('Content-Length', body.length);
+  res.end(body);
+});
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgf6b5584" class="outline-4">
+<h4 id="orgf6b5584">指定特定路径</h4>
+<div class="outline-text-4" id="text-orgf6b5584">
+<p>
+假定用户访问 <code>/api路径</code>, 希望返回一个JSON字符串, 可以这么写:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get('/api', function(request, response) {
+   response.send({name:"张三",age:40});
+});
+</pre>
+</div>
+
+<p>
+为了便于管理, 我们把路由的回调函数, 封装成模块, 在 <code>routes目录</code> 下建立一个 <code>api.js文件</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-Javascript">exports.index = function (req, res) {
+    res.json(200, {name:"张三", age:40});
+}
+</pre>
+</div>
+
+<p>
+然后 在 <code>app.js</code> 中加载这个模块:
+</p>
+<div class="org-src-container">
+<pre class="src src-Javascript">var api = require('./routes/api');
+app.get('/api', api.index);
+</pre>
+</div>
+
+<p>
+此时, 在浏览器中访问 <a href="http://localhost:3000/api">http://localhost:3000/api</a> 就会有正确的文字显示出来.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf62da84" class="outline-3">
+<h3 id="orgf62da84">静态网页模板</h3>
+<div class="outline-text-3" id="text-orgf62da84">
+<p>
+在项目目录中, 建立一个子目录 <code>views</code>, 用于存放网页模板. 假设该项目有三个路径: 根路径(/), 自我介绍(/about), 文章(/article). 修改 <code>app.js</code> 的中间件:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.get('/', function (req, res) {
+    res.sendfile(__dirname + '/views/index.html');
+});
+
+app.get('/about', (req, res) =&gt; {
+    res.sendfile(__dirname + '/views/about.html');
+});
+
+app.get('/article', (req, res) =&gt; {
+    res.sendfile(__dirname + '/views/article.html');
+});
+</pre>
+</div>
+
+<p>
+然后编辑 <code>views/index.html</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;html&gt;
+&lt;head&gt;
+   &lt;title&gt;首页&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;h1&gt;Express Demo&lt;/h1&gt;
+
+&lt;footer&gt;
+&lt;p&gt;
+   &lt;a href="/"&gt;首页&lt;/a&gt; - &lt;a href="/about"&gt;自我介绍&lt;/a&gt; - &lt;a href="/article"&gt;文章&lt;/a&gt;
+&lt;/p&gt;
+&lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+<p>
+如果想要展示动态内容, 就必须使用动态网页模板.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf57742" class="outline-2">
+<h2 id="orgcf57742">动态网页模板</h2>
+<div class="outline-text-2" id="text-orgcf57742">
+</div>
+<div id="outline-container-orge7ad5b4" class="outline-3">
+<h3 id="orge7ad5b4">安装模板引擎</h3>
+<div class="outline-text-3" id="text-orge7ad5b4">
+<p>
+Express支持多种模板引擎, 这里使用Handlebars模板引擎的服务器端版本.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">npm install hbs --save-dev
+</pre>
+</div>
+<p>
+<code>save-dev</code> 表示将依赖关系写入 <code>package.json</code> 文件.
+</p>
+
+<p>
+安装完成后, 需要改写 <code>app.js</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var hbs = require('hbs');
+var app = express();
+
+// 指定模板文件的后缀名为html
+app.set('view engine', 'html');
+
+// 运行hbs模块
+app.engine('html', hbs.__express);
+
+app.get('/', function (req, res) {
+    res.render('index');
+});
+
+app.get('/about', function (req, res) {
+    res.render('about');
+});
+
+app.get('/article', function (req, res) {
+    res.render('article');
+});
+</pre>
+</div>
+<p>
+上面的代码改用 <code>render()</code> 对网页模板进行渲染. <code>render()</code> 的参数就是模板的文件名, 默认放在子目录 <code>views</code> 之中, 后缀名已经在前面指定为html, 这里可以省略. 所以, <code>res.render('index')</code> 是指: 把子目录views下面的index.html文件, 交给模板引擎hbs渲染.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb360211" class="outline-3">
+<h3 id="orgb360211">新建数据脚本</h3>
+<div class="outline-text-3" id="text-orgb360211">
+<p>
+渲染是指将数据代入模板的过程. 在实际应用中, 数据是保存在数据库的, 这里为简化问题, 假定数据保存在一个脚本文件中.
+</p>
+
+<p>
+在项目目录中, 新建一个文件 <code>blog.js</code>, 用于存放数据.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var entries = [
+    {"id":1, "title":"第一篇", "body":"正文", "published":"6/2/2013"},
+    {"id":2, "title":"第二篇", "body":"正文", "published":"6/3/2013"},
+    {"id":3, "title":"第三篇", "body":"正文", "published":"6/4/2013"},
+    {"id":4, "title":"第四篇", "body":"正文", "published":"6/5/2013"},
+    {"id":5, "title":"第五篇", "body":"正文", "published":"6/10/2013"},
+    {"id":6, "title":"第六篇", "body":"正文", "published":"6/12/2013"}
+];
+
+exports.getBlogEntries = function (){
+   return entries;
+}
+
+exports.getBlogEntry = function (id){
+   for(var i=0; i &lt; entries.length; i++){
+      if(entries[i].id == id) return entries[i];
+   }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2938683" class="outline-3">
+<h3 id="org2938683">新建网页模板</h3>
+<div class="outline-text-3" id="text-org2938683">
+<p>
+在目录 <code>views</code> 里新建模板文件 <code>index.html</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;!-- views/index.html文件 --&gt;
+
+&lt;h1&gt;文章列表&lt;/h1&gt;
+
+{{#each entries}}
+   &lt;p&gt;
+      &lt;a href="/article/{{id}}"&gt;{{title}}&lt;/a&gt;&lt;br/&gt;
+      Published: {{published}}
+   &lt;/p&gt;
+{{/each}}
+</pre>
+</div>
+
+<p>
+模板文件about.html:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;!-- views/about.html文件 --&gt;
+
+&lt;h1&gt;自我介绍&lt;/h1&gt;
+
+&lt;p&gt;正文&lt;/p&gt;
+</pre>
+</div>
+
+<p>
+模板文件article.html:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;!-- views/article.html文件 --&gt;
+
+&lt;h1&gt;{{blog.title}}&lt;/h1&gt;
+Published: {{blog.published}}
+
+&lt;p/&gt;
+
+{{blog.body}}
+</pre>
+</div>
+
+<p>
+以上三个模板文件都只有网页主体, 因为网页布局是共享的, 所以布局的部分可以单独新建一个文件layout.html:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;!-- views/layout.html文件 --&gt;
+
+&lt;html&gt;
+
+&lt;head&gt;
+   &lt;title&gt;{{title}}&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+    {{{body}}}
+
+   &lt;footer&gt;
+      &lt;p&gt;
+         &lt;a href="/"&gt;首页&lt;/a&gt; - &lt;a href="/about"&gt;自我介绍&lt;/a&gt;
+      &lt;/p&gt;
+   &lt;/footer&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7b0f05b" class="outline-3">
+<h3 id="org7b0f05b">渲染模板</h3>
+<div class="outline-text-3" id="text-org7b0f05b">
+<p>
+改写 <code>app.js</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var hbs = require('hbs');
+var app = express();
+
+// 加载数据模块
+var blogEngine = require('./blog');
+
+// 指定模板文件的后缀名为html
+app.set('view engine', 'html');
+
+// 运行hbs模块
+app.engine('html', hbs.__express);
+app.use(express.bodyParser());
+
+app.get('/', function (req, res) {
+    res.render('index', {title:"最近文章", entries:blogEngine.getBlogEntries()});
+});
+
+app.get('/about', function (req, res) {
+    res.render('about', {title:"自我介绍"});
+});
+
+app.get('/article/:id', function (req, res) {
+    var entry = blogEngine.getBlogEntry(req.params.id);
+    res.render('article', {title:entry.title, blog:entry});
+});
+
+app.listen(3000);
+</pre>
+</div>
+
+<p>
+此时可以用浏览器访问.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd29eae6" class="outline-3">
+<h3 id="orgd29eae6">指定静态文件目录</h3>
+<div class="outline-text-3" id="text-orgd29eae6">
+<p>
+模板文件默认存放在 <code>views子目录</code>. 这时, 如果要在网页中加载静态文件(如样式表, 图片等), 就需要另外指定一个存放静态文件的目录.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">app.use(express.static('public'));
+</pre>
+</div>
+<p>
+当浏览器发出非HTML文件请求时, 服务器就到 <code>public</code> 目录寻找这个文件, 比如浏览器发出如下的样式表请求:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;link href="/bootstrap/css/bootstrap.css" rel="stylesheet"&gt;
+</pre>
+</div>
+<p>
+服务器就到 <code>public/bootstrap/css</code> 目录中寻找 <code>bootstrap.css</code> 文件.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgafb74a8" class="outline-2">
+<h2 id="orgafb74a8">Express.Router用法</h2>
+<div class="outline-text-2" id="text-orgafb74a8">
+<p>
+从Express 4.0开始, 路由器功能成了一个单独的组件 <code>Express.Router</code>, 它就像小型的express应用程序一样, 有自己的use, get, param, route方法.
+</p>
+</div>
+
+<div id="outline-container-org75efb45" class="outline-3">
+<h3 id="org75efb45">基本用法</h3>
+<div class="outline-text-3" id="text-org75efb45">
+<p>
+<code>Express.Router</code> 是一个构造函数, 调用后返回一个路由器实例. 再使用该实例的HTTP动词方法, 为不同的访问路径, 指定回调函数, 最后挂载到某个路径.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">var router = express.Router();
+router.get('/', function (req, res) {
+    res.send('首页');
+});
+router.get('/about', function (req, res) {
+    res.send('关于');
+});
+app.use('/', router);
+</pre>
+</div>
+<p>
+<code>app.use('/', router)</code> 表示将之前定义的路径挂载到根目录. 
+如果改成 <code>app.use('/app', router)</code> 表示将之前定义的路径挂载到 '/app' 目录, 相当于 '/app' 和 '/app/about' 这两个路径.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc0d717b" class="outline-3">
+<h3 id="orgc0d717b">router.route()</h3>
+<div class="outline-text-3" id="text-orgc0d717b">
+<p>
+使用 <code>router.route()</code>, 可以直接将访问路径作为参数, 且可以对同一个路径指定get和post方法的回调函数.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var router = express.Router();
+router.route('/api')
+            .post (function (req, res) { ...	})
+            .get (function (req, res) { ... });
+app.use('/', router);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org57a9bc3" class="outline-3">
+<h3 id="org57a9bc3">router中间件</h3>
+<div class="outline-text-3" id="text-org57a9bc3">
+<div class="org-src-container">
+<pre class="src src-JavaScript">router.use(function (req, res, next) {
+    console.log(req.method, req.url);
+    next();
+});
+</pre>
+</div>
+<p>
+中间件的放置顺序很重要, 必须放在HTTP动词方法之前, 等同于执行顺序.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc9f9d5e" class="outline-3">
+<h3 id="orgc9f9d5e">对路径参数的处理</h3>
+<div class="outline-text-3" id="text-orgc9f9d5e">
+<div class="org-src-container">
+<pre class="src src-JavaScript">router.param('name', function(req, res, next, name) {
+    // 对name进行验证或其他处理……
+    console.log(name);
+    req.name = name;
+    next();
+});
+
+router.get('/hello/:name', function(req, res) {
+    res.send('hello ' + req.name + '!');
+});
+</pre>
+</div>
+<p>
+上面代码中, get方法为访问路径指定了name参数, param方法则是对name参数进行处理. 注意, param方法必须放在HTTP动词方法之前.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1db79c5" class="outline-3">
+<h3 id="org1db79c5">app.route</h3>
+<div class="outline-text-3" id="text-org1db79c5">
+<p>
+推荐这种写法:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var app = express();
+app.route('/login')
+    .get(function(req, res) {
+        res.send('this is the login form');
+    })
+    .post(function(req, res) {
+        console.log('processing');
+        res.send('processing the login form!');
+    });
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb88b7c8" class="outline-2">
+<h2 id="orgb88b7c8">上传文件到本地目录</h2>
+<div class="outline-text-2" id="text-orgb88b7c8">
+<p>
+在网页插入上传文件的表单.
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;form action="/pictures/upload" method="POST" enctype="multipart/form-data"&gt;
+  Select an image to upload:
+  &lt;input type="file" name="image"&gt;
+  &lt;input type="submit" value="Upload Image"&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>
+服务器脚本建立指向 <code>/upload</code> 目录的路由. 可以安装 <code>multer模块</code>, 它提供了上传文件的许多功能.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var router = express.Router();
+var multer = require('multer');
+
+var uploading = multer({
+  dest: __dirname + '../public/uploads/',
+  // 设定限制，每次最多上传1个文件，文件大小不超过1MB
+  limits: {fileSize: 1000000, files:1},
+})
+
+router.post('/upload', uploading, function(req, res) {
+
+})
+
+module.exports = router
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org784fdeb" class="outline-3">
+<h3 id="org784fdeb">上传文件到Amazon S3</h3>
+<div class="outline-text-3" id="text-org784fdeb">
+<p>
+在S3上面新增CORS配置文件.
+</p>
+<div class="org-src-container">
+<pre class="src src-XML">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"&gt;
+  &lt;CORSRule&gt;
+    &lt;AllowedOrigin&gt;*&lt;/AllowedOrigin&gt;
+    &lt;AllowedMethod&gt;GET&lt;/AllowedMethod&gt;
+    &lt;AllowedMethod&gt;POST&lt;/AllowedMethod&gt;
+    &lt;AllowedMethod&gt;PUT&lt;/AllowedMethod&gt;
+    &lt;AllowedHeader&gt;*&lt;/AllowedHeader&gt;
+  &lt;/CORSRule&gt;
+&lt;/CORSConfiguration&gt;
+</pre>
+</div>
+<p>
+上面的配置允许任意电脑向你的bucket发送HTTP请求.
+</p>
+
+<p>
+然后安装 <code>aws-sdk</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">npm install aws-sdk --save
+</pre>
+</div>
+
+<p>
+安装服务器脚本:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+var router = express.Router();
+var aws = require('aws-sdk');
+
+router.get('/', function(req, res) {
+  res.render('index')
+})
+
+var AWS_ACCESS_KEY = 'your_AWS_access_key'
+var AWS_SECRET_KEY = 'your_AWS_secret_key'
+var S3_BUCKET = 'images_upload'
+
+router.get('/sign', function(req, res) {
+  aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+
+  var s3 = new aws.S3()
+  var options = {
+    Bucket: S3_BUCKET,
+    Key: req.query.file_name,
+    Expires: 60,
+    ContentType: req.query.file_type,
+    ACL: 'public-read'
+  }
+
+  s3.getSignedUrl('putObject', options, function(err, data){
+    if(err) return res.send('Error with S3')
+
+    res.json({
+      signed_request: data,
+      url: 'https://s3.amazonaws.com/' + S3_BUCKET + '/' + req.query.file_name
+    })
+  })
+})
+
+module.exports = router
+</pre>
+</div>
+
+<p>
+上面代码中，用户访问/sign路径，正确登录后，会收到一个JSON对象，里面是S3返回的数据和一个暂时用来接收上传文件的URL，有效期只有60秒。
+</p>
+
+<p>
+浏览器代码如下。
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// HTML代码为
+// &lt;br&gt;Please select an image
+// &lt;input type="file" id="image"&gt;
+// &lt;br&gt;
+// &lt;img id="preview"&gt;
+
+document.getElementById("image").onchange = function() {
+  var file = document.getElementById("image").files[0]
+  if (!file) return
+
+  sign_request(file, function(response) {
+    upload(file, response.signed_request, response.url, function() {
+      document.getElementById("preview").src = response.url
+    })
+  })
+}
+
+function sign_request(file, done) {
+  var xhr = new XMLHttpRequest()
+  xhr.open("GET", "/sign?file_name=" + file.name + "&amp;file_type=" + file.type)
+
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4 &amp;&amp; xhr.status === 200) {
+      var response = JSON.parse(xhr.responseText)
+      done(response)
+    }
+  }
+  xhr.send()
+}
+
+function upload(file, signed_request, url, done) {
+  var xhr = new XMLHttpRequest()
+  xhr.open("PUT", signed_request)
+  xhr.setRequestHeader('x-amz-acl', 'public-read')
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      done()
+    }
+  }
+
+  xhr.send(file)
+}
+</pre>
+</div>
+<p>
+上面代码首先监听file控件的change事件，一旦有变化，就先向服务器要求一个临时的上传URL，然后向该URL上传文件。
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-13</span>
+            <span title="last modification date" class="post-info">2018-03-14</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/web">Web</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/13/express框架";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/13/express框架";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@ubuntu">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

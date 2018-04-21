@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>IBM区块链微讲堂笔记 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">IBM区块链微讲堂笔记</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1e5dc4d">区块链介绍</a>
+<ul>
+<li><a href="#org4d3f30e">采矿</a></li>
+<li><a href="#orgaac13ea">区块链的分叉</a></li>
+<li><a href="#org7a70480">区块链的适用场景</a></li>
+</ul>
+</li>
+<li><a href="#org3984d02">比特币入门</a>
+<ul>
+<li><a href="#orgf09d040">非对称加密</a></li>
+<li><a href="#org255d9bd">比特币钱包</a></li>
+<li><a href="#orgbb3c520">交易过程</a></li>
+<li><a href="#orga01c8a9">交易确认与区块链</a></li>
+<li><a href="#orga12be7b">矿工的收益</a></li>
+<li><a href="#org90f14af">瓶颈</a></li>
+<li><a href="#orgcb19c25">点对点网络</a></li>
+</ul>
+</li>
+<li><a href="#org3c305d7">加密货币的本质</a>
+<ul>
+<li><a href="#orgd435e20">钱是什么?</a></li>
+<li><a href="#org64028d5">可信性</a></li>
+<li><a href="#orgea27d4d">比特币的可信性</a></li>
+<li><a href="#org30b3551">区块链的作用</a></li>
+</ul>
+</li>
+<li><a href="#org8cc7e93">区块链商用之道</a>
+<ul>
+<li><a href="#org1f71eec">区块链的好处</a></li>
+<li><a href="#orgc6a1d48">企业级区块链的商用平台Hyperledger</a>
+<ul>
+<li><a href="#org49ca767">架构图</a></li>
+</ul>
+</li>
+<li><a href="#org8dfd6d4">业务与区块链</a>
+<ul>
+<li><a href="#orgfbc8945">开放可信供应链</a></li>
+<li><a href="#org2970532">积分交换平台</a></li>
+<li><a href="#orgb19f1cc">商品身份溯源</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1e5dc4d" class="outline-2">
+<h2 id="org1e5dc4d">区块链介绍</h2>
+<div class="outline-text-2" id="text-org1e5dc4d">
+<p>
+<a href="http://www.ruanyifeng.com/blog/2017/12/blockchain-tutorial.html">学习自阮一峰老师的区块链入门教程</a>
+</p>
+
+<p>
+区块链的本质是一种特殊的分布式数据库. 主要作用是储存信息, 任何需要保存的信息, 都可以写入区块链, 也可以从里面读取出来, 所以说它是数据库. 任何人都可以架设服务器, 加入区块链的网络, 成为其中一个节点. 区块链的世界里面没有中心节点, 每个节点都是平等的, 都保存着整个数据库. 如果我们向其中一个节点写入数据, 所有的节点都会同步, 保持区块链一致.
+</p>
+
+<p>
+那么, 为什么说它是特殊的分布式数据库, 它特殊在哪里?
+</p>
+
+<p>
+区块链与分布式数据库不同的地方在于, 区块链没有管理员, 彻底的无中心.
+</p>
+
+<p>
+由于区块链无中心, 没有审核, 所以是否每个人都能向其中写入数据, 是否会有关键数据被人篡改?
+</p>
+
+<p>
+区块链由一个个区块组成, 区块就像数据库中的记录, 每次写入数据, 就是创建一个区块.
+</p>
+
+<p>
+区块由区块头和区块体组成. 区块体就是实际的数据; 区块头包含生成时间, 实际数据(区块体)的哈希, 上一个区块的哈希. 可以近似认为, 不同字符串得到的哈希值不同(相同的概率极低, 可认为是不可能事件). 因此, 我们可以有如下推论:
+</p>
+<ol class="org-ol">
+<li>使用哈希来作为区块的标识</li>
+<li>如果区块的内容变了, 它的哈希一定会变</li>
+</ol>
+
+<p>
+注意, 上面提到过, 区块头包含了区块体的哈希, 而每个区块的哈希, 是根据区块头来生成的, 而不是根据区块体. 但是, 如果区块体的内容变了, 区块头中包含的区块体的哈希也会变, 最后区块的哈希也会变.
+</p>
+
+<p>
+因此, 如果有人改变了区块体, 这个区块对应的哈希就变了, 为了让后面的区块还能连到它, 这个人必须依次修改后面所有的区块, 否则被改掉的区块就脱离区块链了.
+</p>
+</div>
+
+<div id="outline-container-org4d3f30e" class="outline-3">
+<h3 id="org4d3f30e">采矿</h3>
+<div class="outline-text-3" id="text-org4d3f30e">
+<p>
+由于哈希的计算很耗时, 如果一个人改变了区块体, 就必须修改后面所有的区块, 这会消耗很多时间, 为了保证节点之间的同步, 新区块的添加速度不能太快. 
+</p>
+
+<p>
+否则, 试想一下, 你刚刚同步了一个区块, 准备基于它生成下一个区块, 但这时别的节点又有新区块生成, 你不得不放弃做了一半的计算, 再次去同步. 由于新区块只能添加在最后面, 所以, 只要有添加新块, 全网都必须同步. 这太耗时了.
+</p>
+
+<p>
+因此, 区块链的发明者故意让添加新区块变得很困难, 平均10min, 全网才能生成一个新区块. 
+</p>
+
+<p>
+只有通过极大的计算量, 都能得到当前区块的有效哈希, 从而把新区块添加到区块链, 这个过程就叫 <code>采矿</code>. 计算哈希的机器叫矿机, 操作矿机的人叫矿工.
+</p>
+
+<p>
+但是, 这个哈希并不是随便计算出一个, 就是合适的. 只有满足条件的哈希才会被区块链所接受.
+</p>
+
+<p>
+在区块头中, 包含一个难度系数. \(target = \frac{C}{difficulty}\), 其中, \(C\) 是常量,  \(difficulty\) 是难度系数, \(target\) 是目标值. 难度系数越大, 目标值就越小, 而哈希必须小于目标值, 才是有效的, 否则必须重算. 有可能计算10亿次, 才算中一次, 因此, 采矿很难.
+</p>
+
+<p>
+要想一直计算哈希, 区块头里面必须至少有一项有改变, 区块链的发明者在区块头中添加了一个随机项, 叫 <code>Nonce</code>, 让Nonce的值变化, 来计算合适的哈希.
+</p>
+
+<p>
+因此, 采矿, 其实就是在猜测Nonce的值, 使得哈希可以小于目标值, 从而能够加入区块链.
+</p>
+
+<p>
+难度系数会每两周动态调节一次. 如果这两周里面, 区块的平均生成速度是9分钟, 就意味着比法定速度快了10%, 因此接下来的难度系数就要调高10%; 如果平均生成速度是11分钟, 就意味着比法定速度慢了10%, 因此接下来的难度系数就要调低10%.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaac13ea" class="outline-3">
+<h3 id="orgaac13ea">区块链的分叉</h3>
+<div class="outline-text-3" id="text-orgaac13ea">
+<p>
+如果同时有两个新区块要加入区块链, 该采纳哪一块呢?
+</p>
+
+<p>
+现在的规则是, 哪个分叉的后面先达到6个新区块(即哪个分叉拥有大多数计算能力), 哪个分叉就是正宗的区块链.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7a70480" class="outline-3">
+<h3 id="org7a70480">区块链的适用场景</h3>
+<div class="outline-text-3" id="text-org7a70480">
+<ol class="org-ol">
+<li>不存在所有成员都信任的管理当局</li>
+<li>写入的数据不要求实时使用</li>
+<li>挖矿的收益能够弥补本身的成本</li>
+</ol>
+
+<p>
+否则, 继续使用传统的数据库.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3984d02" class="outline-2">
+<h2 id="org3984d02">比特币入门</h2>
+<div class="outline-text-2" id="text-org3984d02">
+<p>
+<a href="http://www.ruanyifeng.com/blog/2018/01/bitcoin-tutorial.html">学习自阮一峰老师的比特币入门教程</a>
+</p>
+
+<p>
+比特币的由来: 2008年, 中本聪提出的构想, 创造一种不受政府或其他任何人控制的货币. 
+</p>
+
+<p>
+比特币就是一串数字, 背后没有任何资产支持, 也没有任何人负责, 你把它当钱付给对方, 怎么会有人愿意接受? 但现在看来, 这已经成为了现实.
+</p>
+</div>
+
+<div id="outline-container-orgf09d040" class="outline-3">
+<h3 id="orgf09d040">非对称加密</h3>
+<div class="outline-text-3" id="text-orgf09d040">
+<p>
+非对称加密, 就是加密和解密需要两把钥匙, 分别是公钥和私钥. 公钥公开, 私钥是私有的, 只有拥有者才能使用.
+</p>
+
+<p>
+非对称加密的应用: A将信息使用公钥加密, 发给B, B用私钥解密, 取出信息.
+数字签名:如果B用私钥加密信息, A用B的公钥解开, 从而证明这个信息是B发出的, 且未被篡改.
+</p>
+
+<p>
+比特币的原理: 使用公钥加密了一笔钱, 你能用私钥解密, 取出里面的钱. 别人没有你的私钥, 取不出里面的钱.
+</p>
+
+<p>
+非对称加密保证了 <code>支付的可靠性</code>.
+</p>
+
+<p>
+但是在真实的交易流程中, 私钥保证的是你能把自己的钱支付出去, 而不是取出支付给你的钱.
+</p>
+
+<p>
+对于比特币来说, 钱是支付给私钥, 而不是支付给人, 这可以保证 <code>交易匿名性</code>, 因为没有人知道这些私钥的主人是谁.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org255d9bd" class="outline-3">
+<h3 id="org255d9bd">比特币钱包</h3>
+<div class="outline-text-3" id="text-org255d9bd">
+<p>
+要想使用比特币交易, 需要有自己的公钥和私钥.
+</p>
+
+<p>
+比特币钱包不是用来存放比特币的, 而是用来存放公钥和私钥. 公钥的长度是512位, 不利于传播, 因此, 协议规定要为公钥生成一个160位的指纹(即哈希值), 这个指纹也称为 <code>钱包的地址</code>.
+</p>
+
+<p>
+如果要收钱, 就把钱包的地址告诉对方. 你是否拥有某个钱包地址, 是由私钥证明的, 所以一定要保护好私钥.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbb3c520" class="outline-3">
+<h3 id="orgbb3c520">交易过程</h3>
+<div class="outline-text-3" id="text-orgbb3c520">
+<p>
+所谓交易, 是指一个钱包地址里的比特币, 转移到了另一个钱包地址里. 由于比特币的交易记录是公开的, 所以哪个地址拥有多少比特币是可以查到的.
+</p>
+
+<p>
+问题出在怎么防止其他人, 冒用你的名义申报交易. 如, 有人申报了一笔交易: 地址A向地址B支付10个比特币. 我怎么知道这个申报是真的, 申报人就是地址A的主人?
+</p>
+
+<p>
+因此, 比特币协议规定, 在申报交易的时候, 除了交易金额, <code>转出比特币的一方</code> 还要提供以下信息:
+</p>
+<ol class="org-ol">
+<li>上一笔交易的哈希(从哪里得到这些比特币)</li>
+<li>本次交易双方的地址</li>
+<li>支付方的公钥</li>
+<li>支付方的私钥生成的数字签名</li>
+</ol>
+
+<p>
+可以利用这些信息, 来确认交易是否属实:
+</p>
+<ol class="org-ol">
+<li>找到上一笔交易, 确认支付方的比特币来源</li>
+<li>保证公钥属实: 算出支付方公钥的指纹, 确认与支付方的地址是否一致</li>
+<li>保证私钥属实: 使用公钥, 看是否能解开数字签名</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orga01c8a9" class="outline-3">
+<h3 id="orga01c8a9">交易确认与区块链</h3>
+<div class="outline-text-3" id="text-orga01c8a9">
+<p>
+确认交易的真实性后, 必须把交易数据写入数据库, 对方才能真正收到钱.
+</p>
+
+<p>
+比特币使用的数据库, 叫区块链. 所有的交易数据都会传到矿工那边, 矿工负责把这些交易写入区块链.
+</p>
+
+<p>
+根据比特币协议, 一个区块的大小最大为1MB, 一笔交易大概为500B, 因此, 一个区块最多可包含2000多笔交易, 矿工负责把这2000多笔交易打包在一起, 组成一个区块, 然后计算这个区块的哈希. <code>计算哈希的过程叫采矿</code>. 矿工之间在竞争, 谁先算出哈希, 谁就能第一个添加新区块, 进入区块链, 从而享受这个区块的全部收益, 而其他矿工将一无所获.
+</p>
+
+<p>
+比特币不存放在钱包或其他的地方, 而是只存在于区块链上. 区块链记载了我们参与的每一笔交易, 得到过多少比特币, 支付了多少比特币, 因此可以算出拥有多少资产.
+</p>
+
+<p>
+总结: 区块链由区块组成, 每个区块最多包含2000多条交易记录, 矿工需要根据区块计算合适的哈希, 使得该区块能加入到区块链.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga12be7b" class="outline-3">
+<h3 id="orga12be7b">矿工的收益</h3>
+<div class="outline-text-3" id="text-orga12be7b">
+<p>
+交易的确认离不开矿工, 那么矿工的工作无聊且耗时, 为什么有人愿意做矿工?
+</p>
+
+<p>
+比特币协议规定, 挖到新区块的矿工将获得奖励. 2008年时是50个, 每隔4年减少一半. 这就是比特币的供给增加机制, 流通中新增的比特币就是这样诞生的.
+</p>
+
+<p>
+由于每4年奖励减半, 所以到了2140年, 矿工将得不到任何奖励, 比特币的数量将会停止增加. 这时, 矿工的收益要完全依靠手续费.
+</p>
+
+<p>
+手续费是指矿工可以从每笔交易中抽成, 但抽多少钱是就支付方自愿决定的. 如果一分钱都不给矿工, 可能该交易会没人处理, 迟迟无法写入区块链, 使得交易无法被确认.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org90f14af" class="outline-3">
+<h3 id="org90f14af">瓶颈</h3>
+<div class="outline-text-3" id="text-org90f14af">
+<p>
+比特币协议规定, 平均10分钟诞生一个区块, 一个区块只有2000多笔交易, 相当于比特币网络每秒钟, 只能处理3~5笔交易.
+</p>
+
+<p>
+世界上比特币交易这么多, 每秒最多只能处理5笔, 是比特币发展的一个瓶颈.
+</p>
+
+<p>
+2017年8月, 为了提高处理速度, 区块诞出现了分叉, 诞生了一个新协议, 称为Bitcoin Cash(BCH), 将每个区块的大小从1MB增加到了8MB, 因此处理速度提高了8倍, 手续费也低得多.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcb19c25" class="outline-3">
+<h3 id="orgcb19c25">点对点网络</h3>
+<div class="outline-text-3" id="text-orgcb19c25">
+<p>
+比特币网络是一个开放网络, 只要有服务器, 就能加入比特币网络, 成为一个节点, 每个节点都包含了整个区块链(目前大约100多GB), 并且节点之间时刻不停地在同步信息.
+</p>
+
+<p>
+矿工从网上收集各种新发生的交易, 将它们打包写入区块链. 一旦写入成功, 矿工所在节点的区块链, 就成为最新版本, 其他节点都会来复制新增区的区块, 保证全网的区块链是一致的. 最后, 你所在的节点也拿到了最新的区块链, 从而得知你早先的那笔交易, 已经写在里面了, 至此交易确认成功.
+</p>
+
+<p>
+小结: 一个网络包含很多节点, 每个节点都是一台服务器. 每个节点都包含整个区块链. 即, 网络包含节点, 一个节点可能包含多个矿工和多个用户, 节点上有区块链. 矿工在计算新区块的哈希, 成功后将新区块写入本地的区块链中, 其他节点都会来复制最新版本的区块链.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3c305d7" class="outline-2">
+<h2 id="org3c305d7">加密货币的本质</h2>
+<div class="outline-text-2" id="text-org3c305d7">
+<p>
+<a href="http://www.ruanyifeng.com/blog/2018/01/cryptocurrency-tutorial.html">学习自阮一峰老师的加密货币本质</a>
+</p>
+</div>
+
+<div id="outline-container-orgd435e20" class="outline-3">
+<h3 id="orgd435e20">钱是什么?</h3>
+<div class="outline-text-3" id="text-orgd435e20">
+<p>
+为什么人民币, 美元这些, 能成为钱?
+</p>
+
+<p>
+因为人们普遍认同他们的价值, 其他东西的价值难以得到普遍认同. 一般来说, 认同的人越多, 这种钱的通用性就越高. 如, 邮票的价值就没有普遍的认同, 除了集邮爱好者, 其他地方不能当钱来用.
+</p>
+
+<p>
+因此, 钱的本质, 或者说货币的本质, 就是它的可信性.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org64028d5" class="outline-3">
+<h3 id="org64028d5">可信性</h3>
+<div class="outline-text-3" id="text-org64028d5">
+<p>
+一样东西能否成为钱, 只取决于人们是否相信它的价值, 至于它是不是真的有价值, 根本不重要.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgea27d4d" class="outline-3">
+<h3 id="orgea27d4d">比特币的可信性</h3>
+<div class="outline-text-3" id="text-orgea27d4d">
+<p>
+比特币要解决的核心问题, 就是创造一种可信的数字凭证. 由于这种凭证可信, 所以能够当作货币. 比特币的技术基础是密码学, 因为只有密码学才能保证它的可信性.
+</p>
+
+<p>
+比特币具有三个特点, 使它可信, 能够当钱.
+</p>
+<ol class="org-ol">
+<li>它不会被轻易偷走. 因为必须要有别人的私钥, 才能取出他的钱. 一般而言, 如果你不告诉别人你的私钥, 别人一般破解不出来.</li>
+<li>它无法伪造. 每一个比特币都能溯源, 所有比特币都来源于矿工获得的奖励, 矿工只有新建区块, 才能得到比特币, 但新建区块很难, 所以无法伪造.</li>
+<li>它无法大批生成. 目前比特币每10分钟新增12.5个, 每四年减半, 最终停止增长. 所以不会像纸币那样, 政府滥发导致通货膨胀.</li>
+</ol>
+
+<p>
+比特币不存在实体, 也不需要. 如果存在一个开放的中央记账系统, 任何人都可以查询, 你把钱划到老板的账户, 老板查询一下, 发现钱收到了, 交易自动成交, 整个过程都是无形的, 连银行卡都不需要. <code>这个中央记账系统, 就是区块链</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org30b3551" class="outline-3">
+<h3 id="org30b3551">区块链的作用</h3>
+<div class="outline-text-3" id="text-org30b3551">
+<p>
+区块链就是一个数据库, 记载了所有的交易, 用作中央记账系统.
+</p>
+
+<p>
+每笔交易的核心, 就是一句话, 如"张三向李四转移了1个比特币". 为了证明这句话可信, 张三为它加上了数字签名. 任何人都可以用张三的公钥, 证明这确实是张三本人的行为. 另一方面, 别人无法伪造张三的数字签名, 所以不可能伪造这笔交易.
+</p>
+
+<p>
+矿工们收到这句话, 首先验证数字签名的可信性, 然后验证张三确实拥有这些比特币. 验证通过以后, 就着手把这句话写入区块链, 写入成功后, 所有人都可以查询到, 因此这笔比特币就被认为, 从张三转移到了李四.
+</p>
+
+<p>
+区块链的作用就是把这句话永久保存下来了, 让任何人都可以查看, 并且任何人都无法再修改.
+</p>
+
+<p>
+交易不可能被伪造, 但是由于每一笔交易都是一串二进制信号, 可能被复制. 举例来说, "张三向李四转移了1个比特币"这句话, 可能被其他人复制, 也可能被张三自己复制, 提交到区块链.
+</p>
+
+<p>
+如果这句话被两次写入区块链, 就意味着张三可以把同一笔钱花掉两次. 
+</p>
+
+<p>
+但是, 第二次写入的时候, 查询区块链可以发现张三已经把这笔钱花掉了, 从而认定这是不合法的交易, 不能写入区块链. 因此, 复制交易是不可能的.
+</p>
+
+<p>
+但是, 张三有可能把同一笔钱付给两人. 比如, 先向区块链提交一个交易, "张三向李四转移了1个比特币", 10分钟之内, 又向区块链提交一个交易, "张三向王五转移了1个比特币", 这两个交易都可能被认为是真实的.
+</p>
+
+<p>
+解决办法:
+</p>
+<ol class="org-ol">
+<li>如果是同一个矿工收到了这两笔交易, 选择其中一个写入区块链.</li>
+<li>如果是矿工A收到了第一笔交易, 矿工B收到了第二笔交易, 同时把两笔交易写入两个区块, 这时区块链出现分叉. 则哪个分叉先有六个区块, 系统就选择哪个. 隐藏的逻辑就是, 如果大多数人(计算能力)选择相信某一笔交易, 那么它就应该是真的.</li>
+</ol>
+
+<p>
+加密货币的一个缺陷: 不能实时确认交易.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8cc7e93" class="outline-2">
+<h2 id="org8cc7e93">区块链商用之道</h2>
+<div class="outline-text-2" id="text-org8cc7e93">
+<p>
+<a href="https://developer.ibm.com/cn/tv/2017/blockchain-and-hyperledger/">讲义下载</a>
+</p>
+
+<p>
+智能合约: 基于区块链的图灵完备的编程脚本语言, 适合各种区块链数据结构和共识协议.即通过编程语言, 把现在的业务逻辑, 在区块链上加以实现.
+</p>
+
+<p>
+区块链将会成为未来万物互联的一个组织结构.
+</p>
+</div>
+
+<div id="outline-container-org1f71eec" class="outline-3">
+<h3 id="org1f71eec">区块链的好处</h3>
+<div class="outline-text-3" id="text-org1f71eec">
+<p>
+传统的交易如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/25/ibm区块链微讲堂笔记/0.png" alt="0.png" />
+</p>
+</div>
+
+<p>
+总的来说, 就是交易的每个参与方都有自己帐本, 在发生交易后, 每个参与方的账本需要同步更改以保持一致, 造成业务复杂, 且带有中介费等附加成本; 交易的整个业务网络依赖于一个或几个中心系统, 如果中心系统出现问题, 整个交易网络将瘫痪.
+</p>
+
+<p>
+引入区块链后, 交易如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/25/ibm区块链微讲堂笔记/1.png" alt="1.png" />
+</p>
+</div>
+
+<p>
+总的来说, 就是交易的每个参与方都有一个共享账本, 在发生交易后, 通过点对点的复制更改所有账本. 由于账本共享, 每个参与方都拥有所有的数据(包括原本不属于他的数据), 但不一定能看到所有的数据(其安全性由密码学来保证).
+</p>
+
+<p>
+区块链可以简化业务流程, 减少成本.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc6a1d48" class="outline-3">
+<h3 id="orgc6a1d48">企业级区块链的商用平台Hyperledger</h3>
+<div class="outline-text-3" id="text-orgc6a1d48">
+</div>
+<div id="outline-container-org49ca767" class="outline-4">
+<h4 id="org49ca767">架构图</h4>
+<div class="outline-text-4" id="text-org49ca767">
+
+<div class="figure">
+<p><img src="http://pinvondev.github.io/assets/blog/2018/03/25/ibm区块链微讲堂笔记/2.png" alt="2.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8dfd6d4" class="outline-3">
+<h3 id="org8dfd6d4">业务与区块链</h3>
+<div class="outline-text-3" id="text-org8dfd6d4">
+<p>
+如何将业务与区块链结合起来? 
+</p>
+
+<p>
+提供了区块链的部署方式: 公有, 私有.
+</p>
+
+<p>
+IBM中国系统中心搭建了基于高性能云平台的IBM LinuxONE区块链的云平台.
+Starter Developer Network: 大众版, 有一些免费机制, 可以尝试搭建几个节点的区块链环境, 如何让区块连起来.
+High Security Business Network: 适用于安全性, 性能等方面要求较高.
+</p>
+
+<p>
+已有的应用场景有如下:
+</p>
+</div>
+
+<div id="outline-container-orgfbc8945" class="outline-4">
+<h4 id="orgfbc8945">开放可信供应链</h4>
+<div class="outline-text-4" id="text-orgfbc8945">
+<p>
+业务介绍: 客户希望知道购买的商品的供应信息, 比如车主希望知道每个零件是否是原厂生产; 消费者希望知道食品的生产, 经销, 运输过程.
+</p>
+
+<p>
+挑战: 商品供应链权属关系(原厂, 总代理, 分销商)和上下游关系(生产, 安装, 维修)都比较长; 商品形态也会出现很大的变化(小麦, 面粉, 饼干).
+</p>
+
+<p>
+区块链方案: 解决每一件商品的出处(如, 一箱饼干来自一批面粉).
+</p>
+
+<p>
+价值: 把分段的输入输出关系串接起来; 全局一本账, 杜绝凭空生出和凭空消失的零件; 对原厂渠道管理和政府市场监管有帮助.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2970532" class="outline-4">
+<h4 id="org2970532">积分交换平台</h4>
+<div class="outline-text-4" id="text-org2970532">
+<p>
+挑战: 商家的会员积分只能兑换本企业的产品或服务.
+</p>
+
+<p>
+区块链方案: 在线上, 消费者可以与他人交易自己通过购物和其他奖励措施所获得的积分; 在线下, 积分平台用户可以去任何一家能刷银联卡的商场, 使用积分兑换商品.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb19f1cc" class="outline-4">
+<h4 id="orgb19f1cc">商品身份溯源</h4>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-25</span>
+            <span title="last modification date" class="post-info">2018-03-25</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/25/ibm区块链微讲堂笔记";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/25/ibm区块链微讲堂笔记";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

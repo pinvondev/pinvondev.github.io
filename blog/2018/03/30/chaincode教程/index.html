@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>chaincode教程 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="http://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="http://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="http://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="http://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="http://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="http://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="http://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">chaincode教程</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org14dc3a5">概述</a>
+<ul>
+<li><a href="#orgb81bf03">什么是chaincode</a></li>
+<li><a href="#orgadf2790">两类角色</a></li>
+</ul>
+</li>
+<li><a href="#orgefda5b0">chaincode for Developers</a>
+<ul>
+<li><a href="#org7bd55ff">chaincode API</a></li>
+<li><a href="#org31430f5">简单的资产管理chaincode</a>
+<ul>
+<li><a href="#orgffc952e">选择chaincode的存放位置</a></li>
+<li><a href="#orgc294b52">导入依赖</a></li>
+<li><a href="#org4e98e64">初始化chaincode</a></li>
+<li><a href="#orgd05ed1b">调用chaincode</a></li>
+<li><a href="#orgf749218">实现chaincode程序</a></li>
+<li><a href="#orgc85d1de">main</a></li>
+<li><a href="#orgdafa388">编译chaincode</a></li>
+<li><a href="#org4492217">使用开发者模式测试</a></li>
+<li><a href="#org66fb3fa">安装hyperledger fabric样例</a></li>
+<li><a href="#org330fd43">下载Docker镜像</a></li>
+<li><a href="#org0bed9b1">启动网络</a></li>
+<li><a href="#orgbc580fa">构建 &amp; 启动chaincode</a></li>
+<li><a href="#orgaf74ec9">使用chaincode</a></li>
+<li><a href="#org2f2d51d">测试其他chaincode</a></li>
+<li><a href="#org57caa07">chaincode加密</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgdc47446">chaincode for Operators</a>
+<ul>
+<li><a href="#orge614e2e">智能合约生命周期</a></li>
+<li><a href="#org406d7e6">Packaging</a>
+<ul>
+<li><a href="#org9fcb794">创建包</a></li>
+<li><a href="#org6254ecb">包签名</a></li>
+<li><a href="#org3e39722">安装chaincode</a></li>
+<li><a href="#org14c7986">实例化chaincode</a></li>
+<li><a href="#org6129e30">更新chaincode</a></li>
+<li><a href="#org9d11bb4">停止和启动</a></li>
+</ul>
+</li>
+<li><a href="#org3c280f0">系统chaincode</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org14dc3a5" class="outline-2">
+<h2 id="org14dc3a5">概述</h2>
+<div class="outline-text-2" id="text-org14dc3a5">
+<p>
+<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.1/chaincode.html">chaincode Tutorial</a>英文教程.
+</p>
+</div>
+
+<div id="outline-container-orgb81bf03" class="outline-3">
+<h3 id="orgb81bf03">什么是chaincode</h3>
+<div class="outline-text-3" id="text-orgb81bf03">
+<p>
+chaincode是个程序, 可以用Go, Node.js编写. chaincode运行在一个单独的Docker容器里, 与背书节点的运行互相隔离. chaincode通过App提交的事务(交易)来对账本状态进行管理.
+</p>
+
+<p>
+chaincode通常用来处理被网络成员认可的业务逻辑, 也称为智能合约. chaincode创建的账本状态通常是独立的, 其他chaincode一般不能直接访问. 但在相同网络中, 如果满足一定条件, 一个chaincode可以调用另一个chaincode来访问其创建的账本状态.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgadf2790" class="outline-3">
+<h3 id="orgadf2790">两类角色</h3>
+<div class="outline-text-3" id="text-orgadf2790">
+<p>
+可以从两个不同的角度来看待chaincode. 一个是从App开发人员的角度, 可以看下文中的<a href="#org71d9367">chaincode for Developers</a>; 另一个是从区块链操作人员的角度, 他们需要管理区块链网络, 调用Hyperledger Fabric API来安装, 实例化, 更新chaincode, 可以看下文中的<a href="#org19685b4">chaincode for Operators</a>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgefda5b0" class="outline-2">
+<h2 id="orgefda5b0"><a id="org71d9367"></a>chaincode for Developers</h2>
+<div class="outline-text-2" id="text-orgefda5b0">
+<p>
+在一次交易提案中, 可以调用chaincode来更新, 查询账本. 如果给chaincode适当的权限, 它可以调用 其他chaincode来访问自己创建的账本状态, 不论这两个chaincode在不在同一个Channel上. 如果不在同一个Channel, 只能调用其他chaincode来查询, 在随后的提交阶段, 不参与状态验证检查.
+</p>
+</div>
+
+<div id="outline-container-org7bd55ff" class="outline-3">
+<h3 id="org7bd55ff">chaincode API</h3>
+<div class="outline-text-3" id="text-org7bd55ff">
+<p>
+每个chaincode程序都要实现chaincode interface.
+</p>
+<ul class="org-ul">
+<li><a href="https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Chaincode">Go版本的chaincode interface</a></li>
+<li><a href="https://fabric-shim.github.io/ChaincodeInterface.html">Node.js版本的chaincode interface</a></li>
+</ul>
+
+<p>
+这些方法在响应传过来的交易时会被调用. <code>Init()</code> 在收到 <code>instantiate(实例化)</code> 和 <code>upgrade(升级)</code> 交易时被调用, 使得chaincode执行必要的初始化操作, 包括初始化App的状态. <code>Invoke()</code> 在响应 <code>invode(调用)</code> 交易时被调用, 使得交易可以执行.
+</p>
+
+<p>
+还有一些其他的interface, 叫做 <code>chaincodeStubInterface</code>.
+</p>
+<ul class="org-ul">
+<li><a href="https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub">Go版本的chaincodeStubInterface</a></li>
+<li><a href="https://fabric-shim.github.io/ChaincodeStub.html">Node.js版本的chaincodeStubInterface</a></li>
+</ul>
+
+<p>
+这些用来访问和修改账本, 实现chaincode之间的互相调用.
+</p>
+
+<p>
+在接下来的教程中, 通过实现简单的chaincode程序来说明如何使用这些API.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31430f5" class="outline-3">
+<h3 id="org31430f5"><a id="org1edd1dc"></a>简单的资产管理chaincode</h3>
+<div class="outline-text-3" id="text-org31430f5">
+<p>
+我们的chaincode程序是在账本上创建资产(键值对). 使用Go来编写, 注意要配置Go的环境变量.
+</p>
+</div>
+
+<div id="outline-container-orgffc952e" class="outline-4">
+<h4 id="orgffc952e">选择chaincode的存放位置</h4>
+<div class="outline-text-4" id="text-orgffc952e">
+<div class="org-src-container">
+<pre class="src src-Shell">mkdir -p $GOPATH/src/sacc &amp;&amp; cd $GOPATH/src/sacc
+emacs sacc.go
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc294b52" class="outline-4">
+<h4 id="orgc294b52">导入依赖</h4>
+<div class="outline-text-4" id="text-orgc294b52">
+<p>
+首先导入必要的依赖, 这边是 <code>chaincode shim package</code> 和 <code>peer protobuf package</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">package main
+import (
+    "fmt"
+    "github.com/hyperledger/fabric/core/chaincode/shim"
+    "github.com/hyperledger/fabric/protos/peer"
+)
+
+type SimpleAsset struct{
+
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4e98e64" class="outline-4">
+<h4 id="org4e98e64">初始化chaincode</h4>
+<div class="outline-text-4" id="text-org4e98e64">
+<p>
+对于每一个chaincode, 都要实现 <code>Init()</code> 和 <code>Invoke()</code>.
+</p>
+
+<p>
+首先实现 <code>Init()</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">func (t *SimpleAsset) Init(stub shim.chaincodeStubInterface) peer.Response {
+    args := stub.GetStringArgs()
+    if len(args) != 2 {
+        return shim.Error("Incorrect arguments. Expecting a key and a value")
+    }
+    err := stub.PutState(args[0], []byte(args[1]))
+    if err != nil {
+       return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+   }
+   return shim.Success(nil)
+}
+</pre>
+</div>
+
+<p>
+在 <code>Init()</code> 里, 我们使用 <code>chaincodeStubInterface.GetStringArgs()</code> 来获取 <code>Init()</code> 所需的参数, 并验证是否正确, 并进行有效性检查.
+</p>
+
+<p>
+如果获得的值有效, 我们先将初始状态存放账本. 使用的方法是 <code>chaincodeStubInterface.PutState()</code>, 参数是键值对. 如果一正avip, 我们会收到表明初始化成功的 <code>peer.Response</code> 对象.
+</p>
+
+
+<p>
+chaincode更新时也会调用这个函数. 如果我们写的chaincode会更新现有的chaincode, 要确保 <code>Init()</code> 有适当的修改. 如果什么都不做, 就提供一个空的 <code>Init()</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd05ed1b" class="outline-4">
+<h4 id="orgd05ed1b">调用chaincode</h4>
+<div class="outline-text-4" id="text-orgd05ed1b">
+<div class="org-src-container">
+<pre class="src src-Go">func (t *SimpleAsset) Invoke(stub shim.chaincodeStubInterface) peer.Response {
+     fn, args := stub.GetFunctionAndParameters()
+     var result string
+     var err error
+     if fn == "set" {
+        result, err = set(stub, args)
+    } else {
+        result, err = get(stub, args)
+    }
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    return shim.Success([]byte(result))
+}
+</pre>
+</div>
+
+<p>
+和 <code>Init()</code> 一样, 我们要使用 <code>chaincodeStubInterface</code> 来获取参数. <code>Invoke()</code> 的参数是App想要调用的chaincode的名字. 在我们的例子中, chaincode只有两个函数: <code>set()</code> 和 <code>get()</code>, 分别表示设置资产和获取当前状态. 首先调用 <code>chaincodeStubInterface.GetFunctionAndParameters()</code> 来提取函数名和参数. 
+</p>
+
+<p>
+然后验证函数名是不是 <code>set()</code> 或 <code>get()</code>, 然后调用对应的chaincode的函数. 最后返回.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf749218" class="outline-4">
+<h4 id="orgf749218">实现chaincode程序</h4>
+<div class="outline-text-4" id="text-orgf749218">
+<p>
+从前面已经知道, 我们的程序要实现两个方法, 由 <code>Invoke()</code> 所调用. 我们通过 <code>chaincodeStubInterface.PutState()</code> 和 <code>chaincodeStubInterface.GetState()</code> 来访问账本状态.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Go">func set(stub shim.chaincodeStubInterface, args []string) (string, error) {
+     if len(args) != 2 {
+        return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+     }
+     err := stub.PutState(args[0], []byte(args[1]))
+     if err != nil {
+        return "", fmt.Errorf("Failed to set asset: %s", args[0])
+     }
+     return args[1], nil
+}
+
+func get(stub shim.chaincodeStubInterface, args []string) (string, error) {
+     if len(args) != 1 {
+        return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+     }
+     value, err := stub.GetState(args[0])
+     if err != nil {
+        return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+     }
+     if value == nil {
+        return "", fmt.Errorf("Asset not found: %s", args[0])
+     }
+     return string(value), nil
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc85d1de" class="outline-4">
+<h4 id="orgc85d1de">main</h4>
+<div class="outline-text-4" id="text-orgc85d1de">
+<div class="org-src-container">
+<pre class="src src-Go">func main() {
+     if err := shim.Start(new(SimpleAsset)); err != nil {
+        fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+     }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdafa388" class="outline-4">
+<h4 id="orgdafa388">编译chaincode</h4>
+<div class="outline-text-4" id="text-orgdafa388">
+<div class="org-src-container">
+<pre class="src src-Shell">go get -u --tags nopkcs11 github.com/hyperledger/fabric/core/chaincode/shim
+go build --tags nopkcs11
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4492217" class="outline-4">
+<h4 id="org4492217">使用开发者模式测试</h4>
+<div class="outline-text-4" id="text-org4492217">
+<p>
+通常chaincode由Peer节点启动并维护. 但是在开发者模式下, chaincode可以由用户创建并启动. 当用户处于以快速编码, 编译, 运行, 调试的循环周期为主的chaincode开发阶段时, 该模式十分有用.
+</p>
+
+<p>
+我们利用预先生成的orderer和channel的配置来启动开发者模式, 这会生成一个简单的网络. 这样, 用户可以马上进入编译环节, 调用函数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org66fb3fa" class="outline-4">
+<h4 id="org66fb3fa">安装hyperledger fabric样例</h4>
+<div class="outline-text-4" id="text-org66fb3fa">
+<p>
+参考文章<a href="https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E6%A1%88%E4%BE%8Bfirst-network/">Fabric-samples</a>安装.
+</p>
+
+<p>
+进入 <code>fabric-samples</code> 根目录, 执行以下命令:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cd chaincode-docker-devmode
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org330fd43" class="outline-4">
+<h4 id="org330fd43">下载Docker镜像</h4>
+<div class="outline-text-4" id="text-org330fd43">
+<p>
+此处略过. 构建镜像, 参考文章<a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/">搭建开发环境</a>.
+</p>
+
+<p>
+如果选择手动拉取Docker镜像, 则需要将其重新标记为 <code>latest</code>.
+</p>
+
+<p>
+开发者模式下, 我们只关心 <code>fabric-tools</code>, <code>fabric-orderer</code>, <code>fabric-peer</code> 和 <code>fabric-ccenv</code> 这4个镜像.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0bed9b1" class="outline-4">
+<h4 id="org0bed9b1">启动网络</h4>
+<div class="outline-text-4" id="text-org0bed9b1">
+<p>
+开启1个终端, 进入 <code>chaincode-docker-devmode</code> 目录, 运行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-simple.yaml up
+</pre>
+</div>
+
+<p>
+该命令根据 <code>orderer</code> 配置项启动了一个带有 <code>SingleSampleMSPSolo</code> 的网络, 将节点在开发者模式下启动. 另外还启动了两个容器, 一个包含chaincode的运行环境, 另一个是CLI命令行, 可与chaincode进行交互. 创建并加入Channel的命令已经内嵌于CLI容器中.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc580fa" class="outline-4">
+<h4 id="orgbc580fa">构建 &amp; 启动chaincode</h4>
+<div class="outline-text-4" id="text-orgbc580fa">
+<p>
+新开一个终端, 进入chaincode容器:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it chaincode bash
+cd sacc
+go build
+CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./sacc
+</pre>
+</div>
+
+<p>
+chaincode被Peer节点启动, chaincode日志表示Peer节点成功注册. 但是现在chaincode还没与Channel关联, 后面会使用 <code>instantiate</code> 命令实现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaf74ec9" class="outline-4">
+<h4 id="orgaf74ec9">使用chaincode</h4>
+<div class="outline-text-4" id="text-orgaf74ec9">
+<p>
+进入CLI容器:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it cli bash
+
+# 安装chaincode
+peer chaincode install -p chaincodedev/chaincode/sacc -n mycc -v 0
+
+# 初始化chaincode
+peer chaincode instantiate -n mycc -v 0 -c '{"Args":["a","10"]}' -C myc
+
+# 调用set方法, 将a的值改成20
+peer chaincode invoke -n mycc -c '{"Args":["set", "a", "20"]}' -C myc
+
+# 查询a的值
+peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2f2d51d" class="outline-4">
+<h4 id="org2f2d51d">测试其他chaincode</h4>
+<div class="outline-text-4" id="text-org2f2d51d">
+<p>
+在这里, 我们只挂载了 <code>sacc</code> 进来. 实际上, 我们可以将其他的chaincode放在 <code>chaincode</code> 子目录下, 然后重启网络即可. 这样它们就可以在chaincode容器中访问到.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org57caa07" class="outline-4">
+<h4 id="org57caa07">chaincode加密</h4>
+<div class="outline-text-4" id="text-org57caa07">
+<p>
+在某些情况下, 将与密钥相关的值进行加密是很有必要的. 比如, 如果一个人的密码或地址正在写入账本, 那么我们可能不希望这些数据以明文的形式出现. 
+</p>
+
+<p>
+具体写法, 可以参考 <code>fabric/examples/chaincode/go/enccc_example</code> 中的 <code>utils.go</code> 文件. 它使用的 <code>encryptAndPutState()</code>, <code>getStateAndDecrypt()</code> 方法.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc47446" class="outline-2">
+<h2 id="orgdc47446"><a id="org19685b4"></a>chaincode for Operators</h2>
+<div class="outline-text-2" id="text-orgdc47446">
+</div>
+<div id="outline-container-orge614e2e" class="outline-3">
+<h3 id="orge614e2e">智能合约生命周期</h3>
+<div class="outline-text-3" id="text-orge614e2e">
+<p>
+Fabric的API可以和区块链网络中的各个节点(Peers, Orderers, MSPs)进行交互, 还允许其中一个在支持背书的节点上打包, 安装, 实例化, 更新chaincode. 可以使用Hyperledger Fabric API来管理chaincode的生命周期, 它还提供了特定语言的SDK来抽象Hyperledger Fabric API的细节, 以促进App的开发. 在后面的教程中, 我们使用CLI直接访问Hyperledger Fabric API.
+</p>
+
+<p>
+Hyperledger Fabric API提供了4个命令来管理chaincode的生命周期: package, install, instantiate, upgrade. 在成功安装并实例化一个chaincode后, chaincode就处于运行状态, 可以通过 <code>Invoke()</code> 处理事务(交易). 在安装后, 还可以在任何时间对chaincode进行升级.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org406d7e6" class="outline-3">
+<h3 id="org406d7e6">Packaging</h3>
+<div class="outline-text-3" id="text-org406d7e6">
+<p>
+chaincode包由3部分组成:
+</p>
+<ol class="org-ol">
+<li>chaincode, 它由 <code>ChaincodeDeploymentSpec</code> 或CDS定义.</li>
+<li>实例化策略(可选), 描述语法与背书策略的一样.</li>
+<li>拥有chaincode的实体的数字签名集合.</li>
+</ol>
+
+<p>
+这些数字签名的作用为:
+</p>
+<ol class="org-ol">
+<li>建立对chaincode的所有权.</li>
+<li>允许对包的内容进行验证.</li>
+<li>允许检测包是否篡改.</li>
+</ol>
+
+<p>
+实例化chaincode的身份会chaincode的实例化策略所验证.
+</p>
+</div>
+
+<div id="outline-container-org9fcb794" class="outline-4">
+<h4 id="org9fcb794">创建包</h4>
+<div class="outline-text-4" id="text-org9fcb794">
+<p>
+有两种方法打包chaincode:
+</p>
+
+<ul class="org-ul">
+<li>如果一个chaincode有多个所有者, 需要使用多个身份标识为该chaincode签名. 首先创建一个已签名的chaincode, 然后通过序列的方式将其传递给其他所有者来签署.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode package -n mycc -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -v 0 -s -S -i "AND('OrgA.admin')" ccpack.out
+</pre>
+</div>
+<p>
+-s参数: 创建一个由多个所有者签署的包. 如果指定了 <code>-s</code> 参数, 那么也一定要指定 <code>-S</code> , 它后面跟的参数表示其他需要签名的所有者.
+-S参数(可选): 使用 <code>core.yaml</code> 中 <code>localMspid</code> 属性所指定的MSP实体来进行签名.
+-i参数(可选): 指定chaincode实例化策略. 实例化策略与背书策略的格式一样, 并且指定了哪些id可以实例化chaincode, 例子中只允许OrgA的admin实例化chaincode. 如果没有提供策略, 则使用默认策略, 这只允许Peer中MSP的admin身份来实例化chaincode.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6254ecb" class="outline-4">
+<h4 id="org6254ecb">包签名</h4>
+<div class="outline-text-4" id="text-org6254ecb">
+<p>
+一个在创建时就被签名的chaincode包可以交给其他所有者进行检查与签名. <code>ChaincodeDeploymentSpec</code> 可以选择被全部所有者签名, 并创建一个 <code>SignedChaincodeploymentSpec(SignedCDS)</code>, SignedCDS包含三个部分:
+</p>
+<ol class="org-ol">
+<li>chaincode的源码, 名称和版本</li>
+<li>chaincode实例化策略</li>
+<li>chaincode所有者的列表</li>
+</ol>
+
+<p>
+每个chaincode的所有者通过将 <code>ChaincodeDeploymentSpec</code> 与其本人的身份信息（证书）结合, 然后对组合结果签名来认证 <code>ChaincodeDeploymentSpec</code>.
+</p>
+
+<p>
+一个chaincode的所有者, 可以对一个之前创建好的带签名的包进行签名:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># 输入ccpack.out, 输出signedccpack.out
+peer chaincode signpackage ccpack.out signedccpack.out
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3e39722" class="outline-4">
+<h4 id="org3e39722">安装chaincode</h4>
+<div class="outline-text-4" id="text-org3e39722">
+<p>
+<code>install</code> 交易的过程会将chaincode的源码以一种被称为 <code>ChaincodeDeploymentSpec</code> 的规定格式打包, 并把它安装在一个将要运行该chaincode的peer节点上. Channel上每个要运行chaincode的背书节点都要安装chaincode.
+</p>
+
+<p>
+没有chaincode的节点, 不能影响交易的背书阶段, 因为它们不能执行chaincode, 但是他们可以在共识完成后的验证交易阶段进行验证, 并提交交易到账本上.
+</p>
+
+<p>
+安装命令: (<a href="#org1edd1dc">简单的资产管理</a>中的sacc chaincode)
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode install -n asset_mgmt -v 1.0 -p sacc
+</pre>
+</div>
+<p>
+-p: chaincode的路径, 必须在 <code>GOPATH</code> 目录下, 如 <code>$GOPATH/src/sacc</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org14c7986" class="outline-4">
+<h4 id="org14c7986">实例化chaincode</h4>
+<div class="outline-text-4" id="text-org14c7986">
+<p>
+chaincode可能会与任意数量的Channel绑定, 并在每个Channel上独立运行. 即chaincode在多少个Channel上安装并实例化并没有什么影响, 对于每个提交交易的Channel, 其状态都是独立而互不影响的.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode instantiate -n sacc -v 1.0 -c '{"Args":["john","0"]}' -P "OR ('Org1.member','Org2.member')"
+</pre>
+</div>
+<p>
+该指令初始化john的状态为0. 背书策略向Org1或Org2的成员询问所有sacc处理的交易. 即, 为确保交易有效, Org1或Org2必须为调用sacc的结果签名.
+</p>
+
+<p>
+在成功实例化后, Channel上的chaincode就进入激活状态, 并时刻准备执行任何 <code>[[https://github.com/hyperledger/fabric/blob/master/protos/common/common.proto#L42][ENDORSER_TRANSACTION]]</code> 类型的交易提议. 交易会在到达背书节点的同时被处理.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6129e30" class="outline-4">
+<h4 id="org6129e30">更新chaincode</h4>
+<div class="outline-text-4" id="text-org6129e30">
+<p>
+可以通过更新chaincode的版本来对chaincode进行更新, 但是名字必须保持一致, 否则会被当作是完全不同的chaincode. 如果两个Channel使用了同一个chaincode, 可以只更新其中一个Channel的chaincode, 另一个Channel不受影响.
+</p>
+
+<p>
+更新chaincode时默认会采用当前chaincode的实例化策略来检查, 这是为了确保只有当前实例化策略指定的已有成员才能升级chaincode.
+</p>
+
+<p>
+chaincode的 <code>Init()</code> 会在更新时被再次调用, 所以要小心在更新chaincode时重设状态信息.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9d11bb4" class="outline-4">
+<h4 id="org9d11bb4">停止和启动</h4>
+<div class="outline-text-4" id="text-org9d11bb4">
+<p>
+还未实现. 目前直接删除chaincode容器, 然后在每个背书节点删除SignedCDS包.
+</p>
+
+<p>
+要删除SignedCDS包, 需要先进入背书节点的容器内. 然后执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">rm /var/hyperledger/production/chaincodes/&lt;ccname&gt;:&lt;ccversion&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3c280f0" class="outline-3">
+<h3 id="org3c280f0">系统chaincode</h3>
+<div class="outline-text-3" id="text-org3c280f0">
+<p>
+暂不介绍, 虽然它们很重要, 但是暂时项目不需要涉及此内容, 也正是因为它们重要, 所以除非有这个需求, 否则不要替换或更改系统chaincode.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-30</span>
+            <span title="last modification date" class="post-info">2018-03-31</span>
+            <span title="tags" class="post-info">:<a href="http://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="http://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/30/chaincode教程";
+         var disqus_url = "http://pinvondev.github.io/blog/2018/03/30/chaincode教程";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="http://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
