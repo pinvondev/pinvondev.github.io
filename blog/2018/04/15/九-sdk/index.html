@@ -55,32 +55,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf7fac6f">概述</a></li>
-<li><a href="#orgd320f4c">FabricClient</a></li>
-<li><a href="#org5e1c5e9">Config</a></li>
-<li><a href="#org1f730ae">Channel</a></li>
-<li><a href="#orgabc3f8c">Peer</a></li>
-<li><a href="#org497fed9">Orderer</a></li>
-<li><a href="#orgd3b8bdd">User</a></li>
-<li><a href="#org16f0a26">KeyValueStore</a></li>
-<li><a href="#org97df0bb">EventHub</a></li>
-<li><a href="#org0bded8b">FabricCAClient</a></li>
-<li><a href="#orgdcaaebf">UML图</a></li>
-<li><a href="#orgd93165f">应用场景</a>
+<li><a href="#org927344a">概述</a></li>
+<li><a href="#orgfcdaea0">FabricClient</a></li>
+<li><a href="#org4e082a4">Config</a></li>
+<li><a href="#org6a2b036">Channel</a></li>
+<li><a href="#org4581e17">Peer</a></li>
+<li><a href="#orgdfb2d1a">Orderer</a></li>
+<li><a href="#org2c851a3">User</a></li>
+<li><a href="#orgbe11f06">KeyValueStore</a></li>
+<li><a href="#orged97a46">EventHub</a></li>
+<li><a href="#orgd04edc7">FabricCAClient</a></li>
+<li><a href="#orgff0b4ae">UML图</a></li>
+<li><a href="#orgdf69a6a">应用场景</a>
 <ul>
-<li><a href="#org25e43ec">用户登记和注册</a></li>
-<li><a href="#orgbedba8a">在排序服务上创建通道</a></li>
-<li><a href="#orgaa31e56">Peer节点加入通道</a></li>
-<li><a href="#org7bfa4e8">安装链码</a></li>
-<li><a href="#org51df1c9">通过Peer节点实例化链码</a></li>
-<li><a href="#orga4335ca">发起交易请求并生成区块</a></li>
-<li><a href="#org9a14688">链码的开发和调试</a>
+<li><a href="#orgea331f5">用户登记和注册</a></li>
+<li><a href="#org288c786">在排序服务上创建通道</a></li>
+<li><a href="#org53bf741">Peer节点加入通道</a></li>
+<li><a href="#org99c3f96">安装链码</a></li>
+<li><a href="#org0a2cc02">通过Peer节点实例化链码</a></li>
+<li><a href="#org0e046f3">发起交易请求并生成区块</a></li>
+<li><a href="#org671159f">链码的开发和调试</a>
 <ul>
-<li><a href="#org7f7f70e">链码调用参数解析</a></li>
-<li><a href="#org6f06294">交易信息解析</a></li>
-<li><a href="#org6cbdf82">状态数据操作</a></li>
-<li><a href="#org0d7f432">链码调用</a></li>
-<li><a href="#org1ab325f">事件处理</a></li>
+<li><a href="#org6306460">链码调用参数解析</a></li>
+<li><a href="#org7f928a2">交易信息解析</a></li>
+<li><a href="#orgfe7d7ca">状态数据操作</a></li>
+<li><a href="#orgb70bfb5">链码调用</a></li>
+<li><a href="#org1bf4f61">事件处理</a></li>
 </ul>
 </li>
 </ul>
@@ -89,9 +89,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgf7fac6f" class="outline-2">
-<h2 id="orgf7fac6f">概述</h2>
-<div class="outline-text-2" id="text-orgf7fac6f">
+<div id="outline-container-org927344a" class="outline-2">
+<h2 id="org927344a">概述</h2>
+<div class="outline-text-2" id="text-org927344a">
 <p>
 目前的SDK有以下几种:
 </p>
@@ -118,9 +118,9 @@ Java: <a href="https://github.com/hyperledger/fabric-sdk-java">https://github.co
 </div>
 </div>
 
-<div id="outline-container-orgd320f4c" class="outline-2">
-<h2 id="orgd320f4c">FabricClient</h2>
-<div class="outline-text-2" id="text-orgd320f4c">
+<div id="outline-container-orgfcdaea0" class="outline-2">
+<h2 id="orgfcdaea0">FabricClient</h2>
+<div class="outline-text-2" id="text-orgfcdaea0">
 <p>
 应用程序的入口模块, 提供通道管理, 链码管理, 数据存储, 密码学相关的功能. 每个FabricClient实例对应一个区块链网络, 包括记账节点, 排序节点等. 如果应用程序需要访问多个网络, 可以建立多个FabricClient实例, 不同的实例对应不同的网络.
 </p>
@@ -293,9 +293,9 @@ Java: <a href="https://github.com/hyperledger/fabric-sdk-java">https://github.co
 </div>
 </div>
 
-<div id="outline-container-org5e1c5e9" class="outline-2">
-<h2 id="org5e1c5e9">Config</h2>
-<div class="outline-text-2" id="text-org5e1c5e9">
+<div id="outline-container-org4e082a4" class="outline-2">
+<h2 id="org4e082a4">Config</h2>
+<div class="outline-text-2" id="text-org4e082a4">
 <p>
 初始化FabricClient时需要离线获取配置信息, 包括可信的根证书, 排序服务节点证书和IP地址, 记账节点证书和IP地址等. Config读取后传递给FabricClient. 配置信息是动态传递的, SDK不会持久化存储, 应用程序负责维护这些配置信息.
 </p>
@@ -314,9 +314,9 @@ Java: <a href="https://github.com/hyperledger/fabric-sdk-java">https://github.co
 </div>
 </div>
 
-<div id="outline-container-org1f730ae" class="outline-2">
-<h2 id="org1f730ae">Channel</h2>
-<div class="outline-text-2" id="text-org1f730ae">
+<div id="outline-container-org6a2b036" class="outline-2">
+<h2 id="org6a2b036">Channel</h2>
+<div class="outline-text-2" id="text-org6a2b036">
 <p>
 通道是排序服务创建的隔离不同链上交易的实例, 加入到不同通道的节点接收到的是不同的交易. 通道在配置了排序服务节点和Peer节点后需要初始化, 初始化的时候给排序服务节点发送获取配置区块的请求.
 </p>
@@ -335,9 +335,9 @@ Java: <a href="https://github.com/hyperledger/fabric-sdk-java">https://github.co
 </div>
 </div>
 
-<div id="outline-container-orgabc3f8c" class="outline-2">
-<h2 id="orgabc3f8c">Peer</h2>
-<div class="outline-text-2" id="text-orgabc3f8c">
+<div id="outline-container-org4581e17" class="outline-2">
+<h2 id="org4581e17">Peer</h2>
+<div class="outline-text-2" id="text-org4581e17">
 <p>
 Peer是客户端发送背书请求, 交易查询的节点. Peer实例包含节点名称, 地址, 角色, 注册证书等信息.
 </p>
@@ -350,9 +350,9 @@ Peer是客户端发送背书请求, 交易查询的节点. Peer实例包含节�
 </div>
 </div>
 
-<div id="outline-container-org497fed9" class="outline-2">
-<h2 id="org497fed9">Orderer</h2>
-<div class="outline-text-2" id="text-org497fed9">
+<div id="outline-container-orgdfb2d1a" class="outline-2">
+<h2 id="orgdfb2d1a">Orderer</h2>
+<div class="outline-text-2" id="text-orgdfb2d1a">
 <p>
 Orderer是客户端发送交易进行排序的节点, Orderer实例包含了排序服务节点地址信息, 定义了发送原子广播请求和获取区块的接口.
 </p>
@@ -365,9 +365,9 @@ Orderer是客户端发送交易进行排序的节点, Orderer实例包含了排�
 </div>
 </div>
 
-<div id="outline-container-orgd3b8bdd" class="outline-2">
-<h2 id="orgd3b8bdd">User</h2>
-<div class="outline-text-2" id="text-orgd3b8bdd">
+<div id="outline-container-org2c851a3" class="outline-2">
+<h2 id="org2c851a3">User</h2>
+<div class="outline-text-2" id="text-org2c851a3">
 <p>
 User表示已经生成了注册证书和签名密钥的实体, 注册证书必须是CA颁发的证书, 只有生成了注册证书的实体, 都能进行部署链码, 提交交易, 查询交易等.
 </p>
@@ -380,9 +380,9 @@ User表示已经生成了注册证书和签名密钥的实体, 注册证书必�
 </div>
 </div>
 
-<div id="outline-container-org16f0a26" class="outline-2">
-<h2 id="org16f0a26">KeyValueStore</h2>
-<div class="outline-text-2" id="text-org16f0a26">
+<div id="outline-container-orgbe11f06" class="outline-2">
+<h2 id="orgbe11f06">KeyValueStore</h2>
+<div class="outline-text-2" id="text-orgbe11f06">
 <p>
 KeyValueStore提供给应用程序保存敏感信息的功能, 如用户私钥, 证书信息等.
 </p>
@@ -395,9 +395,9 @@ KeyValueStore提供给应用程序保存敏感信息的功能, 如用户私钥, 
 </div>
 </div>
 
-<div id="outline-container-org97df0bb" class="outline-2">
-<h2 id="org97df0bb">EventHub</h2>
-<div class="outline-text-2" id="text-org97df0bb">
+<div id="outline-container-orged97a46" class="outline-2">
+<h2 id="orged97a46">EventHub</h2>
+<div class="outline-text-2" id="text-orged97a46">
 <p>
 EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通知事件.
 </p>
@@ -410,9 +410,9 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-org0bded8b" class="outline-2">
-<h2 id="org0bded8b">FabricCAClient</h2>
-<div class="outline-text-2" id="text-org0bded8b">
+<div id="outline-container-orgd04edc7" class="outline-2">
+<h2 id="orgd04edc7">FabricCAClient</h2>
+<div class="outline-text-2" id="text-orgd04edc7">
 
 <div class="figure">
 <p><img src="http://pinvondev.github.io/assets/blog/2018/04/15/九-sdk/60.png" alt="60.png" />
@@ -421,9 +421,9 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-orgdcaaebf" class="outline-2">
-<h2 id="orgdcaaebf">UML图</h2>
-<div class="outline-text-2" id="text-orgdcaaebf">
+<div id="outline-container-orgff0b4ae" class="outline-2">
+<h2 id="orgff0b4ae">UML图</h2>
+<div class="outline-text-2" id="text-orgff0b4ae">
 
 <div class="figure">
 <p><img src="http://pinvondev.github.io/assets/blog/2018/04/15/九-sdk/61.png" alt="61.png" />
@@ -432,13 +432,13 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-orgd93165f" class="outline-2">
-<h2 id="orgd93165f">应用场景</h2>
-<div class="outline-text-2" id="text-orgd93165f">
+<div id="outline-container-orgdf69a6a" class="outline-2">
+<h2 id="orgdf69a6a">应用场景</h2>
+<div class="outline-text-2" id="text-orgdf69a6a">
 </div>
-<div id="outline-container-org25e43ec" class="outline-3">
-<h3 id="org25e43ec">用户登记和注册</h3>
-<div class="outline-text-3" id="text-org25e43ec">
+<div id="outline-container-orgea331f5" class="outline-3">
+<h3 id="orgea331f5">用户登记和注册</h3>
+<div class="outline-text-3" id="text-orgea331f5">
 <ol class="org-ol">
 <li>应用程序根据配置文件获取CA和CSP的配置信息.</li>
 <li>应用程序根据配置信息创建FabricClient的实例, 并设置CryptoSuite和KeyValueStore等信息, FabricClient实例是整个操作的入口.</li>
@@ -461,9 +461,9 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-orgbedba8a" class="outline-3">
-<h3 id="orgbedba8a">在排序服务上创建通道</h3>
-<div class="outline-text-3" id="text-orgbedba8a">
+<div id="outline-container-org288c786" class="outline-3">
+<h3 id="org288c786">在排序服务上创建通道</h3>
+<div class="outline-text-3" id="text-org288c786">
 <p>
 创建通道需要先使用工具configtxgen生成通道的配置文件mychannel.tx.
 </p>
@@ -487,9 +487,9 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-orgaa31e56" class="outline-3">
-<h3 id="orgaa31e56">Peer节点加入通道</h3>
-<div class="outline-text-3" id="text-orgaa31e56">
+<div id="outline-container-org53bf741" class="outline-3">
+<h3 id="org53bf741">Peer节点加入通道</h3>
+<div class="outline-text-3" id="text-org53bf741">
 <p>
 创建通道以后, Orderer节点上就有了新通道的基本信息, 可以对新通道的交易进行排序打包生成区块了. 现在, 将Peer节点加入到新通道中, 应用程序才能通过Peer节点发起交易请求. 将Peer节点加入通道, 需要从Orderer节点上获取genesis.block, 然后在Peer节点本地初始化链.
 </p>
@@ -513,18 +513,18 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-org7bfa4e8" class="outline-3">
-<h3 id="org7bfa4e8">安装链码</h3>
-<div class="outline-text-3" id="text-org7bfa4e8">
+<div id="outline-container-org99c3f96" class="outline-3">
+<h3 id="org99c3f96">安装链码</h3>
+<div class="outline-text-3" id="text-org99c3f96">
 <p>
 把包含链码源码的ChaincodeDeploymentSpec上传到Peer节点.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org51df1c9" class="outline-3">
-<h3 id="org51df1c9">通过Peer节点实例化链码</h3>
-<div class="outline-text-3" id="text-org51df1c9">
+<div id="outline-container-org0a2cc02" class="outline-3">
+<h3 id="org0a2cc02">通过Peer节点实例化链码</h3>
+<div class="outline-text-3" id="text-org0a2cc02">
 <p>
 实例化链码时, 会创建链码镜像, 启动链码容器, 并调用链码的Init接口初始化, 生成的交易会发送到Orderer节点, 生成区块并记录到账本中.
 </p>
@@ -548,9 +548,9 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-orga4335ca" class="outline-3">
-<h3 id="orga4335ca">发起交易请求并生成区块</h3>
-<div class="outline-text-3" id="text-orga4335ca">
+<div id="outline-container-org0e046f3" class="outline-3">
+<h3 id="org0e046f3">发起交易请求并生成区块</h3>
+<div class="outline-text-3" id="text-org0e046f3">
 <p>
 其实, 实例化链码的过程, 也是一种交易, 所以发起交易请求其实和实例化链码很相似.
 </p>
@@ -572,9 +572,9 @@ EventHub封装了与Peer节点交互的事件流, 接收Peer的各种异步通�
 </div>
 </div>
 
-<div id="outline-container-org9a14688" class="outline-3">
-<h3 id="org9a14688">链码的开发和调试</h3>
-<div class="outline-text-3" id="text-org9a14688">
+<div id="outline-container-org671159f" class="outline-3">
+<h3 id="org671159f">链码的开发和调试</h3>
+<div class="outline-text-3" id="text-org671159f">
 <p>
 链码的SDK是shim, 链码是通过SDK和背书节点通信的, 链码的SDK只要实现接口的定义就能和背书节点交互.
 </p>
@@ -592,9 +592,9 @@ shim提供给链码的接口主要有:
 </ol>
 </div>
 
-<div id="outline-container-org7f7f70e" class="outline-4">
-<h4 id="org7f7f70e">链码调用参数解析</h4>
-<div class="outline-text-4" id="text-org7f7f70e">
+<div id="outline-container-org6306460" class="outline-4">
+<h4 id="org6306460">链码调用参数解析</h4>
+<div class="outline-text-4" id="text-org6306460">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -629,9 +629,9 @@ shim提供给链码的接口主要有:
 </div>
 </div>
 
-<div id="outline-container-org6f06294" class="outline-4">
-<h4 id="org6f06294">交易信息解析</h4>
-<div class="outline-text-4" id="text-org6f06294">
+<div id="outline-container-org7f928a2" class="outline-4">
+<h4 id="org7f928a2">交易信息解析</h4>
+<div class="outline-text-4" id="text-org7f928a2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -681,9 +681,9 @@ shim提供给链码的接口主要有:
 </div>
 </div>
 
-<div id="outline-container-org6cbdf82" class="outline-4">
-<h4 id="org6cbdf82">状态数据操作</h4>
-<div class="outline-text-4" id="text-org6cbdf82">
+<div id="outline-container-orgfe7d7ca" class="outline-4">
+<h4 id="orgfe7d7ca">状态数据操作</h4>
+<div class="outline-text-4" id="text-orgfe7d7ca">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -748,9 +748,9 @@ shim提供给链码的接口主要有:
 </div>
 </div>
 
-<div id="outline-container-org0d7f432" class="outline-4">
-<h4 id="org0d7f432">链码调用</h4>
-<div class="outline-text-4" id="text-org0d7f432">
+<div id="outline-container-orgb70bfb5" class="outline-4">
+<h4 id="orgb70bfb5">链码调用</h4>
+<div class="outline-text-4" id="text-orgb70bfb5">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -775,9 +775,9 @@ shim提供给链码的接口主要有:
 </div>
 </div>
 
-<div id="outline-container-org1ab325f" class="outline-4">
-<h4 id="org1ab325f">事件处理</h4>
-<div class="outline-text-4" id="text-org1ab325f">
+<div id="outline-container-org1bf4f61" class="outline-4">
+<h4 id="org1bf4f61">事件处理</h4>
+<div class="outline-text-4" id="text-org1bf4f61">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
