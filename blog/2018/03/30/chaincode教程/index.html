@@ -55,67 +55,67 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbc56385">概述</a>
+<li><a href="#org34cb405">概述</a>
 <ul>
-<li><a href="#orgff1fc0e">什么是chaincode</a></li>
-<li><a href="#orgc2f81c9">两类角色</a></li>
+<li><a href="#org6ae9a98">什么是chaincode</a></li>
+<li><a href="#org302a3a6">两类角色</a></li>
 </ul>
 </li>
-<li><a href="#org99c1941">chaincode for Developers</a>
+<li><a href="#org5793a82">chaincode for Developers</a>
 <ul>
-<li><a href="#org4f23d89">chaincode API</a></li>
-<li><a href="#org4e40c8c">简单的资产管理chaincode</a>
+<li><a href="#org2c1d6ab">chaincode API</a></li>
+<li><a href="#org90beda8">简单的资产管理chaincode</a>
 <ul>
-<li><a href="#org2d7c110">选择chaincode的存放位置</a></li>
-<li><a href="#orgcd7afa4">导入依赖</a></li>
-<li><a href="#orga3a4e86">初始化chaincode</a></li>
-<li><a href="#orgf80d90a">调用chaincode</a></li>
-<li><a href="#org74b60ee">实现chaincode程序</a></li>
-<li><a href="#orgaffec72">main</a></li>
-<li><a href="#orgcf42712">编译chaincode</a></li>
-<li><a href="#orgbfbb146">使用开发者模式测试</a></li>
-<li><a href="#org96b5d2a">安装hyperledger fabric样例</a></li>
-<li><a href="#org9b3d39f">下载Docker镜像</a></li>
-<li><a href="#orgd5fa730">启动网络</a></li>
-<li><a href="#org0ff488d">构建 &amp; 启动chaincode</a></li>
-<li><a href="#orgb56dd1e">使用chaincode</a></li>
-<li><a href="#org4147ae5">测试其他chaincode</a></li>
-<li><a href="#org4f42816">chaincode加密</a></li>
+<li><a href="#orgf9ecbfd">选择chaincode的存放位置</a></li>
+<li><a href="#org2575b30">导入依赖</a></li>
+<li><a href="#org19f1d56">初始化chaincode</a></li>
+<li><a href="#orga292ca5">调用chaincode</a></li>
+<li><a href="#org2d5b0d7">实现chaincode程序</a></li>
+<li><a href="#orgd8f576e">main</a></li>
+<li><a href="#orgfaae83e">编译chaincode</a></li>
+<li><a href="#org4ff0b8a">使用开发者模式测试</a></li>
+<li><a href="#org0409630">安装hyperledger fabric样例</a></li>
+<li><a href="#orge5f666d">下载Docker镜像</a></li>
+<li><a href="#org604ebaa">启动网络</a></li>
+<li><a href="#orgbb7dd4e">构建 &amp; 启动chaincode</a></li>
+<li><a href="#org1e40fe5">使用chaincode</a></li>
+<li><a href="#org3256580">测试其他chaincode</a></li>
+<li><a href="#orgcb95d54">chaincode加密</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgc65f8af">chaincode for Operators</a>
+<li><a href="#org20138eb">chaincode for Operators</a>
 <ul>
-<li><a href="#org4982167">智能合约生命周期</a></li>
-<li><a href="#org82214b2">Packaging</a>
+<li><a href="#org3e13630">智能合约生命周期</a></li>
+<li><a href="#org507290e">Packaging</a>
 <ul>
-<li><a href="#org62f2a09">创建包</a></li>
-<li><a href="#org7fcbeeb">包签名</a></li>
-<li><a href="#orgb020aed">安装chaincode</a></li>
-<li><a href="#orgd5535e7">实例化chaincode</a></li>
-<li><a href="#org7da2379">更新chaincode</a></li>
-<li><a href="#orgd2f260d">停止和启动</a></li>
+<li><a href="#org354401e">创建包</a></li>
+<li><a href="#org43c259e">包签名</a></li>
+<li><a href="#orgacc1590">安装chaincode</a></li>
+<li><a href="#org8d33264">实例化chaincode</a></li>
+<li><a href="#org528a326">更新chaincode</a></li>
+<li><a href="#org72cef93">停止和启动</a></li>
 </ul>
 </li>
-<li><a href="#org0381ae4">系统chaincode</a></li>
+<li><a href="#orgf9e8988">系统chaincode</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbc56385" class="outline-2">
-<h2 id="orgbc56385">概述</h2>
-<div class="outline-text-2" id="text-orgbc56385">
+<div id="outline-container-org34cb405" class="outline-2">
+<h2 id="org34cb405">概述</h2>
+<div class="outline-text-2" id="text-org34cb405">
 <p>
 <a href="https://hyperledger-fabric.readthedocs.io/en/release-1.1/chaincode.html">chaincode Tutorial</a>英文教程.
 </p>
 </div>
 
-<div id="outline-container-orgff1fc0e" class="outline-3">
-<h3 id="orgff1fc0e">什么是chaincode</h3>
-<div class="outline-text-3" id="text-orgff1fc0e">
+<div id="outline-container-org6ae9a98" class="outline-3">
+<h3 id="org6ae9a98">什么是chaincode</h3>
+<div class="outline-text-3" id="text-org6ae9a98">
 <p>
 chaincode是个程序, 可以用Go, Node.js编写. chaincode运行在一个单独的Docker容器里, 与背书节点的运行互相隔离. chaincode通过App提交的事务(交易)来对账本状态进行管理.
 </p>
@@ -126,27 +126,27 @@ chaincode通常用来处理被网络成员认可的业务逻辑, 也称为智能
 </div>
 </div>
 
-<div id="outline-container-orgc2f81c9" class="outline-3">
-<h3 id="orgc2f81c9">两类角色</h3>
-<div class="outline-text-3" id="text-orgc2f81c9">
+<div id="outline-container-org302a3a6" class="outline-3">
+<h3 id="org302a3a6">两类角色</h3>
+<div class="outline-text-3" id="text-org302a3a6">
 <p>
-可以从两个不同的角度来看待chaincode. 一个是从App开发人员的角度, 可以看下文中的<a href="#orgdd3c32b">chaincode for Developers</a>; 另一个是从区块链操作人员的角度, 他们需要管理区块链网络, 调用Hyperledger Fabric API来安装, 实例化, 更新chaincode, 可以看下文中的<a href="#org5e310d1">chaincode for Operators</a>.
+可以从两个不同的角度来看待chaincode. 一个是从App开发人员的角度, 可以看下文中的<a href="#org4abd6b4">chaincode for Developers</a>; 另一个是从区块链操作人员的角度, 他们需要管理区块链网络, 调用Hyperledger Fabric API来安装, 实例化, 更新chaincode, 可以看下文中的<a href="#org60be1de">chaincode for Operators</a>.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org99c1941" class="outline-2">
-<h2 id="org99c1941"><a id="orgdd3c32b"></a>chaincode for Developers</h2>
-<div class="outline-text-2" id="text-org99c1941">
+<div id="outline-container-org5793a82" class="outline-2">
+<h2 id="org5793a82"><a id="org4abd6b4"></a>chaincode for Developers</h2>
+<div class="outline-text-2" id="text-org5793a82">
 <p>
 在一次交易提案中, 可以调用chaincode来更新, 查询账本. 如果给chaincode适当的权限, 它可以调用 其他chaincode来访问自己创建的账本状态, 不论这两个chaincode在不在同一个Channel上. 如果不在同一个Channel, 只能调用其他chaincode来查询, 在随后的提交阶段, 不参与状态验证检查.
 </p>
 </div>
 
-<div id="outline-container-org4f23d89" class="outline-3">
-<h3 id="org4f23d89">chaincode API</h3>
-<div class="outline-text-3" id="text-org4f23d89">
+<div id="outline-container-org2c1d6ab" class="outline-3">
+<h3 id="org2c1d6ab">chaincode API</h3>
+<div class="outline-text-3" id="text-org2c1d6ab">
 <p>
 每个chaincode程序都要实现chaincode interface.
 </p>
@@ -177,17 +177,17 @@ chaincode通常用来处理被网络成员认可的业务逻辑, 也称为智能
 </div>
 </div>
 
-<div id="outline-container-org4e40c8c" class="outline-3">
-<h3 id="org4e40c8c"><a id="org092e6a0"></a>简单的资产管理chaincode</h3>
-<div class="outline-text-3" id="text-org4e40c8c">
+<div id="outline-container-org90beda8" class="outline-3">
+<h3 id="org90beda8"><a id="org0fb49da"></a>简单的资产管理chaincode</h3>
+<div class="outline-text-3" id="text-org90beda8">
 <p>
 我们的chaincode程序是在账本上创建资产(键值对). 使用Go来编写, 注意要配置Go的环境变量.
 </p>
 </div>
 
-<div id="outline-container-org2d7c110" class="outline-4">
-<h4 id="org2d7c110">选择chaincode的存放位置</h4>
-<div class="outline-text-4" id="text-org2d7c110">
+<div id="outline-container-orgf9ecbfd" class="outline-4">
+<h4 id="orgf9ecbfd">选择chaincode的存放位置</h4>
+<div class="outline-text-4" id="text-orgf9ecbfd">
 <div class="org-src-container">
 <pre class="src src-Shell">mkdir -p $GOPATH/src/sacc &amp;&amp; cd $GOPATH/src/sacc
 emacs sacc.go
@@ -196,9 +196,9 @@ emacs sacc.go
 </div>
 </div>
 
-<div id="outline-container-orgcd7afa4" class="outline-4">
-<h4 id="orgcd7afa4">导入依赖</h4>
-<div class="outline-text-4" id="text-orgcd7afa4">
+<div id="outline-container-org2575b30" class="outline-4">
+<h4 id="org2575b30">导入依赖</h4>
+<div class="outline-text-4" id="text-org2575b30">
 <p>
 首先导入必要的依赖, 这边是 <code>chaincode shim package</code> 和 <code>peer protobuf package</code>.
 </p>
@@ -219,9 +219,9 @@ type SimpleAsset struct{
 </div>
 </div>
 
-<div id="outline-container-orga3a4e86" class="outline-4">
-<h4 id="orga3a4e86">初始化chaincode</h4>
-<div class="outline-text-4" id="text-orga3a4e86">
+<div id="outline-container-org19f1d56" class="outline-4">
+<h4 id="org19f1d56">初始化chaincode</h4>
+<div class="outline-text-4" id="text-org19f1d56">
 <p>
 对于每一个chaincode, 都要实现 <code>Init()</code> 和 <code>Invoke()</code>.
 </p>
@@ -259,9 +259,9 @@ chaincode更新时也会调用这个函数. 如果我们写的chaincode会更新
 </div>
 </div>
 
-<div id="outline-container-orgf80d90a" class="outline-4">
-<h4 id="orgf80d90a">调用chaincode</h4>
-<div class="outline-text-4" id="text-orgf80d90a">
+<div id="outline-container-orga292ca5" class="outline-4">
+<h4 id="orga292ca5">调用chaincode</h4>
+<div class="outline-text-4" id="text-orga292ca5">
 <div class="org-src-container">
 <pre class="src src-Go">func (t *SimpleAsset) Invoke(stub shim.chaincodeStubInterface) peer.Response {
      fn, args := stub.GetFunctionAndParameters()
@@ -290,9 +290,9 @@ chaincode更新时也会调用这个函数. 如果我们写的chaincode会更新
 </div>
 </div>
 
-<div id="outline-container-org74b60ee" class="outline-4">
-<h4 id="org74b60ee">实现chaincode程序</h4>
-<div class="outline-text-4" id="text-org74b60ee">
+<div id="outline-container-org2d5b0d7" class="outline-4">
+<h4 id="org2d5b0d7">实现chaincode程序</h4>
+<div class="outline-text-4" id="text-org2d5b0d7">
 <p>
 从前面已经知道, 我们的程序要实现两个方法, 由 <code>Invoke()</code> 所调用. 我们通过 <code>chaincodeStubInterface.PutState()</code> 和 <code>chaincodeStubInterface.GetState()</code> 来访问账本状态.
 </p>
@@ -327,9 +327,9 @@ func get(stub shim.chaincodeStubInterface, args []string) (string, error) {
 </div>
 </div>
 
-<div id="outline-container-orgaffec72" class="outline-4">
-<h4 id="orgaffec72">main</h4>
-<div class="outline-text-4" id="text-orgaffec72">
+<div id="outline-container-orgd8f576e" class="outline-4">
+<h4 id="orgd8f576e">main</h4>
+<div class="outline-text-4" id="text-orgd8f576e">
 <div class="org-src-container">
 <pre class="src src-Go">func main() {
      if err := shim.Start(new(SimpleAsset)); err != nil {
@@ -341,9 +341,9 @@ func get(stub shim.chaincodeStubInterface, args []string) (string, error) {
 </div>
 </div>
 
-<div id="outline-container-orgcf42712" class="outline-4">
-<h4 id="orgcf42712">编译chaincode</h4>
-<div class="outline-text-4" id="text-orgcf42712">
+<div id="outline-container-orgfaae83e" class="outline-4">
+<h4 id="orgfaae83e">编译chaincode</h4>
+<div class="outline-text-4" id="text-orgfaae83e">
 <div class="org-src-container">
 <pre class="src src-Shell">go get -u --tags nopkcs11 github.com/hyperledger/fabric/core/chaincode/shim
 go build --tags nopkcs11
@@ -352,9 +352,9 @@ go build --tags nopkcs11
 </div>
 </div>
 
-<div id="outline-container-orgbfbb146" class="outline-4">
-<h4 id="orgbfbb146">使用开发者模式测试</h4>
-<div class="outline-text-4" id="text-orgbfbb146">
+<div id="outline-container-org4ff0b8a" class="outline-4">
+<h4 id="org4ff0b8a">使用开发者模式测试</h4>
+<div class="outline-text-4" id="text-org4ff0b8a">
 <p>
 通常chaincode由Peer节点启动并维护. 但是在开发者模式下, chaincode可以由用户创建并启动. 当用户处于以快速编码, 编译, 运行, 调试的循环周期为主的chaincode开发阶段时, 该模式十分有用.
 </p>
@@ -365,9 +365,9 @@ go build --tags nopkcs11
 </div>
 </div>
 
-<div id="outline-container-org96b5d2a" class="outline-4">
-<h4 id="org96b5d2a">安装hyperledger fabric样例</h4>
-<div class="outline-text-4" id="text-org96b5d2a">
+<div id="outline-container-org0409630" class="outline-4">
+<h4 id="org0409630">安装hyperledger fabric样例</h4>
+<div class="outline-text-4" id="text-org0409630">
 <p>
 参考文章<a href="https://pinvondev.github.io/blog/2018/03/28/fabric%E5%AE%98%E6%96%B9%E6%A1%88%E4%BE%8Bfirst-network/">Fabric-samples</a>安装.
 </p>
@@ -382,9 +382,9 @@ go build --tags nopkcs11
 </div>
 </div>
 
-<div id="outline-container-org9b3d39f" class="outline-4">
-<h4 id="org9b3d39f">下载Docker镜像</h4>
-<div class="outline-text-4" id="text-org9b3d39f">
+<div id="outline-container-orge5f666d" class="outline-4">
+<h4 id="orge5f666d">下载Docker镜像</h4>
+<div class="outline-text-4" id="text-orge5f666d">
 <p>
 此处略过. 构建镜像, 参考文章<a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/">搭建开发环境</a>.
 </p>
@@ -399,9 +399,9 @@ go build --tags nopkcs11
 </div>
 </div>
 
-<div id="outline-container-orgd5fa730" class="outline-4">
-<h4 id="orgd5fa730">启动网络</h4>
-<div class="outline-text-4" id="text-orgd5fa730">
+<div id="outline-container-org604ebaa" class="outline-4">
+<h4 id="org604ebaa">启动网络</h4>
+<div class="outline-text-4" id="text-org604ebaa">
 <p>
 开启1个终端, 进入 <code>chaincode-docker-devmode</code> 目录, 运行:
 </p>
@@ -416,9 +416,9 @@ go build --tags nopkcs11
 </div>
 </div>
 
-<div id="outline-container-org0ff488d" class="outline-4">
-<h4 id="org0ff488d">构建 &amp; 启动chaincode</h4>
-<div class="outline-text-4" id="text-org0ff488d">
+<div id="outline-container-orgbb7dd4e" class="outline-4">
+<h4 id="orgbb7dd4e">构建 &amp; 启动chaincode</h4>
+<div class="outline-text-4" id="text-orgbb7dd4e">
 <p>
 新开一个终端, 进入chaincode容器:
 </p>
@@ -436,9 +436,9 @@ chaincode被Peer节点启动, chaincode日志表示Peer节点成功注册. 但�
 </div>
 </div>
 
-<div id="outline-container-orgb56dd1e" class="outline-4">
-<h4 id="orgb56dd1e">使用chaincode</h4>
-<div class="outline-text-4" id="text-orgb56dd1e">
+<div id="outline-container-org1e40fe5" class="outline-4">
+<h4 id="org1e40fe5">使用chaincode</h4>
+<div class="outline-text-4" id="text-org1e40fe5">
 <p>
 进入CLI容器:
 </p>
@@ -461,18 +461,18 @@ peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
 </div>
 </div>
 
-<div id="outline-container-org4147ae5" class="outline-4">
-<h4 id="org4147ae5">测试其他chaincode</h4>
-<div class="outline-text-4" id="text-org4147ae5">
+<div id="outline-container-org3256580" class="outline-4">
+<h4 id="org3256580">测试其他chaincode</h4>
+<div class="outline-text-4" id="text-org3256580">
 <p>
 在这里, 我们只挂载了 <code>sacc</code> 进来. 实际上, 我们可以将其他的chaincode放在 <code>chaincode</code> 子目录下, 然后重启网络即可. 这样它们就可以在chaincode容器中访问到.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4f42816" class="outline-4">
-<h4 id="org4f42816">chaincode加密</h4>
-<div class="outline-text-4" id="text-org4f42816">
+<div id="outline-container-orgcb95d54" class="outline-4">
+<h4 id="orgcb95d54">chaincode加密</h4>
+<div class="outline-text-4" id="text-orgcb95d54">
 <p>
 在某些情况下, 将与密钥相关的值进行加密是很有必要的. 比如, 如果一个人的密码或地址正在写入账本, 那么我们可能不希望这些数据以明文的形式出现. 
 </p>
@@ -485,13 +485,13 @@ peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
 </div>
 </div>
 
-<div id="outline-container-orgc65f8af" class="outline-2">
-<h2 id="orgc65f8af"><a id="org5e310d1"></a>chaincode for Operators</h2>
-<div class="outline-text-2" id="text-orgc65f8af">
+<div id="outline-container-org20138eb" class="outline-2">
+<h2 id="org20138eb"><a id="org60be1de"></a>chaincode for Operators</h2>
+<div class="outline-text-2" id="text-org20138eb">
 </div>
-<div id="outline-container-org4982167" class="outline-3">
-<h3 id="org4982167">智能合约生命周期</h3>
-<div class="outline-text-3" id="text-org4982167">
+<div id="outline-container-org3e13630" class="outline-3">
+<h3 id="org3e13630">智能合约生命周期</h3>
+<div class="outline-text-3" id="text-org3e13630">
 <p>
 Fabric的API可以和区块链网络中的各个节点(Peers, Orderers, MSPs)进行交互, 还允许其中一个在支持背书的节点上打包, 安装, 实例化, 更新chaincode. 可以使用Hyperledger Fabric API来管理chaincode的生命周期, 它还提供了特定语言的SDK来抽象Hyperledger Fabric API的细节, 以促进App的开发. 在后面的教程中, 我们使用CLI直接访问Hyperledger Fabric API.
 </p>
@@ -502,9 +502,9 @@ Hyperledger Fabric API提供了4个命令来管理chaincode的生命周期: pack
 </div>
 </div>
 
-<div id="outline-container-org82214b2" class="outline-3">
-<h3 id="org82214b2">Packaging</h3>
-<div class="outline-text-3" id="text-org82214b2">
+<div id="outline-container-org507290e" class="outline-3">
+<h3 id="org507290e">Packaging</h3>
+<div class="outline-text-3" id="text-org507290e">
 <p>
 chaincode包由3部分组成:
 </p>
@@ -528,9 +528,9 @@ chaincode包由3部分组成:
 </p>
 </div>
 
-<div id="outline-container-org62f2a09" class="outline-4">
-<h4 id="org62f2a09">创建包</h4>
-<div class="outline-text-4" id="text-org62f2a09">
+<div id="outline-container-org354401e" class="outline-4">
+<h4 id="org354401e">创建包</h4>
+<div class="outline-text-4" id="text-org354401e">
 <p>
 有两种方法打包chaincode:
 </p>
@@ -550,9 +550,9 @@ chaincode包由3部分组成:
 </div>
 </div>
 
-<div id="outline-container-org7fcbeeb" class="outline-4">
-<h4 id="org7fcbeeb">包签名</h4>
-<div class="outline-text-4" id="text-org7fcbeeb">
+<div id="outline-container-org43c259e" class="outline-4">
+<h4 id="org43c259e">包签名</h4>
+<div class="outline-text-4" id="text-org43c259e">
 <p>
 一个在创建时就被签名的chaincode包可以交给其他所有者进行检查与签名. <code>ChaincodeDeploymentSpec</code> 可以选择被全部所有者签名, 并创建一个 <code>SignedChaincodeploymentSpec(SignedCDS)</code>, SignedCDS包含三个部分:
 </p>
@@ -577,9 +577,9 @@ peer chaincode signpackage ccpack.out signedccpack.out
 </div>
 </div>
 
-<div id="outline-container-orgb020aed" class="outline-4">
-<h4 id="orgb020aed">安装chaincode</h4>
-<div class="outline-text-4" id="text-orgb020aed">
+<div id="outline-container-orgacc1590" class="outline-4">
+<h4 id="orgacc1590">安装chaincode</h4>
+<div class="outline-text-4" id="text-orgacc1590">
 <p>
 <code>install</code> 交易的过程会将chaincode的源码以一种被称为 <code>ChaincodeDeploymentSpec</code> 的规定格式打包, 并把它安装在一个将要运行该chaincode的peer节点上. Channel上每个要运行chaincode的背书节点都要安装chaincode.
 </p>
@@ -589,7 +589,7 @@ peer chaincode signpackage ccpack.out signedccpack.out
 </p>
 
 <p>
-安装命令: (<a href="#org092e6a0">简单的资产管理</a>中的sacc chaincode)
+安装命令: (<a href="#org0fb49da">简单的资产管理</a>中的sacc chaincode)
 </p>
 <div class="org-src-container">
 <pre class="src src-Shell">peer chaincode install -n asset_mgmt -v 1.0 -p sacc
@@ -601,9 +601,9 @@ peer chaincode signpackage ccpack.out signedccpack.out
 </div>
 </div>
 
-<div id="outline-container-orgd5535e7" class="outline-4">
-<h4 id="orgd5535e7">实例化chaincode</h4>
-<div class="outline-text-4" id="text-orgd5535e7">
+<div id="outline-container-org8d33264" class="outline-4">
+<h4 id="org8d33264">实例化chaincode</h4>
+<div class="outline-text-4" id="text-org8d33264">
 <p>
 chaincode可能会与任意数量的Channel绑定, 并在每个Channel上独立运行. 即chaincode在多少个Channel上安装并实例化并没有什么影响, 对于每个提交交易的Channel, 其状态都是独立而互不影响的.
 </p>
@@ -622,9 +622,9 @@ chaincode可能会与任意数量的Channel绑定, 并在每个Channel上独立�
 </div>
 </div>
 
-<div id="outline-container-org7da2379" class="outline-4">
-<h4 id="org7da2379">更新chaincode</h4>
-<div class="outline-text-4" id="text-org7da2379">
+<div id="outline-container-org528a326" class="outline-4">
+<h4 id="org528a326">更新chaincode</h4>
+<div class="outline-text-4" id="text-org528a326">
 <p>
 可以通过更新chaincode的版本来对chaincode进行更新, 但是名字必须保持一致, 否则会被当作是完全不同的chaincode. 如果两个Channel使用了同一个chaincode, 可以只更新其中一个Channel的chaincode, 另一个Channel不受影响.
 </p>
@@ -639,9 +639,9 @@ chaincode的 <code>Init()</code> 会在更新时被再次调用, 所以要小心
 </div>
 </div>
 
-<div id="outline-container-orgd2f260d" class="outline-4">
-<h4 id="orgd2f260d">停止和启动</h4>
-<div class="outline-text-4" id="text-orgd2f260d">
+<div id="outline-container-org72cef93" class="outline-4">
+<h4 id="org72cef93">停止和启动</h4>
+<div class="outline-text-4" id="text-org72cef93">
 <p>
 还未实现. 目前直接删除chaincode容器, 然后在每个背书节点删除SignedCDS包.
 </p>
@@ -657,9 +657,9 @@ chaincode的 <code>Init()</code> 会在更新时被再次调用, 所以要小心
 </div>
 </div>
 
-<div id="outline-container-org0381ae4" class="outline-3">
-<h3 id="org0381ae4">系统chaincode</h3>
-<div class="outline-text-3" id="text-org0381ae4">
+<div id="outline-container-orgf9e8988" class="outline-3">
+<h3 id="orgf9e8988">系统chaincode</h3>
+<div class="outline-text-3" id="text-orgf9e8988">
 <p>
 暂不介绍, 虽然它们很重要, 但是暂时项目不需要涉及此内容, 也正是因为它们重要, 所以除非有这个需求, 否则不要替换或更改系统chaincode.
 </p>
