@@ -1,0 +1,121 @@
+#+TITLE:       pgmpy 教程
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-21 六
+
+#+URI:         /blog/bayeisan/%y/%m/%d/%t/ Or /blog/bayeisan/%t/
+#+TAGS:        tag1, tag2, tag3
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 创建贝叶斯网
+
+在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
+
+** 建立网络结构
+
+#+BEGIN_SRC Python
+from pgmpy.models import BayesianModel
+
+cancer_model = BayesianModel([('Pollution', 'Cancer'), 
+                              ('Smoker', 'Cancer'),
+                              ('Cancer', 'Xray'),
+                              ('Cancer', 'Dyspnoea')])
+#+END_SRC
+
+这个网络中有五个节点: Pollution, Cancer, Smoker, Xray, Dyspnoea.
+
+('Pollution', 'Cancer'): 一条有向边, 从 Pollution 指向 Cancer, 表示环境污染有可能导致癌症.
+
+('Smoker', 'Cancer'): 吸烟有可能导致癌症.
+
+('Cancer', 'Xray'): 得癌症的人可能会去照X射线.
+
+('Cancer', 'Dyspnoea'): 得癌症的人可能会呼吸困难.
+
+** 填入参数
+
+#+BEGIN_SRC Python
+from pgmpy.factors.discrete import TabularCPD
+
+cpd_poll = TabularCPD(variable='Pollution', variable_card=2,
+                      values=[[0.9], [0.1]])
+cpd_smoke = TabularCPD(variable='Smoker', variable_card=2,
+                       values=[[0.3], [0.7]])
+cpd_cancer = TabularCPD(variable='Cancer', variable_card=2,
+                        values=[[0.03, 0.05, 0.001, 0.02],
+                                [0.97, 0.95, 0.999, 0.98]],
+                        evidence=['Smoker', 'Pollution'],
+                        evidence_card=[2, 2])
+cpd_xray = TabularCPD(variable='Xray', variable_card=2,
+                      values=[[0.9, 0.2], [0.1, 0.8]],
+                      evidence=['Cancer'], evidence_card=[2])
+cpd_dysp = TabularCPD(variable='Dyspnoea', variable_card=2,
+                      values=[[0.65, 0.3], [0.35, 0.7]],
+                      evidence=['Cancer'], evidence_card=[2])
+#+END_SRC
+
+这些代码, 主要是建立一些概率表, 然后往表里面填入了一些参数.
+
+Pollution: 有两种概率, 分别是 0.9 和 0.1.
+
+Smoker: 有两种概率, 分别是 0.3 和 0.7. (意思是在一个人群里, 有 30% 的人吸烟, 有 70% 的人不吸烟)
+
+Cancer: envidence 表示有 Smoker 和 Pollution 两个节点指向 Cancer 节点; 
+
+[0.03, 0.05, 0.001, 0.02] 的意思, 通过下表可以较容易看出来:
+
+| Pollution | Pollution_0 | Pollution_0 | Pollution_1 | Pollution_1 |
+|-----------+-------------+-------------+-------------+-------------|
+| Smoker    |    Smoker_0 |    Smoker_1 |    Smoker_0 |    Smoker_1 |
+|-----------+-------------+-------------+-------------+-------------|
+| Cancer_0  |        0.03 |        0.05 |       0.001 |        0.02 |
+|-----------+-------------+-------------+-------------+-------------|
+| Cancer_1  |        0.97 |        0.95 |       0.999 |        0.98 |
+
+可以看出, 环境不好, 又抽烟的人, 有 0.98 的概率得癌症.
+
+Xray: 通过 envidence 可以看出, 只有 Cancer 指向它; [0.9, 0.2] 表示, 未得癌症的人去照X光, 有 0.9 的概率正常, 而得了癌症的人去照X光, 有 0.2 的概率正常, [0.1, 0.8] 表示, 未得癌症的人去照X光, 有 0.1 的概率不正常, 而得癌症的人有 0.8 的概率不正常.
+
+Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人只有 0.3 的可能性呼吸正常; 未得癌症的人有 0.35 的可能性呼吸困难, 得癌症的人有 0.7 的可能性呼吸困难.
+
+** 将数据加入网络
+
+#+BEGIN_SRC Python
+# Associating the parameters with the model structure.
+cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
+
+# Checking if the cpds are valid for the model.
+cancer_model.check_model()
+#+END_SRC
+
+第一行代码表示将概率分布表加入网络中; 第二行代码验证模型数据的正确性(至于怎么验证的, 我没有看源码, 但是猜测是验证相关数据的和是否为1, 验证数据中是否有负数, 等等).
+
+** 相关的检查
+
+#+BEGIN_SRC Python
+cancer_model.is_active_trail('Pollution', 'Smoker')  # False
+cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
+cancer_model.local_independencies('Xray')  # (Xray _|_ Dyspnoea, Smoker, Pollution | Cancer)
+cancer_model.get_independencies()
+#+END_SRC
+
+第一行代码表示, Pollution 节点是否指向 Smoker 节点, 返回的是 False.
+
+第二行代码表示, Cancer 节点的计算, 是否与 Pollution 和 Smoker 两个节点有关, 返回的是 True.
+
+第三行代码的输出表示, Xray 与 Dyspnoea, Smoker, Pollution 不相关, 与 Cancer 相关.
+
+第四行代码输出所有的依赖关系.
+
+* 使用 Asia 网络进行推理
+
+在构造了贝叶斯网络之后, 我们可以利用贝叶斯网络来进行推理.
+
+贝叶斯网络的推理, 是以其他变量的状态作为证据, 推理某些变量的状态. 这个推理的过程称为概率推理或信念更新.
+
+** 背景知识
+
+
