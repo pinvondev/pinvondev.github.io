@@ -55,32 +55,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9e7ce97">背景知识</a>
+<li><a href="#orgcb671ad">背景知识</a>
 <ul>
-<li><a href="#orgc14f220">C++多线程编程</a>
+<li><a href="#org3eddb43">C++多线程编程</a>
 <ul>
-<li><a href="#org78e9fca">例子</a></li>
+<li><a href="#org1303b07">例子</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org956f48d">当析构函数遇到多线程</a></li>
+<li><a href="#org8b79a3a">当析构函数遇到多线程</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9e7ce97" class="outline-2">
-<h2 id="org9e7ce97">背景知识</h2>
-<div class="outline-text-2" id="text-org9e7ce97">
+<div id="outline-container-orgcb671ad" class="outline-2">
+<h2 id="orgcb671ad">背景知识</h2>
+<div class="outline-text-2" id="text-orgcb671ad">
 </div>
-<div id="outline-container-orgc14f220" class="outline-3">
-<h3 id="orgc14f220">C++多线程编程</h3>
-<div class="outline-text-3" id="text-orgc14f220">
+<div id="outline-container-org3eddb43" class="outline-3">
+<h3 id="org3eddb43">C++多线程编程</h3>
+<div class="outline-text-3" id="text-org3eddb43">
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #F92672;">#include</span> <span style="color: #E6DB74;">&lt;pthread.h&gt;</span>
-<span style="color: #75715E;">// </span><span style="color: #75715E;">&#21019;&#24314;&#32447;&#31243;</span>
+<pre class="src src-C++"><span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;pthread.h&gt;</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#21019;&#24314;&#32447;&#31243;</span>
 pthread_create(thread, attr, start_routine, arg);
-<span style="color: #75715E;">// </span><span style="color: #75715E;">&#32456;&#27490;&#32447;&#31243;</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#32456;&#27490;&#32447;&#31243;</span>
 pthread_exit(status);
 </pre>
 </div>
@@ -89,30 +89,30 @@ pthread_exit(status);
 </p>
 </div>
 
-<div id="outline-container-org78e9fca" class="outline-4">
-<h4 id="org78e9fca">例子</h4>
-<div class="outline-text-4" id="text-org78e9fca">
+<div id="outline-container-org1303b07" class="outline-4">
+<h4 id="org1303b07">例子</h4>
+<div class="outline-text-4" id="text-org1303b07">
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #75715E;">/* </span><span style="color: #75715E;">Copyright 2018-3-8 Pinvon*/</span>
-<span style="color: #F92672;">#include</span> <span style="color: #E6DB74;">&lt;iostream&gt;</span>
-<span style="color: #F92672;">#include</span> <span style="color: #E6DB74;">&lt;pthread.h&gt;</span>
-<span style="color: #F92672;">using</span> <span style="color: #F92672;">namespace</span> <span style="color: #AE81FF;">std</span>;
-<span style="color: #F92672;">#define</span> <span style="color: #FD971F;">NUM_THREADS</span> 5
+<pre class="src src-C++"><span style="color: #8B8878;">/* </span><span style="color: #8B8878;">Copyright 2018-3-8 Pinvon*/</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;iostream&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;pthread.h&gt;</span>
+<span style="color: #FF1493;">using</span> <span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">std</span>;
+<span style="color: #FF1493;">#define</span> <span style="color: #FF8C00;">NUM_THREADS</span> 5
 
-<span style="color: #66D9EF;">void</span>* <span style="color: #A6E22E;">say_hello</span>(<span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">args</span>) {
-    cout &lt;&lt; <span style="color: #E6DB74;">"Hello World"</span> &lt;&lt; endl;
-    <span style="color: #F92672;">return</span> 0;
+<span style="color: #5FD7FF;">void</span>* <span style="color: #87D700;">say_hello</span>(<span style="color: #5FD7FF;">void</span> *<span style="color: #FF8C00;">args</span>) {
+    cout &lt;&lt; <span style="color: #CDC673;">"Hello World"</span> &lt;&lt; endl;
+    <span style="color: #FF1493;">return</span> 0;
 }
 
-<span style="color: #66D9EF;">int</span> <span style="color: #A6E22E;">main</span>() {
-    <span style="color: #66D9EF;">pthread_t</span> <span style="color: #FD971F;">tids</span>[NUM_THREADS];
-    <span style="color: #F92672;">for</span> (<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">i</span> = 0; i &lt; NUM_THREADS; ++i) {
-        <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">ret</span> = pthread_create(&amp;tids[i], <span style="color: #AE81FF;">NULL</span>, say_hello, <span style="color: #AE81FF;">NULL</span>);
-        <span style="color: #F92672;">if</span> (ret != 0) {
-            cout &lt;&lt; <span style="color: #E6DB74;">"pthread_create error: error_code="</span> &lt;&lt; ret &lt;&lt; endl;
+<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>() {
+    <span style="color: #5FD7FF;">pthread_t</span> <span style="color: #FF8C00;">tids</span>[NUM_THREADS];
+    <span style="color: #FF1493;">for</span> (<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span> = 0; i &lt; NUM_THREADS; ++i) {
+        <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">ret</span> = pthread_create(&amp;tids[i], <span style="color: #AF87FF;">NULL</span>, say_hello, <span style="color: #AF87FF;">NULL</span>);
+        <span style="color: #FF1493;">if</span> (ret != 0) {
+            cout &lt;&lt; <span style="color: #CDC673;">"pthread_create error: error_code="</span> &lt;&lt; ret &lt;&lt; endl;
         }
     }
-    pthread_exit(<span style="color: #AE81FF;">NULL</span>);
+    pthread_exit(<span style="color: #AF87FF;">NULL</span>);
 }
 </pre>
 </div>
@@ -130,20 +130,20 @@ pthread_exit(status);
 向线程传递参数:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span>{
-    <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">thread_id</span>;
-    <span style="color: #66D9EF;">char</span> *<span style="color: #FD971F;">message</span>;
+<pre class="src src-C++"><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">thread_arg</span>{
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">thread_id</span>;
+    <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">message</span>;
 };
-<span style="color: #66D9EF;">void</span> *<span style="color: #A6E22E;">printHello</span>(<span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">threadarg</span>){
-    <span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span> *<span style="color: #FD971F;">my_arg</span>;
-    my_arg = (<span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span> *)threadarg;
-    cout &lt;&lt; <span style="color: #E6DB74;">"Thread ID: "</span> &lt;&lt; my_arg-&gt;thread_id;
-    cout &lt;&lt; <span style="color: #E6DB74;">" Message: "</span> &lt;&lt; my_arg-&gt;message &lt;&lt; endl;
+<span style="color: #5FD7FF;">void</span> *<span style="color: #87D700;">printHello</span>(<span style="color: #5FD7FF;">void</span> *<span style="color: #FF8C00;">threadarg</span>){
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">thread_arg</span> *<span style="color: #FF8C00;">my_arg</span>;
+    my_arg = (<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">thread_arg</span> *)threadarg;
+    cout &lt;&lt; <span style="color: #CDC673;">"Thread ID: "</span> &lt;&lt; my_arg-&gt;thread_id;
+    cout &lt;&lt; <span style="color: #CDC673;">" Message: "</span> &lt;&lt; my_arg-&gt;message &lt;&lt; endl;
 }
 ...
 pthread_t threads[5];
-<span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span> <span style="color: #FD971F;">ta</span>[5];
-pthread_create(&amp;threads[1], <span style="color: #AE81FF;">NULL</span>, printHello, (<span style="color: #66D9EF;">void</span> *)&amp;ta[i]);
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">thread_arg</span> <span style="color: #FF8C00;">ta</span>[5];
+pthread_create(&amp;threads[1], <span style="color: #AF87FF;">NULL</span>, printHello, (<span style="color: #5FD7FF;">void</span> *)&amp;ta[i]);
 </pre>
 </div>
 </div>
@@ -151,9 +151,9 @@ pthread_create(&amp;threads[1], <span style="color: #AE81FF;">NULL</span>, print
 </div>
 </div>
 
-<div id="outline-container-org956f48d" class="outline-2">
-<h2 id="org956f48d">当析构函数遇到多线程</h2>
-<div class="outline-text-2" id="text-org956f48d">
+<div id="outline-container-org8b79a3a" class="outline-2">
+<h2 id="org8b79a3a">当析构函数遇到多线程</h2>
+<div class="outline-text-2" id="text-org8b79a3a">
 <p>
 由于C++要求程序员自己管理对象的生命周期, 所以当一个对象能被多个线程同时看到时, 那么对象的销毁时机就会变得模糊不清, 可能出现多种竞态条件:
 </p>
