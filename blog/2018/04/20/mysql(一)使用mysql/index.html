@@ -35,14 +35,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org433a774">连接</a></li>
+<li><a href="#org89375ca">连接</a></li>
+<li><a href="#org46e977b">选择数据库</a></li>
+<li><a href="#orgdcd3e36">了解表</a>
+<ul>
+<li><a href="#orgacd2d45">查看表</a></li>
+<li><a href="#org5990844">查看创建数据库/表的MySQL语句</a></li>
+<li><a href="#org256722b">查看授予用户的安全权限</a></li>
+<li><a href="#orgb3e7cbd">查看服务器错误或警告</a></li>
+</ul>
+</li>
+<li><a href="#orgf4f0793">MySQL日志</a>
+<ul>
+<li><a href="#orgbe6c1ec">错误日志</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org433a774" class="outline-2">
-<h2 id="org433a774">连接</h2>
-<div class="outline-text-2" id="text-org433a774">
+<div id="outline-container-org89375ca" class="outline-2">
+<h2 id="org89375ca">连接</h2>
+<div class="outline-text-2" id="text-org89375ca">
 <p>
 连接到MySQL, 需要以下信息:
 </p>
@@ -52,6 +66,111 @@
 <li>用户名.</li>
 <li>口令.</li>
 </ol>
+
+<p>
+如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">mysql -h 127.0.0.1 -P 3306 -u root -p
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org46e977b" class="outline-2">
+<h2 id="org46e977b">选择数据库</h2>
+<div class="outline-text-2" id="text-org46e977b">
+<div class="org-src-container">
+<pre class="src src-MySQL">SHOW DATABASES;
+USE xxx;
+</pre>
+</div>
+
+<p>
+必须先使用 <code>USE</code> 打开数据库, 才能使用里面的数据.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdcd3e36" class="outline-2">
+<h2 id="orgdcd3e36">了解表</h2>
+<div class="outline-text-2" id="text-orgdcd3e36">
+</div>
+<div id="outline-container-orgacd2d45" class="outline-3">
+<h3 id="orgacd2d45">查看表</h3>
+<div class="outline-text-3" id="text-orgacd2d45">
+<p>
+选择好数据库后, 输入:
+</p>
+<div class="org-src-container">
+<pre class="src src-MySQL">SHOW TABLES;
+</pre>
+</div>
+
+<p>
+显示表中的字段:
+</p>
+<div class="org-src-container">
+<pre class="src src-MySQL">SHOW COLUMNS FROM xxx;
+
+// 或者
+
+DESCRIBE xxx;
+</pre>
+</div>
+<p>
+<code>SHOW COLUMNS</code> 或 <code>DESCRIBE</code> 接受一个表名, 对每个字段返回一行, 行中包含包含字段名, 数据类型, 是否允许为 NULL, 键信息, 默认值以及其他信息.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5990844" class="outline-3">
+<h3 id="org5990844">查看创建数据库/表的MySQL语句</h3>
+<div class="outline-text-3" id="text-org5990844">
+<p>
+对于一个已经存在数据库或表, 可以用如下语句查看创建数据库或创建表的MySQL语句:
+</p>
+<div class="org-src-container">
+<pre class="src src-MySQL">SHOW CREATE DATABASE xxx;
+SHOW CREATE TABLE xxx;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org256722b" class="outline-3">
+<h3 id="org256722b">查看授予用户的安全权限</h3>
+<div class="outline-text-3" id="text-org256722b">
+<div class="org-src-container">
+<pre class="src src-MySQL">SHOW GRANTS;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb3e7cbd" class="outline-3">
+<h3 id="orgb3e7cbd">查看服务器错误或警告</h3>
+<div class="outline-text-3" id="text-orgb3e7cbd">
+<div class="org-src-container">
+<pre class="src src-MySQL">SHOW ERRORS;
+SHOW WARNINGS;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf4f0793" class="outline-2">
+<h2 id="orgf4f0793">MySQL日志</h2>
+<div class="outline-text-2" id="text-orgf4f0793">
+</div>
+<div id="outline-container-orgbe6c1ec" class="outline-3">
+<h3 id="orgbe6c1ec">错误日志</h3>
+<div class="outline-text-3" id="text-orgbe6c1ec">
+<p>
+/var/log/mysql/error.log
+</p>
+</div>
 </div>
 </div>
 
@@ -60,7 +179,7 @@
     <div>
       <div class="post-meta">
         <span title="post date" class="post-info">2018-04-20</span>
-        <span title="last modification date" class="post-info">2018-04-20</span>
+        <span title="last modification date" class="post-info">2018-04-21</span>
         <span title="tags" class="post-info"><a href="/tags/sql/">SQL</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>

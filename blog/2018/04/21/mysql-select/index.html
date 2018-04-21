@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>词向量 - Pinvon&#39;s Blog</title>
+    <title>MySQL(二) SELECT语句 - Pinvon&#39;s Blog</title>
     <meta charset="utf-8" />
     <meta name="author" content="Pinvon" />
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
@@ -30,97 +30,99 @@
 
 <div>
 <div class="post">
-<h1>词向量</h1>
+<h1>MySQL(二) SELECT语句</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org58a5761">什么是词向量</a>
-<ul>
-<li><a href="#org60f0786">one-hotrepresentation</a>
-<ul>
-<li><a href="#org7e4d4dc">缺点</a></li>
-</ul>
-</li>
-<li><a href="#org7d3f5ad">distributedRepresentation</a></li>
-</ul>
-</li>
+<li><a href="#org5084e7f">概述</a></li>
+<li><a href="#orgd7d61c5">检索列</a></li>
+<li><a href="#org35f2ded">检索不同的数据(DISTINCT)</a></li>
+<li><a href="#orgb52319b">限制结果(LIMIT)</a></li>
+<li><a href="#org6d5bf6f">限定名</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org58a5761" class="outline-2">
-<h2 id="org58a5761">什么是词向量</h2>
-<div class="outline-text-2" id="text-org58a5761">
+<div id="outline-container-org5084e7f" class="outline-2">
+<h2 id="org5084e7f">概述</h2>
+<div class="outline-text-2" id="text-org5084e7f">
 <p>
-要将自然语言交给机器学习中的算法来处理, 首先需要将语言数字化.
+<code>SELECT</code> 语句, 至少接受两个参数: 想检索什么, 从什么地方检索.
 </p>
-
-<p>
-向量是我们把自然界的东西抽象出来交给机器处理的东西, 可以说, 向量是人对机器输入的主要方式.
-</p>
-
-<p>
-词向量把语言中的词进行数字化, 即把一个词表示成一个向量.
-</p>
-
-<p>
-表示方法主要有两种, 分别是 <code>one-hotrepresentation</code> 和 <code>distributedRepresentation</code>.
-</p>
-</div>
-
-<div id="outline-container-org60f0786" class="outline-3">
-<h3 id="org60f0786">one-hotrepresentation</h3>
-<div class="outline-text-3" id="text-org60f0786">
-<p>
-该方法用一个很长的向量来表示一个词, 向量的长度为词典的大小. 向量中只有一个1, 其他都是0, 1的位置就是该词在词典中的位置. 每个词都是一堆0中的一个1.
-</p>
-
-<p>
-如:
-'中国'表示为 [0001000...]
-'美国'表示为 [0000010...]
-</p>
-
-<p>
-如果对词向量采用稀疏方式进行存储, 则很简单, 就是给每个词分配1个ID, 如中国可以分配3, 美国分配5(从0开始数).
-</p>
-
-<p>
-如果要编程实现, 可以用hash表给每个词分配一个编号, 再加上熵, SVM, CRF等算法, 就可以完成很多NLP领域的任务.
-</p>
-</div>
-
-<div id="outline-container-org7e4d4dc" class="outline-4">
-<h4 id="org7e4d4dc">缺点</h4>
-<div class="outline-text-4" id="text-org7e4d4dc">
-<ul class="org-ul">
-<li>维数灾难</li>
-<li>不能很好地刻画词与词之间的相似性: 任意两个词之间都是孤立的, 光从两个向量中看不出两个词是否有关系, 即使是'丈夫'和'老公'这两个同义词, 是完全孤立的.</li>
-</ul>
-</div>
 </div>
 </div>
 
-<div id="outline-container-org7d3f5ad" class="outline-3">
-<h3 id="org7d3f5ad">distributedRepresentation</h3>
-<div class="outline-text-3" id="text-org7d3f5ad">
+<div id="outline-container-orgd7d61c5" class="outline-2">
+<h2 id="orgd7d61c5">检索列</h2>
+<div class="outline-text-2" id="text-orgd7d61c5">
+<div class="org-src-container">
+<pre class="src src-MySQL">SELECT column_1, column_2 from table_name;
+SELECT * FROM table_name;
+</pre>
+</div>
+
 <p>
-这种表示法的思想: 用一个普通的向量表示一个词, 这种向量形式为[0.792, -0.177, -0.107, ...].
+关于通配符*, 除非确实需要表中的每个列, 否则最好不要使用*通配符. 虽然使用通配符可能会让自己省事, 不用明确列出所需列, 但检索不需要的列通常会降低检索和应用程序的性能.
 </p>
 
 <p>
-一个词要如何表示成一个向量是需要训练的, 常用的训练方法是word2vec. 另外, 每个词在不同的语料库和不同的训练方法下, 得到的词向量可能是不一样的.
-</p>
-
-<p>
-这种词向量的维数一般不会很高, 所以就没有维数灾难的问题了.
-</p>
-
-<p>
-如果是较好的训练算法, 可以得到如下结果: 将所有向量放在一起形成一个词向量空间, 每个向量都是该空间中的一个点, 在这个空间上的词向量之间的距离度量也可以表示对应两个词之间的距离, 即这两个词之间的语法和语义上的相似性.
+当然, 通配符也有它的优点, 它可以让我们检索到名字未知的列.
 </p>
 </div>
+</div>
+
+<div id="outline-container-org35f2ded" class="outline-2">
+<h2 id="org35f2ded">检索不同的数据(DISTINCT)</h2>
+<div class="outline-text-2" id="text-org35f2ded">
+<p>
+直接使用 <code>SELECT column_name FROM table_name;</code> 将返回 <code>table_name</code> 中所有的 <code>column_name</code> 对应的值.
+</p>
+
+<p>
+如果需要, 可以使用 <code>DISTINCT</code> 关键字, 指示 MySQL 只返回不同的值.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-MySQL">SELECT DISTINCT column_name FROM table_name;
+</pre>
+</div>
+
+<p>
+注意, <code>DISTINCE</code> 要放在列名的前面. 如果 <code>DISTINCT</code> 后面的列名不止一个, 则 <code>DISTINCT</code> 检查的值, 指的是所有列组合后的值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb52319b" class="outline-2">
+<h2 id="orgb52319b">限制结果(LIMIT)</h2>
+<div class="outline-text-2" id="text-orgb52319b">
+<p>
+直接使用 <code>SELECT</code> 语句, 会返回所有匹配的行, 如果只想看前几行, 可以使用 <code>LIMIT</code> 子句.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-MySQL">SELECT column_name FROM table_name LIMIT 5;
+</pre>
+</div>
+
+<p>
+<code>LIMIT</code> 子句接受两个参数, 起始行和行数. 如: <code>LIMIT 5,5</code> 表示从第6行开始, 返回接下来的5行. 如果只指定了一个参数, 默认从第1行开始.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6d5bf6f" class="outline-2">
+<h2 id="org6d5bf6f">限定名</h2>
+<div class="outline-text-2" id="text-org6d5bf6f">
+<div class="org-src-container">
+<pre class="src src-MySQL">SELECT table_name.column_name FROM database_name.table_name;
+</pre>
+</div>
+
+<p>
+在有些情况下需要使用这种限定名的方式.
+</p>
 </div>
 </div>
 
@@ -128,9 +130,9 @@
 </div>
     <div>
       <div class="post-meta">
-        <span title="post date" class="post-info">2018-04-11</span>
-        <span title="last modification date" class="post-info">2018-04-11</span>
-        <span title="tags" class="post-info"><a href="/tags/机器学习/">机器学习</a></span>
+        <span title="post date" class="post-info">2018-04-21</span>
+        <span title="last modification date" class="post-info">2018-04-21</span>
+        <span title="tags" class="post-info"><a href="/tags/sql/">SQL</a></span>
         <span title="author" class="post-info">Pinvon</span>
       </div>
       <section>
@@ -138,8 +140,8 @@
         <div id="disqus_thread"></div>
         <script type="text/javascript">
           //var disqus_developer = 1;
-          var disqus_identifier = "/blog/2018/04/11/k-means-python";
-          var disqus_url = "http://pinvondev.github.io/blog/2018/04/11/k-means-python";
+          var disqus_identifier = "/blog/2018/04/21/mysql-select";
+          var disqus_url = "http://pinvondev.github.io/blog/2018/04/21/mysql-select";
           var disqus_shortname = 'pinvon';
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
