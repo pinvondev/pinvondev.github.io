@@ -55,46 +55,46 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org05c5956">概述</a>
+<li><a href="#org0f45418">概述</a>
 <ul>
-<li><a href="#org2fba609">fabric-client</a></li>
-<li><a href="#orge4ccb15">fabric-ca-client</a></li>
+<li><a href="#orgd45ba54">fabric-client</a></li>
+<li><a href="#orgd64b65d">fabric-ca-client</a></li>
 </ul>
 </li>
-<li><a href="#org0ebdcf4">配置应用程序开发环境</a>
+<li><a href="#org0993dd5">配置应用程序开发环境</a>
 <ul>
-<li><a href="#org33db932">开发环境组成</a>
+<li><a href="#org9c9c4ac">开发环境组成</a>
 <ul>
-<li><a href="#org39206de">orderer</a></li>
-<li><a href="#org5e6be7a">peer</a></li>
-<li><a href="#orgb7c179b">身份</a></li>
+<li><a href="#orga7ee9ac">orderer</a></li>
+<li><a href="#orgd73d4ff">peer</a></li>
+<li><a href="#org0dab3e1">身份</a></li>
 </ul>
 </li>
-<li><a href="#org72bc3a9">前提</a>
+<li><a href="#org227de68">前提</a>
 <ul>
-<li><a href="#org9be02fb">Docker</a></li>
-<li><a href="#org4da72b6">Docker Compose</a></li>
-<li><a href="#org37a6a2e">Nodejs(v6.2.0-6.10.0)</a></li>
+<li><a href="#orgba336a4">Docker</a></li>
+<li><a href="#org86be79a">Docker Compose</a></li>
+<li><a href="#orge03d556">Nodejs(v6.2.0-6.10.0)</a></li>
 </ul>
 </li>
-<li><a href="#org08e2447">准备加密材料</a></li>
-<li><a href="#org65f71a1">创世区块</a></li>
-<li><a href="#org706e115">启动网络</a></li>
+<li><a href="#orgad3e05d">准备加密材料</a></li>
+<li><a href="#org4637baf">创世区块</a></li>
+<li><a href="#orgc785696">启动网络</a></li>
 </ul>
 </li>
-<li><a href="#org43bb2d7">如何创建channel</a>
+<li><a href="#org573304c">如何创建channel</a>
 <ul>
-<li><a href="#orgb80342e">步骤</a></li>
-<li><a href="#org1f6cdbc">使用*.tx构建可签名的channel配置</a></li>
+<li><a href="#org8dd5e32">步骤</a></li>
+<li><a href="#orgb51e7b4">使用*.tx构建可签名的channel配置</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org05c5956" class="outline-2">
-<h2 id="org05c5956">概述</h2>
-<div class="outline-text-2" id="text-org05c5956">
+<div id="outline-container-org0f45418" class="outline-2">
+<h2 id="org0f45418">概述</h2>
+<div class="outline-text-2" id="text-org0f45418">
 <p>
 Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链进行交互. 使用这些API, 我们可以做到:
 </p>
@@ -112,9 +112,9 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </p>
 </div>
 
-<div id="outline-container-org2fba609" class="outline-3">
-<h3 id="org2fba609">fabric-client</h3>
-<div class="outline-text-3" id="text-org2fba609">
+<div id="outline-container-orgd45ba54" class="outline-3">
+<h3 id="orgd45ba54">fabric-client</h3>
+<div class="outline-text-3" id="text-orgd45ba54">
 <ul class="org-ul">
 <li><a href="https://fabric-sdk-node.github.io/Client.html#createChannel">创建channel</a></li>
 <li><a href="https://fabric-sdk-node.github.io/Channel.html#joinChannel">将peer加入channel</a></li>
@@ -145,9 +145,9 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </div>
 </div>
 
-<div id="outline-container-orge4ccb15" class="outline-3">
-<h3 id="orge4ccb15">fabric-ca-client</h3>
-<div class="outline-text-3" id="text-orge4ccb15">
+<div id="outline-container-orgd64b65d" class="outline-3">
+<h3 id="orgd64b65d">fabric-ca-client</h3>
+<div class="outline-text-3" id="text-orgd64b65d">
 <ul class="org-ul">
 <li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#register">注册新用户</a></li>
 <li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#enroll">登记一个用户, 获得Fabric CA签名的登记证书</a></li>
@@ -158,21 +158,21 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </div>
 </div>
 
-<div id="outline-container-org0ebdcf4" class="outline-2">
-<h2 id="org0ebdcf4">配置应用程序开发环境</h2>
-<div class="outline-text-2" id="text-org0ebdcf4">
+<div id="outline-container-org0993dd5" class="outline-2">
+<h2 id="org0993dd5">配置应用程序开发环境</h2>
+<div class="outline-text-2" id="text-org0993dd5">
 <p>
 chaincode运行在服务器(背书节点), 客户端使用node.js编写.
 </p>
 </div>
 
-<div id="outline-container-org33db932" class="outline-3">
-<h3 id="org33db932">开发环境组成</h3>
-<div class="outline-text-3" id="text-org33db932">
+<div id="outline-container-org9c9c4ac" class="outline-3">
+<h3 id="org9c9c4ac">开发环境组成</h3>
+<div class="outline-text-3" id="text-org9c9c4ac">
 </div>
-<div id="outline-container-org39206de" class="outline-4">
-<h4 id="org39206de">orderer</h4>
-<div class="outline-text-4" id="text-org39206de">
+<div id="outline-container-orga7ee9ac" class="outline-4">
+<h4 id="orga7ee9ac">orderer</h4>
+<div class="outline-text-4" id="text-orga7ee9ac">
 <p>
 orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要orderer?
 </p>
@@ -183,9 +183,9 @@ orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要
 </div>
 </div>
 
-<div id="outline-container-org5e6be7a" class="outline-4">
-<h4 id="org5e6be7a">peer</h4>
-<div class="outline-text-4" id="text-org5e6be7a">
+<div id="outline-container-orgd73d4ff" class="outline-4">
+<h4 id="orgd73d4ff">peer</h4>
+<div class="outline-text-4" id="text-orgd73d4ff">
 <p>
 peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节点是否是背书节点, 需要自己配置. 而提交节点则无需配置, 因为所有的peer都是提交节点. 在实际环境中, 一个组织内的节点需要多个, 在开发阶段, 一个组织只配置一个节点, 这个节点既是背书节点, 又是提交节点. 它可以为提交的事务提案进行背书, 可以从账本中获得信息.
 </p>
@@ -196,9 +196,9 @@ peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节�
 </div>
 </div>
 
-<div id="outline-container-orgb7c179b" class="outline-4">
-<h4 id="orgb7c179b">身份</h4>
-<div class="outline-text-4" id="text-orgb7c179b">
+<div id="outline-container-org0dab3e1" class="outline-4">
+<h4 id="org0dab3e1">身份</h4>
+<div class="outline-text-4" id="text-org0dab3e1">
 <p>
 Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进行访问控制. 在v1.0以后, 身份基于公钥基础设施(PKI)标准. 每个orderer, peer, 用户, 交易者都必须有密钥对, 其中公钥包含在CA签名的x.509证书里. 在开发阶段, 为了简便, 我们直接使用一些工具来生成证书.
 </p>
@@ -218,26 +218,26 @@ Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进
 </div>
 </div>
 
-<div id="outline-container-org72bc3a9" class="outline-3">
-<h3 id="org72bc3a9">前提</h3>
-<div class="outline-text-3" id="text-org72bc3a9">
+<div id="outline-container-org227de68" class="outline-3">
+<h3 id="org227de68">前提</h3>
+<div class="outline-text-3" id="text-org227de68">
 </div>
-<div id="outline-container-org9be02fb" class="outline-4">
-<h4 id="org9be02fb">Docker</h4>
-</div>
-
-<div id="outline-container-org4da72b6" class="outline-4">
-<h4 id="org4da72b6">Docker Compose</h4>
+<div id="outline-container-orgba336a4" class="outline-4">
+<h4 id="orgba336a4">Docker</h4>
 </div>
 
-<div id="outline-container-org37a6a2e" class="outline-4">
-<h4 id="org37a6a2e">Nodejs(v6.2.0-6.10.0)</h4>
+<div id="outline-container-org86be79a" class="outline-4">
+<h4 id="org86be79a">Docker Compose</h4>
+</div>
+
+<div id="outline-container-orge03d556" class="outline-4">
+<h4 id="orge03d556">Nodejs(v6.2.0-6.10.0)</h4>
 </div>
 </div>
 
-<div id="outline-container-org08e2447" class="outline-3">
-<h3 id="org08e2447">准备加密材料</h3>
-<div class="outline-text-3" id="text-org08e2447">
+<div id="outline-container-orgad3e05d" class="outline-3">
+<h3 id="orgad3e05d">准备加密材料</h3>
+<div class="outline-text-3" id="text-orgad3e05d">
 <p>
 身份由x.509证书建立. 我们涉及到很多身份证明:
 </p>
@@ -258,18 +258,18 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org65f71a1" class="outline-3">
-<h3 id="org65f71a1">创世区块</h3>
-<div class="outline-text-3" id="text-org65f71a1">
+<div id="outline-container-org4637baf" class="outline-3">
+<h3 id="org4637baf">创世区块</h3>
+<div class="outline-text-3" id="text-org4637baf">
 <p>
 我们需要使用创世区块来启动网络. 使用configtxgen工具来生成genesis.block.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org706e115" class="outline-3">
-<h3 id="org706e115">启动网络</h3>
-<div class="outline-text-3" id="text-org706e115">
+<div id="outline-container-orgc785696" class="outline-3">
+<h3 id="orgc785696">启动网络</h3>
+<div class="outline-text-3" id="text-orgc785696">
 <p>
 使用docker-compose来启动网络.
 </p>
@@ -277,13 +277,13 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org43bb2d7" class="outline-2">
-<h2 id="org43bb2d7">如何创建channel</h2>
-<div class="outline-text-2" id="text-org43bb2d7">
+<div id="outline-container-org573304c" class="outline-2">
+<h2 id="org573304c">如何创建channel</h2>
+<div class="outline-text-2" id="text-org573304c">
 </div>
-<div id="outline-container-orgb80342e" class="outline-3">
-<h3 id="orgb80342e">步骤</h3>
-<div class="outline-text-3" id="text-orgb80342e">
+<div id="outline-container-org8dd5e32" class="outline-3">
+<h3 id="org8dd5e32">步骤</h3>
+<div class="outline-text-3" id="text-org8dd5e32">
 <ul class="org-ul">
 <li>使用configtxgen工具, 生成genesis.block</li>
 <li>使用configtxgen工具, 生成 *.tx</li>
@@ -295,8 +295,8 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org1f6cdbc" class="outline-3">
-<h3 id="org1f6cdbc">使用*.tx构建可签名的channel配置</h3>
+<div id="outline-container-orgb51e7b4" class="outline-3">
+<h3 id="orgb51e7b4">使用*.tx构建可签名的channel配置</h3>
 </div>
 </div>
 
