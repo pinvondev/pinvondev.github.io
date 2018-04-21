@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,22 +33,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1f11910">什么是支持向量机?</a></li>
-<li><a href="#org2f305d3">寻找最大间隔</a></li>
-<li><a href="#org9995c03">分类器求解的优化问题</a></li>
-<li><a href="#org469ae71">Platt的SMO算法</a>
+<li><a href="#orgd7bd75c">什么是支持向量机?</a></li>
+<li><a href="#org5240ab1">寻找最大间隔</a></li>
+<li><a href="#org21d7bea">分类器求解的优化问题</a></li>
+<li><a href="#org8a7b591">Platt的SMO算法</a>
 <ul>
-<li><a href="#org456400c">简化版SMO</a></li>
+<li><a href="#org8f39575">简化版SMO</a></li>
 </ul>
 </li>
-<li><a href="#org28ee2c4">完整Platt SMO算法</a></li>
+<li><a href="#org6dc5398">完整Platt SMO算法</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1f11910" class="outline-2">
-<h2 id="org1f11910">什么是支持向量机?</h2>
-<div class="outline-text-2" id="text-org1f11910">
+<div id="outline-container-orgd7bd75c" class="outline-2">
+<h2 id="orgd7bd75c">什么是支持向量机?</h2>
+<div class="outline-text-2" id="text-orgd7bd75c">
 <p>
 假设要将一组数据集分成两类. 
 </p>
@@ -83,9 +81,9 @@
 </div>
 </div>
 
-<div id="outline-container-org2f305d3" class="outline-2">
-<h2 id="org2f305d3">寻找最大间隔</h2>
-<div class="outline-text-2" id="text-org2f305d3">
+<div id="outline-container-org5240ab1" class="outline-2">
+<h2 id="org5240ab1">寻找最大间隔</h2>
+<div class="outline-text-2" id="text-org5240ab1">
 <p>
 分隔超平面在数学上, 可以写成: \(\pmb w^{T}\pmb x + b\). 其中, \(x\) 相当于一系列的特征, \(w\) 是其系数.
 </p>
@@ -96,15 +94,15 @@
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/23/支持向量机/1.png" alt="1.png" />
+<p><img src="./1.png" alt="1.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9995c03" class="outline-2">
-<h2 id="org9995c03">分类器求解的优化问题</h2>
-<div class="outline-text-2" id="text-org9995c03">
+<div id="outline-container-org21d7bea" class="outline-2">
+<h2 id="org21d7bea">分类器求解的优化问题</h2>
+<div class="outline-text-2" id="text-org21d7bea">
 <p>
 既然是分类器, 就需要在得到一系列特征之后, 对数据进行分类. 
 </p>
@@ -147,7 +145,7 @@
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/23/支持向量机/2.png" alt="2.png" />
+<p><img src="./2.png" alt="2.png" />
 </p>
 </div>
 
@@ -157,7 +155,7 @@
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/23/支持向量机/3.png" alt="3.png" />
+<p><img src="./3.png" alt="3.png" />
 </p>
 </div>
 
@@ -171,9 +169,9 @@
 </div>
 </div>
 
-<div id="outline-container-org469ae71" class="outline-2">
-<h2 id="org469ae71">Platt的SMO算法</h2>
-<div class="outline-text-2" id="text-org469ae71">
+<div id="outline-container-org8a7b591" class="outline-2">
+<h2 id="org8a7b591">Platt的SMO算法</h2>
+<div class="outline-text-2" id="text-org8a7b591">
 <p>
 Platt在1996年发布SMO算法, 用于训练SVM. SMO算法是将大的优化问题分解为多个小优化问题来求解的. 在结果完全相同的同时, SMO算法的求解时间短很多.
 </p>
@@ -183,9 +181,9 @@ Platt在1996年发布SMO算法, 用于训练SVM. SMO算法是将大的优化问�
 </p>
 </div>
 
-<div id="outline-container-org456400c" class="outline-3">
-<h3 id="org456400c">简化版SMO</h3>
-<div class="outline-text-3" id="text-org456400c">
+<div id="outline-container-org8f39575" class="outline-3">
+<h3 id="org8f39575">简化版SMO</h3>
+<div class="outline-text-3" id="text-org8f39575">
 <p>
 简化版SMO的伪代码:
 </p>
@@ -204,9 +202,9 @@ Platt在1996年发布SMO算法, 用于训练SVM. SMO算法是将大的优化问�
 </div>
 </div>
 
-<div id="outline-container-org28ee2c4" class="outline-2">
-<h2 id="org28ee2c4">完整Platt SMO算法</h2>
-<div class="outline-text-2" id="text-org28ee2c4">
+<div id="outline-container-org6dc5398" class="outline-2">
+<h2 id="org6dc5398">完整Platt SMO算法</h2>
+<div class="outline-text-2" id="text-org6dc5398">
 <p>
 简化版的SMO算法比较耗时. 完整版的SMO通过一个外循环来选择第一个 \(\alpha\), 通过一个内循环来选择第二个 \(\alpha\).
 </p>
@@ -237,30 +235,21 @@ Platt在1996年发布SMO算法, 用于训练SVM. SMO算法是将大的优化问�
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,46 +33,46 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org79ed217">概述</a>
+<li><a href="#org3abdcfc">概述</a>
 <ul>
-<li><a href="#org06d6d3c">fabric-client</a></li>
-<li><a href="#org5e26dac">fabric-ca-client</a></li>
+<li><a href="#org13b7c4c">fabric-client</a></li>
+<li><a href="#orgd080adb">fabric-ca-client</a></li>
 </ul>
 </li>
-<li><a href="#orgef0fab9">配置应用程序开发环境</a>
+<li><a href="#org1f1e619">配置应用程序开发环境</a>
 <ul>
-<li><a href="#orgfa36b2c">开发环境组成</a>
+<li><a href="#org321f1b4">开发环境组成</a>
 <ul>
-<li><a href="#orge6e3de9">orderer</a></li>
-<li><a href="#org3d4a816">peer</a></li>
-<li><a href="#org90302d6">身份</a></li>
+<li><a href="#org6c85801">orderer</a></li>
+<li><a href="#org1c14003">peer</a></li>
+<li><a href="#orgd2d9a5c">身份</a></li>
 </ul>
 </li>
-<li><a href="#org8d6c831">前提</a>
+<li><a href="#orga8f9f9e">前提</a>
 <ul>
-<li><a href="#orgca17892">Docker</a></li>
-<li><a href="#orge25df14">Docker Compose</a></li>
-<li><a href="#orgfed576d">Nodejs(v6.2.0-6.10.0)</a></li>
+<li><a href="#orgce2ac59">Docker</a></li>
+<li><a href="#org0970710">Docker Compose</a></li>
+<li><a href="#org5c8c294">Nodejs(v6.2.0-6.10.0)</a></li>
 </ul>
 </li>
-<li><a href="#orgb51241d">准备加密材料</a></li>
-<li><a href="#org7255a73">创世区块</a></li>
-<li><a href="#org83d4234">启动网络</a></li>
+<li><a href="#orgbff4eca">准备加密材料</a></li>
+<li><a href="#org16b2736">创世区块</a></li>
+<li><a href="#orge7d37ba">启动网络</a></li>
 </ul>
 </li>
-<li><a href="#org6fe6a5b">如何创建channel</a>
+<li><a href="#org6cdf92c">如何创建channel</a>
 <ul>
-<li><a href="#org5c5638c">步骤</a></li>
-<li><a href="#org4463cc3">使用*.tx构建可签名的channel配置</a></li>
+<li><a href="#org8d13a88">步骤</a></li>
+<li><a href="#org6106ef9">使用*.tx构建可签名的channel配置</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org79ed217" class="outline-2">
-<h2 id="org79ed217">概述</h2>
-<div class="outline-text-2" id="text-org79ed217">
+<div id="outline-container-org3abdcfc" class="outline-2">
+<h2 id="org3abdcfc">概述</h2>
+<div class="outline-text-2" id="text-org3abdcfc">
 <p>
 Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链进行交互. 使用这些API, 我们可以做到:
 </p>
@@ -92,9 +90,9 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </p>
 </div>
 
-<div id="outline-container-org06d6d3c" class="outline-3">
-<h3 id="org06d6d3c">fabric-client</h3>
-<div class="outline-text-3" id="text-org06d6d3c">
+<div id="outline-container-org13b7c4c" class="outline-3">
+<h3 id="org13b7c4c">fabric-client</h3>
+<div class="outline-text-3" id="text-org13b7c4c">
 <ul class="org-ul">
 <li><a href="https://fabric-sdk-node.github.io/Client.html#createChannel">创建channel</a></li>
 <li><a href="https://fabric-sdk-node.github.io/Channel.html#joinChannel">将peer加入channel</a></li>
@@ -125,9 +123,9 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </div>
 </div>
 
-<div id="outline-container-org5e26dac" class="outline-3">
-<h3 id="org5e26dac">fabric-ca-client</h3>
-<div class="outline-text-3" id="text-org5e26dac">
+<div id="outline-container-orgd080adb" class="outline-3">
+<h3 id="orgd080adb">fabric-ca-client</h3>
+<div class="outline-text-3" id="text-orgd080adb">
 <ul class="org-ul">
 <li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#register">注册新用户</a></li>
 <li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#enroll">登记一个用户, 获得Fabric CA签名的登记证书</a></li>
@@ -138,21 +136,21 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </div>
 </div>
 
-<div id="outline-container-orgef0fab9" class="outline-2">
-<h2 id="orgef0fab9">配置应用程序开发环境</h2>
-<div class="outline-text-2" id="text-orgef0fab9">
+<div id="outline-container-org1f1e619" class="outline-2">
+<h2 id="org1f1e619">配置应用程序开发环境</h2>
+<div class="outline-text-2" id="text-org1f1e619">
 <p>
 chaincode运行在服务器(背书节点), 客户端使用node.js编写.
 </p>
 </div>
 
-<div id="outline-container-orgfa36b2c" class="outline-3">
-<h3 id="orgfa36b2c">开发环境组成</h3>
-<div class="outline-text-3" id="text-orgfa36b2c">
+<div id="outline-container-org321f1b4" class="outline-3">
+<h3 id="org321f1b4">开发环境组成</h3>
+<div class="outline-text-3" id="text-org321f1b4">
 </div>
-<div id="outline-container-orge6e3de9" class="outline-4">
-<h4 id="orge6e3de9">orderer</h4>
-<div class="outline-text-4" id="text-orge6e3de9">
+<div id="outline-container-org6c85801" class="outline-4">
+<h4 id="org6c85801">orderer</h4>
+<div class="outline-text-4" id="text-org6c85801">
 <p>
 orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要orderer?
 </p>
@@ -163,9 +161,9 @@ orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要
 </div>
 </div>
 
-<div id="outline-container-org3d4a816" class="outline-4">
-<h4 id="org3d4a816">peer</h4>
-<div class="outline-text-4" id="text-org3d4a816">
+<div id="outline-container-org1c14003" class="outline-4">
+<h4 id="org1c14003">peer</h4>
+<div class="outline-text-4" id="text-org1c14003">
 <p>
 peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节点是否是背书节点, 需要自己配置. 而提交节点则无需配置, 因为所有的peer都是提交节点. 在实际环境中, 一个组织内的节点需要多个, 在开发阶段, 一个组织只配置一个节点, 这个节点既是背书节点, 又是提交节点. 它可以为提交的事务提案进行背书, 可以从账本中获得信息.
 </p>
@@ -176,9 +174,9 @@ peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节�
 </div>
 </div>
 
-<div id="outline-container-org90302d6" class="outline-4">
-<h4 id="org90302d6">身份</h4>
-<div class="outline-text-4" id="text-org90302d6">
+<div id="outline-container-orgd2d9a5c" class="outline-4">
+<h4 id="orgd2d9a5c">身份</h4>
+<div class="outline-text-4" id="text-orgd2d9a5c">
 <p>
 Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进行访问控制. 在v1.0以后, 身份基于公钥基础设施(PKI)标准. 每个orderer, peer, 用户, 交易者都必须有密钥对, 其中公钥包含在CA签名的x.509证书里. 在开发阶段, 为了简便, 我们直接使用一些工具来生成证书.
 </p>
@@ -198,26 +196,26 @@ Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进
 </div>
 </div>
 
-<div id="outline-container-org8d6c831" class="outline-3">
-<h3 id="org8d6c831">前提</h3>
-<div class="outline-text-3" id="text-org8d6c831">
+<div id="outline-container-orga8f9f9e" class="outline-3">
+<h3 id="orga8f9f9e">前提</h3>
+<div class="outline-text-3" id="text-orga8f9f9e">
 </div>
-<div id="outline-container-orgca17892" class="outline-4">
-<h4 id="orgca17892">Docker</h4>
-</div>
-
-<div id="outline-container-orge25df14" class="outline-4">
-<h4 id="orge25df14">Docker Compose</h4>
+<div id="outline-container-orgce2ac59" class="outline-4">
+<h4 id="orgce2ac59">Docker</h4>
 </div>
 
-<div id="outline-container-orgfed576d" class="outline-4">
-<h4 id="orgfed576d">Nodejs(v6.2.0-6.10.0)</h4>
+<div id="outline-container-org0970710" class="outline-4">
+<h4 id="org0970710">Docker Compose</h4>
+</div>
+
+<div id="outline-container-org5c8c294" class="outline-4">
+<h4 id="org5c8c294">Nodejs(v6.2.0-6.10.0)</h4>
 </div>
 </div>
 
-<div id="outline-container-orgb51241d" class="outline-3">
-<h3 id="orgb51241d">准备加密材料</h3>
-<div class="outline-text-3" id="text-orgb51241d">
+<div id="outline-container-orgbff4eca" class="outline-3">
+<h3 id="orgbff4eca">准备加密材料</h3>
+<div class="outline-text-3" id="text-orgbff4eca">
 <p>
 身份由x.509证书建立. 我们涉及到很多身份证明:
 </p>
@@ -238,18 +236,18 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org7255a73" class="outline-3">
-<h3 id="org7255a73">创世区块</h3>
-<div class="outline-text-3" id="text-org7255a73">
+<div id="outline-container-org16b2736" class="outline-3">
+<h3 id="org16b2736">创世区块</h3>
+<div class="outline-text-3" id="text-org16b2736">
 <p>
 我们需要使用创世区块来启动网络. 使用configtxgen工具来生成genesis.block.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org83d4234" class="outline-3">
-<h3 id="org83d4234">启动网络</h3>
-<div class="outline-text-3" id="text-org83d4234">
+<div id="outline-container-orge7d37ba" class="outline-3">
+<h3 id="orge7d37ba">启动网络</h3>
+<div class="outline-text-3" id="text-orge7d37ba">
 <p>
 使用docker-compose来启动网络.
 </p>
@@ -257,13 +255,13 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org6fe6a5b" class="outline-2">
-<h2 id="org6fe6a5b">如何创建channel</h2>
-<div class="outline-text-2" id="text-org6fe6a5b">
+<div id="outline-container-org6cdf92c" class="outline-2">
+<h2 id="org6cdf92c">如何创建channel</h2>
+<div class="outline-text-2" id="text-org6cdf92c">
 </div>
-<div id="outline-container-org5c5638c" class="outline-3">
-<h3 id="org5c5638c">步骤</h3>
-<div class="outline-text-3" id="text-org5c5638c">
+<div id="outline-container-org8d13a88" class="outline-3">
+<h3 id="org8d13a88">步骤</h3>
+<div class="outline-text-3" id="text-org8d13a88">
 <ul class="org-ul">
 <li>使用configtxgen工具, 生成genesis.block</li>
 <li>使用configtxgen工具, 生成 *.tx</li>
@@ -275,8 +273,8 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org4463cc3" class="outline-3">
-<h3 id="org4463cc3">使用*.tx构建可签名的channel配置</h3>
+<div id="outline-container-org6106ef9" class="outline-3">
+<h3 id="org6106ef9">使用*.tx构建可签名的channel配置</h3>
 </div>
 </div>
 
@@ -300,30 +298,21 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

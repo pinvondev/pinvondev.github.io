@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,32 +33,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb115aab">背景知识</a>
+<li><a href="#org6391463">背景知识</a>
 <ul>
-<li><a href="#org92ccdb4">C++多线程编程</a>
+<li><a href="#orgc51f37c">C++多线程编程</a>
 <ul>
-<li><a href="#org9a3ebac">例子</a></li>
+<li><a href="#orgae0679d">例子</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgf02853e">当析构函数遇到多线程</a></li>
+<li><a href="#org91a97b8">当析构函数遇到多线程</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb115aab" class="outline-2">
-<h2 id="orgb115aab">背景知识</h2>
-<div class="outline-text-2" id="text-orgb115aab">
+<div id="outline-container-org6391463" class="outline-2">
+<h2 id="org6391463">背景知识</h2>
+<div class="outline-text-2" id="text-org6391463">
 </div>
-<div id="outline-container-org92ccdb4" class="outline-3">
-<h3 id="org92ccdb4">C++多线程编程</h3>
-<div class="outline-text-3" id="text-org92ccdb4">
+<div id="outline-container-orgc51f37c" class="outline-3">
+<h3 id="orgc51f37c">C++多线程编程</h3>
+<div class="outline-text-3" id="text-orgc51f37c">
 <div class="org-src-container">
-<pre class="src src-C++">#include &lt;pthread.h&gt;
-// 创建线程
+<pre class="src src-C++"><span style="color: #F92672;">#include</span> <span style="color: #E6DB74;">&lt;pthread.h&gt;</span>
+<span style="color: #75715E;">// </span><span style="color: #75715E;">&#21019;&#24314;&#32447;&#31243;</span>
 pthread_create(thread, attr, start_routine, arg);
-// 终止线程
+<span style="color: #75715E;">// </span><span style="color: #75715E;">&#32456;&#27490;&#32447;&#31243;</span>
 pthread_exit(status);
 </pre>
 </div>
@@ -69,30 +67,30 @@ pthread_exit(status);
 </p>
 </div>
 
-<div id="outline-container-org9a3ebac" class="outline-4">
-<h4 id="org9a3ebac">例子</h4>
-<div class="outline-text-4" id="text-org9a3ebac">
+<div id="outline-container-orgae0679d" class="outline-4">
+<h4 id="orgae0679d">例子</h4>
+<div class="outline-text-4" id="text-orgae0679d">
 <div class="org-src-container">
-<pre class="src src-C++">/* Copyright 2018-3-8 Pinvon*/
-#include &lt;iostream&gt;
-#include &lt;pthread.h&gt;
-using namespace std;
-#define NUM_THREADS 5
+<pre class="src src-C++"><span style="color: #75715E;">/* </span><span style="color: #75715E;">Copyright 2018-3-8 Pinvon*/</span>
+<span style="color: #F92672;">#include</span> <span style="color: #E6DB74;">&lt;iostream&gt;</span>
+<span style="color: #F92672;">#include</span> <span style="color: #E6DB74;">&lt;pthread.h&gt;</span>
+<span style="color: #F92672;">using</span> <span style="color: #F92672;">namespace</span> <span style="color: #AE81FF;">std</span>;
+<span style="color: #F92672;">#define</span> <span style="color: #FD971F;">NUM_THREADS</span> 5
 
-void* say_hello(void *args) {
-    cout &lt;&lt; "Hello World" &lt;&lt; endl;
-    return 0;
+<span style="color: #66D9EF;">void</span>* <span style="color: #A6E22E;">say_hello</span>(<span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">args</span>) {
+    cout &lt;&lt; <span style="color: #E6DB74;">"Hello World"</span> &lt;&lt; endl;
+    <span style="color: #F92672;">return</span> 0;
 }
 
-int main() {
-    pthread_t tids[NUM_THREADS];
-    for (int i = 0; i &lt; NUM_THREADS; ++i) {
-        int ret = pthread_create(&amp;tids[i], NULL, say_hello, NULL);
-        if (ret != 0) {
-            cout &lt;&lt; "pthread_create error: error_code=" &lt;&lt; ret &lt;&lt; endl;
+<span style="color: #66D9EF;">int</span> <span style="color: #A6E22E;">main</span>() {
+    <span style="color: #66D9EF;">pthread_t</span> <span style="color: #FD971F;">tids</span>[NUM_THREADS];
+    <span style="color: #F92672;">for</span> (<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">i</span> = 0; i &lt; NUM_THREADS; ++i) {
+        <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">ret</span> = pthread_create(&amp;tids[i], <span style="color: #AE81FF;">NULL</span>, say_hello, <span style="color: #AE81FF;">NULL</span>);
+        <span style="color: #F92672;">if</span> (ret != 0) {
+            cout &lt;&lt; <span style="color: #E6DB74;">"pthread_create error: error_code="</span> &lt;&lt; ret &lt;&lt; endl;
         }
     }
-    pthread_exit(NULL);
+    pthread_exit(<span style="color: #AE81FF;">NULL</span>);
 }
 </pre>
 </div>
@@ -110,20 +108,20 @@ int main() {
 向线程传递参数:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++">struct thread_arg{
-    int thread_id;
-    char *message;
+<pre class="src src-C++"><span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span>{
+    <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">thread_id</span>;
+    <span style="color: #66D9EF;">char</span> *<span style="color: #FD971F;">message</span>;
 };
-void *printHello(void *threadarg){
-    struct thread_arg *my_arg;
-    my_arg = (struct thread_arg *)threadarg;
-    cout &lt;&lt; "Thread ID: " &lt;&lt; my_arg-&gt;thread_id;
-    cout &lt;&lt; " Message: " &lt;&lt; my_arg-&gt;message &lt;&lt; endl;
+<span style="color: #66D9EF;">void</span> *<span style="color: #A6E22E;">printHello</span>(<span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">threadarg</span>){
+    <span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span> *<span style="color: #FD971F;">my_arg</span>;
+    my_arg = (<span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span> *)threadarg;
+    cout &lt;&lt; <span style="color: #E6DB74;">"Thread ID: "</span> &lt;&lt; my_arg-&gt;thread_id;
+    cout &lt;&lt; <span style="color: #E6DB74;">" Message: "</span> &lt;&lt; my_arg-&gt;message &lt;&lt; endl;
 }
 ...
 pthread_t threads[5];
-struct thread_arg ta[5];
-pthread_create(&amp;threads[1], NULL, printHello, (void *)&amp;ta[i]);
+<span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">thread_arg</span> <span style="color: #FD971F;">ta</span>[5];
+pthread_create(&amp;threads[1], <span style="color: #AE81FF;">NULL</span>, printHello, (<span style="color: #66D9EF;">void</span> *)&amp;ta[i]);
 </pre>
 </div>
 </div>
@@ -131,9 +129,9 @@ pthread_create(&amp;threads[1], NULL, printHello, (void *)&amp;ta[i]);
 </div>
 </div>
 
-<div id="outline-container-orgf02853e" class="outline-2">
-<h2 id="orgf02853e">当析构函数遇到多线程</h2>
-<div class="outline-text-2" id="text-orgf02853e">
+<div id="outline-container-org91a97b8" class="outline-2">
+<h2 id="org91a97b8">当析构函数遇到多线程</h2>
+<div class="outline-text-2" id="text-org91a97b8">
 <p>
 由于C++要求程序员自己管理对象的生命周期, 所以当一个对象能被多个线程同时看到时, 那么对象的销毁时机就会变得模糊不清, 可能出现多种竞态条件:
 </p>
@@ -165,30 +163,21 @@ pthread_create(&amp;threads[1], NULL, printHello, (void *)&amp;ta[i]);
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

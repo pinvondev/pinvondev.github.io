@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,70 +33,70 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcc0ee19">解析</a>
+<li><a href="#org56a616a">解析</a>
 <ul>
-<li><a href="#orgefc75a3">cryptogen</a></li>
-<li><a href="#org16f3239">configtx.yaml</a></li>
-<li><a href="#orge1779c2">configtxgen</a></li>
-<li><a href="#orgb2d8c8d">配置docker-compose</a>
+<li><a href="#org2a2b44e">cryptogen</a></li>
+<li><a href="#org0eb292e">configtx.yaml</a></li>
+<li><a href="#orgbb4d9e7">configtxgen</a></li>
+<li><a href="#orged2bb47">配置docker-compose</a>
 <ul>
-<li><a href="#org95dba5a">配置Orderer</a></li>
-<li><a href="#orgc89c8ca">配置Peer</a></li>
-<li><a href="#org3bec944">配置CLI</a></li>
+<li><a href="#org1cb96de">配置Orderer</a></li>
+<li><a href="#org850f867">配置Peer</a></li>
+<li><a href="#orgc5aec62">配置CLI</a></li>
 </ul>
 </li>
-<li><a href="#org6cf5414">启动Fabric环境的容器</a></li>
-<li><a href="#orgbb9ad2e">创建Channel</a></li>
-<li><a href="#orgef7ae79">Peer加入Channel</a></li>
-<li><a href="#orgc8834b5">更新锚节点</a></li>
+<li><a href="#orgbe1962b">启动Fabric环境的容器</a></li>
+<li><a href="#orga09c19c">创建Channel</a></li>
+<li><a href="#org3050236">Peer加入Channel</a></li>
+<li><a href="#org6c8c8f9">更新锚节点</a></li>
 </ul>
 </li>
-<li><a href="#orgff855ca">启动</a>
+<li><a href="#orgbc39bdb">启动</a>
 <ul>
-<li><a href="#org52a568e">启动网络</a></li>
-<li><a href="#orgf460a94">chaincode</a>
+<li><a href="#org4fb1c1f">启动网络</a></li>
+<li><a href="#orga8b3bce">chaincode</a>
 <ul>
-<li><a href="#org62fc94e">安装</a></li>
-<li><a href="#org65ac9bd">实例化</a></li>
-<li><a href="#org1d10d63">在一个节点上查询并发起交易</a></li>
-<li><a href="#orgad3c142">在另一个节点上查询交易</a></li>
+<li><a href="#orgbbe1151">安装</a></li>
+<li><a href="#org5266207">实例化</a></li>
+<li><a href="#orgf80692f">在一个节点上查询并发起交易</a></li>
+<li><a href="#orgf97d95b">在另一个节点上查询交易</a></li>
 </ul>
 </li>
-<li><a href="#org968337a">创建通道</a></li>
+<li><a href="#org45ac9d3">创建通道</a></li>
 </ul>
 </li>
-<li><a href="#orgb55c2ac">Fabric CA</a></li>
-<li><a href="#org04bb8dd">流程</a></li>
-<li><a href="#orgcf5bac5">server</a>
+<li><a href="#org4871d62">Fabric CA</a></li>
+<li><a href="#org38f11b9">流程</a></li>
+<li><a href="#org89b950a">server</a>
 <ul>
-<li><a href="#org1473128">enrollAdmin</a>
+<li><a href="#org8e448ac">enrollAdmin</a>
 <ul>
-<li><a href="#orgd3636c9">enroll_admin()</a></li>
+<li><a href="#org60360a6">enroll_admin()</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org1267e51">client</a></li>
+<li><a href="#orgc584a98">client</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcc0ee19" class="outline-2">
-<h2 id="orgcc0ee19">解析</h2>
-<div class="outline-text-2" id="text-orgcc0ee19">
+<div id="outline-container-org56a616a" class="outline-2">
+<h2 id="org56a616a">解析</h2>
+<div class="outline-text-2" id="text-org56a616a">
 </div>
-<div id="outline-container-orgefc75a3" class="outline-3">
-<h3 id="orgefc75a3">cryptogen</h3>
-<div class="outline-text-3" id="text-orgefc75a3">
+<div id="outline-container-org2a2b44e" class="outline-3">
+<h3 id="org2a2b44e">cryptogen</h3>
+<div class="outline-text-3" id="text-org2a2b44e">
 <p>
 Fabric中有两种类型的公钥, 私钥和证书. 其中, Tcerts证书负责Peer之间的通讯安全, Ecerts负责用户登录和权限控制. 这些证书由CA颁发, 通常一个Org就有一个CA. 有时候在测试环境中, 没有启用CA节点, 可以使用 <code>cryptogen</code> 来颁发证书.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org16f3239" class="outline-3">
-<h3 id="org16f3239">configtx.yaml</h3>
-<div class="outline-text-3" id="text-org16f3239">
+<div id="outline-container-org0eb292e" class="outline-3">
+<h3 id="org0eb292e">configtx.yaml</h3>
+<div class="outline-text-3" id="text-org0eb292e">
 <p>
 在 <code>examples/e2e_cli/configtx.yaml</code> 中配置了两个Org参与的Orderer共识配置, 以及两个Org参与的Channel配置.
 </p>
@@ -113,9 +111,9 @@ Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超
 </div>
 </div>
 
-<div id="outline-container-orge1779c2" class="outline-3">
-<h3 id="orge1779c2">configtxgen</h3>
-<div class="outline-text-3" id="text-orge1779c2">
+<div id="outline-container-orgbb4d9e7" class="outline-3">
+<h3 id="orgbb4d9e7">configtxgen</h3>
+<div class="outline-text-3" id="text-orgbb4d9e7">
 <p>
 可以使用这个工具, 根据 <code>configtx.yaml</code> 生成4个文件, 并保存在 <code>examples/e2e_cli/channel-artifacts</code> 中.
 </p>
@@ -128,17 +126,17 @@ Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超
 </div>
 </div>
 
-<div id="outline-container-orgb2d8c8d" class="outline-3">
-<h3 id="orgb2d8c8d">配置docker-compose</h3>
-<div class="outline-text-3" id="text-orgb2d8c8d">
+<div id="outline-container-orged2bb47" class="outline-3">
+<h3 id="orged2bb47">配置docker-compose</h3>
+<div class="outline-text-3" id="text-orged2bb47">
 <p>
 配置docker-compose的yaml文件, 这些文件可以用于启动Fabric的Docker环境.
 </p>
 </div>
 
-<div id="outline-container-org95dba5a" class="outline-4">
-<h4 id="org95dba5a">配置Orderer</h4>
-<div class="outline-text-4" id="text-org95dba5a">
+<div id="outline-container-org1cb96de" class="outline-4">
+<h4 id="org1cb96de">配置Orderer</h4>
+<div class="outline-text-4" id="text-org1cb96de">
 <p>
 Orderer的配置在 <code>base/docker-compose-base.yaml</code> 中.
 </p>
@@ -158,18 +156,18 @@ Orderer的配置在 <code>base/docker-compose-base.yaml</code> 中.
 </div>
 </div>
 
-<div id="outline-container-orgc89c8ca" class="outline-4">
-<h4 id="orgc89c8ca">配置Peer</h4>
-<div class="outline-text-4" id="text-orgc89c8ca">
+<div id="outline-container-org850f867" class="outline-4">
+<h4 id="org850f867">配置Peer</h4>
+<div class="outline-text-4" id="text-org850f867">
 <p>
 Peer的配置在 <code>base/docker-compose-base.yaml</code> 和 <code>peer-base.yaml</code> 里. 配置信息与Orderer的类似.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org3bec944" class="outline-4">
-<h4 id="org3bec944">配置CLI</h4>
-<div class="outline-text-4" id="text-org3bec944">
+<div id="outline-container-orgc5aec62" class="outline-4">
+<h4 id="orgc5aec62">配置CLI</h4>
+<div class="outline-text-4" id="text-orgc5aec62">
 <p>
 CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用CLI来代替SDK, 执行各种SDK能执行的操作. CLI会和Peer通讯, 把指令发送给对应的Peer执行. CLI的配置在 <code>docker-compose-cli.yaml</code> 中.
 </p>
@@ -185,9 +183,9 @@ CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用C
 </div>
 </div>
 
-<div id="outline-container-org6cf5414" class="outline-3">
-<h3 id="org6cf5414">启动Fabric环境的容器</h3>
-<div class="outline-text-3" id="text-org6cf5414">
+<div id="outline-container-orgbe1962b" class="outline-3">
+<h3 id="orgbe1962b">启动Fabric环境的容器</h3>
+<div class="outline-text-3" id="text-orgbe1962b">
 <p>
 上面的文件配置好以后, 都会集成在 <code>docker-compose-cli.yaml</code> 中, 使用命令一键启动:
 </p>
@@ -198,9 +196,9 @@ CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用C
 </div>
 </div>
 
-<div id="outline-container-orgbb9ad2e" class="outline-3">
-<h3 id="orgbb9ad2e">创建Channel</h3>
-<div class="outline-text-3" id="text-orgbb9ad2e">
+<div id="outline-container-orga09c19c" class="outline-3">
+<h3 id="orga09c19c">创建Channel</h3>
+<div class="outline-text-3" id="text-orga09c19c">
 <p>
 进入CLI容器里面创建.
 </p>
@@ -220,9 +218,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifa
 </div>
 </div>
 
-<div id="outline-container-orgef7ae79" class="outline-3">
-<h3 id="orgef7ae79">Peer加入Channel</h3>
-<div class="outline-text-3" id="text-orgef7ae79">
+<div id="outline-container-org3050236" class="outline-3">
+<h3 id="org3050236">Peer加入Channel</h3>
+<div class="outline-text-3" id="text-org3050236">
 <p>
 由于CLI默认连接的是peer0.org1.example.com, 所以将peer0.org1.example.com加入Channel会比较容易.
 </p>
@@ -249,9 +247,9 @@ peer channel join -b mychannel.block
 </div>
 </div>
 
-<div id="outline-container-orgc8834b5" class="outline-3">
-<h3 id="orgc8834b5">更新锚节点</h3>
-<div class="outline-text-3" id="text-orgc8834b5">
+<div id="outline-container-org6c8c8f9" class="outline-3">
+<h3 id="org6c8c8f9">更新锚节点</h3>
+<div class="outline-text-3" id="text-org6c8c8f9">
 <p>
 对于Org1来说, peer0.org1.example.com是锚节点, 需要连接上它, 并进行更新:
 </p>
@@ -268,13 +266,13 @@ peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifa
 </div>
 </div>
 
-<div id="outline-container-orgff855ca" class="outline-2">
-<h2 id="orgff855ca">启动</h2>
-<div class="outline-text-2" id="text-orgff855ca">
+<div id="outline-container-orgbc39bdb" class="outline-2">
+<h2 id="orgbc39bdb">启动</h2>
+<div class="outline-text-2" id="text-orgbc39bdb">
 </div>
-<div id="outline-container-org52a568e" class="outline-3">
-<h3 id="org52a568e">启动网络</h3>
-<div class="outline-text-3" id="text-org52a568e">
+<div id="outline-container-org4fb1c1f" class="outline-3">
+<h3 id="org4fb1c1f">启动网络</h3>
+<div class="outline-text-3" id="text-org4fb1c1f">
 <div class="org-src-container">
 <pre class="src src-Shell">cd fabric-sdk-node/test/fixtures
 docker-compose -f docker-compose-networksetup.yaml up -d
@@ -283,13 +281,13 @@ docker-compose -f docker-compose-networksetup.yaml up -d
 </div>
 </div>
 
-<div id="outline-container-orgf460a94" class="outline-3">
-<h3 id="orgf460a94">chaincode</h3>
-<div class="outline-text-3" id="text-orgf460a94">
+<div id="outline-container-orga8b3bce" class="outline-3">
+<h3 id="orga8b3bce">chaincode</h3>
+<div class="outline-text-3" id="text-orga8b3bce">
 </div>
-<div id="outline-container-org62fc94e" class="outline-4">
-<h4 id="org62fc94e">安装</h4>
-<div class="outline-text-4" id="text-org62fc94e">
+<div id="outline-container-orgbbe1151" class="outline-4">
+<h4 id="orgbbe1151">安装</h4>
+<div class="outline-text-4" id="text-orgbbe1151">
 <p>
 chaincode必须在每个与交易相关的Peer上都安装. 如果有4个Peer与交易相关, 则要安装4次.
 </p>
@@ -306,9 +304,9 @@ peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/
 </div>
 </div>
 
-<div id="outline-container-org65ac9bd" class="outline-4">
-<h4 id="org65ac9bd">实例化</h4>
-<div class="outline-text-4" id="text-org65ac9bd">
+<div id="outline-container-org5266207" class="outline-4">
+<h4 id="org5266207">实例化</h4>
+<div class="outline-text-4" id="text-org5266207">
 <p>
 实例化是生成Channel的Docker镜像和Docker容器, 在实例化时还可以指定背书策略.
 </p>
@@ -319,9 +317,9 @@ peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/
 </div>
 </div>
 
-<div id="outline-container-org1d10d63" class="outline-4">
-<h4 id="org1d10d63">在一个节点上查询并发起交易</h4>
-<div class="outline-text-4" id="text-org1d10d63">
+<div id="outline-container-orgf80692f" class="outline-4">
+<h4 id="orgf80692f">在一个节点上查询并发起交易</h4>
+<div class="outline-text-4" id="text-orgf80692f">
 <p>
 在CLI容器中执行:
 </p>
@@ -333,9 +331,9 @@ peer chaincode invoke -o orderer.example.com:7050  --tls true --cafile $ORDERER_
 </div>
 </div>
 
-<div id="outline-container-orgad3c142" class="outline-4">
-<h4 id="orgad3c142">在另一个节点上查询交易</h4>
-<div class="outline-text-4" id="text-orgad3c142">
+<div id="outline-container-orgf97d95b" class="outline-4">
+<h4 id="orgf97d95b">在另一个节点上查询交易</h4>
+<div class="outline-text-4" id="text-orgf97d95b">
 <div class="org-src-container">
 <pre class="src src-Shell">CORE_PEER_LOCALMSPID="Org2MSP" 
 CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt 
@@ -355,9 +353,9 @@ peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
 </div>
 </div>
 
-<div id="outline-container-org968337a" class="outline-3">
-<h3 id="org968337a">创建通道</h3>
-<div class="outline-text-3" id="text-org968337a">
+<div id="outline-container-org45ac9d3" class="outline-3">
+<h3 id="org45ac9d3">创建通道</h3>
+<div class="outline-text-3" id="text-org45ac9d3">
 <div class="org-src-container">
 <pre class="src src-Shell"># pwd: fabric-sdk-node
 node test/integration/e2e/create-channel.js
@@ -367,9 +365,9 @@ node test/integration/e2e/create-channel.js
 </div>
 </div>
 
-<div id="outline-container-orgb55c2ac" class="outline-2">
-<h2 id="orgb55c2ac">Fabric CA</h2>
-<div class="outline-text-2" id="text-orgb55c2ac">
+<div id="outline-container-org4871d62" class="outline-2">
+<h2 id="org4871d62">Fabric CA</h2>
+<div class="outline-text-2" id="text-org4871d62">
 <p>
 在实际开发中, 我们应该为每个Org建立一个CA, 用CA来管理其中的用户, 而不是使用 <code>cryptogen</code> 这个工具根据 <code>crypto-config.yaml</code> 生成.
 </p>
@@ -397,12 +395,12 @@ node test/integration/e2e/create-channel.js
 </div>
 
 
-<div id="outline-container-org04bb8dd" class="outline-2">
-<h2 id="org04bb8dd">流程</h2>
-<div class="outline-text-2" id="text-org04bb8dd">
+<div id="outline-container-org38f11b9" class="outline-2">
+<h2 id="org38f11b9">流程</h2>
+<div class="outline-text-2" id="text-org38f11b9">
 
 <div class="figure">
-<p><img src="/assets/blog/2018/04/01/fabric-todo-list-分析/26.png" alt="26.png" />
+<p><img src="./26.png" alt="26.png" />
 </p>
 </div>
 
@@ -417,21 +415,21 @@ node test/integration/e2e/create-channel.js
 </div>
 </div>
 
-<div id="outline-container-orgcf5bac5" class="outline-2">
-<h2 id="orgcf5bac5">server</h2>
-<div class="outline-text-2" id="text-orgcf5bac5">
+<div id="outline-container-org89b950a" class="outline-2">
+<h2 id="org89b950a">server</h2>
+<div class="outline-text-2" id="text-org89b950a">
 </div>
-<div id="outline-container-org1473128" class="outline-3">
-<h3 id="org1473128">enrollAdmin</h3>
-<div class="outline-text-3" id="text-org1473128">
+<div id="outline-container-org8e448ac" class="outline-3">
+<h3 id="org8e448ac">enrollAdmin</h3>
+<div class="outline-text-3" id="text-org8e448ac">
 <p>
 Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请求, 就可以在chaincode上注册管理员. 以后, 要注册新的成员, 都是通过这个管理员来进行的.
 </p>
 </div>
 
-<div id="outline-container-orgd3636c9" class="outline-4">
-<h4 id="orgd3636c9">enroll_admin()</h4>
-<div class="outline-text-4" id="text-orgd3636c9">
+<div id="outline-container-org60360a6" class="outline-4">
+<h4 id="org60360a6">enroll_admin()</h4>
+<div class="outline-text-4" id="text-org60360a6">
 <p>
 程序的最开始, 是向区块链网络中的CA注册管理员用户. 如果注册成功, CA会向Server发送注册证书, SDK会将该证书存储在本地的文件系统中.
 </p>
@@ -440,8 +438,8 @@ Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请
 </div>
 </div>
 
-<div id="outline-container-org1267e51" class="outline-2">
-<h2 id="org1267e51">client</h2>
+<div id="outline-container-orgc584a98" class="outline-2">
+<h2 id="orgc584a98">client</h2>
 </div>
 
 </div>
@@ -464,30 +462,21 @@ Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

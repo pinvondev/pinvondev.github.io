@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,42 +33,42 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3188108">准备</a>
+<li><a href="#org026c507">准备</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org8da8e84">下载源代码</a></li>
+<li><a href="#org8a148ec">下载源代码</a></li>
 </ul>
 </li>
-<li><a href="#org060bc2e">下载工具</a>
+<li><a href="#org60b092d">下载工具</a>
 <ul>
-<li><a href="#orgef83874">使用脚本下载</a></li>
-<li><a href="#org865ac7f">编译过Fabric的</a></li>
+<li><a href="#orge2377db">使用脚本下载</a></li>
+<li><a href="#orgbb59f46">编译过Fabric的</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org2b8a324">一键运行</a></li>
-<li><a href="#orgdb0ddc8">手动运行</a>
+<li><a href="#org1b2df05">一键运行</a></li>
+<li><a href="#orgeecb3e1">手动运行</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgfe04c94">cryptogen工具</a></li>
-<li><a href="#orgb7a8d17">configtxgen工具(配置交易生成器)</a></li>
-<li><a href="#org89d1315">使用工具</a></li>
-<li><a href="#org0203cfb">启动网络</a></li>
-<li><a href="#org30798d0">设置环境变量</a></li>
-<li><a href="#orgb5f796f">创建/加入Channel</a></li>
-<li><a href="#org19c7792">关于Channel.</a></li>
-<li><a href="#orgb45c56b">更新锚节点</a></li>
-<li><a href="#org882946a">Chaincode的安装与初始化</a></li>
-<li><a href="#org126a5bb">查询</a></li>
-<li><a href="#org8bce21a">调用</a></li>
-<li><a href="#org9b8393c">背后的原理</a></li>
-<li><a href="#orgc2465a3">总结</a></li>
-<li><a href="#org0b80b6b">查看日志</a></li>
-<li><a href="#orgae03e32">CouchDB</a></li>
-<li><a href="#org75122dc">数据持久化</a></li>
+<li><a href="#org19b7358">cryptogen工具</a></li>
+<li><a href="#org8e79893">configtxgen工具(配置交易生成器)</a></li>
+<li><a href="#org53a8cf1">使用工具</a></li>
+<li><a href="#org2153b7c">启动网络</a></li>
+<li><a href="#orgd02f50c">设置环境变量</a></li>
+<li><a href="#org96c1e35">创建/加入Channel</a></li>
+<li><a href="#orgc186427">关于Channel.</a></li>
+<li><a href="#org16876f2">更新锚节点</a></li>
+<li><a href="#org0b3cb40">Chaincode的安装与初始化</a></li>
+<li><a href="#org8817bde">查询</a></li>
+<li><a href="#orgf348e72">调用</a></li>
+<li><a href="#org3a99c99">背后的原理</a></li>
+<li><a href="#org5fbaf4c">总结</a></li>
+<li><a href="#org67642f7">查看日志</a></li>
+<li><a href="#orgb65e213">CouchDB</a></li>
+<li><a href="#org7f3800a">数据持久化</a></li>
 </ul>
 </li>
 </ul>
@@ -79,17 +77,17 @@
 </div>
 </div>
 
-<div id="outline-container-org3188108" class="outline-2">
-<h2 id="org3188108">准备</h2>
-<div class="outline-text-2" id="text-org3188108">
+<div id="outline-container-org026c507" class="outline-2">
+<h2 id="org026c507">准备</h2>
+<div class="outline-text-2" id="text-org026c507">
 <p>
 注: 使用的版本为1.1.0
 </p>
 </div>
 
-<div id="outline-container-org8da8e84" class="outline-4">
-<h4 id="org8da8e84">下载源代码</h4>
-<div class="outline-text-4" id="text-org8da8e84">
+<div id="outline-container-org8a148ec" class="outline-4">
+<h4 id="org8a148ec">下载源代码</h4>
+<div class="outline-text-4" id="text-org8a148ec">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples.git
 cd fabric-samples
@@ -101,17 +99,17 @@ git checkout {TAG}
 </div>
 </div>
 
-<div id="outline-container-org060bc2e" class="outline-3">
-<h3 id="org060bc2e">下载工具</h3>
-<div class="outline-text-3" id="text-org060bc2e">
+<div id="outline-container-org60b092d" class="outline-3">
+<h3 id="org60b092d">下载工具</h3>
+<div class="outline-text-3" id="text-org60b092d">
 <p>
 想要运行这里的官方案例, 需要准备一些工具. 你可以使用脚本下载, 如果编译过Fabric的, 也可以选另一种方式, 因为如果编译过, 已经有很多镜像文件了, 不需要使用脚本重新下载.
 </p>
 </div>
 
-<div id="outline-container-orgef83874" class="outline-4">
-<h4 id="orgef83874">使用脚本下载</h4>
-<div class="outline-text-4" id="text-orgef83874">
+<div id="outline-container-orge2377db" class="outline-4">
+<h4 id="orge2377db">使用脚本下载</h4>
+<div class="outline-text-4" id="text-orge2377db">
 <p>
 可以直接执行以下命令:
 </p>
@@ -136,9 +134,9 @@ chmod +x ./bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-org865ac7f" class="outline-4">
-<h4 id="org865ac7f">编译过Fabric的</h4>
-<div class="outline-text-4" id="text-org865ac7f">
+<div id="outline-container-orgbb59f46" class="outline-4">
+<h4 id="orgbb59f46">编译过Fabric的</h4>
+<div class="outline-text-4" id="text-orgbb59f46">
 <p>
 如果有根据<a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/">编译</a>所说的进行编译过, 可以先打开 <code>bootstrap.sh</code>, 在里面查找 <code>dockerFabricPull()</code> 方法, 将该方法以后(包括该方法)的内容全部注释. 添加两句:
 </p>
@@ -170,9 +168,9 @@ echo ${VERSION}
 
 
 
-<div id="outline-container-org2b8a324" class="outline-2">
-<h2 id="org2b8a324">一键运行</h2>
-<div class="outline-text-2" id="text-org2b8a324">
+<div id="outline-container-org1b2df05" class="outline-2">
+<h2 id="org1b2df05">一键运行</h2>
+<div class="outline-text-2" id="text-org1b2df05">
 <div class="org-src-container">
 <pre class="src src-Shell">cd first-network
 
@@ -192,26 +190,26 @@ echo ${VERSION}
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/28/fabric官方案例first-network/9.png" alt="9.png" />
+<p><img src="./9.png" alt="9.png" />
 </p>
 </div>
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/28/fabric官方案例first-network/10.png" alt="10.png" />
+<p><img src="./10.png" alt="10.png" />
 </p>
 </div>
 </div>
 </div>
 
 
-<div id="outline-container-orgdb0ddc8" class="outline-2">
-<h2 id="orgdb0ddc8">手动运行</h2>
-<div class="outline-text-2" id="text-orgdb0ddc8">
+<div id="outline-container-orgeecb3e1" class="outline-2">
+<h2 id="orgeecb3e1">手动运行</h2>
+<div class="outline-text-2" id="text-orgeecb3e1">
 </div>
-<div id="outline-container-orgfe04c94" class="outline-4">
-<h4 id="orgfe04c94">cryptogen工具</h4>
-<div class="outline-text-4" id="text-orgfe04c94">
+<div id="outline-container-org19b7358" class="outline-4">
+<h4 id="org19b7358">cryptogen工具</h4>
+<div class="outline-text-4" id="text-org19b7358">
 <p>
 cryptogen工具为网络节点生成证书信息(x509证书). 这些证书是节点身份的代表, 它们使得我们可以在网络中交易时进行签名/验证身份.
 </p>
@@ -234,7 +232,7 @@ emacs cryp.yaml
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/28/fabric官方案例first-network/11.png" alt="11.png" />
+<p><img src="./11.png" alt="11.png" />
 </p>
 </div>
 
@@ -256,9 +254,9 @@ emacs cryp.yaml
 </div>
 </div>
 
-<div id="outline-container-orgb7a8d17" class="outline-4">
-<h4 id="orgb7a8d17">configtxgen工具(配置交易生成器)</h4>
-<div class="outline-text-4" id="text-orgb7a8d17">
+<div id="outline-container-org8e79893" class="outline-4">
+<h4 id="org8e79893">configtxgen工具(配置交易生成器)</h4>
+<div class="outline-text-4" id="text-org8e79893">
 <p>
 configtxgen会生成4个配置信息:
 </p>
@@ -282,9 +280,9 @@ configtxgen的配置文件是 <code>configtx.yaml</code>. 去掉其中的注释�
 </div>
 </div>
 
-<div id="outline-container-org89d1315" class="outline-4">
-<h4 id="org89d1315">使用工具</h4>
-<div class="outline-text-4" id="text-org89d1315">
+<div id="outline-container-org53a8cf1" class="outline-4">
+<h4 id="org53a8cf1">使用工具</h4>
+<div class="outline-text-4" id="text-org53a8cf1">
 <p>
 其实怎么去使用这些工具, 在一键式脚本 <code>byfn.sh</code> 中都有写明. 如根据 <code>crypto-config.yaml</code> 中的配置来生成用于相关数字证书, 可以查看 <code>generateCerts()</code> 中的写法.
 </p>
@@ -347,9 +345,9 @@ configtxgen的配置文件是 <code>configtx.yaml</code>. 去掉其中的注释�
 </div>
 </div>
 
-<div id="outline-container-org0203cfb" class="outline-4">
-<h4 id="org0203cfb">启动网络</h4>
-<div class="outline-text-4" id="text-org0203cfb">
+<div id="outline-container-org2153b7c" class="outline-4">
+<h4 id="org2153b7c">启动网络</h4>
+<div class="outline-text-4" id="text-org2153b7c">
 <p>
 我们使用docker-compose脚本来启动网络, 该脚本使用之前下载的镜像文件, 通过 <code>genesis.block</code> 引导Orderer.
 </p>
@@ -372,9 +370,9 @@ configtxgen的配置文件是 <code>configtx.yaml</code>. 去掉其中的注释�
 </div>
 </div>
 
-<div id="outline-container-org30798d0" class="outline-4">
-<h4 id="org30798d0">设置环境变量</h4>
-<div class="outline-text-4" id="text-org30798d0">
+<div id="outline-container-orgd02f50c" class="outline-4">
+<h4 id="orgd02f50c">设置环境变量</h4>
+<div class="outline-text-4" id="text-orgd02f50c">
 <p>
 为了能在 <code>peer0.org1.example.com</code> 上执行下面的CLI命令, 需要先配置几个环境变量, 这些环境变量已经默认在CLI容器里设置好了, 可以直接使用. 但是, 如果想发送命令到其他的Peers或Orderer中使用, 则需要相应的设置对应的环境变量. 
 </p>
@@ -390,9 +388,9 @@ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/c
 </div>
 </div>
 
-<div id="outline-container-orgb5f796f" class="outline-4">
-<h4 id="orgb5f796f">创建/加入Channel</h4>
-<div class="outline-text-4" id="text-orgb5f796f">
+<div id="outline-container-org96c1e35" class="outline-4">
+<h4 id="org96c1e35">创建/加入Channel</h4>
+<div class="outline-text-4" id="text-org96c1e35">
 <p>
 我们可以使用configtxgen工具来创建Channel.
 </p>
@@ -435,7 +433,7 @@ peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-ar
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/28/fabric官方案例first-network/18.png" alt="18.png" />
+<p><img src="./18.png" alt="18.png" />
 </p>
 </div>
 
@@ -463,9 +461,9 @@ peer channel join -b mychannel.block
 </div>
 </div>
 
-<div id="outline-container-org19c7792" class="outline-4">
-<h4 id="org19c7792">关于Channel.</h4>
-<div class="outline-text-4" id="text-org19c7792">
+<div id="outline-container-orgc186427" class="outline-4">
+<h4 id="orgc186427">关于Channel.</h4>
+<div class="outline-text-4" id="text-orgc186427">
 <p>
 在Fabric中, Channel是很重要的概念. 一个Peer要想与另一个Peer发生交易, 必须处于同一个Channel中, 账本与Channel也是一对一的关系. Channel需要使用 <code>peer channel ...</code> 这样的命令进行维护.
 </p>
@@ -500,9 +498,9 @@ create, join, update 三个命令, 都使用了配置文件.
 </div>
 </div>
 
-<div id="outline-container-orgb45c56b" class="outline-4">
-<h4 id="orgb45c56b">更新锚节点</h4>
-<div class="outline-text-4" id="text-orgb45c56b">
+<div id="outline-container-org16876f2" class="outline-4">
+<h4 id="org16876f2">更新锚节点</h4>
+<div class="outline-text-4" id="text-org16876f2">
 <div class="org-src-container">
 <pre class="src src-Shell">peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 </pre>
@@ -521,9 +519,9 @@ peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-ar
 </div>
 </div>
 
-<div id="outline-container-org882946a" class="outline-4">
-<h4 id="org882946a">Chaincode的安装与初始化</h4>
-<div class="outline-text-4" id="text-org882946a">
+<div id="outline-container-org0b3cb40" class="outline-4">
+<h4 id="org0b3cb40">Chaincode的安装与初始化</h4>
+<div class="outline-text-4" id="text-org0b3cb40">
 <p>
 应用程序通过Chaincode与BlockChain交互. 因此, 我们要在每个Peer上安装Chaincode来执行交易, 并在Channel中对其实例化.
 </p>
@@ -570,9 +568,9 @@ peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-ar
 </div>
 </div>
 
-<div id="outline-container-org126a5bb" class="outline-4">
-<h4 id="org126a5bb">查询</h4>
-<div class="outline-text-4" id="text-org126a5bb">
+<div id="outline-container-org8817bde" class="outline-4">
+<h4 id="org8817bde">查询</h4>
+<div class="outline-text-4" id="text-org8817bde">
 <p>
 假设我们要查询 <code>a</code> 的值, 以确认Chaincode是否已实例化, state DB是否已填充. 查询的语法如下:
 </p>
@@ -587,15 +585,15 @@ peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-ar
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/28/fabric官方案例first-network/19.png" alt="19.png" />
+<p><img src="./19.png" alt="19.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8bce21a" class="outline-4">
-<h4 id="org8bce21a">调用</h4>
-<div class="outline-text-4" id="text-org8bce21a">
+<div id="outline-container-orgf348e72" class="outline-4">
+<h4 id="orgf348e72">调用</h4>
+<div class="outline-text-4" id="text-orgf348e72">
 <p>
 假设我们要从 <code>a</code> 里面减去10给 <code>b</code>.
 </p>
@@ -614,15 +612,15 @@ peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-ar
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/03/28/fabric官方案例first-network/20.png" alt="20.png" />
+<p><img src="./20.png" alt="20.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9b8393c" class="outline-4">
-<h4 id="org9b8393c">背后的原理</h4>
-<div class="outline-text-4" id="text-org9b8393c">
+<div id="outline-container-org3a99c99" class="outline-4">
+<h4 id="org3a99c99">背后的原理</h4>
+<div class="outline-text-4" id="text-org3a99c99">
 <p>
 以上所说的步骤, 就是 <code>script.sh</code> 文件中的 <code>./byfn.sh up</code>. 现在, 使用 <code>./byfn.sh down</code> 来关闭它们.
 </p>
@@ -645,18 +643,18 @@ peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-ar
 </div>
 </div>
 
-<div id="outline-container-orgc2465a3" class="outline-4">
-<h4 id="orgc2465a3">总结</h4>
-<div class="outline-text-4" id="text-orgc2465a3">
+<div id="outline-container-org5fbaf4c" class="outline-4">
+<h4 id="org5fbaf4c">总结</h4>
+<div class="outline-text-4" id="text-org5fbaf4c">
 <p>
 要想对账本进行操作, 需要先在Peer上安装Chaincode. Chaincode容器在需要时(如查询)才会启动. Channel中每个Peer都有账本的副本, 存储了不可改变的, 序列化的记录区块和State Database用于保存当前的Fabric状态. 没有安装Chaincode的Peer也会同步账本.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0b80b6b" class="outline-4">
-<h4 id="org0b80b6b">查看日志</h4>
-<div class="outline-text-4" id="text-org0b80b6b">
+<div id="outline-container-org67642f7" class="outline-4">
+<h4 id="org67642f7">查看日志</h4>
+<div class="outline-text-4" id="text-org67642f7">
 <p>
 CLI容器的日志:
 </p>
@@ -675,18 +673,18 @@ Chaincode的日志:
 </div>
 </div>
 
-<div id="outline-container-orgae03e32" class="outline-4">
-<h4 id="orgae03e32">CouchDB</h4>
-<div class="outline-text-4" id="text-orgae03e32">
+<div id="outline-container-orgb65e213" class="outline-4">
+<h4 id="orgb65e213">CouchDB</h4>
+<div class="outline-text-4" id="text-orgb65e213">
 <p>
 状态数据库使用goleveldb或CouchDB. 默认为goleveldb.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org75122dc" class="outline-4">
-<h4 id="org75122dc">数据持久化</h4>
-<div class="outline-text-4" id="text-org75122dc">
+<div id="outline-container-org7f3800a" class="outline-4">
+<h4 id="org7f3800a">数据持久化</h4>
+<div class="outline-text-4" id="text-org7f3800a">
 <p>
 如果要在Peer容器中进行数据持久化, 可以将docker容器内相应的目录挂载到宿主机器的一个目录中. 如, 添加下面的内容到 <code>docker-compose-base.yaml</code> 的Peer的约定中:
 </p>
@@ -719,30 +717,21 @@ Chaincode的日志:
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

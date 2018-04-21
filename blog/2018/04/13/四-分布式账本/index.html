@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,27 +33,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org62807ce">概述</a>
+<li><a href="#org31955d4">概述</a>
 <ul>
-<li><a href="#org1fdaa56">读写集</a></li>
-<li><a href="#org26e5a60">交易验证和世界状态更新</a>
+<li><a href="#orgdce4d18">读写集</a></li>
+<li><a href="#orged5265c">交易验证和世界状态更新</a>
 <ul>
-<li><a href="#org568a64d">模拟和验证例子</a></li>
+<li><a href="#org8391110">模拟和验证例子</a></li>
 </ul>
 </li>
-<li><a href="#orgb94f220">账本编号</a></li>
-<li><a href="#org85d3370">账本数据</a>
+<li><a href="#orgb14058e">账本编号</a></li>
+<li><a href="#org056a973">账本数据</a>
 <ul>
-<li><a href="#org3a629cb">账本数据存储</a></li>
-<li><a href="#org0688324">账本数据读取</a></li>
-<li><a href="#orgf6be359">索引同步</a></li>
-<li><a href="#org80b8d78">交易模拟执行</a></li>
+<li><a href="#orgae96fde">账本数据存储</a></li>
+<li><a href="#org363cfde">账本数据读取</a></li>
+<li><a href="#orgf24739b">索引同步</a></li>
+<li><a href="#org215d0d3">交易模拟执行</a></li>
 </ul>
 </li>
-<li><a href="#org69fddfa">区块索引</a></li>
-<li><a href="#orga909676">状态数据</a>
+<li><a href="#org61023aa">区块索引</a></li>
+<li><a href="#org6ac7c1a">状态数据</a>
 <ul>
-<li><a href="#org33a064f">基于状态数据的区块验证</a></li>
+<li><a href="#org7b01edf">基于状态数据的区块验证</a></li>
 </ul>
 </li>
 </ul>
@@ -64,9 +62,9 @@
 </div>
 </div>
 
-<div id="outline-container-org62807ce" class="outline-2">
-<h2 id="org62807ce">概述</h2>
-<div class="outline-text-2" id="text-org62807ce">
+<div id="outline-container-org31955d4" class="outline-2">
+<h2 id="org31955d4">概述</h2>
+<div class="outline-text-2" id="text-org31955d4">
 <p>
 分布式账本技术(共享账本)通过在不同节点之间达成共识, 记录相同的账本数据.
 </p>
@@ -81,7 +79,7 @@ Hyperledger Fabric采用背书/共识模型, 模拟执行chaincode和区块验�
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/04/13/四-分布式账本/43.png" alt="43.png" />
+<p><img src="./43.png" alt="43.png" />
 </p>
 </div>
 
@@ -107,9 +105,9 @@ Hyperledger Fabric 主要包含以下元素:
 </ul>
 </div>
 
-<div id="outline-container-org1fdaa56" class="outline-3">
-<h3 id="org1fdaa56">读写集</h3>
-<div class="outline-text-3" id="text-org1fdaa56">
+<div id="outline-container-orgdce4d18" class="outline-3">
+<h3 id="orgdce4d18">读写集</h3>
+<div class="outline-text-3" id="text-orgdce4d18">
 <p>
 背书节点模拟执行交易时会生成读写集. 
 </p>
@@ -152,9 +150,9 @@ Hyperledger Fabric 主要包含以下元素:
 </div>
 </div>
 
-<div id="outline-container-org26e5a60" class="outline-3">
-<h3 id="org26e5a60">交易验证和世界状态更新</h3>
-<div class="outline-text-3" id="text-org26e5a60">
+<div id="outline-container-orged5265c" class="outline-3">
+<h3 id="orged5265c">交易验证和世界状态更新</h3>
+<div class="outline-text-3" id="text-orged5265c">
 <p>
 committer根据读集来验证交易, 根据写集来更新键的版本和值.
 </p>
@@ -173,9 +171,9 @@ committer根据读集来验证交易, 根据写集来更新键的版本和值.
 </p>
 </div>
 
-<div id="outline-container-org568a64d" class="outline-4">
-<h4 id="org568a64d">模拟和验证例子</h4>
-<div class="outline-text-4" id="text-org568a64d">
+<div id="outline-container-org8391110" class="outline-4">
+<h4 id="org8391110">模拟和验证例子</h4>
+<div class="outline-text-4" id="text-org8391110">
 <p>
 假设World State中的键值对用一个三元组来表示: (k, ver, val). 其中, k是键, ver是最新版本, val是值.
 </p>
@@ -247,16 +245,16 @@ orderer按照t1-t5的顺序进行排序, 则committer节点的验证结果如下
 </div>
 </div>
 </div>
-<div id="outline-container-orgb94f220" class="outline-3">
-<h3 id="orgb94f220">账本编号</h3>
+<div id="outline-container-orgb14058e" class="outline-3">
+<h3 id="orgb14058e">账本编号</h3>
 </div>
-<div id="outline-container-org85d3370" class="outline-3">
-<h3 id="org85d3370">账本数据</h3>
-<div class="outline-text-3" id="text-org85d3370">
+<div id="outline-container-org056a973" class="outline-3">
+<h3 id="org056a973">账本数据</h3>
+<div class="outline-text-3" id="text-org056a973">
 </div>
-<div id="outline-container-org3a629cb" class="outline-4">
-<h4 id="org3a629cb">账本数据存储</h4>
-<div class="outline-text-4" id="text-org3a629cb">
+<div id="outline-container-orgae96fde" class="outline-4">
+<h4 id="orgae96fde">账本数据存储</h4>
+<div class="outline-text-4" id="text-orgae96fde">
 <p>
 账本文件以 "blockfile_" 为前缀, 默认区块文件大小上限为64mb, 一个账本能保存的最大数据量约为61tb.
 </p>
@@ -267,28 +265,28 @@ committer节点负责维护节点本地的账本, 通过gossip模块从orderer�
 
 
 <div class="figure">
-<p><img src="/assets/blog/2018/04/13/四-分布式账本/44.png" alt="44.png" />
+<p><img src="./44.png" alt="44.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org0688324" class="outline-4">
-<h4 id="org0688324">账本数据读取</h4>
+<div id="outline-container-org363cfde" class="outline-4">
+<h4 id="org363cfde">账本数据读取</h4>
 </div>
 
-<div id="outline-container-orgf6be359" class="outline-4">
-<h4 id="orgf6be359">索引同步</h4>
+<div id="outline-container-orgf24739b" class="outline-4">
+<h4 id="orgf24739b">索引同步</h4>
 </div>
 
-<div id="outline-container-org80b8d78" class="outline-4">
-<h4 id="org80b8d78">交易模拟执行</h4>
+<div id="outline-container-org215d0d3" class="outline-4">
+<h4 id="org215d0d3">交易模拟执行</h4>
 </div>
 </div>
 
-<div id="outline-container-org69fddfa" class="outline-3">
-<h3 id="org69fddfa">区块索引</h3>
-<div class="outline-text-3" id="text-org69fddfa">
+<div id="outline-container-org61023aa" class="outline-3">
+<h3 id="org61023aa">区块索引</h3>
+<div class="outline-text-3" id="text-org61023aa">
 <p>
 有多种区块索引方式, 帮助我们快速找到需要的区块.
 </p>
@@ -303,9 +301,9 @@ committer节点负责维护节点本地的账本, 通过gossip模块从orderer�
 </div>
 </div>
 
-<div id="outline-container-orga909676" class="outline-3">
-<h3 id="orga909676">状态数据</h3>
-<div class="outline-text-3" id="text-orga909676">
+<div id="outline-container-org6ac7c1a" class="outline-3">
+<h3 id="org6ac7c1a">状态数据</h3>
+<div class="outline-text-3" id="text-org6ac7c1a">
 <p>
 world state记录交易执行结果.
 </p>
@@ -335,9 +333,9 @@ chaincode根据当前状态数据执行交易.
 </p>
 </div>
 
-<div id="outline-container-org33a064f" class="outline-4">
-<h4 id="org33a064f">基于状态数据的区块验证</h4>
-<div class="outline-text-4" id="text-org33a064f">
+<div id="outline-container-org7b01edf" class="outline-4">
+<h4 id="org7b01edf">基于状态数据的区块验证</h4>
+<div class="outline-text-4" id="text-org7b01edf">
 <p>
 区块有两种类型: 背书交易区块, 配置交易区块.
 </p>
@@ -366,30 +364,21 @@ chaincode根据当前状态数据执行交易.
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

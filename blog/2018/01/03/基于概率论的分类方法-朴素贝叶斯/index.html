@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,23 +33,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2f7683b">概述</a></li>
-<li><a href="#org8079cf8">基于贝叶斯决策理论的分类方法</a></li>
-<li><a href="#orgfca3dff">条件概率</a></li>
-<li><a href="#orgddab7b7">使用朴素贝叶斯进行文档分类</a></li>
-<li><a href="#orgfa45492">使用python进行文本分类</a>
+<li><a href="#org09e7024">概述</a></li>
+<li><a href="#org696333b">基于贝叶斯决策理论的分类方法</a></li>
+<li><a href="#orgf437d5c">条件概率</a></li>
+<li><a href="#org4f14d53">使用朴素贝叶斯进行文档分类</a></li>
+<li><a href="#org809a1d3">使用python进行文本分类</a>
 <ul>
-<li><a href="#orgcb09fa4">从文本中构建词向量(将单词转化为一组数字)</a></li>
-<li><a href="#org5e7687b">训练算法: 从词向量计算概率</a></li>
+<li><a href="#org0639844">从文本中构建词向量(将单词转化为一组数字)</a></li>
+<li><a href="#orgd78cc0c">训练算法: 从词向量计算概率</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2f7683b" class="outline-2">
-<h2 id="org2f7683b">概述</h2>
-<div class="outline-text-2" id="text-org2f7683b">
+<div id="outline-container-org09e7024" class="outline-2">
+<h2 id="org09e7024">概述</h2>
+<div class="outline-text-2" id="text-org09e7024">
 <p>
 朴素贝叶斯是一个分类算法.
 </p>
@@ -62,9 +60,9 @@
 </div>
 </div>
 
-<div id="outline-container-org8079cf8" class="outline-2">
-<h2 id="org8079cf8">基于贝叶斯决策理论的分类方法</h2>
-<div class="outline-text-2" id="text-org8079cf8">
+<div id="outline-container-org696333b" class="outline-2">
+<h2 id="org696333b">基于贝叶斯决策理论的分类方法</h2>
+<div class="outline-text-2" id="text-org696333b">
 <p>
 优点: 在数据较少的情况下仍然有效,可以处理多类别问题.
 缺点: 对于输入数据的准备方式较为敏感.
@@ -78,9 +76,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgfca3dff" class="outline-2">
-<h2 id="orgfca3dff">条件概率</h2>
-<div class="outline-text-2" id="text-orgfca3dff">
+<div id="outline-container-orgf437d5c" class="outline-2">
+<h2 id="orgf437d5c">条件概率</h2>
+<div class="outline-text-2" id="text-orgf437d5c">
 <p>
 计算公式1: \(P(A \mid B) = \frac{AB}{B}\)
 </p>
@@ -92,9 +90,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgddab7b7" class="outline-2">
-<h2 id="orgddab7b7">使用朴素贝叶斯进行文档分类</h2>
-<div class="outline-text-2" id="text-orgddab7b7">
+<div id="outline-container-org4f14d53" class="outline-2">
+<h2 id="org4f14d53">使用朴素贝叶斯进行文档分类</h2>
+<div class="outline-text-2" id="text-org4f14d53">
 <p>
 朴素贝叶斯是贝叶斯分类器的一个扩展, 常用于文档分类. 对于文档, 可以把每个记事的出现或者不出现作为一个特征, 这样得到的特征数目就会跟词汇表中的词目一样多.
 </p>
@@ -109,17 +107,17 @@
 </div>
 </div>
 
-<div id="outline-container-orgfa45492" class="outline-2">
-<h2 id="orgfa45492">使用python进行文本分类</h2>
-<div class="outline-text-2" id="text-orgfa45492">
+<div id="outline-container-org809a1d3" class="outline-2">
+<h2 id="org809a1d3">使用python进行文本分类</h2>
+<div class="outline-text-2" id="text-org809a1d3">
 <p>
 分类: 侮辱类和非侮辱类.
 </p>
 </div>
 
-<div id="outline-container-orgcb09fa4" class="outline-3">
-<h3 id="orgcb09fa4">从文本中构建词向量(将单词转化为一组数字)</h3>
-<div class="outline-text-3" id="text-orgcb09fa4">
+<div id="outline-container-org0639844" class="outline-3">
+<h3 id="org0639844">从文本中构建词向量(将单词转化为一组数字)</h3>
+<div class="outline-text-3" id="text-org0639844">
 <p>
 loadDataSet(). 输出: 分好词的集合, 分类结果(1, 0)
 不过书中的程序并没有实现如何分词, 而是为了方便, 直接输入分好了词的数据.
@@ -137,9 +135,9 @@ setOfWords2Vec(). 输入: 词汇表, 文档; 输出: 文档向量
 </div>
 </div>
 
-<div id="outline-container-org5e7687b" class="outline-3">
-<h3 id="org5e7687b">训练算法: 从词向量计算概率</h3>
-<div class="outline-text-3" id="text-org5e7687b">
+<div id="outline-container-orgd78cc0c" class="outline-3">
+<h3 id="orgd78cc0c">训练算法: 从词向量计算概率</h3>
+<div class="outline-text-3" id="text-orgd78cc0c">
 <p>
 已知: 分类(侮辱类, 非侮辱类); 文档向量
 </p>
@@ -196,30 +194,21 @@ trainNB0(). 输入: 文档矩阵, 类别; 输出: 两个向量和一个概率
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

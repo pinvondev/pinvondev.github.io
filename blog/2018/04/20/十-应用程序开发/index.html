@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,27 +33,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfe2a781">概述</a>
+<li><a href="#orga5e4557">概述</a>
 <ul>
-<li><a href="#org7a733b3">智能合约开发</a></li>
-<li><a href="#org0f7d794">应用程序开发</a></li>
+<li><a href="#org9f91eb5">智能合约开发</a></li>
+<li><a href="#org645de8f">应用程序开发</a></li>
 </ul>
 </li>
-<li><a href="#orged61a7f">chaincode</a>
+<li><a href="#org6f235f5">chaincode</a>
 <ul>
-<li><a href="#orge9433fb">chaincode接口</a></li>
-<li><a href="#org551f56e">chaincode结构</a></li>
-<li><a href="#org28c5a2e">chaincode工作流程</a></li>
+<li><a href="#orgbab7e7e">chaincode接口</a></li>
+<li><a href="#orgfc9158b">chaincode结构</a></li>
+<li><a href="#org7d1d5b9">chaincode工作流程</a></li>
 </ul>
 </li>
-<li><a href="#org20cae6e">chaincode的API</a></li>
+<li><a href="#org5cc3734">chaincode的API</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfe2a781" class="outline-2">
-<h2 id="orgfe2a781">概述</h2>
-<div class="outline-text-2" id="text-orgfe2a781">
+<div id="outline-container-orga5e4557" class="outline-2">
+<h2 id="orga5e4557">概述</h2>
+<div class="outline-text-2" id="text-orga5e4557">
 <p>
 区块链应用一般由部署在区块链网络中的智能合约和调用这些智能合约的应用程序组成.
 </p>
@@ -73,9 +71,9 @@
 </p>
 </div>
 
-<div id="outline-container-org7a733b3" class="outline-3">
-<h3 id="org7a733b3">智能合约开发</h3>
-<div class="outline-text-3" id="text-org7a733b3">
+<div id="outline-container-org9f91eb5" class="outline-3">
+<h3 id="org9f91eb5">智能合约开发</h3>
+<div class="outline-text-3" id="text-org9f91eb5">
 <p>
 智能合约直接与账本打交道, 处于十分核心的位置. 智能合约本质上是为了对上层业务逻辑进行支持. Fabric支持了包括Go语言在内的多种高级语言, 并支持图灵完备的处理逻辑, 可以支持开发更复杂的上层应用.
 </p>
@@ -90,9 +88,9 @@
 </div>
 </div>
 
-<div id="outline-container-org0f7d794" class="outline-3">
-<h3 id="org0f7d794">应用程序开发</h3>
-<div class="outline-text-3" id="text-org0f7d794">
+<div id="outline-container-org645de8f" class="outline-3">
+<h3 id="org645de8f">应用程序开发</h3>
+<div class="outline-text-3" id="text-org645de8f">
 <p>
 Fabric提供了SDK, 用来封装一系列与区块链网络打交道的基本方法, 包括发送交易, 监听网络事件, 查询区块和交易信息等, 能够提高对智能合约进行使用的效率.
 </p>
@@ -110,22 +108,22 @@ Fabric提供了SDK, 用来封装一系列与区块链网络打交道的基本方
 </div>
 </div>
 
-<div id="outline-container-orged61a7f" class="outline-2">
-<h2 id="orged61a7f">chaincode</h2>
-<div class="outline-text-2" id="text-orged61a7f">
+<div id="outline-container-org6f235f5" class="outline-2">
+<h2 id="org6f235f5">chaincode</h2>
+<div class="outline-text-2" id="text-org6f235f5">
 </div>
-<div id="outline-container-orge9433fb" class="outline-3">
-<h3 id="orge9433fb">chaincode接口</h3>
-<div class="outline-text-3" id="text-orge9433fb">
+<div id="outline-container-orgbab7e7e" class="outline-3">
+<h3 id="orgbab7e7e">chaincode接口</h3>
+<div class="outline-text-3" id="text-orgbab7e7e">
 <p>
 每个chaincode都要实现 <code>Init()</code> 接口和 <code>Invoke()</code> 接口.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org551f56e" class="outline-3">
-<h3 id="org551f56e">chaincode结构</h3>
-<div class="outline-text-3" id="text-org551f56e">
+<div id="outline-container-orgfc9158b" class="outline-3">
+<h3 id="orgfc9158b">chaincode结构</h3>
+<div class="outline-text-3" id="text-orgfc9158b">
 <p>
 一个chaincode的必要结构如下所示:
 </p>
@@ -166,9 +164,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-org28c5a2e" class="outline-3">
-<h3 id="org28c5a2e">chaincode工作流程</h3>
-<div class="outline-text-3" id="text-org28c5a2e">
+<div id="outline-container-org7d1d5b9" class="outline-3">
+<h3 id="org7d1d5b9">chaincode工作流程</h3>
+<div class="outline-text-3" id="text-org7d1d5b9">
 <p>
 用户通过SDK或CLI, 向Fabric的背书节点发出调用chaincode的交易提案, 节点对提案进行检查, 通过后创建模拟执行这一交易的环境. 
 </p>
@@ -184,9 +182,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-org20cae6e" class="outline-2">
-<h2 id="org20cae6e">chaincode的API</h2>
-<div class="outline-text-2" id="text-org20cae6e">
+<div id="outline-container-org5cc3734" class="outline-2">
+<h2 id="org5cc3734">chaincode的API</h2>
+<div class="outline-text-2" id="text-org5cc3734">
 <p>
 chaincode需要记录的数据称为状态, 以键值对的形式存储.
 </p>
@@ -221,30 +219,21 @@ shim.api: <a href="https://godoc.org/github.com/hyperledger/fabric/core/chaincod
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

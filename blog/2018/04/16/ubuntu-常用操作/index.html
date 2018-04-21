@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,31 +33,31 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3f71e07">tree 查看目录结构</a></li>
-<li><a href="#orgcf7e0e5">SSH</a>
+<li><a href="#org9da203d">tree 查看目录结构</a></li>
+<li><a href="#org5ba8fdb">SSH</a>
 <ul>
-<li><a href="#orgf7f1ae3">基本用法</a>
+<li><a href="#org910fb9e">基本用法</a>
 <ul>
-<li><a href="#org7458f99">使用SSH远程登录</a></li>
-<li><a href="#org47681ae">连接到目标主机的其他端口</a></li>
-<li><a href="#org739485e">构建SSH密钥对</a></li>
-<li><a href="#org59a73bc">寻找主机密钥</a></li>
-<li><a href="#org59ff2ad">删除主机密钥</a></li>
+<li><a href="#org21983ce">使用SSH远程登录</a></li>
+<li><a href="#org94e169e">连接到目标主机的其他端口</a></li>
+<li><a href="#orgee9a2e2">构建SSH密钥对</a></li>
+<li><a href="#org25a83ed">寻找主机密钥</a></li>
+<li><a href="#org9de3cbf">删除主机密钥</a></li>
 </ul>
 </li>
-<li><a href="#org1f1c0e8">绑定本地端口</a></li>
-<li><a href="#org950f410">SSH隧道</a></li>
-<li><a href="#org728e4db">SSH反向连接</a></li>
+<li><a href="#org8c82410">绑定本地端口</a></li>
+<li><a href="#orgb064fd2">SSH隧道</a></li>
+<li><a href="#org92bf544">SSH反向连接</a></li>
 </ul>
 </li>
-<li><a href="#org3ba325e">du 查看占用磁盘大小</a></li>
+<li><a href="#org9fd0315">du 查看占用磁盘大小</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3f71e07" class="outline-2">
-<h2 id="org3f71e07">tree 查看目录结构</h2>
-<div class="outline-text-2" id="text-org3f71e07">
+<div id="outline-container-org9da203d" class="outline-2">
+<h2 id="org9da203d">tree 查看目录结构</h2>
+<div class="outline-text-2" id="text-org9da203d">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install tree
 tree -L 4 pathname # -L指定层级
@@ -68,9 +66,9 @@ tree -L 4 pathname # -L指定层级
 </div>
 </div>
 
-<div id="outline-container-orgcf7e0e5" class="outline-2">
-<h2 id="orgcf7e0e5">SSH</h2>
-<div class="outline-text-2" id="text-orgcf7e0e5">
+<div id="outline-container-org5ba8fdb" class="outline-2">
+<h2 id="org5ba8fdb">SSH</h2>
+<div class="outline-text-2" id="text-org5ba8fdb">
 <p>
 SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如果工作环境中的防火墙限制了一些网络端口的使用, 但允许SSH连接, 那么也可以通过将TCP端口转发来使用SSH进行通讯. 总的来说, SSH端口转发能够提供两大功能:
 </p>
@@ -80,13 +78,13 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </ol>
 </div>
 
-<div id="outline-container-orgf7f1ae3" class="outline-3">
-<h3 id="orgf7f1ae3">基本用法</h3>
-<div class="outline-text-3" id="text-orgf7f1ae3">
+<div id="outline-container-org910fb9e" class="outline-3">
+<h3 id="org910fb9e">基本用法</h3>
+<div class="outline-text-3" id="text-org910fb9e">
 </div>
-<div id="outline-container-org7458f99" class="outline-4">
-<h4 id="org7458f99">使用SSH远程登录</h4>
-<div class="outline-text-4" id="text-org7458f99">
+<div id="outline-container-org21983ce" class="outline-4">
+<h4 id="org21983ce">使用SSH远程登录</h4>
+<div class="outline-text-4" id="text-org21983ce">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh pinvon@192.168.1.104
 </pre>
@@ -94,9 +92,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org47681ae" class="outline-4">
-<h4 id="org47681ae">连接到目标主机的其他端口</h4>
-<div class="outline-text-4" id="text-org47681ae">
+<div id="outline-container-org94e169e" class="outline-4">
+<h4 id="org94e169e">连接到目标主机的其他端口</h4>
+<div class="outline-text-4" id="text-org94e169e">
 <p>
 默认情况下, SSH连接到目标主机的22端口上, 我们也可以指定其他的端口:
 </p>
@@ -107,9 +105,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org739485e" class="outline-4">
-<h4 id="org739485e">构建SSH密钥对</h4>
-<div class="outline-text-4" id="text-org739485e">
+<div id="outline-container-orgee9a2e2" class="outline-4">
+<h4 id="orgee9a2e2">构建SSH密钥对</h4>
+<div class="outline-text-4" id="text-orgee9a2e2">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh-keygen -t rsa
 </pre>
@@ -117,9 +115,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org59a73bc" class="outline-4">
-<h4 id="org59a73bc">寻找主机密钥</h4>
-<div class="outline-text-4" id="text-org59a73bc">
+<div id="outline-container-org25a83ed" class="outline-4">
+<h4 id="org25a83ed">寻找主机密钥</h4>
+<div class="outline-text-4" id="text-org25a83ed">
 <p>
 在准备添加密钥之前, 可以先检查是否已经添加对应主机的密钥:
 </p>
@@ -130,9 +128,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org59ff2ad" class="outline-4">
-<h4 id="org59ff2ad">删除主机密钥</h4>
-<div class="outline-text-4" id="text-org59ff2ad">
+<div id="outline-container-org9de3cbf" class="outline-4">
+<h4 id="org9de3cbf">删除主机密钥</h4>
+<div class="outline-text-4" id="text-org9de3cbf">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh-keygen -R 192.168.1.104
 </pre>
@@ -141,9 +139,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org1f1c0e8" class="outline-3">
-<h3 id="org1f1c0e8">绑定本地端口</h3>
-<div class="outline-text-3" id="text-org1f1c0e8">
+<div id="outline-container-org8c82410" class="outline-3">
+<h3 id="org8c82410">绑定本地端口</h3>
+<div class="outline-text-3" id="text-org8c82410">
 <p>
 SSH可以传送数据, 我们可以让那些不加密的网络连接, 全部改走SSH连接, 从而提高安全性.
 </p>
@@ -166,9 +164,9 @@ SSH会建立一个socket, 监听本地的8080端口(注意, 不是pinvon@192.168
 </div>
 </div>
 
-<div id="outline-container-org950f410" class="outline-3">
-<h3 id="org950f410">SSH隧道</h3>
-<div class="outline-text-3" id="text-org950f410">
+<div id="outline-container-orgb064fd2" class="outline-3">
+<h3 id="orgb064fd2">SSH隧道</h3>
+<div class="outline-text-3" id="text-orgb064fd2">
 <p>
 命令格式:
 </p>
@@ -202,9 +200,9 @@ SSH会建立一个socket, 监听本地的8080端口(注意, 不是pinvon@192.168
 </div>
 </div>
 
-<div id="outline-container-org728e4db" class="outline-3">
-<h3 id="org728e4db">SSH反向连接</h3>
-<div class="outline-text-3" id="text-org728e4db">
+<div id="outline-container-org92bf544" class="outline-3">
+<h3 id="org92bf544">SSH反向连接</h3>
+<div class="outline-text-3" id="text-org92bf544">
 <p>
 命令格式:
 </p>
@@ -234,9 +232,9 @@ ssh -R 123.207.62.191:8080:192.168.1.100:80 ubuntu@123.207.62.191
 </div>
 </div>
 
-<div id="outline-container-org3ba325e" class="outline-2">
-<h2 id="org3ba325e">du 查看占用磁盘大小</h2>
-<div class="outline-text-2" id="text-org3ba325e">
+<div id="outline-container-org9fd0315" class="outline-2">
+<h2 id="org9fd0315">du 查看占用磁盘大小</h2>
+<div class="outline-text-2" id="text-org9fd0315">
 <p>
 du即disk usage
 </p>
@@ -291,30 +289,21 @@ du -h --max-depth=0 filename
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

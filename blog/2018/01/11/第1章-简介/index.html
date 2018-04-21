@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="&lt;TODO: insert your keywords here&gt;" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,58 +33,58 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbb8027c">客户端程序</a>
+<li><a href="#org28bc8a9">客户端程序</a>
 <ul>
-<li><a href="#orgc9ff78d">创建TCP套接口</a></li>
-<li><a href="#org9af59e3">指定服务器IP地址和端口</a>
+<li><a href="#org677b995">创建TCP套接口</a></li>
+<li><a href="#org60c9221">指定服务器IP地址和端口</a>
 <ul>
-<li><a href="#org18f733b">bzero()和memset()</a></li>
-<li><a href="#org8e0595e">填充地址族和端口</a></li>
-<li><a href="#org017ebcd">inet_pton()和inet_addr()</a></li>
+<li><a href="#org1e9f0ab">bzero()和memset()</a></li>
+<li><a href="#orgc1a24fc">填充地址族和端口</a></li>
+<li><a href="#orgc1b6b9b">inet_pton()和inet_addr()</a></li>
 </ul>
 </li>
-<li><a href="#orgdc6724f">建立连接</a></li>
-<li><a href="#org6de16ae">读取服务器的响应并输出</a>
+<li><a href="#orgb44f751">建立连接</a></li>
+<li><a href="#org810c5ad">读取服务器的响应并输出</a>
 <ul>
-<li><a href="#org0f442c3">read()</a></li>
-<li><a href="#org1383095">fputs()</a></li>
+<li><a href="#orgcf99340">read()</a></li>
+<li><a href="#orgfb518e8">fputs()</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org3ce849b">服务器程序</a>
+<li><a href="#org72b00c4">服务器程序</a>
 <ul>
-<li><a href="#orgfd64619">创建TCP套接口</a></li>
-<li><a href="#orga8d5501">绑定服务器的端口到套接口</a></li>
-<li><a href="#orgd5c6738">监听</a></li>
-<li><a href="#org8a158a5">接受连接并响应</a>
+<li><a href="#org44c7907">创建TCP套接口</a></li>
+<li><a href="#orgdc9f499">绑定服务器的端口到套接口</a></li>
+<li><a href="#org5a8e864">监听</a></li>
+<li><a href="#org138198e">接受连接并响应</a>
 <ul>
-<li><a href="#org83bcd39">snprintf()和sprintf()</a></li>
+<li><a href="#orgaf3907d">snprintf()和sprintf()</a></li>
 </ul>
 </li>
-<li><a href="#orgc32bc8e">终止连接</a></li>
+<li><a href="#orgb5f056d">终止连接</a></li>
 </ul>
 </li>
-<li><a href="#orge783372">小结</a>
+<li><a href="#org67b31e2">小结</a>
 <ul>
-<li><a href="#org25a0d11">TCP客户端</a></li>
-<li><a href="#org2132b2b">TCP服务端</a></li>
+<li><a href="#org74ca21e">TCP客户端</a></li>
+<li><a href="#org5f28de4">TCP服务端</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbb8027c" class="outline-2">
-<h2 id="orgbb8027c">客户端程序</h2>
-<div class="outline-text-2" id="text-orgbb8027c">
+<div id="outline-container-org28bc8a9" class="outline-2">
+<h2 id="org28bc8a9">客户端程序</h2>
+<div class="outline-text-2" id="text-org28bc8a9">
 </div>
-<div id="outline-container-orgc9ff78d" class="outline-3">
-<h3 id="orgc9ff78d">创建TCP套接口</h3>
-<div class="outline-text-3" id="text-orgc9ff78d">
+<div id="outline-container-org677b995" class="outline-3">
+<h3 id="org677b995">创建TCP套接口</h3>
+<div class="outline-text-3" id="text-org677b995">
 <div class="org-src-container">
-<pre class="src src-C++">if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0) 
-        err_sys("socket error");
+<pre class="src src-C++"><span style="color: #F92672;">if</span> ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0) 
+        err_sys(<span style="color: #E6DB74;">"socket error"</span>);
 </pre>
 </div>
 
@@ -99,15 +97,15 @@ socket()的三个参数:
 </div>
 </div>
 
-<div id="outline-container-org9af59e3" class="outline-3">
-<h3 id="org9af59e3">指定服务器IP地址和端口</h3>
-<div class="outline-text-3" id="text-org9af59e3">
+<div id="outline-container-org60c9221" class="outline-3">
+<h3 id="org60c9221">指定服务器IP地址和端口</h3>
+<div class="outline-text-3" id="text-org60c9221">
 <div class="org-src-container">
-<pre class="src src-C++">bzero(&amp;servaddr, sizeof(servaddr));
+<pre class="src src-C++">bzero(&amp;servaddr, <span style="color: #F92672;">sizeof</span>(servaddr));
 servaddr.sin_family = AF_INET;
 servaddr.sin_port = htons(13);
-if (inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr) &lt;= 0)
-    err_quit("inet_pton error for %s", argv[1]);
+<span style="color: #F92672;">if</span> (inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr) &lt;= 0)
+    err_quit(<span style="color: #E6DB74;">"inet_pton error for %s"</span>, argv[1]);
 </pre>
 </div>
 
@@ -116,15 +114,15 @@ if (inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr) &lt;= 0)
 </p>
 </div>
 
-<div id="outline-container-org18f733b" class="outline-4">
-<h4 id="org18f733b">bzero()和memset()</h4>
-<div class="outline-text-4" id="text-org18f733b">
+<div id="outline-container-org1e9f0ab" class="outline-4">
+<h4 id="org1e9f0ab">bzero()和memset()</h4>
+<div class="outline-text-4" id="text-org1e9f0ab">
 <p>
 bzero()与memset()的原型:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++">extern void bzero(void *s, int n);
-void *memset(void *s, int ch, size_t n);
+<pre class="src src-C++"><span style="color: #F92672;">extern</span> <span style="color: #66D9EF;">void</span> <span style="color: #A6E22E;">bzero</span>(<span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">s</span>, <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">n</span>);
+<span style="color: #66D9EF;">void</span> *<span style="color: #A6E22E;">memset</span>(<span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">s</span>, <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">ch</span>, <span style="color: #66D9EF;">size_t</span> <span style="color: #FD971F;">n</span>);
 </pre>
 </div>
 <p>
@@ -138,13 +136,13 @@ memset()的功能: 将s中前n个字节替换为ch, 并返回s.
 </div>
 </div>
 
-<div id="outline-container-org8e0595e" class="outline-4">
-<h4 id="org8e0595e">填充地址族和端口</h4>
+<div id="outline-container-orgc1a24fc" class="outline-4">
+<h4 id="orgc1a24fc">填充地址族和端口</h4>
 </div>
 
-<div id="outline-container-org017ebcd" class="outline-4">
-<h4 id="org017ebcd">inet_pton()和inet_addr()</h4>
-<div class="outline-text-4" id="text-org017ebcd">
+<div id="outline-container-orgc1b6b9b" class="outline-4">
+<h4 id="orgc1b6b9b">inet_pton()和inet_addr()</h4>
+<div class="outline-text-4" id="text-orgc1b6b9b">
 <p>
 inet_pton()是一个支持IPv6的新函数, 可以把点分十进制数转换成二进制整数. inet_ntop()是反转换.
 </p>
@@ -156,12 +154,12 @@ inet_addr()则只能支持IPv4.
 </div>
 </div>
 
-<div id="outline-container-orgdc6724f" class="outline-3">
-<h3 id="orgdc6724f">建立连接</h3>
-<div class="outline-text-3" id="text-orgdc6724f">
+<div id="outline-container-orgb44f751" class="outline-3">
+<h3 id="orgb44f751">建立连接</h3>
+<div class="outline-text-3" id="text-orgb44f751">
 <div class="org-src-container">
-<pre class="src src-C++">if (connect(sockfd, (SA*)&amp;servaddr, sizeof(servaddr)) &lt; 0)
-    err_sys("connect error");
+<pre class="src src-C++"><span style="color: #F92672;">if</span> (connect(sockfd, (<span style="color: #66D9EF;">SA</span>*)&amp;servaddr, <span style="color: #F92672;">sizeof</span>(servaddr)) &lt; 0)
+    err_sys(<span style="color: #E6DB74;">"connect error"</span>);
 </pre>
 </div>
 
@@ -181,14 +179,14 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </div>
 </div>
 
-<div id="outline-container-org6de16ae" class="outline-3">
-<h3 id="org6de16ae">读取服务器的响应并输出</h3>
-<div class="outline-text-3" id="text-org6de16ae">
+<div id="outline-container-org810c5ad" class="outline-3">
+<h3 id="org810c5ad">读取服务器的响应并输出</h3>
+<div class="outline-text-3" id="text-org810c5ad">
 <div class="org-src-container">
-<pre class="src src-C++">while ((n = read(sockfd, recvline, MAXLINE)) &gt; 0) {
+<pre class="src src-C++"><span style="color: #F92672;">while</span> ((n = read(sockfd, recvline, MAXLINE)) &gt; 0) {
     recvline[n] = 0;
-    if (fputs(recvline, stdout) == EOF)
-        err_sys("fputs error");
+    <span style="color: #F92672;">if</span> (fputs(recvline, stdout) == EOF)
+        err_sys(<span style="color: #E6DB74;">"fputs error"</span>);
 }
 </pre>
 </div>
@@ -198,11 +196,11 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </p>
 </div>
 
-<div id="outline-container-org0f442c3" class="outline-4">
-<h4 id="org0f442c3">read()</h4>
-<div class="outline-text-4" id="text-org0f442c3">
+<div id="outline-container-orgcf99340" class="outline-4">
+<h4 id="orgcf99340">read()</h4>
+<div class="outline-text-4" id="text-orgcf99340">
 <div class="org-src-container">
-<pre class="src src-C++">ssize_t read(int fd, void *buf, size_t count);
+<pre class="src src-C++"><span style="color: #66D9EF;">ssize_t</span> <span style="color: #A6E22E;">read</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">fd</span>, <span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">buf</span>, <span style="color: #66D9EF;">size_t</span> <span style="color: #FD971F;">count</span>);
 </pre>
 </div>
 
@@ -216,11 +214,11 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </div>
 </div>
 
-<div id="outline-container-org1383095" class="outline-4">
-<h4 id="org1383095">fputs()</h4>
-<div class="outline-text-4" id="text-org1383095">
+<div id="outline-container-orgfb518e8" class="outline-4">
+<h4 id="orgfb518e8">fputs()</h4>
+<div class="outline-text-4" id="text-orgfb518e8">
 <div class="org-src-container">
-<pre class="src src-C++">int fputs(char *string, FILE *stream);
+<pre class="src src-C++"><span style="color: #66D9EF;">int</span> <span style="color: #A6E22E;">fputs</span>(<span style="color: #66D9EF;">char</span> *<span style="color: #FD971F;">string</span>, <span style="color: #66D9EF;">FILE</span> *<span style="color: #FD971F;">stream</span>);
 </pre>
 </div>
 
@@ -236,19 +234,19 @@ connect(): 用于与第二个参数所指定的套接口地址结构对应的服
 </div>
 </div>
 
-<div id="outline-container-org3ce849b" class="outline-2">
-<h2 id="org3ce849b">服务器程序</h2>
-<div class="outline-text-2" id="text-org3ce849b">
+<div id="outline-container-org72b00c4" class="outline-2">
+<h2 id="org72b00c4">服务器程序</h2>
+<div class="outline-text-2" id="text-org72b00c4">
 </div>
-<div id="outline-container-orgfd64619" class="outline-3">
-<h3 id="orgfd64619">创建TCP套接口</h3>
-<div class="outline-text-3" id="text-orgfd64619">
+<div id="outline-container-org44c7907" class="outline-3">
+<h3 id="org44c7907">创建TCP套接口</h3>
+<div class="outline-text-3" id="text-org44c7907">
 <div class="org-src-container">
-<pre class="src src-c++">int Socket(int family, int type, int protocol) {
-    int n;
-    if ((n = Socket(family, type, protocol)))
-        err_sys("socket error");
-    return (n);
+<pre class="src src-c++"><span style="color: #66D9EF;">int</span> <span style="color: #A6E22E;">Socket</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">family</span>, <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">type</span>, <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">protocol</span>) {
+    <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">n</span>;
+    <span style="color: #F92672;">if</span> ((n = Socket(family, type, protocol)))
+        err_sys(<span style="color: #E6DB74;">"socket error"</span>);
+    <span style="color: #F92672;">return</span> (n);
 }
 
 listenfd = Socket(AF_INET, SOCK_STREAM, 0);
@@ -257,20 +255,20 @@ listenfd = Socket(AF_INET, SOCK_STREAM, 0);
 </div>
 </div>
 
-<div id="outline-container-orga8d5501" class="outline-3">
-<h3 id="orga8d5501">绑定服务器的端口到套接口</h3>
-<div class="outline-text-3" id="text-orga8d5501">
+<div id="outline-container-orgdc9f499" class="outline-3">
+<h3 id="orgdc9f499">绑定服务器的端口到套接口</h3>
+<div class="outline-text-3" id="text-orgdc9f499">
 <div class="org-src-container">
-<pre class="src src-C++">void Bind(int fd, const struct sockaddr *sa, socklen_t salen) {
-    if (bind(fd, sa, salen) &lt; 0)
-        err_sys("bind error");
+<pre class="src src-C++"><span style="color: #66D9EF;">void</span> <span style="color: #A6E22E;">Bind</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">fd</span>, <span style="color: #F92672;">const</span> <span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">sockaddr</span> *<span style="color: #FD971F;">sa</span>, <span style="color: #66D9EF;">socklen_t</span> <span style="color: #FD971F;">salen</span>) {
+    <span style="color: #F92672;">if</span> (bind(fd, sa, salen) &lt; 0)
+        err_sys(<span style="color: #E6DB74;">"bind error"</span>);
 }
 
-bzero(&amp;servaddr, sizeof(servaddr));
+bzero(&amp;servaddr, <span style="color: #F92672;">sizeof</span>(servaddr));
 servaddr.sin_family = AF_INET;
 servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 servaddr.sin_port = htons(13);
-Bind(listenfd, (SA*)&amp;servaddr, sizeof(servaddr));
+Bind(listenfd, (<span style="color: #66D9EF;">SA</span>*)&amp;servaddr, <span style="color: #F92672;">sizeof</span>(servaddr));
 </pre>
 </div>
 
@@ -280,16 +278,16 @@ Bind(listenfd, (SA*)&amp;servaddr, sizeof(servaddr));
 </div>
 </div>
 
-<div id="outline-container-orgd5c6738" class="outline-3">
-<h3 id="orgd5c6738">监听</h3>
-<div class="outline-text-3" id="text-orgd5c6738">
+<div id="outline-container-org5a8e864" class="outline-3">
+<h3 id="org5a8e864">监听</h3>
+<div class="outline-text-3" id="text-org5a8e864">
 <div class="org-src-container">
-<pre class="src src-C++">void Listen(int fd, int backlog) {
-    char *ptr;
-    if ((ptr = getenv("LISTENQ")) != NULL)
+<pre class="src src-C++"><span style="color: #66D9EF;">void</span> <span style="color: #A6E22E;">Listen</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">fd</span>, <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">backlog</span>) {
+    <span style="color: #66D9EF;">char</span> *<span style="color: #FD971F;">ptr</span>;
+    <span style="color: #F92672;">if</span> ((ptr = getenv(<span style="color: #E6DB74;">"LISTENQ"</span>)) != <span style="color: #AE81FF;">NULL</span>)
         backlog = atoi(ptr);
-    if (listen(fd, backlog) &lt; 0)
-        err_sys("listen error");
+    <span style="color: #F92672;">if</span> (listen(fd, backlog) &lt; 0)
+        err_sys(<span style="color: #E6DB74;">"listen error"</span>);
 }
 Listen(listenfd, 1024);
 </pre>
@@ -304,34 +302,34 @@ Listen(listenfd, 1024);
 </div>
 </div>
 
-<div id="outline-container-org8a158a5" class="outline-3">
-<h3 id="org8a158a5">接受连接并响应</h3>
-<div class="outline-text-3" id="text-org8a158a5">
+<div id="outline-container-org138198e" class="outline-3">
+<h3 id="org138198e">接受连接并响应</h3>
+<div class="outline-text-3" id="text-org138198e">
 <div class="org-src-container">
-<pre class="src src-C++">int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr) {
-    int n;
-again:
-    if ((n = accept(fd, sa, salenptr)) &lt; 0) {
-#ifdef	EPROTO
-        if (errno == EPROTO || errno == ECONNABORTED)
-#else
-        if (errno == ECONNABORTED)
-#endif
-            goto again;
-        else
-            err_sys("accept error");
+<pre class="src src-C++"><span style="color: #66D9EF;">int</span> <span style="color: #A6E22E;">Accept</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">fd</span>, <span style="color: #F92672;">struct</span> <span style="color: #66D9EF;">sockaddr</span> *<span style="color: #FD971F;">sa</span>, <span style="color: #66D9EF;">socklen_t</span> *<span style="color: #FD971F;">salenptr</span>) {
+    <span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">n</span>;
+<span style="color: #AE81FF;">again</span>:
+    <span style="color: #F92672;">if</span> ((n = accept(fd, sa, salenptr)) &lt; 0) {
+<span style="color: #F92672;">#ifdef</span>  EPROTO
+        <span style="color: #F92672;">if</span> (errno == EPROTO || errno == ECONNABORTED)
+<span style="color: #F92672;">#else</span>
+        <span style="color: #F92672;">if</span> (errno == ECONNABORTED)
+<span style="color: #F92672;">#endif</span>
+            <span style="color: #F92672;">goto</span> <span style="color: #AE81FF;">again</span>;
+        <span style="color: #F92672;">else</span>
+            err_sys(<span style="color: #E6DB74;">"accept error"</span>);
     }
-    return(n);
+    <span style="color: #F92672;">return</span>(n);
 }
-void Write(int fd, void *ptr, size_t nbytes) {
-    if (write(fd, ptr, nbytes) != nbytes)
-        err_sys("write error");
+<span style="color: #66D9EF;">void</span> <span style="color: #A6E22E;">Write</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">fd</span>, <span style="color: #66D9EF;">void</span> *<span style="color: #FD971F;">ptr</span>, <span style="color: #66D9EF;">size_t</span> <span style="color: #FD971F;">nbytes</span>) {
+    <span style="color: #F92672;">if</span> (write(fd, ptr, nbytes) != nbytes)
+        err_sys(<span style="color: #E6DB74;">"write error"</span>);
 }
 
-for(; ;){
-    connfd = Accept(listenfd, (SA*)NULL, NULL);
-    ticks = time(NULL);
-    snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&amp;ticks));
+<span style="color: #F92672;">for</span>(; ;){
+    connfd = Accept(listenfd, (<span style="color: #66D9EF;">SA</span>*)<span style="color: #AE81FF;">NULL</span>, <span style="color: #AE81FF;">NULL</span>);
+    ticks = time(<span style="color: #AE81FF;">NULL</span>);
+    snprintf(buff, <span style="color: #F92672;">sizeof</span>(buff), <span style="color: #E6DB74;">"%.24s\r\n"</span>, ctime(&amp;ticks));
     Write(connfd, buff, strlen(buff));
 }
 </pre>
@@ -349,9 +347,9 @@ snprintf()函数会在字符串末尾添加回车和换行两个字符, 然后wr
 </p>
 </div>
 
-<div id="outline-container-org83bcd39" class="outline-4">
-<h4 id="org83bcd39">snprintf()和sprintf()</h4>
-<div class="outline-text-4" id="text-org83bcd39">
+<div id="outline-container-orgaf3907d" class="outline-4">
+<h4 id="orgaf3907d">snprintf()和sprintf()</h4>
+<div class="outline-text-4" id="text-orgaf3907d">
 <p>
 两个函数的功能都是把格式化的字符串写入缓冲区中. 但是sprintf()不 检查目标缓冲区是否溢出, snprintf()则要求其第二个参数是目标缓冲区的大小, 因此可以确保缓冲区不溢出.
 </p>
@@ -363,13 +361,13 @@ snprintf()函数会在字符串末尾添加回车和换行两个字符, 然后wr
 </div>
 </div>
 
-<div id="outline-container-orgc32bc8e" class="outline-3">
-<h3 id="orgc32bc8e">终止连接</h3>
-<div class="outline-text-3" id="text-orgc32bc8e">
+<div id="outline-container-orgb5f056d" class="outline-3">
+<h3 id="orgb5f056d">终止连接</h3>
+<div class="outline-text-3" id="text-orgb5f056d">
 <div class="org-src-container">
-<pre class="src src-C++">void Close(int fd) {
-    if (close(fd) == -1)
-        err_sys("close error");
+<pre class="src src-C++"><span style="color: #66D9EF;">void</span> <span style="color: #A6E22E;">Close</span>(<span style="color: #66D9EF;">int</span> <span style="color: #FD971F;">fd</span>) {
+    <span style="color: #F92672;">if</span> (close(fd) == -1)
+        err_sys(<span style="color: #E6DB74;">"close error"</span>);
 }
 Close(connfd);
 </pre>
@@ -381,13 +379,13 @@ Close(connfd);
 </div>
 </div>
 
-<div id="outline-container-orge783372" class="outline-2">
-<h2 id="orge783372">小结</h2>
-<div class="outline-text-2" id="text-orge783372">
+<div id="outline-container-org67b31e2" class="outline-2">
+<h2 id="org67b31e2">小结</h2>
+<div class="outline-text-2" id="text-org67b31e2">
 </div>
-<div id="outline-container-org25a0d11" class="outline-3">
-<h3 id="org25a0d11">TCP客户端</h3>
-<div class="outline-text-3" id="text-org25a0d11">
+<div id="outline-container-org74ca21e" class="outline-3">
+<h3 id="org74ca21e">TCP客户端</h3>
+<div class="outline-text-3" id="text-org74ca21e">
 <ol class="org-ol">
 <li>socket(): 创建socket.</li>
 <li>设置远程机器的IP地址和端口.</li>
@@ -398,9 +396,9 @@ Close(connfd);
 </div>
 </div>
 
-<div id="outline-container-org2132b2b" class="outline-3">
-<h3 id="org2132b2b">TCP服务端</h3>
-<div class="outline-text-3" id="text-org2132b2b">
+<div id="outline-container-org5f28de4" class="outline-3">
+<h3 id="org5f28de4">TCP服务端</h3>
+<div class="outline-text-3" id="text-org5f28de4">
 <ol class="org-ol">
 <li>socket(): 创建socket.</li>
 <li>bind(): 绑定服务器的IP地址和端口等信息到socket.</li>
@@ -433,30 +431,21 @@ Close(connfd);
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>

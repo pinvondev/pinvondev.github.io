@@ -7,7 +7,6 @@
     <meta name="description" content="&lt;TODO: insert your description here&gt;" />
     <meta name="keywords" content="Node.js" />
     <link rel="stylesheet" href="/media/css/main.css" type="text/css">
-    <link rel="stylesheet" href="/media/css/prettify.css" type="text/css">
   </head>
   <body class="container">
     <div>
@@ -19,11 +18,10 @@
           <li><a href="/tags/">Tags</a></li>
           <li><a href="/about/">About</a></li>
           <li><a href="https://github.com/pinvondev">GitHub</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
         </ul>
-        <form method="get" id="searchform" action="//www.google.com/search">
+        <form method="get" id="searchform" action="http://www.google.com/search">
           <input type="text" class="field" name="q" id="s" placeholder="Search">
-          <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+          <input type="hidden" name="q" value="site:pinvondev.github.io">
         </form>
       </header>
     </div>
@@ -35,38 +33,38 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgfc81fd6">安装</a></li>
-<li><a href="#orgda2f2db">Hello World</a></li>
-<li><a href="#orgd7ece49">完整的Web应用程序</a>
+<li><a href="#orgf815e64">安装</a></li>
+<li><a href="#org53a59c0">Hello World</a></li>
+<li><a href="#org3ae3e0b">完整的Web应用程序</a>
 <ul>
-<li><a href="#orgcf57311">目标</a></li>
-<li><a href="#org5993de0">分析</a></li>
-<li><a href="#org867127e">HTTP服务器</a>
+<li><a href="#orgf91214e">目标</a></li>
+<li><a href="#org6e6acb6">分析</a></li>
+<li><a href="#org6ae41b2">HTTP服务器</a>
 <ul>
-<li><a href="#org92f381f">回调函数</a></li>
-<li><a href="#org21cc908">代码的组织</a></li>
+<li><a href="#org7ff4805">回调函数</a></li>
+<li><a href="#org36913f2">代码的组织</a></li>
 </ul>
 </li>
-<li><a href="#orgb24d7f2">路由</a></li>
-<li><a href="#org7bba8d1">真正的请求处理程序</a></li>
-<li><a href="#org6f1d114">阻塞与非阻塞</a>
+<li><a href="#org938b466">路由</a></li>
+<li><a href="#orgc039d9e">真正的请求处理程序</a></li>
+<li><a href="#orga4dd188">阻塞与非阻塞</a>
 <ul>
-<li><a href="#orgb376957">阻塞</a></li>
-<li><a href="#org13f2d50">非阻塞的错误用法</a></li>
-<li><a href="#org14c285b">非阻塞的正确用法</a></li>
+<li><a href="#orgf0d3391">阻塞</a></li>
+<li><a href="#org340fbd0">非阻塞的错误用法</a></li>
+<li><a href="#orgf37cc8c">非阻塞的正确用法</a></li>
 </ul>
 </li>
-<li><a href="#org0d02f70">处理POST请求</a></li>
-<li><a href="#org31a0f73">处理文件上传</a></li>
+<li><a href="#org0d16430">处理POST请求</a></li>
+<li><a href="#orge2c2a17">处理文件上传</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgfc81fd6" class="outline-2">
-<h2 id="orgfc81fd6">安装</h2>
-<div class="outline-text-2" id="text-orgfc81fd6">
+<div id="outline-container-orgf815e64" class="outline-2">
+<h2 id="orgf815e64">安装</h2>
+<div class="outline-text-2" id="text-orgf815e64">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install nodejs
 sudo apt install npm
@@ -79,9 +77,9 @@ npm是Node.js的包管理工具, 在Node.js上开发时，会用到很多别人�
 </div>
 </div>
 
-<div id="outline-container-orgda2f2db" class="outline-2">
-<h2 id="orgda2f2db">Hello World</h2>
-<div class="outline-text-2" id="text-orgda2f2db">
+<div id="outline-container-org53a59c0" class="outline-2">
+<h2 id="org53a59c0">Hello World</h2>
+<div class="outline-text-2" id="text-org53a59c0">
 <p>
 创建名为helloworld.js的文件, 输入如下语句:
 </p>
@@ -109,22 +107,22 @@ console.log('Hello World');
 </div>
 </div>
 
-<div id="outline-container-orgd7ece49" class="outline-2">
-<h2 id="orgd7ece49">完整的Web应用程序</h2>
-<div class="outline-text-2" id="text-orgd7ece49">
+<div id="outline-container-org3ae3e0b" class="outline-2">
+<h2 id="org3ae3e0b">完整的Web应用程序</h2>
+<div class="outline-text-2" id="text-org3ae3e0b">
 </div>
-<div id="outline-container-orgcf57311" class="outline-3">
-<h3 id="orgcf57311">目标</h3>
-<div class="outline-text-3" id="text-orgcf57311">
+<div id="outline-container-orgf91214e" class="outline-3">
+<h3 id="orgf91214e">目标</h3>
+<div class="outline-text-3" id="text-orgf91214e">
 <p>
 用户请求某网址, 进入欢迎界面, 页面上有一个文件上传的表单, 用户可以选择一个图片并提交表单, 随后文件被上传, 上传完成后将图片显示在页面上.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org5993de0" class="outline-3">
-<h3 id="org5993de0">分析</h3>
-<div class="outline-text-3" id="text-org5993de0">
+<div id="outline-container-org6e6acb6" class="outline-3">
+<h3 id="org6e6acb6">分析</h3>
+<div class="outline-text-3" id="text-org6e6acb6">
 <ul class="org-ul">
 <li>需要Web页面, 因此要有一个HTTP服务器.</li>
 <li>对于不同的请求, 根据不同的URL, 服务器需要给予不同的响应, 因此需要一个路由, 把请求对应到请求处理程序.</li>
@@ -136,9 +134,9 @@ console.log('Hello World');
 </div>
 </div>
 
-<div id="outline-container-org867127e" class="outline-3">
-<h3 id="org867127e">HTTP服务器</h3>
-<div class="outline-text-3" id="text-org867127e">
+<div id="outline-container-org6ae41b2" class="outline-3">
+<h3 id="org6ae41b2">HTTP服务器</h3>
+<div class="outline-text-3" id="text-org6ae41b2">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var http = require("http");
 http.createServer(function(request, response){
@@ -164,18 +162,18 @@ node server.js
 </p>
 </div>
 
-<div id="outline-container-org92f381f" class="outline-4">
-<h4 id="org92f381f">回调函数</h4>
-<div class="outline-text-4" id="text-org92f381f">
+<div id="outline-container-org7ff4805" class="outline-4">
+<h4 id="org7ff4805">回调函数</h4>
+<div class="outline-text-4" id="text-org7ff4805">
 <p>
 我们给某个方法A传递了一个参数B, 该参数是一个函数名, 这个方法在有相应事件发生时调用这个函数来进行回调. 方法A是提前写好的, 而方法B是后期根据实际需求写的.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org21cc908" class="outline-4">
-<h4 id="org21cc908">代码的组织</h4>
-<div class="outline-text-4" id="text-org21cc908">
+<div id="outline-container-org36913f2" class="outline-4">
+<h4 id="org36913f2">代码的组织</h4>
+<div class="outline-text-4" id="text-org36913f2">
 <p>
 通常使用index.js的文件来作为主模块, 调用其他的模块, 如server.js.
 </p>
@@ -223,9 +221,9 @@ server.start();
 </div>
 </div>
 
-<div id="outline-container-orgb24d7f2" class="outline-3">
-<h3 id="orgb24d7f2">路由</h3>
-<div class="outline-text-3" id="text-orgb24d7f2">
+<div id="outline-container-org938b466" class="outline-3">
+<h3 id="org938b466">路由</h3>
+<div class="outline-text-3" id="text-org938b466">
 <p>
 对于不同的URL请求, 服务器应该有不同的反应.如果是非常简单的应用, 可以直接在回调函数onRequest()中做这件事. 但是对于稍微复杂一些的应用, 还是要有组织较好.
 </p>
@@ -322,9 +320,9 @@ server.start(router.route);
 </div>
 </div>
 
-<div id="outline-container-org7bba8d1" class="outline-3">
-<h3 id="org7bba8d1">真正的请求处理程序</h3>
-<div class="outline-text-3" id="text-org7bba8d1">
+<div id="outline-container-orgc039d9e" class="outline-3">
+<h3 id="orgc039d9e">真正的请求处理程序</h3>
+<div class="outline-text-3" id="text-orgc039d9e">
 <p>
 在将服务器模块与路由模块整合之后, 开始编写真正的请求处理程序.
 </p>
@@ -420,13 +418,13 @@ exports.route = route;
 </div>
 </div>
 
-<div id="outline-container-org6f1d114" class="outline-3">
-<h3 id="org6f1d114">阻塞与非阻塞</h3>
-<div class="outline-text-3" id="text-org6f1d114">
+<div id="outline-container-orga4dd188" class="outline-3">
+<h3 id="orga4dd188">阻塞与非阻塞</h3>
+<div class="outline-text-3" id="text-orga4dd188">
 </div>
-<div id="outline-container-orgb376957" class="outline-4">
-<h4 id="orgb376957">阻塞</h4>
-<div class="outline-text-4" id="text-orgb376957">
+<div id="outline-container-orgf0d3391" class="outline-4">
+<h4 id="orgf0d3391">阻塞</h4>
+<div class="outline-text-4" id="text-orgf0d3391">
 <p>
 在JavaScript中没有sleep()函数, 可以使用其他形式来实现.
 </p>
@@ -508,9 +506,9 @@ Node.js可以在不新增额外线程的情况下, 依然可以对任务进行�
 </div>
 </div>
 
-<div id="outline-container-org13f2d50" class="outline-4">
-<h4 id="org13f2d50">非阻塞的错误用法</h4>
-<div class="outline-text-4" id="text-org13f2d50">
+<div id="outline-container-org340fbd0" class="outline-4">
+<h4 id="org340fbd0">非阻塞的错误用法</h4>
+<div class="outline-text-4" id="text-org340fbd0">
 <p>
 修改requestHandlers.js:
 </p>
@@ -549,9 +547,9 @@ child_process模块可以实现一个既简单又实用的非阻塞操作exec().
 </div>
 </div>
 
-<div id="outline-container-org14c285b" class="outline-4">
-<h4 id="org14c285b">非阻塞的正确用法</h4>
-<div class="outline-text-4" id="text-org14c285b">
+<div id="outline-container-orgf37cc8c" class="outline-4">
+<h4 id="orgf37cc8c">非阻塞的正确用法</h4>
+<div class="outline-text-4" id="text-orgf37cc8c">
 <p>
 正确的方式是函数传递.
 </p>
@@ -633,9 +631,9 @@ exports.upload = upload;
 </div>
 </div>
 
-<div id="outline-container-org0d02f70" class="outline-3">
-<h3 id="org0d02f70">处理POST请求</h3>
-<div class="outline-text-3" id="text-org0d02f70">
+<div id="outline-container-org0d16430" class="outline-3">
+<h3 id="org0d16430">处理POST请求</h3>
+<div class="outline-text-3" id="text-org0d16430">
 <p>
 显示一个文本区供用户输入内容, 然后通过POST请求提交给服务器. 服务器收到请求, 通过处理程序将输入的内容展示到浏览器.
 </p>
@@ -785,9 +783,9 @@ exports.upload = upload;
 </div>
 </div>
 
-<div id="outline-container-org31a0f73" class="outline-3">
-<h3 id="org31a0f73">处理文件上传</h3>
-<div class="outline-text-3" id="text-org31a0f73">
+<div id="outline-container-orge2c2a17" class="outline-3">
+<h3 id="orge2c2a17">处理文件上传</h3>
+<div class="outline-text-3" id="text-orge2c2a17">
 <p>
 允许用户上传图片, 并将图片在浏览器中显示出来.
 </p>
@@ -1044,30 +1042,21 @@ exports.show = show;
           /* * * DON'T EDIT BELOW THIS LINE * * */
           (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
         </script>
-        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-       <div id="hashover"></div>
-       <script type="text/javascript" src="/hashover.php"></script>
-       <noscript>You must have JavaScript enabled to use the comments.</noscript>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </section>
-      <script src="//code.jquery.com/jquery-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="/media/js/main.js"></script>
       <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x (<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="https://www.gnu.org/software/emacs/">Emacs</a> 25.3.50.2 (<a href="http://orgmode.org">Org</a> mode 9.1.5)</p>
         <p>
-          Copyright &copy; 2012 - <span id="footerYear"></span> <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
+          Copyright &copy; 2012 - 2013 <a href="mailto:pinvon &lt;at&gt; Inspiron">Pinvon</a>
           &nbsp;&nbsp;-&nbsp;&nbsp;
           Powered by <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a>
-          <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
         </p>
       </div>
     </div>
-
   </body>
 </html>
