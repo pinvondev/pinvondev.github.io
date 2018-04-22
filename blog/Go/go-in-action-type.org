@@ -1,0 +1,194 @@
+#+TITLE:       Go实战(三) 基本类型与运算符
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-22 日
+
+#+URI:         /blog/Go/%y/%m/%d/%t/ Or /blog/Go/%t/
+#+TAGS:        Go
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:t toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 注
+
+学习自: Go 语言圣经
+
+* 基本类型
+
+** 概述
+
+ Go 语言是一种静态类型的编程语言, 所以编译器在编译时就要知道每个值的类型, 这样编译器就知道要为这个值分配多少内存, 并且知道这段分配的内存表示什么.
+
+ 提前知道值的类型有很多好处, 如, 可以进一步优化代码, 提高执行效率, 等等.
+
+Go 的基本类型包括数值型, 字符串, 布尔型.
+
+数值型包括几种不同大小的整型数, 浮点数, 复数.
+
+*** 整型
+
+ Go 语言提供了有符号和无符号类型的整数运算.
+
+ int8, int16, int32, int64 是四种有符号整型; uint8, uint16, uint32, uint64 是四种无符号整型.
+
+ 另外, 还有 int 和 uint. int 和 uint 的大小会根据当前机器的系统架构自动判定, 一般是 32bit 或 64bit. 
+
+ rune 类型用于表示一个 Unicode 码点, 它与 int32 等价, 名称可以互换使用.
+
+ byte 类型与 int8 类型也是等价的, 可以互换使用.
+
+ uintptr 类型用于存放指针, 它与 uint 类型的范围相同, 根据系统架构来确定.
+
+**** 注意
+
+ 即使根据系统架构确定了 int 类型的大小为 32bit, 我们也不能认为 int 类型与 int32 类型相同, 在需要将 int 当作 int32 使用的地方, 需要进行显式的类型转换.
+
+**** 表示范围
+
+ 对于有符号整数, 采用 2 的补码形式表示, 即最高位表示符号位, 所以表示范围为 $-2^{n-1} ~2^{n-1}-1$
+
+ 对于无符号整数, 所有的位都用于表示非负数, 因此表示范围是 $0 ~ 2^{n-1}$
+
+**** 格式化输出
+
+%d: 输出十进制数
+
+%o: 输出八进制数
+
+%x: 输出十六进制数
+
+%[1]: 使用第1个操作数
+
+%#: 输出 0, 0x 等前缀
+
+#+BEGIN_EXAMPLE
+o := 0666
+fmt.Printf("%d %[1]o %#[1]o\n", o) // "438 666 0666"
+x := int64(0xdeadbeef)
+fmt.Printf("%d %[1]x %#[1]x %#[1]X\n", x)
+// Output:
+// 3735928559 deadbeef 0xdeadbeef 0XDEADBEEF
+#+END_EXAMPLE
+
+%q: 输出带单引号的字符
+
+#+BEGIN_EXAMPLE
+ascii := 'a'
+unicode := '国'
+newline := '\n'
+fmt.Printf("%d %[1]c %[1]q\n", ascii)   // "97 a 'a'"
+fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 国 '国'"
+fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
+#+END_EXAMPLE
+
+** 类型转换
+
+在 Go 语言中, 需要显式地将一个值从一种类型转化成另一种类型. 如:
+#+BEGIN_SRC Golang
+	var apples int32 = 1
+	var oranges int16 = 2
+	var compote int = apples + oranges
+	fmt.Println(compote)
+#+END_SRC
+编译时将会报错. 我们可以改成:
+#+BEGIN_SRC Golang
+	...
+	var compote = int(apples) + int(oranges)
+	...
+#+END_SRC
+
+如果将大尺寸的数据类型转化成小尺寸的数据类型, 如将浮点数转成整数, 有可能会改变数值或丢失精度. 如:
+#+BEGIN_SRC Golang
+f := 3.141 // a float64
+i := int(f)
+fmt.Println(f, i) // "3.141 3"
+f = 1.99
+fmt.Println(int(f)) // "1"
+#+END_SRC
+
+** 习惯
+
+如果没有特殊需求, 我们会倾向于使用有符号类型. 举个例子:
+#+BEGIN_SRC Golang
+medals := []string{"gold", "silver", "bronze"}
+for i := len(medals) - 1; i >= 0; i-- {
+    fmt.Println(medals[i]) // "bronze", "silver", "gold"
+}
+#+END_SRC
+
+如果 len() 返回的是 uint 类型, 则 len(medals)-1 永远不会小于 0, 并且溢出时变成 uint 类型的最大值, 访问 medals[i] 时出错, 因为在试图访问一个 slice 范围以外的元素.
+
+只有在位运算时, 才会使用无符号类型. 如 bit 集合, 分析二进制文件格式, 哈希, 加密等操作.
+
+* 运算符
+
+所有二元运算符按优先级递减的顺序(同一排的优先级相同)排列如下:
+#+BEGIN_EXAMPLE
+*	/	%	<<	>>	&	&^
++	-	|	^	+=
+==	!=	<	<=	>	>=
+&&
+||
+#+END_EXAMPLE
+
+** 取模运算符
+
+在不同的语言中, % 运算符的行为可能不同. 在 Go 语言中, % 运算符的符号和被取模数(% 前面的数字)的符号一致. 如 -5%3 和 -5%-3 结果都是 -2.
+
+** 溢出
+
+如果运算结果需要更多位数才能表示, 就会导致溢出.
+
+溢出时, 超出的高 bit 位部分将被丢弃. 因此, 有可能出现这种情况: 有符号类型, 超出的高位被截掉之后, 如果剩下的比特中, 最左边的是1, 最终结果就可能成了负数.
+
+** 位运算符
+
+^ 当作二元运算符时, 表示按位异或; 当作一元运算符时, 表示按位取反.
+
+*** 例子
+
+#+BEGIN_SRC Golang
+	var x uint8 = 1<<3 | 3<<5
+	fmt.Printf("%08b", x)
+#+END_SRC
+输出: 01101000
+
+解析: x<<n 中, n 必须是无符号数, x 则有/无符号位都可以. 我们可以用笔来演算, 将 x 转成二进制数, 低位对齐, 然后根据 n 来确定左移的位数. 如:
+#+BEGIN_EXAMPLE
+3<<5
+
+// 开始的位置
+       11
+0000 0000
+
+// 左移 5 位后的位置
+ 11       
+0000 0000
+
+// 得到的数
+0110 0000
+#+END_EXAMPLE
+
+1<<3 | 3<<5: 将 1<<3 和 3<<5 的结果用或操作符运算.
+
+Printf() 的 %b: 打印二进制格式的数字, %08b 表示至少打印 8 个字符宽度, 不足的前缀部分用 0 填充.
+
+再看 &^ 的例子:
+#+BEGIN_SRC Golang
+	var x uint8 = 1<<2 | 3<<5
+	var y uint8 = 1<<1 | 1<<2
+	fmt.Printf("%08b\n", x)
+	fmt.Printf("%08b\n", y)
+	fmt.Printf("%08b\n", x&^y)
+#+END_SRC
+
+输出:
+#+BEGIN_EXAMPLE
+01100100
+00000110
+01100000
+#+END_EXAMPLE
+
+可以看出, x &^ y 的意思是, y 中如果某个比特位为 1, 则 x 中相应的比特位清空成 0.
+
