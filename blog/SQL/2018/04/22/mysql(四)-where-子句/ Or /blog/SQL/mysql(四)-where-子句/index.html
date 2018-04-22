@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>MySQL(三) ORDER BY 子句 - Pinvon&#39;s Blog</title>
+  <title>MySQL(四) WHERE 子句 - Pinvon&#39;s Blog</title>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <meta name="author" content="Pinvon" />
-  <meta name="description" content="学习如何使用 SELECT 语句的 ORDER BY 子句, 根据需要对检索的数据进行排序" />
+  <meta name="description" content="&lt;Add description here&gt;" />
   <meta name="keywords" content="SQL" />
   <style>
    #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
@@ -50,130 +50,184 @@
 
 <div>
 <div class="post">
-<h1 class="title">MySQL(三) ORDER BY 子句</h1>
+<h1 class="title">MySQL(四) WHERE 子句</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org56ce1e7">子句</a></li>
-<li><a href="#org4dea602">ORDER BY</a>
+<li><a href="#orgde001c2">使用 WHERE 子句</a>
 <ul>
-<li><a href="#org9e75eb2">按多个列排序</a></li>
-<li><a href="#orgf4c23f5">升序降序</a></li>
-<li><a href="#org56d15b6">ORDER BY 和 LIMIT 组合</a></li>
-<li><a href="#org74bca48">子句的次序</a></li>
+<li><a href="#org3853ecb">思考</a></li>
+</ul>
+</li>
+<li><a href="#orgd60b690">WHERE 子句操作符</a>
+<ul>
+<li><a href="#org507d515">WHERE 子句支持的条件操作符</a></li>
+<li><a href="#orgdb3c462">检查单个值</a></li>
+<li><a href="#org5a664a3">空值检查</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org56ce1e7" class="outline-2">
-<h2 id="org56ce1e7">子句</h2>
-<div class="outline-text-2" id="text-org56ce1e7">
+<div id="outline-container-orgde001c2" class="outline-2">
+<h2 id="orgde001c2">使用 WHERE 子句</h2>
+<div class="outline-text-2" id="text-orgde001c2">
 <p>
-SQL 语句由子句构成, 有些子句是必需的, 有些则是可选的.
+数据库表一般都包含了大量数据, 需要检索表中所有行的情况比较少见. 通常, 我们只需要检索满足某些条件的数据.
 </p>
 
 <p>
-子句 = 关键字 + 数据
+在 SELECT 语句中, 可以使用 WHERE 子句指定搜索条件, WHERE 子句需要放在 FROM 子句之后.
 </p>
 
+<div class="org-src-container">
+<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_2=2.5;
+</pre>
+</div>
 <p>
-如 SELECT * FROM table_name; 子句由 FROM 关键字和表 table_name 组成.
+这条语句的意思是, 从 table_name 中检索两个列, 但不返回所有行, 只返回 column_2 的值为 2.5 的行.
 </p>
+</div>
+
+<div id="outline-container-org3853ecb" class="outline-3">
+<h3 id="org3853ecb">思考</h3>
+<div class="outline-text-3" id="text-org3853ecb">
+<p>
+SQL 的 SELECT 语句可以过滤数据, 而我们平时开发的应用程序, 也可以对数据进行过滤. 但我们一般会选择在数据库中对数据进行过滤, 原因有以下2点:
+</p>
+<ol class="org-ol">
+<li>数据库进行了优化, 可以快速有效地对数据进行过滤; 如果由我们开发的应用程序进行过滤, 会极大影响应用的性能.</li>
+<li>如果在我们开发的应用程序上进行过滤, 数据库必须发送多余的数据, 浪费资源.</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd60b690" class="outline-2">
+<h2 id="orgd60b690">WHERE 子句操作符</h2>
+<div class="outline-text-2" id="text-orgd60b690">
+</div>
+<div id="outline-container-org507d515" class="outline-3">
+<h3 id="org507d515">WHERE 子句支持的条件操作符</h3>
+<div class="outline-text-3" id="text-org507d515">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">操作符</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">=</td>
+<td class="org-left">等于</td>
+</tr>
+
+<tr>
+<td class="org-left">&lt;&gt;</td>
+<td class="org-left">不等于</td>
+</tr>
+
+<tr>
+<td class="org-left">!=</td>
+<td class="org-left">不等于</td>
+</tr>
+
+<tr>
+<td class="org-left">&lt;</td>
+<td class="org-left">小于</td>
+</tr>
+
+<tr>
+<td class="org-left">&lt;=</td>
+<td class="org-left">小于等于</td>
+</tr>
+
+<tr>
+<td class="org-left">&gt;</td>
+<td class="org-left">大于</td>
+</tr>
+
+<tr>
+<td class="org-left">&gt;=</td>
+<td class="org-left">大于等于</td>
+</tr>
+
+<tr>
+<td class="org-left">BETWEEN</td>
+<td class="org-left">在指定的两个值之间</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
-<div id="outline-container-org4dea602" class="outline-2">
-<h2 id="org4dea602">ORDER BY</h2>
-<div class="outline-text-2" id="text-org4dea602">
+<div id="outline-container-orgdb3c462" class="outline-3">
+<h3 id="orgdb3c462">检查单个值</h3>
+<div class="outline-text-3" id="text-orgdb3c462">
+<div class="org-src-container">
+<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_1 = 'fuse';
+</pre>
+</div>
 <p>
-ORDER BY 子句使用一个或多个列的名字, 来对输出进行排序. 如:
+MySQL 在执行匹配时, 默认不区分大小写, 所以 fuse 和 Fuse 都会被匹配.
+</p>
+
+<p>
+小于号 &lt; 的例子:
 </p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1 FROM table_name ORDER BY column_1;
+<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_2 &lt; 10;
 </pre>
 </div>
 
 <p>
-我们也可以根据其他的列进行排序, 不一定要根据那些输出的列进行排序. 如:
+不等于操作符 &lt;&gt; 的例子:
 </p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1 FROM table_name ORDER BY column_2;
+<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_1 &lt;&gt; 'fuse';
 </pre>
 </div>
 <p>
-在这边, 输出的是 column_1, 但我们选择了根据 column_2 来排序.
+注意, SQL 语句中, 如果值的类型为字符串, 需要放在单引号之间. 如果是数值类型则不用.
 </p>
-</div>
 
-<div id="outline-container-org9e75eb2" class="outline-3">
-<h3 id="org9e75eb2">按多个列排序</h3>
-<div class="outline-text-3" id="text-org9e75eb2">
+<p>
+范围操作符 BETWEEN 的例子:
+</p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2, column_3 FROM table_name ORDER BY column_2, column_3;
+<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_2 BETWEEN 2.5 AND 10;
 </pre>
 </div>
 <p>
-只有当 column_2 一样时, 才会进一步根据 column_3 进行排序.
+BETWEEN 关键字需要两个值, 并用 AND 关键字连起来. BETWEEN 匹配的值包括指定的开始值和结束值.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgf4c23f5" class="outline-3">
-<h3 id="orgf4c23f5">升序降序</h3>
-<div class="outline-text-3" id="text-orgf4c23f5">
+<div id="outline-container-org5a664a3" class="outline-3">
+<h3 id="org5a664a3">空值检查</h3>
+<div class="outline-text-3" id="text-org5a664a3">
 <p>
-默认情况下, ORDER BY 子句以升序(如, 从0到9)排列, 我们也可以使用 DESC 关键字, 使结果以降序排列.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2, column_3 FROM table_name ORDER BY column_1 DESC, column_2;
-</pre>
-</div>
-
-<p>
-DESC 关键字只应用到它前面的列名, 所以上面的例子, 会先以 column_1 降序排列, 只有 column_1 相同时, 才以 column_2 升序排列.
+NULL(空值) 与 0, 空字符串, 空格不同.
 </p>
 
 <p>
-如果要对多个列进行降序排序, 需要对每个列都指定 DESC 关键字.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org56d15b6" class="outline-3">
-<h3 id="org56d15b6">ORDER BY 和 LIMIT 组合</h3>
-<div class="outline-text-3" id="text-org56d15b6">
-<p>
-ORDER BY 和 LIMIT 组合起来, 可以找出一个列中的最大最小值.
+以下 SQL 语句可以检查出所有 column_2 为 NULL 的行:
 </p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1 FROM table_name ORDER BY column_1 LIMIT 1;
+<pre class="src src-SQL">SELECT column_1 FROM table_name WHERE column_2 IS NULL;
 </pre>
 </div>
-</div>
-</div>
-
-<div id="outline-container-org74bca48" class="outline-3">
-<h3 id="org74bca48">子句的次序</h3>
-<div class="outline-text-3" id="text-org74bca48">
-<p>
-有些子句有先后顺序之分, 不能随意放置. 
-</p>
-
-<p>
-如:
-</p>
-
-<p>
-ORDER BY 子句必须放在 FROM 子句和 WHERE 子句之后.
-</p>
-
-<p>
-LIMIT 子句必须放在 ORDER BY 子句之后.
-</p>
 </div>
 </div>
 </div>
@@ -197,8 +251,8 @@ LIMIT 子句必须放在 ORDER BY 子句之后.
         <script type="text/javascript">
          //var disqus_developer = 1;
          var preempt_signal=false;
-         var disqus_identifier = "/blog/SQL/2018/04/22/mysql(三)-order-by-子句/ Or /blog/SQL/mysql(三)-order-by-子句/";
-         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/04/22/mysql(三)-order-by-子句/ Or /blog/SQL/mysql(三)-order-by-子句/";
+         var disqus_identifier = "/blog/SQL/2018/04/22/mysql(四)-where-子句/ Or /blog/SQL/mysql(四)-where-子句/";
+         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/04/22/mysql(四)-where-子句/ Or /blog/SQL/mysql(四)-where-子句/";
          var disqus_shortname = 'pinvon';
          /* * * DON'T EDIT BELOW THIS LINE * * */
          (function() {
