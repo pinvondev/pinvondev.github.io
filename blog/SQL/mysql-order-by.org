@@ -1,0 +1,62 @@
+#+TITLE:       MySQL(三) ORDER BY 子句
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-22 日
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: 学习如何使用 SELECT 语句的 ORDER BY 子句, 根据需要对检索的数据进行排序
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 子句
+
+SQL 语句由子句构成, 有些子句是必需的, 有些则是可选的.
+
+子句 = 关键字 + 数据
+
+如 SELECT * FROM table_name; 子句由 FROM 关键字和表 table_name 组成.
+
+* ORDER BY
+
+ORDER BY 子句使用一个或多个列的名字, 来对输出进行排序. 如:
+#+BEGIN_SRC SQL
+SELECT column_1 FROM table_name ORDER BY column_1;
+#+END_SRC
+
+我们也可以根据其他的列进行排序, 不一定要根据那些输出的列进行排序. 如:
+#+BEGIN_SRC SQL
+SELECT column_1 FROM table_name ORDER BY column_2;
+#+END_SRC
+在这边, 输出的是 column_1, 但我们选择了根据 column_2 来排序.
+
+** 按多个列排序
+
+#+BEGIN_SRC SQL
+SELECT column_1, column_2, column_3 FROM table_name ORDER BY column_2, column_3;
+#+END_SRC
+只有当 column_2 一样时, 才会进一步根据 column_3 进行排序.
+
+** 升序降序
+
+默认情况下, ORDER BY 子句以升序(如, 从0到9)排列, 我们也可以使用 DESC 关键字, 使结果以降序排列.
+
+#+BEGIN_SRC SQL
+SELECT column_1, column_2, column_3 FROM table_name ORDER BY column_1 DESC, column_2;
+#+END_SRC
+
+DESC 关键字只应用到它前面的列名, 所以上面的例子, 会先以 column_1 降序排列, 只有 column_1 相同时, 才以 column_2 升序排列.
+
+如果要对多个列进行降序排序, 需要对每个列都指定 DESC 关键字.
+
+** ORDER BY 和 LIMIT 组合
+
+ORDER BY 和 LIMIT 组合起来, 可以找出一个列中的最大最小值.
+#+BEGIN_SRC SQL
+SELECT column_1 FROM table_name ORDER BY column_1 LIMIT 1;
+#+END_SRC
+
+** 子句的次序
+
+有些子句有先后顺序之分, 不能随意放置. 如, ORDER BY 子句必须放在 FROM 子句之后, LIMIT 子句必须放在 ORDER BY 子句之后.
