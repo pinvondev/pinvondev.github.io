@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Go实战(二) 程序结构 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Go" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Go实战(二) 程序结构</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcd60a59">注</a></li>
+<li><a href="#orgf2a6d68">声明</a></li>
+<li><a href="#orgdca7d0e">变量</a>
+<ul>
+<li><a href="#org9350ade">变量的声明</a></li>
+<li><a href="#org1f0ba0a">声明多个变量</a></li>
+<li><a href="#orgab6afe7">简短变量声明</a></li>
+<li><a href="#org09cc7b0">指针</a>
+<ul>
+<li><a href="#org64e1a73">返回局部变量的地址</a></li>
+<li><a href="#orgdd152b0">指针作为函数参数</a></li>
+</ul>
+</li>
+<li><a href="#org4079497">new()</a></li>
+<li><a href="#org139c48a">变量的生命周期</a></li>
+</ul>
+</li>
+<li><a href="#orgbbaa274">赋值</a>
+<ul>
+<li><a href="#org3c5f40e">元组赋值</a>
+<ul>
+<li><a href="#org9be1160">函数返回多个值</a></li>
+</ul>
+</li>
+<li><a href="#org6a366d7">可赋值性</a></li>
+</ul>
+</li>
+<li><a href="#orgc48aede">类型</a>
+<ul>
+<li>
+<ul>
+<li><a href="#org32422b4">定义新行为</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgfe123f3">包和文件</a>
+<ul>
+<li><a href="#orgcf009d7">例子</a></li>
+<li><a href="#orgcd1d8d8">包的初始化</a></li>
+</ul>
+</li>
+<li><a href="#org044857f">作用域</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcd60a59" class="outline-2">
+<h2 id="orgcd60a59">注</h2>
+<div class="outline-text-2" id="text-orgcd60a59">
+<p>
+学习自: Go 语言圣经
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf2a6d68" class="outline-2">
+<h2 id="orgf2a6d68">声明</h2>
+<div class="outline-text-2" id="text-orgf2a6d68">
+<p>
+声明语句定义了程序的各种实体对象以及部分或全部属性. Go 用于声明的关键字有 var(变量), const(常量), type(类型), func(函数). 如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">package main
+import "fmt"
+const boilingF = 212.0
+func main() {
+    var f = boilingF
+    var c = (f - 32) * 5 / 9
+    fmt.Printf("boiling point = %g°F or %g°C\n", f, c)
+    // Output:
+    // boiling point = 212°F or 100°C
+}
+</pre>
+</div>
+<p>
+其中, boilingF 是在包级别范围声明的, f 和 c 是在函数内部声明的.
+</p>
+
+<p>
+<b>包级别范围声明的名字, 在整个包对应的每个源文件中都可以访问, 而不仅仅在声明语句所在的源文件.</b>
+</p>
+
+<p>
+函数内部声明的名字, 其生命周期仅在函数内部.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdca7d0e" class="outline-2">
+<h2 id="orgdca7d0e">变量</h2>
+<div class="outline-text-2" id="text-orgdca7d0e">
+</div>
+<div id="outline-container-org9350ade" class="outline-3">
+<h3 id="org9350ade">变量的声明</h3>
+<div class="outline-text-3" id="text-org9350ade">
+<p>
+变量的声明, 可以有以下三种形式:
+</p>
+<pre class="example">
+var name type = expression
+var name type  // 初始化成该类型对应的零值, 如数值型是0, 布尔型是false, 接口类型是nil
+var name = expression  // 根据右值来推导左边的类型
+</pre>
+
+<p>
+通过第二种形式的声明, 我们可以知道, 在 Go 中不存在未初始化的变量.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1f0ba0a" class="outline-3">
+<h3 id="org1f0ba0a">声明多个变量</h3>
+<div class="outline-text-3" id="text-org1f0ba0a">
+<div class="org-src-container">
+<pre class="src src-Golang">var i, j, k int                 // int, int, int
+var b, f, s = true, 2.3, "four" // bool, float64, string
+</pre>
+</div>
+
+<p>
+第一种形式需要所有变量的类型相同; 第二种形式中, 每个变量的类型由相应的右值推导.
+</p>
+
+<p>
+注意, 多个变量的赋值, 是将右边表达式的值赋给左边对应位置的名字:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">i, j = j, i  // 交换 i 和 j 的值
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgab6afe7" class="outline-3">
+<h3 id="orgab6afe7">简短变量声明</h3>
+<div class="outline-text-3" id="text-orgab6afe7">
+<p>
+简短变量声明语句的形式可用于声明和初始化局部变量. 形式为:
+</p>
+<pre class="example">
+name := expression
+</pre>
+<p>
+变量的类型根据表达式来自动推导.
+</p>
+
+<p>
+简短变量声明广泛应用于大部分的局部变量的声明和初始化中.
+</p>
+
+<p>
+var 形式的声明语句常用于需要显式指定变量类型的地方, 或变量因稍后会被重新赋值而初始值无关紧要的地方.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">i := 100                  // an int
+var boiling float64 = 100 // a float64
+var names []string
+var err error
+var p Point
+</pre>
+</div>
+
+<p>
+简短变量声明语句, 也可以同时声明多个变量: i, j := 0, 1
+</p>
+
+<p>
+左边的变量, 也可以不必全都是刚声明的变量, 但必须至少有一个是, 如:
+</p>
+<pre class="example">
+// 可以通过编译, 因为 in 和 out 都是刚声明的变量
+in, err := os.Open(infile)
+out, err := os.Create(outfile)
+
+// 不可以通过编译, 因为在第二个声明中, f 和 err 都在之前声明过了
+f, err := os.Open(infile)
+f, err := os.Create(outfile) // compile error: no new variables
+</pre>
+<p>
+第二种情况, 解决的办法就是把 := 改成 =.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org09cc7b0" class="outline-3">
+<h3 id="org09cc7b0">指针</h3>
+<div class="outline-text-3" id="text-org09cc7b0">
+<p>
+指针存放的是另一个变量的地址, 它对应变量在内存中的存储位置. 我们可以通过指针来直接读取或更新对应变量的值, 而不必知道变量的名字. 
+</p>
+
+<p>
+先了解 &amp; 和 * 操作符:
+</p>
+<ul class="org-ul">
+<li>&amp;x: 取变量 x 的内存地址</li>
+<li>*p: p指针指向的变量的值</li>
+</ul>
+
+<p>
+通过以下例子了解指针最基本的用法:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">x := 1
+p := &amp;x         // p, of type *int, points to x
+fmt.Println(*p) // "1"
+*p = 2          // equivalent to x = 2
+fmt.Println(x)  // "2"
+</pre>
+</div>
+
+<p>
+指针的零值是 nil, 因此, 如果声明时未初始化, 指针的值就是 nil. 我们经常会在 if 中用到 p!=nil, 来判断该指针是否指向一个有意义的变量.
+</p>
+
+<p>
+两个指针如果指向同一个变量, 或都为 nil 时, 才会相等:
+</p>
+<pre class="example">
+var x, y int
+fmt.Println(&amp;x == &amp;x, &amp;x == &amp;y, &amp;x == nil) // "true false false"
+</pre>
+</div>
+
+<div id="outline-container-org64e1a73" class="outline-4">
+<h4 id="org64e1a73">返回局部变量的地址</h4>
+<div class="outline-text-4" id="text-org64e1a73">
+<p>
+在 Go 语言中, 可以返回局部变量的地址:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var p = f()
+func f() *int {
+    v := 1
+    return &amp;v
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdd152b0" class="outline-4">
+<h4 id="orgdd152b0">指针作为函数参数</h4>
+<div class="outline-text-4" id="text-orgdd152b0">
+<p>
+因为指针包含变量的地址, 所以如果将指针作为参数传递给函数, 在函数中就可以通过该指针来更新变量的值. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func incr(p *int) int {
+    *p++ // 非常重要：只是增加p指向的变量的值，并不改变p指针！！！
+    return *p
+}
+
+v := 1
+incr(&amp;v)              // side effect: v is now 2
+fmt.Println(incr(&amp;v)) // "3" (and v is 3)
+</pre>
+</div>
+
+<p>
+对一个变量取地址, 复制指针, 都是为原变量创建了一个别名. 如, 在上面的例子中, *p 就是变量 v 的别名.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4079497" class="outline-3">
+<h3 id="org4079497">new()</h3>
+<div class="outline-text-3" id="text-org4079497">
+<p>
+表达式 new(T) 将会创建一个 T 类型的匿名变量, 初始化为 T 类型的零值, 然后返回变量地址, 返回的指针类型为 *T. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">p := new(int)   // p, *int 类型, 指向匿名的 int 变量
+fmt.Println(*p) // "0"
+*p = 2          // 设置 int 匿名变量的值为 2
+fmt.Println(*p) // "2"
+</pre>
+</div>
+
+<p>
+下面两种用法的效果是相同的:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func newInt() *int {
+    return new(int)
+}
+
+func newInt() *int {
+    var dummy int
+    return &amp;dummy
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org139c48a" class="outline-3">
+<h3 id="org139c48a">变量的生命周期</h3>
+<div class="outline-text-3" id="text-org139c48a">
+<p>
+变量的生命周期是指在程序运行期间变量有效存在的时间间隔.
+</p>
+
+<p>
+包一级声明的变量, 生命周期和整个程序运行周期是一致的.
+</p>
+
+<p>
+局部变量: 从声明语句开始, 直到该变量不再被引用为止, 然后变量的存储空间可能被回收.
+</p>
+
+<p>
+Go 的自动垃圾回收器的基本实现思路: 从每个包级的变量和每个当前运行函数的每个局部变量开始, 通过指针或引用的访问路径遍历, 是否可以找到该变量. 如果不存在这样的访问路径, 则说明该变量不可达, 也就说明它是否存在, 并不会影响程序后续的计算结果.
+</p>
+
+<p>
+所以, 本质上来说, 一个变量的有效期只取决于该变量是否可达. 所以, 局部变量可能在函数返回之后依然存在, 另外, 变量分配在堆还是栈上, 由编译器自己决定. 如下所示:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var global *int
+
+func f() {
+    var x int
+    x = 1
+    global = &amp;x
+}
+
+func g() {
+    y := new(int)
+    *y = 1
+}
+</pre>
+</div>
+
+<p>
+解析: 
+</p>
+
+<p>
+f() 中的变量 x 必须在堆上分配, 因为它在 f() 返回后, 依然可以通过包一级的变量 global 访问到. 在 Go 里面, 可以说局部变量 x 从 f() 中逃逸了.
+</p>
+
+<p>
+g() 中的变量 *y 在 g() 返回后, 变成不可达状态, 将会被回收. 因此 *y 会被分配到栈上.
+</p>
+
+<p>
+虽然 Go 有自动垃圾收集器, 但这并不意味着我们可以完全不考虑内存了. 虽然我们不需要显式地分配和释放内存, 但要编写高效的程序, 依然要了解变量的生命周期. 如果把指向短生命周期对象的指针保存到具有长生命周期的对象中, 特别是保存到全局变量中时, 会阻止对短生命周期对象的垃圾回收, 从而影响程序性能.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbbaa274" class="outline-2">
+<h2 id="orgbbaa274">赋值</h2>
+<div class="outline-text-2" id="text-orgbbaa274">
+<p>
+Go 中支持 ++ 和 -- 语句.
+</p>
+</div>
+
+<div id="outline-container-org3c5f40e" class="outline-3">
+<h3 id="org3c5f40e">元组赋值</h3>
+<div class="outline-text-3" id="text-org3c5f40e">
+<p>
+元组赋值: i, j, k = 2, 3, 5
+</p>
+</div>
+
+<div id="outline-container-org9be1160" class="outline-4">
+<h4 id="org9be1160">函数返回多个值</h4>
+<div class="outline-text-4" id="text-org9be1160">
+<p>
+如果函数的返回值有多个, 则在元组赋值的右边, 并且不能再有其他表达式, 只能有一个函数. 如:
+</p>
+<pre class="example">
+f, err = os.Open("foo.txt")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6a366d7" class="outline-3">
+<h3 id="org6a366d7">可赋值性</h3>
+<div class="outline-text-3" id="text-org6a366d7">
+<p>
+赋值语句是显式的赋值形式, 但是在程序中也可以有隐式的赋值行为:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">medals := []string{"gold", "silver", "bronze"}
+</pre>
+</div>
+
+<p>
+类似这样写:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">medals[0] = "gold" 
+medals[1] = "silver" 
+medals[2] = "bronze"
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc48aede" class="outline-2">
+<h2 id="orgc48aede">类型</h2>
+<div class="outline-text-2" id="text-orgc48aede">
+<p>
+编译器根据变量或表达式的类型来分配该变量的内存大小.
+</p>
+
+<p>
+同一个类型, 在不同的场景, 有不同的意义. 如 int 类型的变量, 可以用来表示时间, 索引, 等等.
+</p>
+
+<p>
+我们可以用类型声明语句创建一个新的类型名称, 和现有类型有相同的底层结构. 声明形式为:
+</p>
+<pre class="example">
+type 类型名字 底层名称
+
+// 如
+type Myfloat float64
+</pre>
+
+<p>
+另外, 要注意, 如果声明了两个 float64 的新类型名称, 尽管它们的底层类型都是 float64, 但这两种类型的变量是不能直接比较的或者直接用在一个表达式中的. 要想比较, 或在一个表达式中使用, 我们需要显式转换.
+</p>
+
+<p>
+对每个类型 T(这边的类型, 指的是我们定义的新类型), 都会有一个类型转换操作 T(x), 用于将 x 转成 T 类型. 只有两个类型的底层基础类型相同时, 或者两者都是指向相同底层结构的指针类型, 才允许这种转型操作.
+</p>
+
+<p>
+新类型的算术运算行为和底层类型是一致的.
+</p>
+
+<p>
+用类型声明语句创建新类型, 一般用在底层类型是复杂类型(如匿名的结构体定义变量)的情况, 这可以避免我们一遍遍地书写复杂类型.
+</p>
+</div>
+
+<div id="outline-container-org32422b4" class="outline-4">
+<h4 id="org32422b4">定义新行为</h4>
+<div class="outline-text-4" id="text-org32422b4">
+<p>
+我们还可以给这些用类型声明语句创建的新类型定义新的行为. 这些行为与该类型相关, 我们称之为类型的方法集. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">type Celsius float64
+func (c Celsius) String() string { return fmt.Sprintf("%g", c) }
+</pre>
+</div>
+<p>
+注意该方法的声明语句, Celsius 类型的参数 c 出现在函数名 String() 前面, 表示这是一个 Celsius 类型的方法.
+</p>
+
+<p>
+如果这个类型和底层类型都定义了 String(), 则在调用时, 如果没有特别指明, 会优先调用该类型定义的方法, 而不是底层类型的.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe123f3" class="outline-2">
+<h2 id="orgfe123f3">包和文件</h2>
+<div class="outline-text-2" id="text-orgfe123f3">
+<p>
+Go 语言中, 包和其他语言中的库或模块的概念类似, 目的都是为了支持模块化, 封装, 单独编译和代码重用. 它还可以让我们通过控制哪些名字是外部可见的, 来隐藏内部实现细节. 在 Go 语言中, 如果名字以大写字母开头, 则说明该名字是可导出的.
+</p>
+
+<p>
+包的源码保存在一个或多个以 .go 为文件后缀名的源文件中.
+</p>
+</div>
+
+<div id="outline-container-orgcf009d7" class="outline-3">
+<h3 id="orgcf009d7">例子</h3>
+<div class="outline-text-3" id="text-orgcf009d7">
+<p>
+假设我们要开发一个包, 并且发布到 Go 语言社区.
+</p>
+
+<p>
+首先创建一个名为 gopl.io/ch2/tempconv 的包. 包的代码存储在两个源文件中, 我们使用这两个源文件来演示, 如何在一个源文件中进行声明, 在另一个源文件中访问.
+</p>
+
+<p>
+在包里, 创建一个名为 tempconv.go 的文件, 把变量的声明, 对应的常量都放在这里:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package tempconv
+
+import "fmt"
+
+type Celsius float64
+type Fahrenheit float64
+
+const (
+    AbsoluteZeroC Celsius = -273.15
+    FreezingC     Celsius = 0
+    BoilingC      Celsius = 100
+)
+
+func (c Celsius) String() string    { return fmt.Sprintf("%g°C", c) }
+func (f Fahrenheit) String() string { return fmt.Sprintf("%g°F", f) }
+</pre>
+</div>
+
+<p>
+再创建一个名为 conv.go 的源文件, 使用上面声明的新类型:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">package tempconv
+
+// CToF converts a Celsius temperature to Fahrenheit.
+func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
+
+// FToC converts a Fahrenheit temperature to Celsius.
+func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+</pre>
+</div>
+
+<p>
+可以看出, 每个源文件开头都要声明该文件所属的包.
+</p>
+
+<p>
+当我们导入包的时候, 包内的成员可以通过类似 tempconv.CToF 的形式来访问.
+</p>
+
+<p>
+在包级别声明的变量, 可以在同一个包的其他源文件中直接使用, 如 tempconv.go 文件中声明了类型 Celsius, 在 conv.go 文件中可以直接使用.
+</p>
+
+<p>
+在其他包中使用 tempconv 包时, 先导入该包, 再调用里面的方法:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">import "gopl.io/ch2/tempconv"
+...
+fmt.Println(tempconv.CToF(tempconv.BoilingC))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd1d8d8" class="outline-3">
+<h3 id="orgcd1d8d8">包的初始化</h3>
+<div class="outline-text-3" id="text-orgcd1d8d8">
+<p>
+在包内, 可以声明若干个 init() 来做初始化工作. init() 除了不能被调用或引用外, 其他行为和普通函数类似. 
+</p>
+
+<p>
+每个包以导入声明的顺序初始化, 每个包只会被初始化一次. init() 会在 main() 之前执行.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org044857f" class="outline-2">
+<h2 id="org044857f">作用域</h2>
+<div class="outline-text-2" id="text-org044857f">
+<p>
+一个声明语句将程序中的实体和一个名字关联, 作用域是指源代码中可以有效使用这个名字的范围.
+</p>
+
+<p>
+作用域和生命周期是两个概念. 作用域对应的是一个源代码的文本区域, 是编译时的概念; 生命周期是指变量存在的有效时间段, 在此时间区域内它可以被程序的其他部分引用, 是运行时的概念.
+</p>
+
+<p>
+一个程序可能包含多个同名的声明, 但只要它们在不同的词法域, 就没有问题. 如, 可以声明一个局部变量, 和包级的变量同名. 当编译器遇到一个名字引用时, 如果是个声明, 它首先从最内层的词法域向全局的作用域查找, 如果查找失败, 则报告错误, 如果这个名字在内部和外部的块中都有声明过, 则内部的声明首先被找到. 在这种情况下, 内部声明屏蔽了外部同名的声明, 使得外部声明的名字无法被访问.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-22</span>
+            <span title="last modification date" class="post-info">2018-04-22</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/go">Go</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Go/2018/04/22/go实战(二)-程序结构/ Or /blog/Go/go实战(二)-程序结构/";
+         var disqus_url = "https://pinvondev.github.io/blog/Go/2018/04/22/go实战(二)-程序结构/ Or /blog/Go/go实战(二)-程序结构/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
