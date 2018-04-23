@@ -1,0 +1,340 @@
+#+TITLE:       十一 动态加入组织到通道(v1.1)
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-23 一
+
+#+URI:         /blog/BlockChain/%y/%m/%d/%t/ Or /blog/BlockChain/%t/
+#+TAGS:        BlockChain
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+以 fabric-samples/first-network 中的配置为例, 介绍如何加入一个新组织到现有的通道中. 在这边, 我们假定读者已经熟悉了 first-network 如何运行.
+
+虽然这篇文章是针对增加新组织的, 但是在通道修改策略或改变区块大小时, 方法是类似的.
+
+一般来说, 更新通道这类事情比较偏运维方向, 而不是开发人员的事情.
+
+* 启动网络
+
+** 清理
+
+首先执行以下语句, 确保在正式开始之前, 把相关的文件, 容器等, 都清理一遍.
+#+BEGIN_SRC Shell
+./byfn.sh -m down
+#+END_SRC
+
+** 生成相关文件
+
+#+BEGIN_SRC Shell
+./byfn.sh -m generate
+#+END_SRC
+
+** 启动网络
+
+#+BEGIN_SRC Shell
+./byfn.sh -m up
+#+END_SRC
+
+接下来, 我们先学习使用脚本自动完成动态加入组织, 然后再手动操作一遍.
+
+* 脚本
+
+在 first-network 目录下, 直接执行:
+#+BEGIN_SRC Shell
+./eyfn.sh up
+#+END_SRC
+
+如果一切正常, 结果如下:
+
+[[./71.png]]
+
+通过查看容器, 可以发现, 已经多出了 Org3:
+
+[[./72.png]]
+
+* 手动执行
+
+我们先将日志的级别调成 DEBUG.
+
+对于 cli 容器, 我们修改 docker-compose-cli.yaml 文件:
+#+BEGIN_SRC YAML
+cli:
+  container_name: cli
+  image: hyperledger/fabric-tools:$IMAGE_TAG
+  tty: true
+  stdin_open: true
+  environment:
+    - GOPATH=/opt/gopath
+    - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+    #- CORE_LOGGING_LEVEL=INFO
+    - CORE_LOGGING_LEVEL=DEBUG
+#+END_SRC
+
+对于 Org3cli 容器, 我们修改 docker-compose-org3.yaml 文件, 修改的地方与上面类似.
+
+如果之前使用 eyfn.sh 添加了 Org3, 现在先将其关掉:
+#+BEGIN_SRC Shell
+./eyfn.sh down
+rm channel-artifacts/*
+rm -rf crypto-config
+#+END_SRC
+这会关掉整个网络, 删除所有容器.
+
+** 启动网络
+
+#+BEGIN_SRC Shell
+./byfn.sh -m generate
+./byfn.sh -m up
+#+END_SRC
+
+如果出现如下错误:
+#+BEGIN_SRC Shell
+Error: got unexpected status: FORBIDDEN -- Failed to reach implicit threshold of 1 sub-policies, required 1 remaining: permission denied
+#+END_SRC
+则执行:
+#+BEGIN_SRC Shell
+docker-compose -f docker-compose-cli.yaml -f docker-compose-couch.yaml down --volumes
+#+END_SRC
+
+** 生成 Org3 的加密材料
+
+#+BEGIN_SRC Shell
+cd org3-artifacts
+#+END_SRC
+
+这个目录下有两个文件: org3-crypto.yaml 和 configtx.yaml
+
+首先, 使用 org3-crypto.yaml 生成 Org3 的加密材料:
+#+BEGIN_SRC Shell
+../../bin/cryptogen generate --config=./org3-crypto.yaml
+#+END_SRC
+cryptogen 工具会为 Org3 的 CA, Peers 生成私钥和证书, 并在当前目录创建 crypto-config, 然后把所有材料放在这个目录里.
+
+#+BEGIN_SRC Shell
+export FABRIC_CFG_PATH=$PWD
+../../bin/configtxgen -printOrg Org3MSP > ../channel-artifacts/org3.json
+#+END_SRC
+该命令会生成 .json 文件, 用作通道配置. 放在 first-network/channel-artifacts 目录下.
+
+可以打开看看里面的内容. 主要包括 Org3 定义的策略, 管理员证书(Org3 的管理员), CA 根证书, TLS 根证书.
+
+** 将 Orderer 的 MSP 材料放进 Org3 的 crypto-config
+
+#+BEGIN_SRC Shell
+cd ..
+cp -r crypto-config/ordererOrganizations org3-artifacts/crypto-config/
+#+END_SRC
+
+做完这些以后, 我们开始更新通道配置.
+
+** 准备 CLI 环境
+
+#+BEGIN_SRC Shell
+docker exec -it cli bash
+apt update
+apt install -y jq  # 这个工具可以和JSON文件交互
+#+END_SRC
+
+设置 ORDERER_CA 和 CHANNEL_NAME 环境变量:
+#+BEGIN_SRC Shell
+export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+export CHANNEL_NAME=mychannel
+#+END_SRC
+
+如果重启了 cli 容器, 需要重新设置这些环境变量, 但是 jq 工具将会一直存在, 除非我们删了这个容器.
+
+** 获取配置
+
+在 cli 容器中, 获取最新的通道配置区块(如果这个通道更新过多次):
+#+BEGIN_SRC Shell
+peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+#+END_SRC
+这条命令将通道配置区块的二进制原型保存到了当前目录的 config_block.pb 里(其实, 名字和后缀都是任意的).
+
+** 解码 config_block.pb
+
+我们使用 configtxlator 工具将 config_block.pb 解码, 并使用 jq 工具过滤掉与内容无关的信息:
+#+BEGIN_SRC Shell
+configtxlator proto_decode --input config_block.pb --type common.Block | jq .data.data[0].payload.data.config > config.json
+#+END_SRC
+
+可以另开一个终端, 使用如下命令将生成的 config.json 复制到宿主机器:
+#+BEGIN_SRC Shell
+docker cp cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/config.json ./
+#+END_SRC
+
+config.json 文件是很重要的, 可以用编辑器打开, 看看里面的内容.
+
+** 添加 Org3 的加密材料
+
+使用 jq 工具, 将 Org3 的配置 org3.json 添加到通道配置文件 config.json(这边并不严谨, 只是为了方便理解, 因为 config.json 只是通道配置文件转码且删掉了部分信息后的东西), 并将结果命名为 modified_config.json:
+#+BEGIN_SRC Shell
+jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups": {"Org3MSP":.[1]}}}}}' config.json ./channel-artifacts/org3.json > modified_config.json
+#+END_SRC
+
+现在, cli 容器里已经有 config.json 和 modified_config.json 两个文件了. 前者只包含了 Org1 和 Org2 的加密材料, 后者则还包含了 Org3 的加密材料.
+
+将 config.json 和 modified_config 转成二进制文件 config.pb 和 modified_config.pb:
+#+BEGIN_SRC Shell
+configtxlator proto_encode --input config.json --type common.Config --output config.pb
+
+configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
+#+END_SRC
+
+计算 modified_config.pb 和 config.pb 之间的增量, 因为在通道的区块中, 已经有了 Org1 和 Org2 的加密材料, 我们只需要这两个配置之间的增量 org3_update.pb:
+#+BEGIN_SRC Shell
+configtxlator compute_update --channel_id $CHANNEL_NAME --original config.pb --updated modified_config.pb --output org3_update.pb
+#+END_SRC
+
+再将 org3_update.pb 转成 JSON 格式:
+#+BEGIN_SRC Shell
+configtxlator proto_decode --input org3_update.pb --type common.ConfigUpdate | jq . > org3_update.json
+#+END_SRC
+
+将我们之前过滤掉的与内容无关的数据添加回去, 得到 org3_update_in_envelope.json:
+#+BEGIN_SRC Shell
+echo '{"payload":{"header":{"channel_header":{"channel_id":"mychannel", "type":2}},"data":{"config_update":'$(cat org3_update.json)'}}}' | jq . > org3_update_in_envelope.json
+#+END_SRC
+
+最后, 再把这个文件转成二进制形式, 得到 org3_update_in_envelope.pb:
+#+BEGIN_SRC Shell
+configtxlator proto_encode --input org3_update_in_envelope.json --type common.Envelope --output org3_update_in_envelope.pb
+#+END_SRC
+
+** 注册和提交更新的配置
+
+在将更新的配置写入账本之前, 我们还要用 Admin 进行签名.
+
+由于通道的修改策略(mod_policy)设置为 MAJORITY, 所以我们需要大多数组织管理员对其进行签名. 在我们的案例中, 只有 Org1 和 Org2, 所以大多数的意思就是, 我们需要他们两个组织的管理员签名. 如果没有两个签名, Orderer 将拒绝未完成该策略的交易.
+
+由于 cli 容器里的环境变量默认是针对 Org1 的, 所以我们不需要修改什么, 直接签名即可:
+#+BEGIN_SRC Shell
+peer channel signconfigtx -f org3_update_in_envelope.pb
+#+END_SRC
+
+而 Org2 的管理员的签名, 则需要先修改 cli 的环境变量, 这样才能使用 cli 来模仿 Org2 的管理员:
+#+BEGIN_SRC Shell
+export CORE_PEER_LOCALMSPID="Org2MSP"
+
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+
+export CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+#+END_SRC
+
+然后我们使用 peer channel update 命令, 这个命令会自动对二进制文件签名, 所以我们不用再执行一次 peer channel signconfigtx 命令:
+#+BEGIN_SRC Shell
+peer channel update -f org3_update_in_envelope.pb -c $CHANNEL_NAME -o orderer.example.com:7050 --tls --cafile $ORDERER_CA
+#+END_SRC
+
+如果输出的结果类似如下形式, 则说明一切顺利:
+#+BEGIN_SRC Shell
+2018-04-23 15:36:55.653 UTC [channelCmd] update -> INFO 002 Successfully submitted channel update
+#+END_SRC
+
+我们可以新开一个终端, 输入如下命令, 查看日志:
+#+BEGIN_SRC Shell
+docker logs -f peer0.org1.example.com
+#+END_SRC
+
+** 选举
+
+根据需要, 修改 first-network/base/base-peer.yaml 文件:
+
+静态选举:
+#+BEGIN_SRC Shell
+CORE_PEER_GOSSIP_USELEADERELECTION=false
+CORE_PEER_GOSSIP_ORGLEADER=true
+#+END_SRC
+
+动态选举:
+#+BEGIN_SRC Shell
+CORE_PEER_GOSSIP_USELEADERELECTION=true
+CORE_PEER_GOSSIP_ORGLEADER=false
+#+END_SRC
+
+** 将 Org3 加入通道
+
+新开一个终端, 执行:
+#+BEGIN_SRC Shell
+docker-compose -f docker-compose-org3.yaml up -d
+docker exec -it Org3cli bash
+#+END_SRC
+
+设置环境变量:
+#+BEGIN_SRC Shell
+export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+export CHANNEL_NAME=mychannel
+#+END_SRC
+
+获取 Orderer 的创世区块(由于我们之前更新过通道, 所以 Orderer 可以验证我们的签名, 如果 Org3 尚未成功添加到通道配置中, Orderer 会拒绝我们的请求):
+#+BEGIN_SRC Shell
+peer channel fetch 0 mychannel.block -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+#+END_SRC
+参数 0 表示我们需要的是创世区块, 如果不加这个参数, 将会获得最新区块.
+
+使用 peer channel join 命令加入通道:
+#+BEGIN_SRC Shell
+peer channel join -b mychannel.block
+#+END_SRC
+
+如果要加入 Org3 的另一个节点, 修改环境变量:
+#+BEGIN_SRC Shell
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer1.org3.example.com/tls/ca.crt && export CORE_PEER_ADDRESS=peer1.org3.example.com:7051
+
+peer channel join -b mychannel.block
+#+END_SRC
+
+** 升级和调用链码
+
+在 Org3cli 中执行, 将链码的版本安装为 2.0 版(一般来说, 一个组织只要主节点升级即可):
+#+BEGIN_SRC Shell
+peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+#+END_SRC
+
+在 cli 容器中, Org2 也安装链码:
+#+BEGIN_SRC Shell
+peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+#+END_SRC
+
+切换到 Org1, 安装链码:
+#+BEGIN_SRC Shell
+export CORE_PEER_LOCALMSPID="Org1MSP"
+
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+
+export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+
+peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+#+END_SRC
+
+
+升级链码:
+#+BEGIN_SRC Shell
+peer chaincode upgrade -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
+#+END_SRC
+
+查询:
+#+BEGIN_SRC Shell
+peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+#+END_SRC
+
+如果一切顺利, 返回结果如下图所示:
+
+[[./73.png]]
+
+转账:
+#+BEGIN_SRC Shell
+peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}'
+
+peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+#+END_SRC
+如果一切顺利, 返回的结果应该是 80.
