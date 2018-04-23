@@ -82,6 +82,139 @@ fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 国 '国'"
 fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
 #+END_EXAMPLE
 
+*** 浮点数
+
+Go 语言的浮点数有 float32 和 float64, 它们符合 IEEE754 标准. 浮点数的极限值可以在 math 包中找到. 如: math.MaxFload32 是 float32 能表示的最大数, 大约为 3.4e38; math.MaxFloat64 是 float64 能表示的最大数, 大约是 1.8e308.
+
+一般我们优先使用 float64, 根据 IEEE754 标准, float32 所能表示的正整数并不是很大, 因为 32bit 的有效位是 23bit, 剩下的要用于指数和符号位, 当整数大于 23bit 能表达的范围时, float32 将出现误差. 如:
+#+BEGIN_EXAMPLE
+var f float32 = 16777216 // 1 << 24
+fmt.Println(f == f+1)    // "true"!
+#+END_EXAMPLE
+
+**** 格式化输出
+
+格式化输出浮点型时, 我们一般使用 %f, 如 %8.3f 表示输出 8 个字符宽度, 小数保留 3 位.
+
+**** math 包
+
+math 包提供了大量常用的数学函数和 IEEE754 浮点数标准中定义的特殊值的创建和测试: 正无穷大, 负无穷大, 非数 NaN(用于表示无效的除法操作, 如 0/0). 如:
+#+BEGIN_EXAMPLE
+var z float64
+fmt.Println(z, -z, 1/z, -1/z, z/z) // "0 -0 +Inf -Inf NaN"
+#+END_EXAMPLE
+
+math.IsNaN() 可以测试一个数是否为非数 NaN, math.Nan() 返回非数对应的值. 但是要注意, NaN 和任何数都是不相等的, 包括它自己:
+#+BEGIN_EXAMPLE
+nan := math.NaN()
+fmt.Println(nan == nan, nan < nan, nan > nan) // "false false false"
+#+END_EXAMPLE
+
+*** 复数
+
+Go 语言提供了两种精度的复数类型: complex64 和 complex 128, 分别对应 float32 和 float64 两种浮点数精度.
+
+内置的 complex() 用于构建复数, 内置的 real() 和 image() 分别返回复数的实部和虚部. 如:
+#+BEGIN_EXAMPLE
+var x complex128 = complex(1, 2) // 1+2i
+var y complex128 = complex(3, 4) // 3+4i
+fmt.Println(x*y)                 // "(-5+10i)"
+fmt.Println(real(x*y))           // "-5"
+fmt.Println(imag(x*y))           // "10"
+#+END_EXAMPLE
+
+如果数字后面直接紧跟一个 i, 则表示它是一个复数的虚部, 而实部是0:
+#+BEGIN_EXAMPLE
+fmt.Println(1i * 1i)  // "(-1+0i)", i^2 = -1
+#+END_EXAMPLE
+
+我们也可以用简短变量声明的方式, 来自然的书写复数:
+#+BEGIN_EXAMPLE
+x := 1 + 2i
+y := 3 + 4i
+#+END_EXAMPLE
+
+**** math/cmplx 包
+
+math/cmplx 包提供了许多复数处理的函数, 如求复数的平方根函数和求幂函数.
+
+*** 布尔型
+
+布尔型的值只有 true 和 false 两种, 它们并不会隐式转化成数字 0 和 1.
+
+**** 短路逻辑
+
+布尔值可以和 && 和 || 这两个操作符结合. 如果运算符左边的值已经可以确定整个布尔表达式的值, 那么运算符右边的值将不再被求值, 如:
+#+BEGIN_EXAMPLE
+a := 5
+b := 4
+if a<0 && b<0 { ... }
+#+END_EXAMPLE
+由于 && 操作符需要两个值都为真, 结果才返回真. 所以当其判断 a<0 时, 已经知道 && 左边的值为假了, 所以结果肯定为假, 右边的值不需要再判断. || 操作符的短路逻辑类似.
+
+合理安排语句, 使用短路逻辑可以提高程序效率.
+
+*** 字符串
+
+字符串是一个不可改变的字节序列. 文本字符串通常被解释为采用 UTF-8 编码的 Unicode 码点(rune)序列.
+
+内置的 len() 返回的是字符串中的 *字节* 数目, 而不是 rune 字符数目. 索引操作 s[i] 返回的是第 i 个字节的字节值, 而不是字符值. 如:
+#+BEGIN_EXAMPLE
+	s := "你好"
+	fmt.Println(len(s))  // 6
+	fmt.Println(s[2])  // 160
+#+END_EXAMPLE
+可以看出, 其长度是 6, 而不是字符数目 2. 第 i 个字节并不一定是字符串的第 i 个字符, 因为对于非 ASCII 字符的 UTF-8 编码会要两个或多个字节.
+
+如果试图访问超出字符串索引范围的字节, 将导致 panic 异常, 如访问 s[10].
+
+**** 子字符串操作 s[i:j]
+
+s[i:j] 可以得到 [i,j) 之间的字节, 并生成一个新字符串. 如:
+#+BEGIN_EXAMPLE
+s := "你好"
+fmt.Println(s[0:1])  // �
+#+END_EXAMPLE
+注意, 中文在 UTF-8 编码中, 一个字符占用 3 个字节, 所以如果只截第 1 个字节, 得到的字符将是乱码.
+
+如果忽略 i, 将使用 0 作为开始位置; 如果忽略 j, 将使用 len(s) 作为结束位置.
+
+**** 字符串不可修改
+
+注意, 字符串是不可修改的, 所以试图修改字符串内部数据的操作, 将会报错:
+#+BEGIN_EXAMPLE
+s := "left foot"                                                                                                                           
+s[0] = 'L' // compile error: cannot assign to s[0] 
+#+END_EXAMPLE
+
+**** 字符串拼接
+
++ 操作符将两个字符串拼接成一个新的字符串. 如:
+#+BEGIN_EXAMPLE
+s := "left foot"
+t := s
+s += ", right foot"
+fmt.Println(s) // "left foot, right foot"
+fmt.Println(t) // "left foot"
+#+END_EXAMPLE
+看起来, t 是得到了 s 的一份拷贝, 但实际上, 由于字符串的不可修改性, 所以如果两个字符串共享相同的底层数据是安全的.
+
+于是, 复制任何长度的字符串的代价是低廉的. 如下图所示, 一个字符串 s 和相应的子字符串切片 s[7:] 的操作可以安全地共享相同的内存, 代价低廉. 复制和切片都没有必要分配新的内存.
+
+[[./5.png]]
+
+**** Unicode
+
+Go 语言的源文件和文本字符串都是以 UTF-8 编码方式进行处理的, 所以我们可以把 Unicode 码点也写到字符串面值中.
+
+ASCII 字符集: 使用 7bit 来表示 128 个字符.
+
+但是世界上的字符不止 128 个, 还有汉字, 日文, 等等. 所以需要使用另一个字符集来表示所有的符号系统, 这就是 Unicode 的由来.
+
+Unicode 为每个符号都分配一个唯一的 Unicode 码点, Unicode 码点对应 Go 语言的 rune 整数类型(与 int32 等价).
+
+UTF-8 是 Unicode 的一个实现方式. 它是一种变长的编码方式, 可以使用 1~4 个字节表示一个符号, 当字符在 ASCII 的范围时, 就用一个字节表示, 这样可以节点空间. 另外, 在 Unicode 里, 一个中文字符占 2 个字节, 而在 UTF-8 里, 一个中文字符占 3 个字节.
+
 ** 类型转换
 
 在 Go 语言中, 需要显式地将一个值从一种类型转化成另一种类型. 如:
