@@ -1,0 +1,54 @@
+#+TITLE:       Ubuntu 16.04LTS PostgreSQL 安装
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-24 二
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 安装
+
+#+BEGIN_SRC Shell
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+#+END_SRC
+
+* 使用
+
+安装成功后, 默认会生成一个名为 postgres 的数据库, 一个名为 postgres 的数据库用户, 一个名为 postgres 的 Linux 系统用户.
+
+我们可以切换到 postgres 用户, 然后登录数据库; 也可以不切换, 直接登录.
+
+** 切换用户登录
+
+*** 切换到 postgres 账户
+
+ #+BEGIN_SRC Shell
+ sudo -i -u postgres
+ #+END_SRC
+
+*** 使用 psql 命令登录 Postgres 数据库
+
+ #+BEGIN_SRC Shell
+ psql
+ #+END_SRC
+ 这相当于系统用户 postgres 以同名数据库用户的身份, 登录数据库, 不需要输入密码.
+
+ 如果一切顺利, 系统提示符会变成 postgres=#, 表示已经进入数据库控制台.
+
+*** 退出
+
+ #+BEGIN_SRC Shell
+ \q
+ #+END_SRC
+
+** 不切换用户登录
+
+#+BEGIN_SRC Shell
+sudo -u postgres psql
+\q
+#+END_SRC

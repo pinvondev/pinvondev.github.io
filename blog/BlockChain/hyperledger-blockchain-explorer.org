@@ -1,0 +1,47 @@
+#+TITLE:       Hyperledger BlockChain Explorer 部署
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-04-24 二
+
+#+URI:         /blog/BlockChain/%y/%m/%d/%t/ Or /blog/BlockChain/%t/
+#+TAGS:        BlockChain
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 安装 postgresql
+
+#+BEGIN_SRC Shell
+sudo apt install postgresql postgresql-contrib
+#+END_SRC
+
+* 下载代码
+
+#+BEGIN_SRC Shell
+git clone https://github.com/hyperledger/blockchain-explorer.git
+
+cd blockchain-explorer
+#+END_SRC
+
+* 数据库设置
+
+#+BEGIN_SRC Shell
+sudo -u postgres psql
+
+# 运行创建数据库的脚本
+\i app/db/explorerpg.sql
+\i app/db/updatepg.sql
+
+# 查看数据库
+\l
+
+# 查看表
+\d
+#+END_SRC
+
+* 启动 Fabric 网络
+
+启动 first-network 的网络.
+
+* 运行 hyperledger-explorer
