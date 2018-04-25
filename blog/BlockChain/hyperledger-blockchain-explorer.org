@@ -44,9 +44,36 @@ sudo -u postgres psql
 
 启动 first-network 的网络.
 
-* 运行 hyperledger-explorer
+* 配置 hyperledger-explorer
 
 另开一个终端, 进入 blockchain-explorer 目录.
 
 修改 config.json, 将所有的 fabric-path 改成 fabric-samples 的所在路径.
 
+* 运行
+
+这一步我这边的环境报错了, 错误原因是说找不到 log4js 模块, 但查看 node_modules 可以看到, 已经安装了这个模块. 这个错误暂时未找到解决方案, 继续做后面的, 发现程序也可以运行.
+#+BEGIN_SRC Shell
+cd blockchain-explorer/app/test
+npm install
+npm run test
+#+END_SRC
+
+#+BEGIN_SRC Shell
+cd blockchain-explorer
+npm install
+cd client
+npm install
+npm test -- -u --coverage
+npm run build
+#+END_SRC
+
+#+BEGIN_SRC Shell
+cd blockchain-explorer
+./start.sh  # 程序将在后台执行
+
+# 查看日志
+tail -f log.log  # 也可以直接用编辑器打开 log.log 查看
+#+END_SRC
+
+打开浏览器, 输入 localhost:8080 即可访问.
