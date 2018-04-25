@@ -55,18 +55,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcbb0005">安装 postgresql</a></li>
-<li><a href="#org0b19c8f">下载代码</a></li>
-<li><a href="#org9372e8d">数据库设置</a></li>
-<li><a href="#org74d82df">启动 Fabric 网络</a></li>
-<li><a href="#org772d8b2">运行 hyperledger-explorer</a></li>
+<li><a href="#orgcdbc530">安装 postgresql</a></li>
+<li><a href="#org50943d5">下载代码</a></li>
+<li><a href="#org1c94168">数据库设置</a></li>
+<li><a href="#orga4888a3">启动 Fabric 网络</a></li>
+<li><a href="#orga2d7fb7">配置 hyperledger-explorer</a></li>
+<li><a href="#org0e61b38">运行</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgcbb0005" class="outline-2">
-<h2 id="orgcbb0005">安装 postgresql</h2>
-<div class="outline-text-2" id="text-orgcbb0005">
+<div id="outline-container-orgcdbc530" class="outline-2">
+<h2 id="orgcdbc530">安装 postgresql</h2>
+<div class="outline-text-2" id="text-orgcdbc530">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install postgresql postgresql-contrib
 </pre>
@@ -74,9 +75,9 @@
 </div>
 </div>
 
-<div id="outline-container-org0b19c8f" class="outline-2">
-<h2 id="org0b19c8f">下载代码</h2>
-<div class="outline-text-2" id="text-org0b19c8f">
+<div id="outline-container-org50943d5" class="outline-2">
+<h2 id="org50943d5">下载代码</h2>
+<div class="outline-text-2" id="text-org50943d5">
 <div class="org-src-container">
 <pre class="src src-Shell">git clone https://github.com/hyperledger/blockchain-explorer.git
 
@@ -86,9 +87,9 @@ cd blockchain-explorer
 </div>
 </div>
 
-<div id="outline-container-org9372e8d" class="outline-2">
-<h2 id="org9372e8d">数据库设置</h2>
-<div class="outline-text-2" id="text-org9372e8d">
+<div id="outline-container-org1c94168" class="outline-2">
+<h2 id="org1c94168">数据库设置</h2>
+<div class="outline-text-2" id="text-org1c94168">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo -u postgres psql
 
@@ -106,18 +107,18 @@ cd blockchain-explorer
 </div>
 </div>
 
-<div id="outline-container-org74d82df" class="outline-2">
-<h2 id="org74d82df">启动 Fabric 网络</h2>
-<div class="outline-text-2" id="text-org74d82df">
+<div id="outline-container-orga4888a3" class="outline-2">
+<h2 id="orga4888a3">启动 Fabric 网络</h2>
+<div class="outline-text-2" id="text-orga4888a3">
 <p>
 启动 first-network 的网络.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org772d8b2" class="outline-2">
-<h2 id="org772d8b2">运行 hyperledger-explorer</h2>
-<div class="outline-text-2" id="text-org772d8b2">
+<div id="outline-container-orga2d7fb7" class="outline-2">
+<h2 id="orga2d7fb7">配置 hyperledger-explorer</h2>
+<div class="outline-text-2" id="text-orga2d7fb7">
 <p>
 另开一个终端, 进入 blockchain-explorer 目录.
 </p>
@@ -128,12 +129,50 @@ cd blockchain-explorer
 </div>
 </div>
 
+<div id="outline-container-org0e61b38" class="outline-2">
+<h2 id="org0e61b38">运行</h2>
+<div class="outline-text-2" id="text-org0e61b38">
+<p>
+这一步我这边的环境报错了, 错误原因是说找不到 log4js 模块, 但查看 node_modules 可以看到, 已经安装了这个模块. 这个错误暂时未找到解决方案, 继续做后面的, 发现程序也可以运行.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cd blockchain-explorer/app/test
+npm install
+npm run test
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-Shell">cd blockchain-explorer
+npm install
+cd client
+npm install
+npm test -- -u --coverage
+npm run build
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-Shell">cd blockchain-explorer
+./start.sh  # 程序将在后台执行
+
+# 查看日志
+tail -f log.log  # 也可以直接用编辑器打开 log.log 查看
+</pre>
+</div>
+
+<p>
+打开浏览器, 输入 localhost:8080 即可访问.
+</p>
+</div>
+</div>
+
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-04-24</span>
-            <span title="last modification date" class="post-info">2018-04-24</span>
+            <span title="last modification date" class="post-info">2018-04-25</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>

@@ -55,34 +55,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2a3caeb">创建贝叶斯网</a>
+<li><a href="#org9124253">创建贝叶斯网</a>
 <ul>
-<li><a href="#org92ced45">建立网络结构</a></li>
-<li><a href="#orga2b20ae">填入参数</a></li>
-<li><a href="#orgc7dd95a">将数据加入网络</a></li>
-<li><a href="#org7bca173">相关的检查</a></li>
+<li><a href="#orgf8bd29d">建立网络结构</a></li>
+<li><a href="#orge7269d5">填入参数</a></li>
+<li><a href="#org1b038da">将数据加入网络</a></li>
+<li><a href="#org69d614e">相关的检查</a></li>
 </ul>
 </li>
-<li><a href="#org2c100ba">使用 Asia 网络进行推理</a>
-<ul>
-<li><a href="#org7faf263">背景知识</a></li>
-</ul>
-</li>
+<li><a href="#org0367596">使用 Asia 网络进行推理</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2a3caeb" class="outline-2">
-<h2 id="org2a3caeb">创建贝叶斯网</h2>
-<div class="outline-text-2" id="text-org2a3caeb">
+<div id="outline-container-org9124253" class="outline-2">
+<h2 id="org9124253">创建贝叶斯网</h2>
+<div class="outline-text-2" id="text-org9124253">
 <p>
 在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
 </p>
 </div>
 
-<div id="outline-container-org92ced45" class="outline-3">
-<h3 id="org92ced45">建立网络结构</h3>
-<div class="outline-text-3" id="text-org92ced45">
+<div id="outline-container-orgf8bd29d" class="outline-3">
+<h3 id="orgf8bd29d">建立网络结构</h3>
+<div class="outline-text-3" id="text-orgf8bd29d">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 
@@ -115,9 +111,9 @@ cancer_model = BayesianModel([('Pollution', 'Cancer'),
 </div>
 </div>
 
-<div id="outline-container-orga2b20ae" class="outline-3">
-<h3 id="orga2b20ae">填入参数</h3>
-<div class="outline-text-3" id="text-orga2b20ae">
+<div id="outline-container-orge7269d5" class="outline-3">
+<h3 id="orge7269d5">填入参数</h3>
+<div class="outline-text-3" id="text-orge7269d5">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.factors.discrete import TabularCPD
 
@@ -225,9 +221,9 @@ Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人�
 </div>
 </div>
 
-<div id="outline-container-orgc7dd95a" class="outline-3">
-<h3 id="orgc7dd95a">将数据加入网络</h3>
-<div class="outline-text-3" id="text-orgc7dd95a">
+<div id="outline-container-org1b038da" class="outline-3">
+<h3 id="org1b038da">将数据加入网络</h3>
+<div class="outline-text-3" id="text-org1b038da">
 <div class="org-src-container">
 <pre class="src src-Python"># Associating the parameters with the model structure.
 cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
@@ -243,9 +239,9 @@ cancer_model.check_model()
 </div>
 </div>
 
-<div id="outline-container-org7bca173" class="outline-3">
-<h3 id="org7bca173">相关的检查</h3>
-<div class="outline-text-3" id="text-org7bca173">
+<div id="outline-container-org69d614e" class="outline-3">
+<h3 id="org69d614e">相关的检查</h3>
+<div class="outline-text-3" id="text-org69d614e">
 <div class="org-src-container">
 <pre class="src src-Python">cancer_model.is_active_trail('Pollution', 'Smoker')  # False
 cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
@@ -273,21 +269,8 @@ cancer_model.get_independencies()
 </div>
 </div>
 
-<div id="outline-container-org2c100ba" class="outline-2">
-<h2 id="org2c100ba">使用 Asia 网络进行推理</h2>
-<div class="outline-text-2" id="text-org2c100ba">
-<p>
-在构造了贝叶斯网络之后, 我们可以利用贝叶斯网络来进行推理.
-</p>
-
-<p>
-贝叶斯网络的推理, 是以其他变量的状态作为证据, 推理某些变量的状态. 这个推理的过程称为概率推理或信念更新.
-</p>
-</div>
-
-<div id="outline-container-org7faf263" class="outline-3">
-<h3 id="org7faf263">背景知识</h3>
-</div>
+<div id="outline-container-org0367596" class="outline-2">
+<h2 id="org0367596">使用 Asia 网络进行推理</h2>
 </div>
 
 </div>
@@ -295,7 +278,7 @@ cancer_model.get_independencies()
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-04-21</span>
-            <span title="last modification date" class="post-info">2018-04-22</span>
+            <span title="last modification date" class="post-info">2018-04-25</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/贝叶斯网">贝叶斯网</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
