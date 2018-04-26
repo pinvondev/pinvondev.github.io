@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Fabric ToDo List 分析 - Pinvon&#39;s Blog</title>
+  <title>Fabric Marbles 分析 - Pinvon&#39;s Blog</title>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport"
@@ -50,418 +50,770 @@
 
 <div>
 <div class="post">
-<h1 class="title">Fabric ToDo List 分析</h1>
+<h1 class="title">Fabric Marbles 分析</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4eb6c38">解析</a>
+<li><a href="#org6a3db57">chaincode</a>
 <ul>
-<li><a href="#orgb9ff453">cryptogen</a></li>
-<li><a href="#orga7aa9c8">configtx.yaml</a></li>
-<li><a href="#org8702d53">configtxgen</a></li>
-<li><a href="#orgc5209f0">配置docker-compose</a>
+<li><a href="#orgec9dcec">chaincode 主要结构</a></li>
+<li><a href="#org4ae1af4">Invoke() 接口</a>
 <ul>
-<li><a href="#orgca77419">配置Orderer</a></li>
-<li><a href="#org5fb01d3">配置Peer</a></li>
-<li><a href="#org5b3abe7">配置CLI</a></li>
-</ul>
-</li>
-<li><a href="#org3477bc2">启动Fabric环境的容器</a></li>
-<li><a href="#orga997a58">创建Channel</a></li>
-<li><a href="#org701201a">Peer加入Channel</a></li>
-<li><a href="#orgd347c2d">更新锚节点</a></li>
-</ul>
-</li>
-<li><a href="#orgbcab9a7">启动</a>
-<ul>
-<li><a href="#org8a5aab0">启动网络</a></li>
-<li><a href="#org01b9b2b">chaincode</a>
-<ul>
-<li><a href="#org3005973">安装</a></li>
-<li><a href="#org8a0d341">实例化</a></li>
-<li><a href="#org6b57ac5">在一个节点上查询并发起交易</a></li>
-<li><a href="#orgf163f41">在另一个节点上查询交易</a></li>
-</ul>
-</li>
-<li><a href="#orgeffa67c">创建通道</a></li>
-</ul>
-</li>
-<li><a href="#org7558e98">Fabric CA</a></li>
-<li><a href="#orgc544708">流程</a></li>
-<li><a href="#orgd4f9586">server</a>
-<ul>
-<li><a href="#orga3a7b48">enrollAdmin</a>
-<ul>
-<li><a href="#org6952b37">enroll_admin()</a></li>
+<li><a href="#org80936a1">读账本 read()</a></li>
+<li><a href="#org9a985a1">写账本 write()</a></li>
+<li><a href="#orgf339f2a">删除 delete_marble()</a></li>
+<li><a href="#orgf3fbef3">初始化 init_marble()</a></li>
+<li><a href="#org6449016">设置所有者 set_owner()</a></li>
+<li><a href="#org7aa0305">初始化所有者 init_owner()</a></li>
+<li><a href="#orgff600b9">读取所有数据 read_everything()</a></li>
+<li><a href="#orgec7e035">获取历史数据 getHistory()</a></li>
+<li><a href="#org42d975c">根据范围查找 getMarblesByRange()</a></li>
+<li><a href="#orgd40626d">disable_owner()</a></li>
+<li><a href="#org95b64ac">小结</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgf68b705">client</a></li>
+<li><a href="#orgf881ac3">错误</a>
+<ul>
+<li><a href="#org8736b1b">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4eb6c38" class="outline-2">
-<h2 id="org4eb6c38">解析</h2>
-<div class="outline-text-2" id="text-org4eb6c38">
+<div id="outline-container-org6a3db57" class="outline-2">
+<h2 id="org6a3db57">chaincode</h2>
+<div class="outline-text-2" id="text-org6a3db57">
 </div>
-<div id="outline-container-orgb9ff453" class="outline-3">
-<h3 id="orgb9ff453">cryptogen</h3>
-<div class="outline-text-3" id="text-orgb9ff453">
-<p>
-Fabric中有两种类型的公钥, 私钥和证书. 其中, Tcerts证书负责Peer之间的通讯安全, Ecerts负责用户登录和权限控制. 这些证书由CA颁发, 通常一个Org就有一个CA. 有时候在测试环境中, 没有启用CA节点, 可以使用 <code>cryptogen</code> 来颁发证书.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orga7aa9c8" class="outline-3">
-<h3 id="orga7aa9c8">configtx.yaml</h3>
-<div class="outline-text-3" id="text-orga7aa9c8">
-<p>
-在 <code>examples/e2e_cli/configtx.yaml</code> 中配置了两个Org参与的Orderer共识配置, 以及两个Org参与的Channel配置.
-</p>
-
-<p>
-Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超时时间等.
-</p>
-
-<p>
-如果需要更多的Org或者Channel, 可以根据模板进行修改.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org8702d53" class="outline-3">
-<h3 id="org8702d53">configtxgen</h3>
-<div class="outline-text-3" id="text-org8702d53">
-<p>
-可以使用这个工具, 根据 <code>configtx.yaml</code> 生成4个文件, 并保存在 <code>examples/e2e_cli/channel-artifacts</code> 中.
-</p>
-
-<ol class="org-ol">
-<li>创世区块 <code>genesis.block</code>. 用于启动Orderer节点.</li>
-<li>Channel配置区块 <code>channel.tx</code>.</li>
-<li>两个用于更新Org的锚节点的配置文件 <code>OrgxMSPanchors.tx</code>.</li>
-</ol>
-</div>
-</div>
-
-<div id="outline-container-orgc5209f0" class="outline-3">
-<h3 id="orgc5209f0">配置docker-compose</h3>
-<div class="outline-text-3" id="text-orgc5209f0">
-<p>
-配置docker-compose的yaml文件, 这些文件可以用于启动Fabric的Docker环境.
-</p>
-</div>
-
-<div id="outline-container-orgca77419" class="outline-4">
-<h4 id="orgca77419">配置Orderer</h4>
-<div class="outline-text-4" id="text-orgca77419">
-<p>
-Orderer的配置在 <code>base/docker-compose-base.yaml</code> 中.
-</p>
-
+<div id="outline-container-orgec9dcec" class="outline-3">
+<h3 id="orgec9dcec">chaincode 主要结构</h3>
+<div class="outline-text-3" id="text-orgec9dcec">
 <div class="org-src-container">
-<pre class="src src-Shell">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block 
-</pre>
-</div>
+<pre class="src src-Golang">// 声明包
+package main
 
-<p>
-这种语句的意思是把宿主机器的路径映射到Docker环境中.
-</p>
+// 引入需要使用的包
+import (
+    "fmt"
+    "strconv"
 
-<p>
-还有一些其他配置, 如环境变量, 端口, 证书等.
-</p>
-</div>
-</div>
+    "github.com/hyperledger/fabric/core/chaincode/shim"
+    pb "github.com/hyperledger/fabric/protos/peer"
+)
 
-<div id="outline-container-org5fb01d3" class="outline-4">
-<h4 id="org5fb01d3">配置Peer</h4>
-<div class="outline-text-4" id="text-org5fb01d3">
-<p>
-Peer的配置在 <code>base/docker-compose-base.yaml</code> 和 <code>peer-base.yaml</code> 里. 配置信息与Orderer的类似.
-</p>
-</div>
-</div>
+// 声明 SimpleChaincode 结构体
+type SimpleChaincode struct {
+}
 
-<div id="outline-container-org5b3abe7" class="outline-4">
-<h4 id="org5b3abe7">配置CLI</h4>
-<div class="outline-text-4" id="text-org5b3abe7">
-<p>
-CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用CLI来代替SDK, 执行各种SDK能执行的操作. CLI会和Peer通讯, 把指令发送给对应的Peer执行. CLI的配置在 <code>docker-compose-cli.yaml</code> 中.
-</p>
+// 定义资产, 在账本中将会存储 marble 和 owner
 
-<div class="org-src-container">
-<pre class="src src-Shell">CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-</pre>
-</div>
-<p>
-可以看出, CLI默认连接的是 <code>peer0.org1.example.com</code>, 身份是 <code>admin</code>. CLI启动的时候, 会执行 <code>./scripts/script.sh</code>, 完成Fabric网络的初始化, chaincode的安装, 运行.
-</p>
-</div>
-</div>
-</div>
+// 定义 marble 结构体
+// 后面跟着的 json 表示将结构体序列化成 JSON 格式时的键名
+type Marble struct {
+    ObjectType string        `json:"docType"` //field for couchdb
+    Id       string          `json:"id"`      //the fieldtags are needed to keep case from bouncing around
+    Color      string        `json:"color"`
+    Size       int           `json:"size"`    //size in mm of marble
+    Owner      OwnerRelation `json:"owner"`
+}
 
-<div id="outline-container-org3477bc2" class="outline-3">
-<h3 id="org3477bc2">启动Fabric环境的容器</h3>
-<div class="outline-text-3" id="text-org3477bc2">
-<p>
-上面的文件配置好以后, 都会集成在 <code>docker-compose-cli.yaml</code> 中, 使用命令一键启动:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">docker-compose -f docker-compose-cli.yaml up -d
-</pre>
-</div>
-</div>
-</div>
+// 定义 owner 结构体
+type Owner struct {
+    ObjectType string `json:"docType"`     //field for couchdb
+    Id         string `json:"id"`
+    Username   string `json:"username"`
+    Company    string `json:"company"`
+    Enabled    bool   `json:"enabled"`     //disabled owners will not be visible to the application
+}
 
-<div id="outline-container-orga997a58" class="outline-3">
-<h3 id="orga997a58">创建Channel</h3>
-<div class="outline-text-3" id="text-orga997a58">
-<p>
-进入CLI容器里面创建.
-</p>
+type OwnerRelation struct {
+    Id         string `json:"id"`
+    Username   string `json:"username"`    //this is mostly cosmetic/handy, the real relation is by Id not Username
+    Company    string `json:"company"`     //this is mostly cosmetic/handy, the real relation is by Id not Company
+}
 
-<div class="org-src-container">
-<pre class="src src-Shell">docker exec -it cli bash
+// 入口函数
+func main() {
+    err := shim.Start(new(SimpleChaincode))
+    if err != nil {
+        fmt.Printf("Error starting Simple chaincode - %s", err)
+    }
+}
 
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+// Init() 接口, 用于初始化 chaincode
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+    fmt.Println("Marbles Is Starting Up")
+    funcName, args := stub.GetFunctionAndParameters()  // 获取 SDK 传入的函数名和参数
+    var number int
+    var err error
+    txId := stub.GetTxID()  // 获取构建交易提案时生成的交易ID
 
-peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile $ORDERER_CA
-</pre>
-</div>
+    fmt.Println("Init() is running")
+    fmt.Println("Transaction ID:", txId)
+    fmt.Println("  GetFunctionAndParameters() function:", funcName)
+    fmt.Println("  GetFunctionAndParameters() args count:", len(args))
+    fmt.Println("  GetFunctionAndParameters() args found:", args)
 
-<p>
-执行完后会在CLI内部的当前目录下创建一个 <code>mychannel.block</code> 文件, 其他节点如果要加入这个Channel, 都要使用这个文件.
-</p>
-</div>
-</div>
+    // expecting 1 arg for instantiate or upgrade
+    if len(args) == 1 {
+        fmt.Println("  GetFunctionAndParameters() arg[0] length", len(args[0]))
 
-<div id="outline-container-org701201a" class="outline-3">
-<h3 id="org701201a">Peer加入Channel</h3>
-<div class="outline-text-3" id="text-org701201a">
-<p>
-由于CLI默认连接的是peer0.org1.example.com, 所以将peer0.org1.example.com加入Channel会比较容易.
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">peer channel join -b mychannel.block
-</pre>
-</div>
+        // args 的长度为 0 时, 用于升级 chaincode, 此处未实现
+        if len(args[0]) == 0 {
+            fmt.Println("  Uh oh, args[0] is empty...")
+        } else {
+            fmt.Println("  Great news everyone, args[0] is not empty")
 
-<p>
-但是如果要加入其他Peer, 则需要修改环境变量. 如:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">CORE_PEER_LOCALMSPID="Org1MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+            // convert numeric string to integer
+            number, err = strconv.Atoi(args[0])
+            if err != nil {
+                return shim.Error("Expecting a numeric string argument to Init() for instantiate")
+            }
 
-peer channel join -b mychannel.block
-</pre>
-</div>
-<p>
-可以把所有的命令连在一起执行, 这样不会对默认的环境变量造成影响.
-</p>
-</div>
-</div>
+            // 测试写入账本
+            err = stub.PutState("selftest", []byte(strconv.Itoa(number)))
+            if err != nil {
+                return shim.Error(err.Error())                  //self-test fail
+            }
+        }
+    }
 
-<div id="outline-container-orgd347c2d" class="outline-3">
-<h3 id="orgd347c2d">更新锚节点</h3>
-<div class="outline-text-3" id="text-orgd347c2d">
-<p>
-对于Org1来说, peer0.org1.example.com是锚节点, 需要连接上它, 并进行更新:
-</p>
-<div class="org-src-container">
-<pre class="src src-Shell">CORE_PEER_LOCALMSPID="Org1MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    // showing the alternative argument shim function
+    alt := stub.GetStringArgs()
+    fmt.Println("  GetStringArgs() args count:", len(alt))
+    fmt.Println("  GetStringArgs() args found:", alt)
 
-peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls true --cafile $ORDERER_CA
-</pre>
-</div>
-</div>
-</div>
-</div>
+    // store compatible marbles application version
+    err = stub.PutState("marbles_ui", []byte("4.0.1"))
+    if err != nil {
+        return shim.Error(err.Error())
+    }
 
-<div id="outline-container-orgbcab9a7" class="outline-2">
-<h2 id="orgbcab9a7">启动</h2>
-<div class="outline-text-2" id="text-orgbcab9a7">
-</div>
-<div id="outline-container-org8a5aab0" class="outline-3">
-<h3 id="org8a5aab0">启动网络</h3>
-<div class="outline-text-3" id="text-org8a5aab0">
-<div class="org-src-container">
-<pre class="src src-Shell">cd fabric-sdk-node/test/fixtures
-docker-compose -f docker-compose-networksetup.yaml up -d
+    fmt.Println("Ready for action")                          //self-test pass
+    return shim.Success(nil)
+}
+
+// Invoke() 接口
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
+    function, args := stub.GetFunctionAndParameters()
+    fmt.Println(" ")
+    fmt.Println("starting invoke, for - " + function)
+
+    // 根据传入的参数来确定调用哪些方法
+    if function == "init" {                    //initialize the chaincode state, used as reset
+        return t.Init(stub)
+    } else if function == "read" {             //generic read ledger
+        return read(stub, args)
+    } else if function == "write" {            //generic writes to ledger
+        return write(stub, args)
+    } else if function == "delete_marble" {    //deletes a marble from state
+        return delete_marble(stub, args)
+    } else if function == "init_marble" {      //create a new marble
+        return init_marble(stub, args)
+    } else if function == "set_owner" {        //change owner of a marble
+        return set_owner(stub, args)
+    } else if function == "init_owner"{        //create a new marble owner
+        return init_owner(stub, args)
+    } else if function == "read_everything"{   //read everything, (owners + marbles + companies)
+        return read_everything(stub)
+    } else if function == "getHistory"{        //read history of a marble (audit)
+        return getHistory(stub, args)
+    } else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
+        return getMarblesByRange(stub, args)
+    } else if function == "disable_owner"{     //disable a marble owner from appearing on the UI
+        return disable_owner(stub, args)
+    }
+
+    // error out
+    fmt.Println("Received unknown invoke function name - " + function)
+    return shim.Error("Received unknown invoke function name - '" + function + "'")
+}
+
+// 查询, 未实现
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
+    return shim.Error("Unknown supported call - Query()")
+}
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org01b9b2b" class="outline-3">
-<h3 id="org01b9b2b">chaincode</h3>
-<div class="outline-text-3" id="text-org01b9b2b">
+<div id="outline-container-org4ae1af4" class="outline-3">
+<h3 id="org4ae1af4">Invoke() 接口</h3>
+<div class="outline-text-3" id="text-org4ae1af4">
 </div>
-<div id="outline-container-org3005973" class="outline-4">
-<h4 id="org3005973">安装</h4>
-<div class="outline-text-4" id="text-org3005973">
-<p>
-chaincode必须在每个与交易相关的Peer上都安装. 如果有4个Peer与交易相关, 则要安装4次.
-</p>
-
+<div id="outline-container-org80936a1" class="outline-4">
+<h4 id="org80936a1">读账本 read()</h4>
+<div class="outline-text-4" id="text-org80936a1">
 <div class="org-src-container">
-<pre class="src src-Shell">CORE_PEER_LOCALMSPID="Org1MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+<pre class="src src-Golang">func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var key, jsonResp string
+    var err error
+    fmt.Println("starting read")
 
-peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+    if len(args) != 1 {
+        return shim.Error("Incorrect number of arguments. Expecting key of the var to query")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    key = args[0]
+    valAsbytes, err := stub.GetState(key)           // 根据 key 获取 value
+    if err != nil {
+        jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+        return shim.Error(jsonResp)
+    }
+
+    fmt.Println("- end read")
+    return shim.Success(valAsbytes)                  //send it onward
+}
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8a0d341" class="outline-4">
-<h4 id="org8a0d341">实例化</h4>
-<div class="outline-text-4" id="text-org8a0d341">
-<p>
-实例化是生成Channel的Docker镜像和Docker容器, 在实例化时还可以指定背书策略.
-</p>
+<div id="outline-container-org9a985a1" class="outline-4">
+<h4 id="org9a985a1">写账本 write()</h4>
+<div class="outline-text-4" id="text-org9a985a1">
 <div class="org-src-container">
-<pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 --tls true --cafile $ORDERER_CA -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR      ('Org1MSP.member','Org2MSP.member')"
+<pre class="src src-Golang">func write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var key, value string
+    var err error
+    fmt.Println("starting write")
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2. key of the variable and value to set")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    key = args[0]                                   //rename for funsies
+    value = args[1]
+    err = stub.PutState(key, []byte(value))         // 根据 key 写入 value
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end write")
+    return shim.Success(nil)
+}
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org6b57ac5" class="outline-4">
-<h4 id="org6b57ac5">在一个节点上查询并发起交易</h4>
-<div class="outline-text-4" id="text-org6b57ac5">
+<div id="outline-container-orgf339f2a" class="outline-4">
+<h4 id="orgf339f2a">删除 delete_marble()</h4>
+<div class="outline-text-4" id="text-orgf339f2a">
 <p>
-在CLI容器中执行:
+根据 marble 的 id 来删除指定的 marble.
 </p>
+
 <div class="org-src-container">
-<pre class="src src-Shell">peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
-peer chaincode invoke -o orderer.example.com:7050  --tls true --cafile $ORDERER_CA -C mychannel -n mycc -c '{"Args":["invoke","a","b","10"]}'
+<pre class="src src-Golang">func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
+    fmt.Println("starting delete_marble")
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+
+    // input sanitation
+    err := sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    id := args[0]	// 获取 marble id
+    authed_by_company := args[1]
+
+    // get the marble
+    marble, err := get_marble(stub, id)  // 调用的是 GetState() 接口
+    if err != nil{
+        fmt.Println("Failed to find marble by id " + id)
+        return shim.Error(err.Error())
+    }
+
+    // check authorizing company (see note in set_owner() about how this is quirky)
+    if marble.Owner.Company != authed_by_company{
+        return shim.Error("The company '" + authed_by_company + "' cannot authorize deletion for '" + marble.Owner.Company + "'.")
+    }
+
+    // remove the marble
+    err = stub.DelState(id)  // 删除该 marble
+    if err != nil {
+        return shim.Error("Failed to delete state")
+    }
+
+    fmt.Println("- end delete_marble")
+    return shim.Success(nil)
+}
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf163f41" class="outline-4">
-<h4 id="orgf163f41">在另一个节点上查询交易</h4>
-<div class="outline-text-4" id="text-orgf163f41">
+<div id="outline-container-orgf3fbef3" class="outline-4">
+<h4 id="orgf3fbef3">初始化 init_marble()</h4>
+<div class="outline-text-4" id="text-orgf3fbef3">
+<p>
+生成 marble, 并写入账本.
+</p>
+
 <div class="org-src-container">
-<pre class="src src-Shell">CORE_PEER_LOCALMSPID="Org2MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp 
-CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+<pre class="src src-Golang">func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
+    var err error
+    fmt.Println("starting init_marble")
 
-peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+    if len(args) != 5 {
+        return shim.Error("Incorrect number of arguments. Expecting 5")
+    }
 
-peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
+    //input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    // SDK 中应填入的一系列参数, 并进行一系列验证
+    id := args[0]
+    color := strings.ToLower(args[1])
+    owner_id := args[3]
+    authed_by_company := args[4]
+    size, err := strconv.Atoi(args[2])
+    if err != nil {
+        return shim.Error("3rd argument must be a numeric string")
+    }
+
+    //check if new owner exists
+    owner, err := get_owner(stub, owner_id)
+    if err != nil {
+        fmt.Println("Failed to find owner - " + owner_id)
+        return shim.Error(err.Error())
+    }
+
+    //check authorizing company (see note in set_owner() about how this is quirky)
+    if owner.Company != authed_by_company{
+        return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + owner.Company + "'.")
+    }
+
+    //check if marble id already exists
+    marble, err := get_marble(stub, id)
+    if err == nil {
+        fmt.Println("This marble already exists - " + id)
+        fmt.Println(marble)
+        return shim.Error("This marble already exists - " + id)  //all stop a marble by this id exists
+    }
+
+    //build the marble json string manually
+    str := `{
+        "docType":"marble", 
+        "id": "` + id + `", 
+        "color": "` + color + `", 
+        "size": ` + strconv.Itoa(size) + `, 
+        "owner": {
+            "id": "` + owner_id + `", 
+            "username": "` + owner.Username + `", 
+            "company": "` + owner.Company + `"
+        }
+    }`
+    err = stub.PutState(id, []byte(str))  // 存入账本
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end init_marble")
+    return shim.Success(nil)
+}
 </pre>
 </div>
-
-<p>
-首先在Org2的peer0.org2.example.com上进行安装chaincode, 但是不需要实例化, 因为chaincode只能实例化一次. 安装完了之后就可以直接查询.
-</p>
-</div>
 </div>
 </div>
 
-<div id="outline-container-orgeffa67c" class="outline-3">
-<h3 id="orgeffa67c">创建通道</h3>
-<div class="outline-text-3" id="text-orgeffa67c">
+<div id="outline-container-org6449016" class="outline-4">
+<h4 id="org6449016">设置所有者 set_owner()</h4>
+<div class="outline-text-4" id="text-org6449016">
 <div class="org-src-container">
-<pre class="src src-Shell"># pwd: fabric-sdk-node
-node test/integration/e2e/create-channel.js
+<pre class="src src-Golang">func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var err error
+    fmt.Println("starting set_owner")
+
+    // this is quirky
+    // todo - get the "company that authed the transfer" from the certificate instead of an argument
+    // should be possible since we can now add attributes to the enrollment cert
+    // as is.. this is a bit broken (security wise), but it's much much easier to demo! holding off for demos sake
+
+    if len(args) != 3 {
+        return shim.Error("Incorrect number of arguments. Expecting 3")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    var marble_id = args[0]
+    var new_owner_id = args[1]
+    var authed_by_company = args[2]
+    fmt.Println(marble_id + "-&gt;" + new_owner_id + " - |" + authed_by_company)
+
+    // check if user already exists
+    owner, err := get_owner(stub, new_owner_id)
+    if err != nil {
+        return shim.Error("This owner does not exist - " + new_owner_id)
+    }
+
+    // get marble's current state
+    marbleAsBytes, err := stub.GetState(marble_id)
+    if err != nil {
+        return shim.Error("Failed to get marble")
+    }
+
+    // 将数据反序列化, 修改后再序列化为 JSON 格式存储
+    res := Marble{}
+    json.Unmarshal(marbleAsBytes, &amp;res)           //un stringify it aka JSON.parse()
+
+    // check authorizing company
+    if res.Owner.Company != authed_by_company{
+        return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+    }
+
+    // transfer the marble
+    res.Owner.Id = new_owner_id                   //change the owner
+    res.Owner.Username = owner.Username
+    res.Owner.Company = owner.Company
+
+    // 修改属性后, 序列化为 JSON 格式
+    jsonAsBytes, _ := json.Marshal(res)           //convert to array of bytes
+    err = stub.PutState(args[0], jsonAsBytes)     // 重新存储到账本
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end set owner")
+    return shim.Success(nil)
+}
 </pre>
 </div>
 </div>
 </div>
-</div>
 
-<div id="outline-container-org7558e98" class="outline-2">
-<h2 id="org7558e98">Fabric CA</h2>
-<div class="outline-text-2" id="text-org7558e98">
-<p>
-在实际开发中, 我们应该为每个Org建立一个CA, 用CA来管理其中的用户, 而不是使用 <code>cryptogen</code> 这个工具根据 <code>crypto-config.yaml</code> 生成.
-</p>
-
-<p>
-编辑 <code>docker-compose-cli.yaml</code>, 增加内容:
-</p>
+<div id="outline-container-org7aa0305" class="outline-4">
+<h4 id="org7aa0305">初始化所有者 init_owner()</h4>
+<div class="outline-text-4" id="text-org7aa0305">
 <div class="org-src-container">
-<pre class="src src-Shell">ca0:
-  image: hyperledger/fabric-ca
-  environment:
-    - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-  ports:
-    - "7054:7054"
-  command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/peerOrg1-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/d8a5b3cac1b821f6e4b487ceaf1fd239cdcfc310894150908b90f05e9179556a_sk -b admin:adminpw' -d
-  volumes:
-    - ./channel/crypto-config/peerOrganizations/peerOrg1/ca/:/etc/hyperledger/fabric-ca-server-config
-  container_name: ca_peerOrg1
+<pre class="src src-Golang">func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var err error
+    fmt.Println("starting init_owner")
+
+    if len(args) != 3 {
+        return shim.Error("Incorrect number of arguments. Expecting 3")
+    }
+
+    //input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    var owner Owner
+    owner.ObjectType = "marble_owner"
+    owner.Id =  args[0]
+    owner.Username = strings.ToLower(args[1])
+    owner.Company = args[2]
+    owner.Enabled = true
+    fmt.Println(owner)
+
+    //check if user already exists
+    _, err = get_owner(stub, owner.Id)
+    if err == nil {
+        fmt.Println("This owner already exists - " + owner.Id)
+        return shim.Error("This owner already exists - " + owner.Id)
+    }
+
+    //store user
+    ownerAsBytes, _ := json.Marshal(owner)                         //convert to array of bytes
+    err = stub.PutState(owner.Id, ownerAsBytes)                    //store owner by its Id
+    if err != nil {
+        fmt.Println("Could not store user")
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end init_owner marble")
+    return shim.Success(nil)
+}
 </pre>
 </div>
+</div>
+</div>
+
+<div id="outline-container-orgff600b9" class="outline-4">
+<h4 id="orgff600b9">读取所有数据 read_everything()</h4>
+<div class="outline-text-4" id="text-orgff600b9">
+<div class="org-src-container">
+<pre class="src src-Golang">func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
+    type Everything struct {
+        Owners   []Owner   `json:"owners"`
+        Marbles  []Marble  `json:"marbles"`
+    }
+    var everything Everything
+
+    // ---- Get All Marbles ---- //
+    resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999999999")
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer resultsIterator.Close()
+
+    for resultsIterator.HasNext() {
+        aKeyValue, err := resultsIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+        queryKeyAsStr := aKeyValue.Key
+        queryValAsBytes := aKeyValue.Value
+        fmt.Println("on marble id - ", queryKeyAsStr)
+        var marble Marble
+        json.Unmarshal(queryValAsBytes, &amp;marble)                  //un stringify it aka JSON.parse()
+        everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
+    }
+    fmt.Println("marble array - ", everything.Marbles)
+
+    // ---- Get All Owners ---- //
+    ownersIterator, err := stub.GetStateByRange("o0", "o9999999999999999999")
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer ownersIterator.Close()
+
+    for ownersIterator.HasNext() {
+        aKeyValue, err := ownersIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+        queryKeyAsStr := aKeyValue.Key
+        queryValAsBytes := aKeyValue.Value
+        fmt.Println("on owner id - ", queryKeyAsStr)
+        var owner Owner
+        json.Unmarshal(queryValAsBytes, &amp;owner)                   //un stringify it aka JSON.parse()
+
+        if owner.Enabled {                                        //only return enabled owners
+            everything.Owners = append(everything.Owners, owner)  //add this marble to the list
+        }
+    }
+    fmt.Println("owner array - ", everything.Owners)
+
+    //change to array of bytes
+    everythingAsBytes, _ := json.Marshal(everything)              //convert to array of bytes
+    return shim.Success(everythingAsBytes)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgec7e035" class="outline-4">
+<h4 id="orgec7e035">获取历史数据 getHistory()</h4>
+<div class="outline-text-4" id="text-orgec7e035">
+<div class="org-src-container">
+<pre class="src src-Golang">func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    type AuditHistory struct {
+        TxId    string   `json:"txId"`
+        Value   Marble   `json:"value"`
+    }
+    var history []AuditHistory;
+    var marble Marble
+
+    if len(args) != 1 {
+        return shim.Error("Incorrect number of arguments. Expecting 1")
+    }
+
+    marbleId := args[0]
+    fmt.Printf("- start getHistoryForMarble: %s\n", marbleId)
+
+    // Get History
+    resultsIterator, err := stub.GetHistoryForKey(marbleId)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer resultsIterator.Close()
+
+    for resultsIterator.HasNext() {
+        historyData, err := resultsIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+
+        var tx AuditHistory
+        tx.TxId = historyData.TxId                     //copy transaction id over
+        json.Unmarshal(historyData.Value, &amp;marble)     //un stringify it aka JSON.parse()
+        if historyData.Value == nil {                  //marble has been deleted
+            var emptyMarble Marble
+            tx.Value = emptyMarble                 //copy nil marble
+        } else {
+            json.Unmarshal(historyData.Value, &amp;marble) //un stringify it aka JSON.parse()
+            tx.Value = marble                      //copy marble over
+        }
+        history = append(history, tx)              //add this tx to the list
+    }
+    fmt.Printf("- getHistoryForMarble returning:\n%s", history)
+
+    //change to array of bytes
+    historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
+    return shim.Success(historyAsBytes)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org42d975c" class="outline-4">
+<h4 id="org42d975c">根据范围查找 getMarblesByRange()</h4>
+<div class="outline-text-4" id="text-org42d975c">
+<div class="org-src-container">
+<pre class="src src-Golang">func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+
+    startKey := args[0]
+    endKey := args[1]
+
+    resultsIterator, err := stub.GetStateByRange(startKey, endKey)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer resultsIterator.Close()
+
+    // buffer is a JSON array containing QueryResults
+    var buffer bytes.Buffer
+    buffer.WriteString("[")
+
+    bArrayMemberAlreadyWritten := false
+    for resultsIterator.HasNext() {
+        aKeyValue, err := resultsIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+        queryResultKey := aKeyValue.Key
+        queryResultValue := aKeyValue.Value
+
+        // Add a comma before array members, suppress it for the first array member
+        if bArrayMemberAlreadyWritten == true {
+            buffer.WriteString(",")
+        }
+        buffer.WriteString("{\"Key\":")
+        buffer.WriteString("\"")
+        buffer.WriteString(queryResultKey)
+        buffer.WriteString("\"")
+
+        buffer.WriteString(", \"Record\":")
+        // Record is a JSON object, so we write as-is
+        buffer.WriteString(string(queryResultValue))
+        buffer.WriteString("}")
+        bArrayMemberAlreadyWritten = true
+    }
+    buffer.WriteString("]")
+
+    fmt.Printf("- getMarblesByRange queryResult:\n%s\n", buffer.String())
+
+    return shim.Success(buffer.Bytes())
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd40626d" class="outline-4">
+<h4 id="orgd40626d">disable_owner()</h4>
+<div class="outline-text-4" id="text-orgd40626d">
+<div class="org-src-container">
+<pre class="src src-Golang">func disable_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var err error
+    fmt.Println("starting disable_owner")
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    var owner_id = args[0]
+    var authed_by_company = args[1]
+
+    // get the marble owner data
+    owner, err := get_owner(stub, owner_id)
+    if err != nil {
+        return shim.Error("This owner does not exist - " + owner_id)
+    }
+
+    // check authorizing company
+    if owner.Company != authed_by_company {
+        return shim.Error("The company '" + authed_by_company + "' cannot change another companies marble owner")
+    }
+
+    // disable the owner
+    owner.Enabled = false
+    jsonAsBytes, _ := json.Marshal(owner)         //convert to array of bytes
+    err = stub.PutState(args[0], jsonAsBytes)     //rewrite the owner
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end disable_owner")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org95b64ac" class="outline-4">
+<h4 id="org95b64ac">小结</h4>
+<div class="outline-text-4" id="text-org95b64ac">
 <p>
-在命令中, --ca.certfile指定了CA的根证书, ca.keyfile指定了给新用户签发证书时的私钥, -b表示CA Client连接CA Server时使用的用户名和密码.
+基本上都是序列化与反序列化, PutState() 与 GetState(). 熟悉这些接口, 对自己写 chaincode 有较大好处.
 </p>
 </div>
 </div>
-
-
-<div id="outline-container-orgc544708" class="outline-2">
-<h2 id="orgc544708">流程</h2>
-<div class="outline-text-2" id="text-orgc544708">
-
-<div class="figure">
-<p><img src="https://pinvondev.github.io/assets/blog/2018/04/01/fabric-todo-list-分析/26.png" alt="26.png" />
-</p>
-</div>
-
-<ol class="org-ol">
-<li>User通过Browser与Client进行交互.</li>
-<li>User执行操作, Client调用Server API, 已注册的管理员通过该API与Hyperledger区块链网络进行交互.</li>
-<li>读取或写入账本称为提案. 提案由Server通过SDK进行构建, 然后发送到Peer.</li>
-<li>Peer与chaincode容器通信. chaincode将运行/模拟该交易. 如果没有问题(验证User身份, 提案的格式是否正确等), 它会对该交易进行背书, 并将其发回Server.</li>
-<li>Server通过SDK, 将背书后的提案发送到Ordering Service. Ordering Service将整个网络的许多提案打包到一个区块中. 然后, Ordering Service将新区块广播到网络中的Peers.</li>
-<li>Peers验证该区块, 并将它写入自己的账本中. 交易至此生效, 所有后续读取都会反映此更改.</li>
-</ol>
 </div>
 </div>
 
-<div id="outline-container-orgd4f9586" class="outline-2">
-<h2 id="orgd4f9586">server</h2>
-<div class="outline-text-2" id="text-orgd4f9586">
+<div id="outline-container-orgf881ac3" class="outline-2">
+<h2 id="orgf881ac3">错误</h2>
+<div class="outline-text-2" id="text-orgf881ac3">
 </div>
-<div id="outline-container-orga3a7b48" class="outline-3">
-<h3 id="orga3a7b48">enrollAdmin</h3>
-<div class="outline-text-3" id="text-orga3a7b48">
+<div id="outline-container-org8736b1b" class="outline-3">
+<h3 id="org8736b1b">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</h3>
+<div class="outline-text-3" id="text-org8736b1b">
 <p>
-Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请求, 就可以在chaincode上注册管理员. 以后, 要注册新的成员, 都是通过这个管理员来进行的.
+有多种原因会导致这个错误. 有可能是修改了 chaincode, 但是编译出错了, 或者 chaincode 容器没有启动, 等等.
 </p>
-</div>
 
-<div id="outline-container-org6952b37" class="outline-4">
-<h4 id="org6952b37">enroll_admin()</h4>
-<div class="outline-text-4" id="text-org6952b37">
 <p>
-程序的最开始, 是向区块链网络中的CA注册管理员用户. 如果注册成功, CA会向Server发送注册证书, SDK会将该证书存储在本地的文件系统中.
+我遇到这个问题, 先检查是否把 fabcar 目录下的 hfc-key-store 和 ~/.hfc-key-store 删除了, 如果没有, 则删除之. 再次启动时, 问题依旧. 因此我推测可能是 chaincode 容器未启动成功, 输入命令 docker ps -a 后, 未看到 chaincode 容器, 再输入命令 docker images, 发现有很多之前启动 marbles 时的 chaincode 镜像未删除, 依次删除之后, 启动成功.
+</p>
+
+<p>
+如果 chaincode 容器启动成功了, 可以再查看该容器的日志, 进一步排查原因.
 </p>
 </div>
 </div>
-</div>
-</div>
-
-<div id="outline-container-orgf68b705" class="outline-2">
-<h2 id="orgf68b705">client</h2>
 </div>
 
 </div>
@@ -469,7 +821,7 @@ Web端打开应用程序, 向 <code>/enrollAdmin</code> 端点发出一个GET请
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-04-01</span>
-            <span title="last modification date" class="post-info">2018-04-03</span>
+            <span title="last modification date" class="post-info">2018-04-26</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>

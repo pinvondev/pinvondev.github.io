@@ -55,30 +55,39 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9124253">创建贝叶斯网</a>
+<li><a href="#org1c9daec">创建贝叶斯网</a>
 <ul>
-<li><a href="#orgf8bd29d">建立网络结构</a></li>
-<li><a href="#orge7269d5">填入参数</a></li>
-<li><a href="#org1b038da">将数据加入网络</a></li>
-<li><a href="#org69d614e">相关的检查</a></li>
+<li><a href="#orgec27555">建立网络结构</a></li>
+<li><a href="#org403fdc5">填入参数</a></li>
+<li><a href="#org70080b9">将数据加入网络</a></li>
+<li><a href="#org89644a0">相关的检查</a></li>
 </ul>
 </li>
-<li><a href="#org0367596">使用 Asia 网络进行推理</a></li>
+<li><a href="#org4d88057">使用 Asia 网络进行推理</a>
+<ul>
+<li><a href="#org59eed1b">变量消除法</a></li>
+</ul>
+</li>
+<li><a href="#org125a66a">利用训练数据学习</a>
+<ul>
+<li><a href="#org01e3a3f">更复杂的例子(学生例子)</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9124253" class="outline-2">
-<h2 id="org9124253">创建贝叶斯网</h2>
-<div class="outline-text-2" id="text-org9124253">
+<div id="outline-container-org1c9daec" class="outline-2">
+<h2 id="org1c9daec">创建贝叶斯网</h2>
+<div class="outline-text-2" id="text-org1c9daec">
 <p>
 在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
 </p>
 </div>
 
-<div id="outline-container-orgf8bd29d" class="outline-3">
-<h3 id="orgf8bd29d">建立网络结构</h3>
-<div class="outline-text-3" id="text-orgf8bd29d">
+<div id="outline-container-orgec27555" class="outline-3">
+<h3 id="orgec27555">建立网络结构</h3>
+<div class="outline-text-3" id="text-orgec27555">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 
@@ -111,9 +120,9 @@ cancer_model = BayesianModel([('Pollution', 'Cancer'),
 </div>
 </div>
 
-<div id="outline-container-orge7269d5" class="outline-3">
-<h3 id="orge7269d5">填入参数</h3>
-<div class="outline-text-3" id="text-orge7269d5">
+<div id="outline-container-org403fdc5" class="outline-3">
+<h3 id="org403fdc5">填入参数</h3>
+<div class="outline-text-3" id="text-org403fdc5">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.factors.discrete import TabularCPD
 
@@ -221,9 +230,9 @@ Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人�
 </div>
 </div>
 
-<div id="outline-container-org1b038da" class="outline-3">
-<h3 id="org1b038da">将数据加入网络</h3>
-<div class="outline-text-3" id="text-org1b038da">
+<div id="outline-container-org70080b9" class="outline-3">
+<h3 id="org70080b9">将数据加入网络</h3>
+<div class="outline-text-3" id="text-org70080b9">
 <div class="org-src-container">
 <pre class="src src-Python"># Associating the parameters with the model structure.
 cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
@@ -239,9 +248,9 @@ cancer_model.check_model()
 </div>
 </div>
 
-<div id="outline-container-org69d614e" class="outline-3">
-<h3 id="org69d614e">相关的检查</h3>
-<div class="outline-text-3" id="text-org69d614e">
+<div id="outline-container-org89644a0" class="outline-3">
+<h3 id="org89644a0">相关的检查</h3>
+<div class="outline-text-3" id="text-org89644a0">
 <div class="org-src-container">
 <pre class="src src-Python">cancer_model.is_active_trail('Pollution', 'Smoker')  # False
 cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
@@ -269,8 +278,419 @@ cancer_model.get_independencies()
 </div>
 </div>
 
-<div id="outline-container-org0367596" class="outline-2">
-<h2 id="org0367596">使用 Asia 网络进行推理</h2>
+<div id="outline-container-org4d88057" class="outline-2">
+<h2 id="org4d88057">使用 Asia 网络进行推理</h2>
+<div class="outline-text-2" id="text-org4d88057">
+<p>
+在构建了贝叶斯网之后, 我们使用贝叶斯网来进行推理. 推理算法分精确推理和近似推理. 精确推理有变量消元法和团树传播法; 近似推理算法是基于随机抽样的算法.
+</p>
+
+<p>
+Asia 网络是早期贝叶斯网文献中给出的一个网络, 与肺结核, 肺癌, 支气管炎等有关, 和我们之前的那个网络很相似. 我们使用 Asia 网络来看一下如何进行推理.
+</p>
+
+<p>
+创建源文件 asia.py
+</p>
+
+<p>
+下载网络模型放到源文件目录下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">wget http://www.bnlearn.com/bnrepository/asia/asia.bif.gz
+gzip -qd asia.bif.gz
+</pre>
+</div>
+
+<p>
+编辑 asia.py:
+</p>
+
+<p>
+导入 Asia 网络:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.readwrite import BIFReader
+reader = BIFReader('asia.bif')
+asia_model = reader.get_model()
+</pre>
+</div>
+
+<p>
+输出节点信息:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.nodes())
+
+# ['xray', 'bronc', 'asia', 'dysp', 'lung', 'either', 'smoke', 'tub']
+</pre>
+</div>
+
+<p>
+输出依赖关系:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.edges())
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
+[('bronc', 'dysp'),
+ ('asia', 'tub'),
+ ('lung', 'either'),
+ ('either', 'dysp'),
+ ('either', 'xray'),
+ ('smoke', 'bronc'),
+ ('smoke', 'lung'),
+ ('tub', 'either')]
+</pre>
+
+<p>
+查看概率分布:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.get_cpds())
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
+[&lt;TabularCPD representing P(asia:2) at 0x7f92cf1e46d0&gt;,
+ &lt;TabularCPD representing P(bronc:2 | smoke:2) at 0x7f92ea70f990&gt;,
+ &lt;TabularCPD representing P(dysp:2 | bronc:2, either:2) at 0x7f92f80f4ed0&gt;,
+ &lt;TabularCPD representing P(either:2 | lung:2, tub:2) at 0x7f92e8e71dd0&gt;,
+ &lt;TabularCPD representing P(lung:2 | smoke:2) at 0x7f92cf1e4c50&gt;,
+ &lt;TabularCPD representing P(smoke:2) at 0x7f92cf1e4ed0&gt;,
+ &lt;TabularCPD representing P(tub:2 | asia:2) at 0x7f92cf1ec210&gt;,
+ &lt;TabularCPD representing P(xray:2 | either:2) at 0x7f92cf1ec410&gt;]
+</pre>
+
+<p>
+直观显示某节点的概率分布:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.get_cpds('xray').values)
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
+[[0.98 0.05]
+ [0.02 0.95]]
+</pre>
+</div>
+
+<div id="outline-container-org59eed1b" class="outline-3">
+<h3 id="org59eed1b">变量消除法</h3>
+<div class="outline-text-3" id="text-org59eed1b">
+<p>
+变量消除法是精确推断的一种方法. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.inference import VariableElimination
+asia_infer = VariableElimination(asia_model)
+q = asia_infer.query(variables=['bronc'], evidence={'smoke': 0})
+print(q['bronc'])
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+--------------+
+| bronc   |   phi(bronc) |
+|---------+--------------|
+| bronc_0 |       0.6000 |
+| bronc_1 |       0.4000 |
++---------+--------------+
+</pre>
+<p>
+意思是, 在不吸烟的情况下, 得支气管炎的概率是 0.4, 未得支气管炎的概率是 0.6.
+</p>
+
+<p>
+在在吸烟情况下, 得支气管炎的概率和未得支气管炎的概率可以这样查询:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">q = asia_infer.query(variables=['bronc'], evidence={'smoke': 1})
+print(q['bronc'])
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+--------------+
+| bronc   |   phi(bronc) |
+|---------+--------------|
+| bronc_0 |       0.3000 |
+| bronc_1 |       0.7000 |
++---------+--------------+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org125a66a" class="outline-2">
+<h2 id="org125a66a">利用训练数据学习</h2>
+<div class="outline-text-2" id="text-org125a66a">
+<p>
+场景: 投硬币, 训练数据中, 有 30% 的正面朝上, 有 70% 的反面朝上. 我们使用极大似然估计和狄利克雷分布下贝叶斯参数先验估计硬币的条件概率分布.
+</p>
+
+<p>
+生成数据:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">import numpy as np
+import pandas as pd
+raw_data = np.array([0] * 30 + [1] * 70)
+data = pd.DataFrame(raw_data, columns=['coin'])
+</pre>
+</div>
+
+<p>
+定义贝叶斯网:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel()
+model.add_node('coin')
+</pre>
+</div>
+
+<p>
+使用极大似然估计:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">model.fit(data, estimator=MaximumLikelihoodEstimator)
+print(model.get_cpds('coin'))
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+-----+
+| coin(0) | 0.3 |
++---------+-----+
+| coin(1) | 0.7 |
++---------+-----+
+</pre>
+
+<p>
+使用狄利克雷分布作为先验分布的贝叶斯推论:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts={'coin': [50, 50]})
+print(model.get_cpds('coin'))
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+-----+
+| coin(0) | 0.4 |
++---------+-----+
+| coin(1) | 0.6 |
++---------+-----+
+</pre>
+</div>
+
+<div id="outline-container-org01e3a3f" class="outline-3">
+<h3 id="org01e3a3f">更复杂的例子(学生例子)</h3>
+<div class="outline-text-3" id="text-org01e3a3f">
+<p>
+学生例子中包含5个随机变量, 如下所示:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">变量</th>
+<th scope="col" class="org-left">含义</th>
+<th scope="col" class="org-left">取值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Difficulty</td>
+<td class="org-left">课程本身难度</td>
+<td class="org-left">0=easy, 1=difficult</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Intelligence</td>
+<td class="org-left">学生聪明程度</td>
+<td class="org-left">0=stupid, 1=smart</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Grade</td>
+<td class="org-left">学生课程成绩</td>
+<td class="org-left">1=A, 2=B, 3=C</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">SAT</td>
+<td class="org-left">学生高考成绩</td>
+<td class="org-left">0=low, 1=high</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Letter</td>
+<td class="org-left">可否获得推荐信</td>
+<td class="org-left">0=未获得, 1=获得</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+生成数据:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">import numpy as np
+import pandas as pd
+raw_data = np.random.randint(low=0, high=2, size=(1000, 5))
+data = pd.DataFrame(raw_data, columns=['D', 'I', 'G', 'L', 'S'])
+</pre>
+</div>
+
+<p>
+定义模型:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel([('D', 'G'), ('I', 'G'), ('I', 'S'), ('G', 'L')])
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+for cpd in model.get_cpds():
+    print("CPD of {variable}:".format(variable=cpd.variable))
+    print(cpd)
+</pre>
+</div>
+
+<p>
+结果如下:
+</p>
+<pre class="example">
+CPD of D:
++------+-------+
+| D(0) | 0.501 |
++------+-------+
+| D(1) | 0.499 |
++------+-------+
+CPD of G:
++------+------+----------------+----------------+----------------+
+| D    | D(0) | D(0)           | D(1)           | D(1)           |
++------+------+----------------+----------------+----------------+
+| I    | I(0) | I(1)           | I(0)           | I(1)           |
++------+------+----------------+----------------+----------------+
+| G(0) | 0.48 | 0.509960159363 | 0.444915254237 | 0.551330798479 |
++------+------+----------------+----------------+----------------+
+| G(1) | 0.52 | 0.490039840637 | 0.555084745763 | 0.448669201521 |
++------+------+----------------+----------------+----------------+
+CPD of I:
++------+-------+
+| I(0) | 0.486 |
++------+-------+
+| I(1) | 0.514 |
++------+-------+
+CPD of L:
++------+----------------+----------------+
+| G    | G(0)           | G(1)           |
++------+----------------+----------------+
+| L(0) | 0.489959839357 | 0.501992031873 |
++------+----------------+----------------+
+| L(1) | 0.510040160643 | 0.498007968127 |
++------+----------------+----------------+
+CPD of S:
++------+----------------+----------------+
+| I    | I(0)           | I(1)           |
++------+----------------+----------------+
+| S(0) | 0.512345679012 | 0.468871595331 |
++------+----------------+----------------+
+| S(1) | 0.487654320988 | 0.531128404669 |
++------+----------------+----------------+
+</pre>
+
+<p>
+参数学习:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">pseudo_counts = {'D': [300, 700], 'I': [500, 500], 'G': [800, 200], 'L': [500, 500], 'S': [400, 600]}
+model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts=pseudo_counts)
+for cpd in model.get_cpds():
+    print("CPD of {variable}:".format(variable=cpd.variable))
+    print(cpd)
+</pre>
+</div>
+
+<p>
+结果如下:
+</p>
+<pre class="example">
+CPD of D:
++------+--------+
+| D(0) | 0.4005 |
++------+--------+
+| D(1) | 0.5995 |
++------+--------+
+CPD of G:
++------+-------+----------------+----------------+----------------+
+| D    | D(0)  | D(0)           | D(1)           | D(1)           |
++------+-------+----------------+----------------+----------------+
+| I    | I(0)  | I(1)           | I(0)           | I(1)           |
++------+-------+----------------+----------------+----------------+
+| G(0) | 0.736 | 0.741806554756 | 0.732200647249 | 0.748218527316 |
++------+-------+----------------+----------------+----------------+
+| G(1) | 0.264 | 0.258193445244 | 0.267799352751 | 0.251781472684 |
++------+-------+----------------+----------------+----------------+
+CPD of I:
++------+-------+
+| I(0) | 0.493 |
++------+-------+
+| I(1) | 0.507 |
++------+-------+
+CPD of L:
++------+----------------+----------------+
+| G    | G(0)           | G(1)           |
++------+----------------+----------------+
+| L(0) | 0.496662216288 | 0.500665778961 |
++------+----------------+----------------+
+| L(1) | 0.503337783712 | 0.499334221039 |
++------+----------------+----------------+
+CPD of S:
++------+----------------+----------------+
+| I    | I(0)           | I(1)           |
++------+----------------+----------------+
+| S(0) | 0.436742934051 | 0.423381770145 |
++------+----------------+----------------+
+| S(1) | 0.563257065949 | 0.576618229855 |
++------+----------------+----------------+
+</pre>
+</div>
+</div>
 </div>
 
 </div>
@@ -278,7 +698,7 @@ cancer_model.get_independencies()
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-04-21</span>
-            <span title="last modification date" class="post-info">2018-04-25</span>
+            <span title="last modification date" class="post-info">2018-04-26</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/贝叶斯网">贝叶斯网</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
