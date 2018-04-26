@@ -1,4 +1,4 @@
-#+TITLE:       Fabric ToDo List 分析
+#+TITLE:       Fabric Marbles 分析
 #+AUTHOR:      Pinvon
 #+EMAIL:       pinvon@Inspiron
 #+DATE:        2018-04-01 日
@@ -9,208 +9,663 @@
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
-* 解析
+* chaincode
 
-** cryptogen
+** chaincode 主要结构
 
-Fabric中有两种类型的公钥, 私钥和证书. 其中, Tcerts证书负责Peer之间的通讯安全, Ecerts负责用户登录和权限控制. 这些证书由CA颁发, 通常一个Org就有一个CA. 有时候在测试环境中, 没有启用CA节点, 可以使用 =cryptogen= 来颁发证书.
+#+BEGIN_SRC Golang
+// 声明包
+package main
 
-** configtx.yaml
+// 引入需要使用的包
+import (
+	"fmt"
+	"strconv"
 
-在 =examples/e2e_cli/configtx.yaml= 中配置了两个Org参与的Orderer共识配置, 以及两个Org参与的Channel配置.
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	pb "github.com/hyperledger/fabric/protos/peer"
+)
 
-Orderer可以设置共识算法是solo还是kafka, 以及共识区块大小, 超时时间等.
+// 声明 SimpleChaincode 结构体
+type SimpleChaincode struct {
+}
 
-如果需要更多的Org或者Channel, 可以根据模板进行修改.
+// 定义资产, 在账本中将会存储 marble 和 owner
 
-** configtxgen
+// 定义 marble 结构体
+// 后面跟着的 json 表示将结构体序列化成 JSON 格式时的键名
+type Marble struct {
+	ObjectType string        `json:"docType"` //field for couchdb
+	Id       string          `json:"id"`      //the fieldtags are needed to keep case from bouncing around
+	Color      string        `json:"color"`
+	Size       int           `json:"size"`    //size in mm of marble
+	Owner      OwnerRelation `json:"owner"`
+}
 
-可以使用这个工具, 根据 =configtx.yaml= 生成4个文件, 并保存在 =examples/e2e_cli/channel-artifacts= 中.
+// 定义 owner 结构体
+type Owner struct {
+	ObjectType string `json:"docType"`     //field for couchdb
+	Id         string `json:"id"`
+	Username   string `json:"username"`
+	Company    string `json:"company"`
+	Enabled    bool   `json:"enabled"`     //disabled owners will not be visible to the application
+}
 
-1. 创世区块 =genesis.block=. 用于启动Orderer节点.
-2. Channel配置区块 =channel.tx=.
-3. 两个用于更新Org的锚节点的配置文件 =OrgxMSPanchors.tx=.
+type OwnerRelation struct {
+	Id         string `json:"id"`
+	Username   string `json:"username"`    //this is mostly cosmetic/handy, the real relation is by Id not Username
+	Company    string `json:"company"`     //this is mostly cosmetic/handy, the real relation is by Id not Company
+}
 
-** 配置docker-compose
+// 入口函数
+func main() {
+	err := shim.Start(new(SimpleChaincode))
+	if err != nil {
+		fmt.Printf("Error starting Simple chaincode - %s", err)
+	}
+}
 
-配置docker-compose的yaml文件, 这些文件可以用于启动Fabric的Docker环境.
+// Init() 接口, 用于初始化 chaincode
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+	fmt.Println("Marbles Is Starting Up")
+	funcName, args := stub.GetFunctionAndParameters()  // 获取 SDK 传入的函数名和参数
+	var number int
+	var err error
+	txId := stub.GetTxID()  // 获取构建交易提案时生成的交易ID
+	
+	fmt.Println("Init() is running")
+	fmt.Println("Transaction ID:", txId)
+	fmt.Println("  GetFunctionAndParameters() function:", funcName)
+	fmt.Println("  GetFunctionAndParameters() args count:", len(args))
+	fmt.Println("  GetFunctionAndParameters() args found:", args)
 
-*** 配置Orderer
+	// expecting 1 arg for instantiate or upgrade
+	if len(args) == 1 {
+		fmt.Println("  GetFunctionAndParameters() arg[0] length", len(args[0]))
 
-Orderer的配置在 =base/docker-compose-base.yaml= 中.
+		// args 的长度为 0 时, 用于升级 chaincode, 此处未实现
+		if len(args[0]) == 0 {
+			fmt.Println("  Uh oh, args[0] is empty...")
+		} else {
+			fmt.Println("  Great news everyone, args[0] is not empty")
 
-#+BEGIN_SRC Shell
-../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block 
+			// convert numeric string to integer
+			number, err = strconv.Atoi(args[0])
+			if err != nil {
+				return shim.Error("Expecting a numeric string argument to Init() for instantiate")
+			}
+
+			// 测试写入账本
+			err = stub.PutState("selftest", []byte(strconv.Itoa(number)))
+			if err != nil {
+				return shim.Error(err.Error())                  //self-test fail
+			}
+		}
+	}
+
+	// showing the alternative argument shim function
+	alt := stub.GetStringArgs()
+	fmt.Println("  GetStringArgs() args count:", len(alt))
+	fmt.Println("  GetStringArgs() args found:", alt)
+
+	// store compatible marbles application version
+	err = stub.PutState("marbles_ui", []byte("4.0.1"))
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("Ready for action")                          //self-test pass
+	return shim.Success(nil)
+}
+
+// Invoke() 接口
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
+	function, args := stub.GetFunctionAndParameters()
+	fmt.Println(" ")
+	fmt.Println("starting invoke, for - " + function)
+
+	// 根据传入的参数来确定调用哪些方法
+	if function == "init" {                    //initialize the chaincode state, used as reset
+		return t.Init(stub)
+	} else if function == "read" {             //generic read ledger
+		return read(stub, args)
+	} else if function == "write" {            //generic writes to ledger
+		return write(stub, args)
+	} else if function == "delete_marble" {    //deletes a marble from state
+		return delete_marble(stub, args)
+	} else if function == "init_marble" {      //create a new marble
+		return init_marble(stub, args)
+	} else if function == "set_owner" {        //change owner of a marble
+		return set_owner(stub, args)
+	} else if function == "init_owner"{        //create a new marble owner
+		return init_owner(stub, args)
+	} else if function == "read_everything"{   //read everything, (owners + marbles + companies)
+		return read_everything(stub)
+	} else if function == "getHistory"{        //read history of a marble (audit)
+		return getHistory(stub, args)
+	} else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
+		return getMarblesByRange(stub, args)
+	} else if function == "disable_owner"{     //disable a marble owner from appearing on the UI
+		return disable_owner(stub, args)
+	}
+
+	// error out
+	fmt.Println("Received unknown invoke function name - " + function)
+	return shim.Error("Received unknown invoke function name - '" + function + "'")
+}
+
+// 查询, 未实现
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
+	return shim.Error("Unknown supported call - Query()")
+}
 #+END_SRC
 
-这种语句的意思是把宿主机器的路径映射到Docker环境中.
+** Invoke() 接口
 
-还有一些其他配置, 如环境变量, 端口, 证书等.
+*** 读账本 read()
 
-*** 配置Peer
+#+BEGIN_SRC Golang
+func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var key, jsonResp string
+	var err error
+	fmt.Println("starting read")
 
-Peer的配置在 =base/docker-compose-base.yaml= 和 =peer-base.yaml= 里. 配置信息与Orderer的类似.
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting key of the var to query")
+	}
 
-*** 配置CLI
+	// input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
 
-CLI相当于区块链网络的客户端, 如果处于测试阶段, 可以使用CLI来代替SDK, 执行各种SDK能执行的操作. CLI会和Peer通讯, 把指令发送给对应的Peer执行. CLI的配置在 =docker-compose-cli.yaml= 中.
+	key = args[0]
+	valAsbytes, err := stub.GetState(key)           // 根据 key 获取 value
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return shim.Error(jsonResp)
+	}
 
-#+BEGIN_SRC Shell
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-#+END_SRC
-可以看出, CLI默认连接的是 =peer0.org1.example.com=, 身份是 =admin=. CLI启动的时候, 会执行 =./scripts/script.sh=, 完成Fabric网络的初始化, chaincode的安装, 运行.
-
-** 启动Fabric环境的容器
-
-上面的文件配置好以后, 都会集成在 =docker-compose-cli.yaml= 中, 使用命令一键启动:
-#+BEGIN_SRC Shell
-docker-compose -f docker-compose-cli.yaml up -d
-#+END_SRC
-
-** 创建Channel
-
-进入CLI容器里面创建.
-
-#+BEGIN_SRC Shell
-docker exec -it cli bash
-
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-
-peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile $ORDERER_CA
+	fmt.Println("- end read")
+	return shim.Success(valAsbytes)                  //send it onward
+}
 #+END_SRC
 
-执行完后会在CLI内部的当前目录下创建一个 =mychannel.block= 文件, 其他节点如果要加入这个Channel, 都要使用这个文件.
+*** 写账本 write()
 
-** Peer加入Channel
+#+BEGIN_SRC Golang
+func write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var key, value string
+	var err error
+	fmt.Println("starting write")
 
-由于CLI默认连接的是peer0.org1.example.com, 所以将peer0.org1.example.com加入Channel会比较容易.
-#+BEGIN_SRC Shell
-peer channel join -b mychannel.block
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2. key of the variable and value to set")
+	}
+
+	// input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	key = args[0]                                   //rename for funsies
+	value = args[1]
+	err = stub.PutState(key, []byte(value))         // 根据 key 写入 value
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- end write")
+	return shim.Success(nil)
+}
 #+END_SRC
 
-但是如果要加入其他Peer, 则需要修改环境变量. 如:
-#+BEGIN_SRC Shell
-CORE_PEER_LOCALMSPID="Org1MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+*** 删除 delete_marble()
 
-peer channel join -b mychannel.block
-#+END_SRC
-可以把所有的命令连在一起执行, 这样不会对默认的环境变量造成影响.
+根据 marble 的 id 来删除指定的 marble.
 
-** 更新锚节点
+#+BEGIN_SRC Golang
+func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
+	fmt.Println("starting delete_marble")
 
-对于Org1来说, peer0.org1.example.com是锚节点, 需要连接上它, 并进行更新:
-#+BEGIN_SRC Shell
-CORE_PEER_LOCALMSPID="Org1MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
 
-peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls true --cafile $ORDERER_CA
-#+END_SRC
+	// input sanitation
+	err := sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
 
-* 启动
+	id := args[0]	// 获取 marble id
+	authed_by_company := args[1]
 
-** 启动网络
+	// get the marble
+	marble, err := get_marble(stub, id)  // 调用的是 GetState() 接口
+	if err != nil{
+		fmt.Println("Failed to find marble by id " + id)
+		return shim.Error(err.Error())
+	}
 
-#+BEGIN_SRC Shell
-cd fabric-sdk-node/test/fixtures
-docker-compose -f docker-compose-networksetup.yaml up -d
-#+END_SRC
+	// check authorizing company (see note in set_owner() about how this is quirky)
+	if marble.Owner.Company != authed_by_company{
+		return shim.Error("The company '" + authed_by_company + "' cannot authorize deletion for '" + marble.Owner.Company + "'.")
+	}
 
-** chaincode
+	// remove the marble
+	err = stub.DelState(id)  // 删除该 marble
+	if err != nil {
+		return shim.Error("Failed to delete state")
+	}
 
-*** 安装
-
-chaincode必须在每个与交易相关的Peer上都安装. 如果有4个Peer与交易相关, 则要安装4次.
-
-#+BEGIN_SRC Shell
-CORE_PEER_LOCALMSPID="Org1MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp 
-CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-
-peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+	fmt.Println("- end delete_marble")
+	return shim.Success(nil)
+}
 #+END_SRC
 
-*** 实例化
+*** 初始化 init_marble()
 
-实例化是生成Channel的Docker镜像和Docker容器, 在实例化时还可以指定背书策略.
-#+BEGIN_SRC Shell
-peer chaincode instantiate -o orderer.example.com:7050 --tls true --cafile $ORDERER_CA -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR      ('Org1MSP.member','Org2MSP.member')"
+生成 marble, 并写入账本.
+
+#+BEGIN_SRC Golang
+func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
+	var err error
+	fmt.Println("starting init_marble")
+
+	if len(args) != 5 {
+		return shim.Error("Incorrect number of arguments. Expecting 5")
+	}
+
+	//input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+    // SDK 中应填入的一系列参数, 并进行一系列验证
+	id := args[0]
+	color := strings.ToLower(args[1])
+	owner_id := args[3]
+	authed_by_company := args[4]
+	size, err := strconv.Atoi(args[2])
+	if err != nil {
+		return shim.Error("3rd argument must be a numeric string")
+	}
+
+	//check if new owner exists
+	owner, err := get_owner(stub, owner_id)
+	if err != nil {
+		fmt.Println("Failed to find owner - " + owner_id)
+		return shim.Error(err.Error())
+	}
+
+	//check authorizing company (see note in set_owner() about how this is quirky)
+	if owner.Company != authed_by_company{
+		return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + owner.Company + "'.")
+	}
+
+	//check if marble id already exists
+	marble, err := get_marble(stub, id)
+	if err == nil {
+		fmt.Println("This marble already exists - " + id)
+		fmt.Println(marble)
+		return shim.Error("This marble already exists - " + id)  //all stop a marble by this id exists
+	}
+
+	//build the marble json string manually
+	str := `{
+		"docType":"marble", 
+		"id": "` + id + `", 
+		"color": "` + color + `", 
+		"size": ` + strconv.Itoa(size) + `, 
+		"owner": {
+			"id": "` + owner_id + `", 
+			"username": "` + owner.Username + `", 
+			"company": "` + owner.Company + `"
+		}
+	}`
+	err = stub.PutState(id, []byte(str))  // 存入账本
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- end init_marble")
+	return shim.Success(nil)
+}
 #+END_SRC
 
-*** 在一个节点上查询并发起交易
+*** 设置所有者 set_owner()
 
-在CLI容器中执行:
-#+BEGIN_SRC Shell
-peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
-peer chaincode invoke -o orderer.example.com:7050  --tls true --cafile $ORDERER_CA -C mychannel -n mycc -c '{"Args":["invoke","a","b","10"]}'
+#+BEGIN_SRC Golang
+func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var err error
+	fmt.Println("starting set_owner")
+
+	// this is quirky
+	// todo - get the "company that authed the transfer" from the certificate instead of an argument
+	// should be possible since we can now add attributes to the enrollment cert
+	// as is.. this is a bit broken (security wise), but it's much much easier to demo! holding off for demos sake
+
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
+	}
+
+	// input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	var marble_id = args[0]
+	var new_owner_id = args[1]
+	var authed_by_company = args[2]
+	fmt.Println(marble_id + "->" + new_owner_id + " - |" + authed_by_company)
+
+	// check if user already exists
+	owner, err := get_owner(stub, new_owner_id)
+	if err != nil {
+		return shim.Error("This owner does not exist - " + new_owner_id)
+	}
+
+	// get marble's current state
+	marbleAsBytes, err := stub.GetState(marble_id)
+	if err != nil {
+		return shim.Error("Failed to get marble")
+	}
+
+    // 将数据反序列化, 修改后再序列化为 JSON 格式存储
+	res := Marble{}
+	json.Unmarshal(marbleAsBytes, &res)           //un stringify it aka JSON.parse()
+
+	// check authorizing company
+	if res.Owner.Company != authed_by_company{
+		return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+	}
+
+	// transfer the marble
+	res.Owner.Id = new_owner_id                   //change the owner
+	res.Owner.Username = owner.Username
+	res.Owner.Company = owner.Company
+
+    // 修改属性后, 序列化为 JSON 格式
+	jsonAsBytes, _ := json.Marshal(res)           //convert to array of bytes
+	err = stub.PutState(args[0], jsonAsBytes)     // 重新存储到账本
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- end set owner")
+	return shim.Success(nil)
+}
 #+END_SRC
 
-*** 在另一个节点上查询交易
+*** 初始化所有者 init_owner()
 
-#+BEGIN_SRC Shell
-CORE_PEER_LOCALMSPID="Org2MSP" 
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt 
-CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp 
-CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+#+BEGIN_SRC Golang
+func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var err error
+	fmt.Println("starting init_owner")
 
-peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
+	}
 
-peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
+	//input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	var owner Owner
+	owner.ObjectType = "marble_owner"
+	owner.Id =  args[0]
+	owner.Username = strings.ToLower(args[1])
+	owner.Company = args[2]
+	owner.Enabled = true
+	fmt.Println(owner)
+
+	//check if user already exists
+	_, err = get_owner(stub, owner.Id)
+	if err == nil {
+		fmt.Println("This owner already exists - " + owner.Id)
+		return shim.Error("This owner already exists - " + owner.Id)
+	}
+
+	//store user
+	ownerAsBytes, _ := json.Marshal(owner)                         //convert to array of bytes
+	err = stub.PutState(owner.Id, ownerAsBytes)                    //store owner by its Id
+	if err != nil {
+		fmt.Println("Could not store user")
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- end init_owner marble")
+	return shim.Success(nil)
+}
 #+END_SRC
 
-首先在Org2的peer0.org2.example.com上进行安装chaincode, 但是不需要实例化, 因为chaincode只能实例化一次. 安装完了之后就可以直接查询.
+*** 读取所有数据 read_everything()
 
-** 创建通道
+#+BEGIN_SRC Golang
+func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
+	type Everything struct {
+		Owners   []Owner   `json:"owners"`
+		Marbles  []Marble  `json:"marbles"`
+	}
+	var everything Everything
 
-#+BEGIN_SRC Shell
-# pwd: fabric-sdk-node
-node test/integration/e2e/create-channel.js
+	// ---- Get All Marbles ---- //
+	resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+	
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on marble id - ", queryKeyAsStr)
+		var marble Marble
+		json.Unmarshal(queryValAsBytes, &marble)                  //un stringify it aka JSON.parse()
+		everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
+	}
+	fmt.Println("marble array - ", everything.Marbles)
+
+	// ---- Get All Owners ---- //
+	ownersIterator, err := stub.GetStateByRange("o0", "o9999999999999999999")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer ownersIterator.Close()
+
+	for ownersIterator.HasNext() {
+		aKeyValue, err := ownersIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryKeyAsStr := aKeyValue.Key
+		queryValAsBytes := aKeyValue.Value
+		fmt.Println("on owner id - ", queryKeyAsStr)
+		var owner Owner
+		json.Unmarshal(queryValAsBytes, &owner)                   //un stringify it aka JSON.parse()
+
+		if owner.Enabled {                                        //only return enabled owners
+			everything.Owners = append(everything.Owners, owner)  //add this marble to the list
+		}
+	}
+	fmt.Println("owner array - ", everything.Owners)
+
+	//change to array of bytes
+	everythingAsBytes, _ := json.Marshal(everything)              //convert to array of bytes
+	return shim.Success(everythingAsBytes)
+}
 #+END_SRC
 
-* Fabric CA
+*** 获取历史数据 getHistory()
 
-在实际开发中, 我们应该为每个Org建立一个CA, 用CA来管理其中的用户, 而不是使用 =cryptogen= 这个工具根据 =crypto-config.yaml= 生成.
+#+BEGIN_SRC Golang
+func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	type AuditHistory struct {
+		TxId    string   `json:"txId"`
+		Value   Marble   `json:"value"`
+	}
+	var history []AuditHistory;
+	var marble Marble
 
-编辑 =docker-compose-cli.yaml=, 增加内容:
-#+BEGIN_SRC Shell
-  ca0:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-    ports:
-      - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/peerOrg1-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/d8a5b3cac1b821f6e4b487ceaf1fd239cdcfc310894150908b90f05e9179556a_sk -b admin:adminpw' -d
-    volumes:
-      - ./channel/crypto-config/peerOrganizations/peerOrg1/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_peerOrg1
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	marbleId := args[0]
+	fmt.Printf("- start getHistoryForMarble: %s\n", marbleId)
+
+	// Get History
+	resultsIterator, err := stub.GetHistoryForKey(marbleId)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		historyData, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		var tx AuditHistory
+		tx.TxId = historyData.TxId                     //copy transaction id over
+		json.Unmarshal(historyData.Value, &marble)     //un stringify it aka JSON.parse()
+		if historyData.Value == nil {                  //marble has been deleted
+			var emptyMarble Marble
+			tx.Value = emptyMarble                 //copy nil marble
+		} else {
+			json.Unmarshal(historyData.Value, &marble) //un stringify it aka JSON.parse()
+			tx.Value = marble                      //copy marble over
+		}
+		history = append(history, tx)              //add this tx to the list
+	}
+	fmt.Printf("- getHistoryForMarble returning:\n%s", history)
+
+	//change to array of bytes
+	historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
+	return shim.Success(historyAsBytes)
+}
 #+END_SRC
-在命令中, --ca.certfile指定了CA的根证书, ca.keyfile指定了给新用户签发证书时的私钥, -b表示CA Client连接CA Server时使用的用户名和密码.
 
+*** 根据范围查找 getMarblesByRange()
 
-* 流程
+#+BEGIN_SRC Golang
+func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
 
-[[./26.png]]
+	startKey := args[0]
+	endKey := args[1]
 
-1. User通过Browser与Client进行交互.
-2. User执行操作, Client调用Server API, 已注册的管理员通过该API与Hyperledger区块链网络进行交互.
-3. 读取或写入账本称为提案. 提案由Server通过SDK进行构建, 然后发送到Peer.
-4. Peer与chaincode容器通信. chaincode将运行/模拟该交易. 如果没有问题(验证User身份, 提案的格式是否正确等), 它会对该交易进行背书, 并将其发回Server.
-5. Server通过SDK, 将背书后的提案发送到Ordering Service. Ordering Service将整个网络的许多提案打包到一个区块中. 然后, Ordering Service将新区块广播到网络中的Peers.
-6. Peers验证该区块, 并将它写入自己的账本中. 交易至此生效, 所有后续读取都会反映此更改.
+	resultsIterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
 
-* server
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
 
-** enrollAdmin
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		aKeyValue, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		queryResultKey := aKeyValue.Key
+		queryResultValue := aKeyValue.Value
 
-Web端打开应用程序, 向 =/enrollAdmin= 端点发出一个GET请求, 就可以在chaincode上注册管理员. 以后, 要注册新的成员, 都是通过这个管理员来进行的.
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResultKey)
+		buffer.WriteString("\"")
 
-*** enroll_admin()
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResultValue))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
 
-程序的最开始, 是向区块链网络中的CA注册管理员用户. 如果注册成功, CA会向Server发送注册证书, SDK会将该证书存储在本地的文件系统中.
+	fmt.Printf("- getMarblesByRange queryResult:\n%s\n", buffer.String())
 
-* client
+	return shim.Success(buffer.Bytes())
+}
+#+END_SRC
+
+*** disable_owner()
+
+#+BEGIN_SRC Golang
+func disable_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var err error
+	fmt.Println("starting disable_owner")
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
+	// input sanitation
+	err = sanitize_arguments(args)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	var owner_id = args[0]
+	var authed_by_company = args[1]
+
+	// get the marble owner data
+	owner, err := get_owner(stub, owner_id)
+	if err != nil {
+		return shim.Error("This owner does not exist - " + owner_id)
+	}
+
+	// check authorizing company
+	if owner.Company != authed_by_company {
+		return shim.Error("The company '" + authed_by_company + "' cannot change another companies marble owner")
+	}
+
+	// disable the owner
+	owner.Enabled = false
+	jsonAsBytes, _ := json.Marshal(owner)         //convert to array of bytes
+	err = stub.PutState(args[0], jsonAsBytes)     //rewrite the owner
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	fmt.Println("- end disable_owner")
+	return shim.Success(nil)
+}
+#+END_SRC
+
+*** 小结
+
+基本上都是序列化与反序列化, PutState() 与 GetState(). 熟悉这些接口, 对自己写 chaincode 有较大好处.
+
+* 错误
+
+** Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction
+
+有多种原因会导致这个错误. 有可能是修改了 chaincode, 但是编译出错了, 或者 chaincode 容器没有启动, 等等.
+
+我遇到这个问题, 先检查是否把 fabcar 目录下的 hfc-key-store 和 ~/.hfc-key-store 删除了, 如果没有, 则删除之. 再次启动时, 问题依旧. 因此我推测可能是 chaincode 容器未启动成功, 输入命令 docker ps -a 后, 未看到 chaincode 容器, 再输入命令 docker images, 发现有很多之前启动 marbles 时的 chaincode 镜像未删除, 依次删除之后, 启动成功.
+
+如果 chaincode 容器启动成功了, 可以再查看该容器的日志, 进一步排查原因.

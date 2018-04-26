@@ -6,7 +6,7 @@
 #+KEYWORDS:    <TODO: insert your keywords here>
 #+TAGS:        贝叶斯网
 #+LANGUAGE:    en
-#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
 * 概述
@@ -135,7 +135,6 @@ d-separate 是图论的概念, 而条件独立是概率论的概念, 所以 =整
 
 在一个贝叶斯网络中, 给定变量 $X$ 的马尔科夫边界 $mb(X)$, 则 $X$ 条件独立于网络中所有其他变量.
 
-
 * 周志华-机器学习-贝叶斯网
 
 一个贝叶斯网 $B$ 由结构 $G$ 和参数 $\Theta$ 两部分构成, 即 $B=\langle G,\Theta \rangle$. 其中, 网络结构 $G$ 是一个有向无环图, 其每个结点对应一个属性, 如果两个属性有直接依赖关系, 则它们由一条边连接起来; 参数 $\Theta$ 定量描述这种依赖关系. 假设属性 $x_i$ 在 $G$ 中的父结点集为 $\pi_i$, 则 $\Theta$ 包含了每个属性的条件概率表 $\theta_{x_i \mid \pi_i} = P_{B}(x_i \mid \pi_i)$.
@@ -174,6 +173,20 @@ $$P(x_1, x_2, x_3, x_4, x_5) = P(x_1)P(x_2)P(x_3 \mid x_1)P(x_4 \mid x_1, x_2)P(
 
 对于贝叶斯网学习而言, 模型就是一个贝叶斯网, 在训练过程中, 每个贝叶斯网描述了在训练数据上的概率分布, 最常出现的样本有最短的编码(与哈夫曼编码类似). 我们应该选择那个编码长度(包括模型和样本的编码)最短的贝叶斯网.
 
+给定训练集 $D={x_1, x_2, \ldots, x_m}$, 贝叶斯网 $B=\langle G, \Theta \rangle$ 在 $D$ 上的评分函数可写为:
+
+$$s(B \mid D) = f(\theta) \mid B \mid - LL(B \mid D)$$
+
+其中, $\mid B \mid$ 是贝叶斯网的参数个数, $f(\theta)$ 表示描述每个参数 $\theta$ 所需的字节数, $LL(B \mid D) = \sum_{i=1}^{m}logP_B(x_i)$ 是贝叶斯网 $B$ 的对数似然.
+
+$f(\theta) \mid B \mid$ 的意思是计算贝叶斯网 $B$ 所需的字节数.
+
+$LL(B \mid D)$ 表示计算 $B$ 对应的概率分布 $P_B$ 需多少字节来描述 $D$.
+
+于是, 学习任务就转化为一个优化任务, 寻找一个贝叶斯网 $B$, 使得评分函数 $s(B \mid D)$ 最小.
+
+可以固定 $f(\theta)$, 使评分函数更加简单, 如这个值为 1 时表示每个参数用 1 字节描述, 可以得到 AIC 评分函数: $AIC(B \mid D) = \mid B \mid - LL(B \mid D)$.
+
 * 贝叶斯网推理
 
 在构造了贝叶斯网络之后, 我们可以利用贝叶斯网络来进行推理.
@@ -186,6 +199,52 @@ $$P(x_1, x_2, x_3, x_4, x_5) = P(x_1)P(x_2)P(x_3 \mid x_1)P(x_4 \mid x_1, x_2)P(
 
 贝叶斯网络的概率推理算法有两种, 精确推理和近似推理. 这两种推理都是通过使用局部(边缘概率分布)的计算来避免计算的复杂程度(联合概率分布).
 
-精确推理
+精确推理只适用于结点较少, 连接稀疏的网络.
 
+近似推理降低了精度要求, 在有限时间内求得近似解.
 
+** 近似推理
+
+$\mathbf{Q}={Q_1, Q_2, \ldots, Q_n}$ 表示待查询变量.
+
+$\mathbf{E}={E_1, E_2, \ldots, E_k}$ 表示证据变量, 取值为 $\mathbf{e}={e_1, e_2, \ldots, e_k}$.
+
+我们的最终目标是计算后验概率 $P(\mathbf{Q}=\mathbf{q} \mid \mathbf{E}=e)$, 其中 $\mathbf{q}={q_1, q_2, \ldots, q_n}$ 是待查询变量的一组取值.
+
+如书中所提的西瓜问题:
+
+$\mathbf{Q}$={好瓜, 甜度}, $\mathbf{E}$={色泽, 敲声, 根蒂}, 且取值 $\mathbf{e}$={青绿, 浊响, 蜷缩}, 查询的目标值是 $\mathbf{q}$={是, 高}, 即这是好瓜, 且甜度高的概率有多大.
+
+*** 吉布斯采样
+
+这是一种使用随机采样的方法, 完成贝叶斯网的近似推理.
+
+吉布斯采样假设在第 $t$ 次采样中, $\mathbf{q}^t=\mathbf{q}^{t-1}$, 然后对非证据变量逐个进行采样, 改变其取值, 采样概率根据贝叶斯网 $B$ 和其他变量的当前取值 $\mathbf{Z}=z$ 计算获得. 假设经过 $T$ 次采样得到的与 $\mathbf{q}$ 一致的样本共有 $n_q$ 个, 则可近似估算出后验概率 $P(\mathbf{Q}=\mathbf{q} \mid \mathbf{E}=\mathbf{e}) \simeq \frac{n_q}{T}$.
+
+可以看出, $t$ 时刻的状态只与 $t-1$ 时刻的状态有关, 因此, 这是一个马尔科夫链. 当 $t \rightarrow \infty$ 时, 必收敛.
+
+不足点: 收敛速度慢, 需要很长时间才能趋于平稳; 如果贝叶斯网中存在极端概率 0 或 1, 则不能保证能平稳分布, 估计错误.
+
+*** EM算法
+
+在实际应用中, 训练样本中, 属性的值未必都是已知的, 如西瓜的根蒂脱落了, 则不能获悉其值是蜷缩还是硬挺. 像这种属性的变量值未知, 我们也称为未观测变量, 或隐变量.
+
+令 $\mathbf{X}$ 表示已观测变量, $\mathbf{Z}$ 表示隐变量集, $\Theta$ 表示模型参数. 如果要对 $\Theta$ 做极大似然估计, 应该先最大化对数似然:
+
+$$LL(\Theta \mid \mathbf{X}, \mathbf{Z}) = ln P(\mathbf{X}, \mathbf{Z}) \mid \Theta$$
+
+但是 $\mathbf{Z}$ 是隐变量, 无法直接求解. 一种办法是对 $\mathbf{Z}$ 求期望, 来最大化已观测数据的对数"边际似然".
+
+$$LL(\Theta \mid \mathbf{X}) = lnP(\mathbf{X} \mid \Theta) = ln \sum_{\mathbf{Z}}P(\mathbf{X}, \mathbf{Z} \mid \Theta)$$
+
+EM 算法常用于估计参数隐变量. 如果属性间的依赖关系 $\Theta$ 已知, 则可以使用训练数据推断出最优隐变量 $\mathbf{Z}$, 若 $\mathbf{Z}$ 已知, 则可以对参数 $\Theta$ 做极大似然估计. 具体做法如下:
+
+1. 根据 $\Theta^{t}$ 推断隐变量 $\mathbf{Z}$ 的期望, 记为 $\mathbf{Z}^t$.
+2. 根据已观测变量 $\mathbf{X}$ 和 $\mathbf{Z}^t$ 对参数做极大似然估计, 记为 $\Theta^{t+1}$.
+
+循环迭代上面两个步骤, 直到收敛.
+
+如果不提取 $\mathbf{Z}$ 的期望, 可以通过 $\Theta^{t}$ 来计算 $\mathbf{Z}$ 的概率分布 $P(\mathbf{Z} \mid \mathbf{X}, \Theta^t)$, 步骤如下:
+
+1. 计算对数似然的期望值(E): $Q(\Theta \mid \Theta^t)=E_{\mathbf{Z} \mid \mathbf{X}, \Theta^t} LL(\Theta \mid \mathbf{X}, \mathbf{Z})$.
+2. 寻找参数最大化期望似然(M): $\Theta^{t+1}=arg max \limits_{\Theta} Q(\Theta \mid \Theta^t)$.

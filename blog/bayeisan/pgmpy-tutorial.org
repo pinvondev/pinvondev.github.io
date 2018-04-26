@@ -112,3 +112,284 @@ cancer_model.get_independencies()
 
 * 使用 Asia 网络进行推理
 
+在构建了贝叶斯网之后, 我们使用贝叶斯网来进行推理. 推理算法分精确推理和近似推理. 精确推理有变量消元法和团树传播法; 近似推理算法是基于随机抽样的算法.
+
+Asia 网络是早期贝叶斯网文献中给出的一个网络, 与肺结核, 肺癌, 支气管炎等有关, 和我们之前的那个网络很相似. 我们使用 Asia 网络来看一下如何进行推理.
+
+创建源文件 asia.py
+
+下载网络模型放到源文件目录下:
+#+BEGIN_SRC Shell
+wget http://www.bnlearn.com/bnrepository/asia/asia.bif.gz
+gzip -qd asia.bif.gz
+#+END_SRC
+
+编辑 asia.py:
+
+导入 Asia 网络:
+#+BEGIN_SRC Python
+from pgmpy.readwrite import BIFReader
+reader = BIFReader('asia.bif')
+asia_model = reader.get_model()
+#+END_SRC
+
+输出节点信息:
+#+BEGIN_SRC Python
+print(asia_model.nodes())
+
+# ['xray', 'bronc', 'asia', 'dysp', 'lung', 'either', 'smoke', 'tub']
+#+END_SRC
+
+输出依赖关系:
+#+BEGIN_SRC Python
+print(asia_model.edges())
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
+[('bronc', 'dysp'),
+ ('asia', 'tub'),
+ ('lung', 'either'),
+ ('either', 'dysp'),
+ ('either', 'xray'),
+ ('smoke', 'bronc'),
+ ('smoke', 'lung'),
+ ('tub', 'either')]
+#+END_EXAMPLE
+
+查看概率分布:
+#+BEGIN_SRC Python
+print(asia_model.get_cpds())
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
+[<TabularCPD representing P(asia:2) at 0x7f92cf1e46d0>,
+ <TabularCPD representing P(bronc:2 | smoke:2) at 0x7f92ea70f990>,
+ <TabularCPD representing P(dysp:2 | bronc:2, either:2) at 0x7f92f80f4ed0>,
+ <TabularCPD representing P(either:2 | lung:2, tub:2) at 0x7f92e8e71dd0>,
+ <TabularCPD representing P(lung:2 | smoke:2) at 0x7f92cf1e4c50>,
+ <TabularCPD representing P(smoke:2) at 0x7f92cf1e4ed0>,
+ <TabularCPD representing P(tub:2 | asia:2) at 0x7f92cf1ec210>,
+ <TabularCPD representing P(xray:2 | either:2) at 0x7f92cf1ec410>]
+#+END_EXAMPLE
+
+直观显示某节点的概率分布:
+#+BEGIN_SRC Python
+print(asia_model.get_cpds('xray').values)
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
+[[0.98 0.05]
+ [0.02 0.95]]
+#+END_EXAMPLE
+
+** 变量消除法
+
+变量消除法是精确推断的一种方法. 
+
+#+BEGIN_SRC Python
+from pgmpy.inference import VariableElimination
+asia_infer = VariableElimination(asia_model)
+q = asia_infer.query(variables=['bronc'], evidence={'smoke': 0})
+print(q['bronc'])
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
++---------+--------------+
+| bronc   |   phi(bronc) |
+|---------+--------------|
+| bronc_0 |       0.6000 |
+| bronc_1 |       0.4000 |
++---------+--------------+
+#+END_EXAMPLE
+意思是, 在不吸烟的情况下, 得支气管炎的概率是 0.4, 未得支气管炎的概率是 0.6.
+
+在在吸烟情况下, 得支气管炎的概率和未得支气管炎的概率可以这样查询:
+#+BEGIN_SRC Python
+q = asia_infer.query(variables=['bronc'], evidence={'smoke': 1})
+print(q['bronc'])
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
++---------+--------------+
+| bronc   |   phi(bronc) |
+|---------+--------------|
+| bronc_0 |       0.3000 |
+| bronc_1 |       0.7000 |
++---------+--------------+
+#+END_EXAMPLE
+
+* 利用训练数据学习
+
+场景: 投硬币, 训练数据中, 有 30% 的正面朝上, 有 70% 的反面朝上. 我们使用极大似然估计和狄利克雷分布下贝叶斯参数先验估计硬币的条件概率分布.
+
+生成数据:
+#+BEGIN_SRC Python
+import numpy as np
+import pandas as pd
+raw_data = np.array([0] * 30 + [1] * 70)
+data = pd.DataFrame(raw_data, columns=['coin'])
+#+END_SRC
+
+定义贝叶斯网:
+#+BEGIN_SRC Python
+from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel()
+model.add_node('coin')
+#+END_SRC
+
+使用极大似然估计:
+#+BEGIN_SRC Python
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+print(model.get_cpds('coin'))
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
++---------+-----+
+| coin(0) | 0.3 |
++---------+-----+
+| coin(1) | 0.7 |
++---------+-----+
+#+END_EXAMPLE
+
+使用狄利克雷分布作为先验分布的贝叶斯推论:
+#+BEGIN_SRC Python
+model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts={'coin': [50, 50]})
+print(model.get_cpds('coin'))
+#+END_SRC
+结果如下:
+#+BEGIN_EXAMPLE
++---------+-----+
+| coin(0) | 0.4 |
++---------+-----+
+| coin(1) | 0.6 |
++---------+-----+
+#+END_EXAMPLE
+
+** 更复杂的例子(学生例子)
+
+学生例子中包含5个随机变量, 如下所示:
+
+| 变量         | 含义           | 取值                |
+|--------------+----------------+---------------------|
+| Difficulty   | 课程本身难度   | 0=easy, 1=difficult |
+|--------------+----------------+---------------------|
+| Intelligence | 学生聪明程度   | 0=stupid, 1=smart   |
+|--------------+----------------+---------------------|
+| Grade        | 学生课程成绩   | 1=A, 2=B, 3=C       |
+|--------------+----------------+---------------------|
+| SAT          | 学生高考成绩   | 0=low, 1=high       |
+|--------------+----------------+---------------------|
+| Letter       | 可否获得推荐信 | 0=未获得, 1=获得    |
+
+生成数据:
+#+BEGIN_SRC Python
+import numpy as np
+import pandas as pd
+raw_data = np.random.randint(low=0, high=2, size=(1000, 5))
+data = pd.DataFrame(raw_data, columns=['D', 'I', 'G', 'L', 'S'])
+#+END_SRC
+
+定义模型:
+#+BEGIN_SRC Python
+from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel([('D', 'G'), ('I', 'G'), ('I', 'S'), ('G', 'L')])
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+for cpd in model.get_cpds():
+    print("CPD of {variable}:".format(variable=cpd.variable))
+    print(cpd)
+#+END_SRC
+
+结果如下:
+#+BEGIN_EXAMPLE
+CPD of D:
++------+-------+
+| D(0) | 0.501 |
++------+-------+
+| D(1) | 0.499 |
++------+-------+
+CPD of G:
++------+------+----------------+----------------+----------------+
+| D    | D(0) | D(0)           | D(1)           | D(1)           |
++------+------+----------------+----------------+----------------+
+| I    | I(0) | I(1)           | I(0)           | I(1)           |
++------+------+----------------+----------------+----------------+
+| G(0) | 0.48 | 0.509960159363 | 0.444915254237 | 0.551330798479 |
++------+------+----------------+----------------+----------------+
+| G(1) | 0.52 | 0.490039840637 | 0.555084745763 | 0.448669201521 |
++------+------+----------------+----------------+----------------+
+CPD of I:
++------+-------+
+| I(0) | 0.486 |
++------+-------+
+| I(1) | 0.514 |
++------+-------+
+CPD of L:
++------+----------------+----------------+
+| G    | G(0)           | G(1)           |
++------+----------------+----------------+
+| L(0) | 0.489959839357 | 0.501992031873 |
++------+----------------+----------------+
+| L(1) | 0.510040160643 | 0.498007968127 |
++------+----------------+----------------+
+CPD of S:
++------+----------------+----------------+
+| I    | I(0)           | I(1)           |
++------+----------------+----------------+
+| S(0) | 0.512345679012 | 0.468871595331 |
++------+----------------+----------------+
+| S(1) | 0.487654320988 | 0.531128404669 |
++------+----------------+----------------+
+#+END_EXAMPLE
+
+参数学习:
+#+BEGIN_SRC Python
+pseudo_counts = {'D': [300, 700], 'I': [500, 500], 'G': [800, 200], 'L': [500, 500], 'S': [400, 600]}
+model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts=pseudo_counts)
+for cpd in model.get_cpds():
+    print("CPD of {variable}:".format(variable=cpd.variable))
+    print(cpd)
+#+END_SRC
+
+结果如下:
+#+BEGIN_EXAMPLE
+CPD of D:
++------+--------+
+| D(0) | 0.4005 |
++------+--------+
+| D(1) | 0.5995 |
++------+--------+
+CPD of G:
++------+-------+----------------+----------------+----------------+
+| D    | D(0)  | D(0)           | D(1)           | D(1)           |
++------+-------+----------------+----------------+----------------+
+| I    | I(0)  | I(1)           | I(0)           | I(1)           |
++------+-------+----------------+----------------+----------------+
+| G(0) | 0.736 | 0.741806554756 | 0.732200647249 | 0.748218527316 |
++------+-------+----------------+----------------+----------------+
+| G(1) | 0.264 | 0.258193445244 | 0.267799352751 | 0.251781472684 |
++------+-------+----------------+----------------+----------------+
+CPD of I:
++------+-------+
+| I(0) | 0.493 |
++------+-------+
+| I(1) | 0.507 |
++------+-------+
+CPD of L:
++------+----------------+----------------+
+| G    | G(0)           | G(1)           |
++------+----------------+----------------+
+| L(0) | 0.496662216288 | 0.500665778961 |
++------+----------------+----------------+
+| L(1) | 0.503337783712 | 0.499334221039 |
++------+----------------+----------------+
+CPD of S:
++------+----------------+----------------+
+| I    | I(0)           | I(1)           |
++------+----------------+----------------+
+| S(0) | 0.436742934051 | 0.423381770145 |
++------+----------------+----------------+
+| S(1) | 0.563257065949 | 0.576618229855 |
++------+----------------+----------------+
+#+END_EXAMPLE
