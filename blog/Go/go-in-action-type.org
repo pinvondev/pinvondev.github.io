@@ -227,36 +227,210 @@ UTF-8 是 Unicode 的一个实现方式. 它是一种变长的编码方式, 可�
 
 Go 语言的源文件和文本字符串都是以 UTF-8 编码方式进行处理的, 所以我们可以把 Unicode 码点也写到字符串面值中.
 
-*** 注意
+**** 注意
 
-len() 返回的是字符串所占的字节数, 而不是字符串的长度. 一个 UTF-8 编码的字符, 可能占 1~4 个字节:
+ len() 返回的是字符串所占的字节数, 而不是字符串的长度. 一个 UTF-8 编码的字符, 可能占 1~4 个字节:
+ #+BEGIN_SRC Golang
+ import "unicode/utf8"
+ s := "Hello, 世界"
+ fmt.Println(len(s))                    // "13"
+ fmt.Println(utf8.RuneCountInString(s)) // "9"
+ #+END_SRC
+
+ [[./6.png]]
+ 如图所示, 我们可以通过 range 循环的索引来访问每个字符, 这个索引会自动以字符为步长, 当一个字符占用的字节数超过 1 时, 步长也会超过 1.
+
+ 可以利用 UTF-8, 将输入的字符转成 Unicode 字符序列:
+ #+BEGIN_SRC Golang
+ s := "プログラム"
+ fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+ r := []rune(s)
+ fmt.Printf("%x\n", r)  // "[30d7 30ed 30b0 30e9 30e0]"
+ #+END_SRC
+
+ 如果将 []rune 类型的 Unicode 字符转为 string 类型, 默认会对它们进行 UTF-8 编码:
+ #+BEGIN_SRC Golang
+ fmt.Println(string(r)) // "プログラム"
+ #+END_SRC
+
+ 如果将整数转化为 string 类型, Go 会将该数字当成一个 Unicode 码点, 再转成 UTF-8 类型:
+ #+BEGIN_SRC Golang
+ fmt.Println(string(65))     // "A", not "65"
+ fmt.Println(string(0x4eac)) // "京"
+ #+END_SRC
+
+*** 字符串和 Byte 切片
+
+Go 标准库中有 4 个包常 用于对字符串进行处理: strings, bytes, strconv, unicode.
+- strings: 用于字符串的查询, 替换, 比较, 截断, 拆分, 合并等.
+- bytes: 与 strings 类似, 但处理的是 []byte 类型的数据. string 的底层是数组, []byte 的底层是 slice. string 只读, 逐步构建 string 类型的数据, 会导致更多的分配和复制, bytes.Buffer 类型将更加有效.
+- strconv: 提供布尔型, 整型, 浮点型这些类型与字符串类型的相互转换.
+- unicode: 用于给字符串分类, 提供 IsDigit(), IsLetter(), IsUpper(), IsLower() 等类似的功能.
+
+**** 例子
+
+我们平时输入的文件名, 一般是这样的形式: /path/to/file.type 
+
+编写一个函数, 该函数用于将文件的路径(/path/to/)删除, 将文件的后缀(.type)删除.
+
+首先是不使用任何库的实现:
 #+BEGIN_SRC Golang
-import "unicode/utf8"
-s := "Hello, 世界"
-fmt.Println(len(s))                    // "13"
-fmt.Println(utf8.RuneCountInString(s)) // "9"
+func basename(s string) string {
+	for i := len(s)-1; i >= 0; i-- {
+		if s[i] == '/' {
+			s = s[i+1:]
+			break
+		}
+	}
+	for i := len(s)-1; i >= 0; i-- {
+		if s[i] == '.' {
+			s = s[:i]
+			break
+		}
+	}
+	return s
+}
 #+END_SRC
 
-[[./6.png]]
-如图所示, 我们可以通过 range 循环的索引来访问每个字符, 这个索引会自动以字符为步长, 当一个字符占用的字节数超过 1 时, 步长也会超过 1.
-
-可以利用 UTF-8, 将输入的字符转成 Unicode 字符序列:
+使用 strings.LastIndex():
 #+BEGIN_SRC Golang
-s := "プログラム"
-fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
-r := []rune(s)
-fmt.Printf("%x\n", r)  // "[30d7 30ed 30b0 30e9 30e0]"
+func basename(s string) string {
+	slash := strings.LastIndex(s, "/") // -1 if "/" not found
+	s = s[slash+1:]
+	if dot := strings.LastIndex(s, "."); dot >= 0 {
+		s = s[:dot]
+	}
+	return s
+}
 #+END_SRC
 
-如果将 []rune 类型的 Unicode 字符转为 string 类型, 默认会对它们进行 UTF-8 编码:
+一个字符串是包含只读字节的 *数组*, 一旦创建则不可改变；而 []byte 的底层是 slice, slice 的元素则可以自由修改. 字符串和 byte[] 之间的转换:
 #+BEGIN_SRC Golang
-fmt.Println(string(r)) // "プログラム"
+s := "abc"
+b := []byte(s)
+s2 := string(b)
+#+END_SRC
+内部实现上, []byte(s) 是对 s 进行拷贝, 然后分配一个新的字节数组用于存储该拷贝, 以确保对 b 的修改不会映射到 s 上. 有些场景下, 编译器可以对这个转换进行优化, 尽可能不去分配和复制字符串数据. 而从 s 转化到 b, 是对 b 进行拷贝, 然后存储到 string 类型的内存上, 以确保 s2 是只读的.
+
+我们应尽量避免 string 和 []byte 之间的转换, 因为这会导致内存分配. 所以, 这两种类型都提供了一些实用的函数, 如果这些函数不能达到我们的要求, 再去考虑转换的事:
+#+BEGIN_SRC Golang
+// strings
+func Contains(s, substr string) bool
+func Count(s, sep string) int
+func Fields(s string) []string
+func HasPrefix(s, prefix string) bool
+func Index(s, sep string) int
+func Join(a []string, sep string) string
+
+// []bytes
+func Contains(b, subslice []byte) bool
+func Count(s, sep []byte) int
+func Fields(s []byte) [][]byte
+func HasPrefix(s, prefix []byte) bool
+func Index(s, sep []byte) int
+func Join(s [][]byte, sep []byte) []byte
 #+END_SRC
 
-如果将整数转化为 string 类型, Go 会将该数字当成一个 Unicode 码点, 再转成 UTF-8 类型:
+此外, 在 bytes 包中还有个 Buffer 类型, 用于 []byte 的缓存. Buffer 可以随着数据的写入而动态增长. 如果是向 bytes.Buffer 写入 ASCII 字符, 使用 WriteByte() 会更高效, 而如果写入的字符是任意的, 最好使用 bytes.Buffer.WriteRune().
 #+BEGIN_SRC Golang
-fmt.Println(string(65))     // "A", not "65"
-fmt.Println(string(0x4eac)) // "京"
+func intsToString(values []int) string {
+	var buf bytes.Buffer
+	buf.WriteByte('[')
+	for i, v := range values {
+		if i > 0 {
+			buf.WriteString(", ")
+		}
+		fmt.Fprintf(&buf, "%d", v)
+	}
+	buf.WriteByte(']')
+	return buf.String()
+}
+
+func main() {
+	fmt.Println(intsToString([]int{1, 2, 3})) // "[1, 2, 3]"
+}
+#+END_SRC
+
+*** 字符串和数字的转换
+
+数字转字符串: strconv.Itoa() 或 fmt.Sprintf() 都可以.
+#+BEGIN_SRC Golang
+x := 123
+y := fmt.Sprintf("%d", x)
+fmt.Println(y, strconv.Itoa(x)) // "123 123"
+#+END_SRC
+
+字符串转数字: strconv.Atoi() 或 strconv.ParseInt() 都可以.
+#+BEGIN_SRC Golang
+x, err := strconv.Atoi("123")             // x is an int
+y, err := strconv.ParseInt("123", 10, 64) // base 10, up to 64 bits(int64)
+#+END_SRC
+
+使用不同的进制来格式化数字: strconv.FormatInt() 或 fmt.Sprintf() 都可以, 推荐使用后者, 更加方便.
+#+BEGIN_SRC Golang
+fmt.Println(strconv.FormatInt(int64(x), 2)) // "1111011"
+s := fmt.Sprintf("x=%b", x) // "x=1111011"
+#+END_SRC
+
+** 常量
+
+常量表达式的值在编译期计算, 而不是在运行期. 当操作数是常量时, 一些运行时的错误也可以在编译期被发现, 如除 0 等.
+
+可以批量声明多个常量:
+#+BEGIN_SRC Golang
+const (
+	e  = 2.71828182845904523536028747135266249775724709369995957496696763
+	pi = 3.14159265358979323846264338327950288419716939937510582097494459
+)
+#+END_SRC
+
+常数之间的运算结果仍是常数, 某些函数(如 len())的返回结果也是常数.
+
+*** iota 常量生成器
+
+iota 常量生成器有点像 C++ 中的枚举. 我们可以使用它以相似的规则生成一组常量, 其中有 iota 的那一行被置为 0, 其他行依次累加:
+#+BEGIN_SRC Golang
+type Weekday int
+
+const (
+    Sunday Weekday = iota  // 0
+    Monday	// 1
+    Tuesday	// 2
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+)
+#+END_SRC
+
+再看一个更复杂的例子:
+#+BEGIN_SRC Golang
+const (
+    _ = 1 << (10 * iota)
+    KiB // 1024
+    MiB // 1048576
+    GiB // 1073741824
+    TiB // 1099511627776             (exceeds 1 << 32)
+    PiB // 1125899906842624
+    EiB // 1152921504606846976
+    ZiB // 1180591620717411303424    (exceeds 1 << 64)
+    YiB // 1208925819614629174706176
+)
+#+END_SRC
+
+*** 无类型常量
+
+在 Go 语言中, 除了可以通过 =const a int= 的方式声明一个有类型的常量之外, 还可以声明一些没有明确基础类型的常量, 并且无类型常量往往有更高的精度, 我们可以认为至少有 256bit 的运算精度.
+
+像 0, 1.0, math.Pi 这些都属于无类型常量. 可以直接用在需要的地方:
+#+BEGIN_SRC Golang
+var x float32 = math.Pi
+var y float64 = math.Pi
+#+END_SRC
+
+当把 math.Pi 这种无类型常量赋给另一个值后, 精度就会改变, 如 x 就不能认为是具有 256bit 的运算精度. 将 x 转为其他类型时, 需要显式转换:
+#+BEGIN_SRC Golang
+var z int32 = int32(x)
 #+END_SRC
 
 ** 类型转换
