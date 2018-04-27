@@ -26,31 +26,31 @@ Go 的基本类型包括数值型, 字符串, 布尔型.
 
 数值型包括几种不同大小的整型数, 浮点数, 复数.
 
-*** 整型
+** 整型
 
- Go 语言提供了有符号和无符号类型的整数运算.
+Go 语言提供了有符号和无符号类型的整数运算.
 
- int8, int16, int32, int64 是四种有符号整型; uint8, uint16, uint32, uint64 是四种无符号整型.
+int8, int16, int32, int64 是四种有符号整型; uint8, uint16, uint32, uint64 是四种无符号整型.
 
- 另外, 还有 int 和 uint. int 和 uint 的大小会根据当前机器的系统架构自动判定, 一般是 32bit 或 64bit. 
+另外, 还有 int 和 uint. int 和 uint 的大小会根据当前机器的系统架构自动判定, 一般是 32bit 或 64bit. 
 
- rune 类型用于表示一个 Unicode 码点, 它与 int32 等价, 名称可以互换使用.
+rune 类型用于表示一个 Unicode 码点, 它与 int32 等价, 名称可以互换使用.
 
- byte 类型与 int8 类型也是等价的, 可以互换使用.
+byte 类型与 int8 类型也是等价的, 可以互换使用.
 
- uintptr 类型用于存放指针, 它与 uint 类型的范围相同, 根据系统架构来确定.
+uintptr 类型用于存放指针, 它与 uint 类型的范围相同, 根据系统架构来确定.
 
-**** 注意
+*** 注意
 
- 即使根据系统架构确定了 int 类型的大小为 32bit, 我们也不能认为 int 类型与 int32 类型相同, 在需要将 int 当作 int32 使用的地方, 需要进行显式的类型转换.
+即使根据系统架构确定了 int 类型的大小为 32bit, 我们也不能认为 int 类型与 int32 类型相同, 在需要将 int 当作 int32 使用的地方, 需要进行显式的类型转换.
 
-**** 表示范围
+*** 表示范围
 
- 对于有符号整数, 采用 2 的补码形式表示, 即最高位表示符号位, 所以表示范围为 $-2^{n-1} ~2^{n-1}-1$
+对于有符号整数, 采用 2 的补码形式表示, 即最高位表示符号位, 所以表示范围为 $-2^{n-1} ~2^{n-1}-1$
 
- 对于无符号整数, 所有的位都用于表示非负数, 因此表示范围是 $0 ~ 2^{n-1}$
+对于无符号整数, 所有的位都用于表示非负数, 因此表示范围是 $0 ~ 2^{n-1}$
 
-**** 格式化输出
+*** 格式化输出
 
 %d: 输出十进制数
 
@@ -82,7 +82,7 @@ fmt.Printf("%d %[1]c %[1]q\n", unicode) // "22269 国 '国'"
 fmt.Printf("%d %[1]q\n", newline)       // "10 '\n'"
 #+END_EXAMPLE
 
-*** 浮点数
+** 浮点数
 
 Go 语言的浮点数有 float32 和 float64, 它们符合 IEEE754 标准. 浮点数的极限值可以在 math 包中找到. 如: math.MaxFload32 是 float32 能表示的最大数, 大约为 3.4e38; math.MaxFloat64 是 float64 能表示的最大数, 大约是 1.8e308.
 
@@ -92,11 +92,11 @@ var f float32 = 16777216 // 1 << 24
 fmt.Println(f == f+1)    // "true"!
 #+END_EXAMPLE
 
-**** 格式化输出
+*** 格式化输出
 
 格式化输出浮点型时, 我们一般使用 %f, 如 %8.3f 表示输出 8 个字符宽度, 小数保留 3 位.
 
-**** math 包
+*** math 包
 
 math 包提供了大量常用的数学函数和 IEEE754 浮点数标准中定义的特殊值的创建和测试: 正无穷大, 负无穷大, 非数 NaN(用于表示无效的除法操作, 如 0/0). 如:
 #+BEGIN_EXAMPLE
@@ -110,7 +110,7 @@ nan := math.NaN()
 fmt.Println(nan == nan, nan < nan, nan > nan) // "false false false"
 #+END_EXAMPLE
 
-*** 复数
+** 复数
 
 Go 语言提供了两种精度的复数类型: complex64 和 complex 128, 分别对应 float32 和 float64 两种浮点数精度.
 
@@ -134,15 +134,15 @@ x := 1 + 2i
 y := 3 + 4i
 #+END_EXAMPLE
 
-**** math/cmplx 包
+*** math/cmplx 包
 
 math/cmplx 包提供了许多复数处理的函数, 如求复数的平方根函数和求幂函数.
 
-*** 布尔型
+** 布尔型
 
 布尔型的值只有 true 和 false 两种, 它们并不会隐式转化成数字 0 和 1.
 
-**** 短路逻辑
+*** 短路逻辑
 
 布尔值可以和 && 和 || 这两个操作符结合. 如果运算符左边的值已经可以确定整个布尔表达式的值, 那么运算符右边的值将不再被求值, 如:
 #+BEGIN_EXAMPLE
@@ -154,7 +154,7 @@ if a<0 && b<0 { ... }
 
 合理安排语句, 使用短路逻辑可以提高程序效率.
 
-*** 字符串
+** 字符串
 
 字符串是一个不可改变的字节序列. 文本字符串通常被解释为采用 UTF-8 编码的 Unicode 码点(rune)序列.
 
@@ -168,7 +168,7 @@ if a<0 && b<0 { ... }
 
 如果试图访问超出字符串索引范围的字节, 将导致 panic 异常, 如访问 s[10].
 
-**** 子字符串操作 s[i:j]
+*** 子字符串操作 s[i:j]
 
 s[i:j] 可以得到 [i,j) 之间的字节, 并生成一个新字符串. 如:
 #+BEGIN_EXAMPLE
@@ -179,7 +179,7 @@ fmt.Println(s[0:1])  // �
 
 如果忽略 i, 将使用 0 作为开始位置; 如果忽略 j, 将使用 len(s) 作为结束位置.
 
-**** 字符串不可修改
+*** 字符串不可修改
 
 注意, 字符串是不可修改的, 所以试图修改字符串内部数据的操作, 将会报错:
 #+BEGIN_EXAMPLE
@@ -187,7 +187,7 @@ s := "left foot"
 s[0] = 'L' // compile error: cannot assign to s[0] 
 #+END_EXAMPLE
 
-**** 字符串拼接
+*** 字符串拼接
 
 + 操作符将两个字符串拼接成一个新的字符串. 如:
 #+BEGIN_EXAMPLE
@@ -203,17 +203,61 @@ fmt.Println(t) // "left foot"
 
 [[./5.png]]
 
-**** Unicode
+*** Unicode
 
-Go 语言的源文件和文本字符串都是以 UTF-8 编码方式进行处理的, 所以我们可以把 Unicode 码点也写到字符串面值中.
-
-ASCII 字符集: 使用 7bit 来表示 128 个字符.
+一开始的字符集只有 ASCII 字符集: 使用 7bit 来表示 128 个字符.
 
 但是世界上的字符不止 128 个, 还有汉字, 日文, 等等. 所以需要使用另一个字符集来表示所有的符号系统, 这就是 Unicode 的由来.
 
 Unicode 为每个符号都分配一个唯一的 Unicode 码点, Unicode 码点对应 Go 语言的 rune 整数类型(与 int32 等价).
 
-UTF-8 是 Unicode 的一个实现方式. 它是一种变长的编码方式, 可以使用 1~4 个字节表示一个符号, 当字符在 ASCII 的范围时, 就用一个字节表示, 这样可以节点空间. 另外, 在 Unicode 里, 一个中文字符占 2 个字节, 而在 UTF-8 里, 一个中文字符占 3 个字节.
+每个 Unicode 码点都使用 32bit 来表示, 方式统一. 但这样会浪费很多存储空间, 比如 ASCII 字符集只要 7bit 就能表示了, 现在却需要扩展到 32bit. 并且, 最常用的字符不到 65536 个, 即 16bit 即可存储.
+
+*** UTF-8
+
+UTF-8 是 Unicode 的一个实现方式. 它是一种变长的编码方式, 可以使用 1~4 个字节表示一个符号. 如果第 1 个字节以 0 开头, 则表示这是 ASCII 字符, 用一个字节表示, 这样可以节省空间. 如果第 1 个字节以 110 开头, 则表示这个字符需要使用 2 个字节表示, 且后面每个字节都要以 10 开头. 如下所示:
+#+BEGIN_EXAMPLE
+0xxxxxxx                             runes 0-127    (ASCII)
+110xxxxx 10xxxxxx                    128-2047       (values <128 unused)
+1110xxxx 10xxxxxx 10xxxxxx           2048-65535     (values <2048 unused)
+11110xxx 10xxxxxx 10xxxxxx 10xxxxxx  65536-0x10ffff (other values unused)
+#+END_EXAMPLE
+
+另外, 在 Unicode 里, 一个中文字符占 2 个字节, 而在 UTF-8 里, 一个中文字符占 3 个字节.
+
+Go 语言的源文件和文本字符串都是以 UTF-8 编码方式进行处理的, 所以我们可以把 Unicode 码点也写到字符串面值中.
+
+*** 注意
+
+len() 返回的是字符串所占的字节数, 而不是字符串的长度. 一个 UTF-8 编码的字符, 可能占 1~4 个字节:
+#+BEGIN_SRC Golang
+import "unicode/utf8"
+s := "Hello, 世界"
+fmt.Println(len(s))                    // "13"
+fmt.Println(utf8.RuneCountInString(s)) // "9"
+#+END_SRC
+
+[[./6.png]]
+如图所示, 我们可以通过 range 循环的索引来访问每个字符, 这个索引会自动以字符为步长, 当一个字符占用的字节数超过 1 时, 步长也会超过 1.
+
+可以利用 UTF-8, 将输入的字符转成 Unicode 字符序列:
+#+BEGIN_SRC Golang
+s := "プログラム"
+fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+r := []rune(s)
+fmt.Printf("%x\n", r)  // "[30d7 30ed 30b0 30e9 30e0]"
+#+END_SRC
+
+如果将 []rune 类型的 Unicode 字符转为 string 类型, 默认会对它们进行 UTF-8 编码:
+#+BEGIN_SRC Golang
+fmt.Println(string(r)) // "プログラム"
+#+END_SRC
+
+如果将整数转化为 string 类型, Go 会将该数字当成一个 Unicode 码点, 再转成 UTF-8 类型:
+#+BEGIN_SRC Golang
+fmt.Println(string(65))     // "A", not "65"
+fmt.Println(string(0x4eac)) // "京"
+#+END_SRC
 
 ** 类型转换
 
