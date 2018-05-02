@@ -1,12 +1,12 @@
-#+TITLE:       二 安装Hyperledger Fabric
+#+TITLE:       二 部署Hyperledger Fabric
 #+AUTHOR:      Pinvon
 #+EMAIL:       pinvon@Inspiron
 #+DATE:        2018-04-12 四
-#+URI:         /blog/%y/%m/%d/二-安装hyperledger-fabric
+#+URI:         /blog/%y/%m/%d/二-部署hyperledger-fabric
 #+KEYWORDS:    <TODO: insert your keywords here>
 #+TAGS:        BlockChain
 #+LANGUAGE:    en
-#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
 #+DESCRIPTION: <TODO: insert your description here>
 
 * 概述
@@ -263,6 +263,8 @@ PeerOrgs:
 
 Peer组织则通过Template来自动生成了Count个数的主机. Users字段下的Count字段会让cryptogen工具以自动顺序生成指定个数的普通用户.
 
+因此, 该例子生成了两个节点和一个普通用户.
+
 *** 生成密钥和证书文件
 
 cryptogen工具生成的文件会放在当前目录下的 =crypto-config= 目录中. 目录结构如图所示:
@@ -300,10 +302,17 @@ peers: 存放属于该组织的所有Peer节点.
 
 这些身份文件随后分别发送到对应的Orderer节点和Peer节点上, 并放到对应的MSP路径下, 用于签名使用.
 
+Orderer: 需要将 crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com 目录下的内容复制以 Orderer 节点的 /etc/hyperledger/fabric 目录下.
 
-P107
+Peer: 需要将 crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com 目录下的内容复制到 Peer0 节点的 /etc/hyperledger/fabric 目录下. 其他 Peer 节点也类似.
+
+CLI: 为方便操作, 将完整的 crypto-config 目录复制到 /etc/hyperledger/fabric 目录下. 即, 客户端需要有其他节点的证书.
+
+可以通过 cryptogen showtemplate 查看默认的配置.
 
 ** configtxgen
+
+在 Fabric 中, 对 channel 的相关配置进行更新, 也要像应用交易一样, 经过网络中节点的共识确认.
 
 configtxgen 工具是一个很重要的辅助工具, 可以配置 cryptogen 生成的组织结构身份文件使用, *离线生成跟通道有关的配置信息*.
 
@@ -313,3 +322,34 @@ configtxgen 工具是一个很重要的辅助工具, 可以配置 cryptogen 生�
 3. 生成 Anchor Peer 的更新配置交易;
 
 configtxgen 工具会依次从 $FABRIC_CFG_PATH 指定的路径, 当前路径, /etc/hyperledger/fabric 路径下查找 configtx.yaml 配置文件, 并读取作为默认的配置.
+
+*** configtx.yaml 文件
+
+configtx.yaml 文件中的内容主要有 profile, organizations, orderer, application 四个部分.
+- profile: 定义了一系列通道配置模板, 包括 Orderer 系统通道模板和应用通道类型模板.
+- organizations: 定义了一系列的组织结构, 由其他部分引用.
+- orderer: 系统通道相关配置, 包括 orderer 服务配置和参与 ordering service 的组织信息.
+- application: 应用通道相关配置.
+
+**** profiles
+
+每个 profile 代表了某种应用场景下的通道配置模板. 它包括 Orderer 系统通道模板和应用通道模板.
+
+Orderer 系统通道模板包括 Orderer, Consortiums.
+- Orderer: 指定系统通道的配置信息, 包括 Ordering Service(solo 还是 kafka, ip, 最大应用通道数量等) 和 属于此系统通道的组织信息.
+- Consortiums: Orderer 所服务的联盟列表. 每个联盟下面可包含多个组织.
+
+应用通道模板包括 Application, Consortium.
+- Application: 指定属于某应用通道的信息, 如属于此通道的组织信息.
+- Consortium: 该应用通道所关联的联盟.
+
+在 YAML 文件中, &KEY 表示该字段的内容可以被引用, <<:KEY 表示导入 &KEY 字段的内容.
+
+**** organizations
+
+组织主要分成 Orderer 组织(系统组织)和普通的应用组织.
+
+Orderer 组织包括名称, ID, MSP文件路径, 管理员策略; Peer 组织除了这些之外, 还有 Anchor Peer 信息.
+
+一个例子:
+
