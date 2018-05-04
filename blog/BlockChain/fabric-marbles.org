@@ -660,6 +660,43 @@ func disable_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 
 基本上都是序列化与反序列化, PutState() 与 GetState(). 熟悉这些接口, 对自己写 chaincode 有较大好处.
 
+* 运维
+
+** SDK
+
+在服务端将运动数据转化成运动能量之后, 调用 SDK, 利用 chaincode 将相关数据写入账本.
+
+*** Install Chaincode
+
+- fcw.install_chaincode(obj, options, cb_done)
+- deploy_cc.install_chaincode(obj, options, cb_done)
+
+构造交易提案, 发送到背书节点, 主要包括 chaincode_id, chaincode_version 等信息.
+
+- client.installChaincode(request)
+
+*** Instantiate Chaincode
+
+- fcw.instantiate_chaincode(obj, options, cb_done)
+- deploy_cc.instantiate_chaincode(obj, options, cb)
+
+构造交易提案, 发送到背书节点, 主要包括 chaincode_id, chaincode_version, 节点的 IP 与端口, 交易 ID 等信息.
+
+- channel.intialize()
+- channel.sendInstantiateProposal(request)
+- channel.sendTransaction(request)
+
+*** Upgrade Chaincode
+
+- fcw.upgrade_chaincode(obj, options, cb_done)
+- deploy_cc.upgrade_chaincode(obj, options, cb_done)
+
+构造交易提案, 发送到背书节点, 主要包括 chaincode_id, chaincode_version, 调用chaincode 的函数名, 参数, 交易 ID 等信息.
+
+- channel.intialize()
+- channel.sendUpgradeProposal(request)
+- channel.sendTransaction(request)
+
 * 上传步数
 
 ** 赚取运动能量的公式
@@ -670,7 +707,38 @@ func disable_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response 
 
 ** SDK
 
-在服务端将运动数据转化成运动能量之后, 调用 SDK, 利用 chaincode 将相关数据写入账本.
+*** Invoke Chaincode
+
+- fcw.invoke_chaincode(obj, options, cb_done)
+- invoke_cc.invoke_chaincode(obj, options, function)
+
+构造交易提案, 主要包括 chaincode_id, chaincode的函数名, 参数, 交易 ID 等信息.
+
+- setup_event_hub(options)
+
+设置事件, 当交易写入完成时(或其他条件), 调用此函数.
+
+eventHub.setPeerAddr(): 设置节点的地址和端口
+
+eventHub.connect()
+
+eventHub.registerTxEvent(request.txId.getTransactionID(), ...): 根据交易 ID 注册事件, 随着交易的进行, 如果触发事件, 则执行这个函数.
+
+- channel.sendTransactionProposal(request)
+- channel.sendTransaction(request)
+
+* 查询
+
+** SDK
+
+*** Query Chaincode
+
+- fcw.query_chaincode(obj, options, cb_done)
+- query_cc.query_chaincode(obj, options, function)
+
+构造交易提案, 主要包括 chaincode_id, function, args, txID 等信息.
+
+- channel.queryByChaincode(request)
 
 * 错误
 
