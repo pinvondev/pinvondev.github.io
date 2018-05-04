@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Fabric Marbles 分析 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Fabric Marbles 分析</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgee0294e">chaincode</a>
+<ul>
+<li><a href="#org976e84e">chaincode 主要结构</a></li>
+<li><a href="#orgc694b4b">Invoke() 接口</a>
+<ul>
+<li><a href="#orgbede4d8">读账本 read()</a></li>
+<li><a href="#orge889818">写账本 write()</a></li>
+<li><a href="#org5bb1601">删除 delete_marble()</a></li>
+<li><a href="#orgdebcecb">初始化 init_marble()</a></li>
+<li><a href="#orgb6aa52c">设置所有者 set_owner()</a></li>
+<li><a href="#org35c71c2">初始化所有者 init_owner()</a></li>
+<li><a href="#org1013309">读取所有数据 read_everything()</a></li>
+<li><a href="#org63de959">获取历史数据 getHistory()</a></li>
+<li><a href="#orgeaf4f1c">根据范围查找 getMarblesByRange()</a></li>
+<li><a href="#org69f3f56">disable_owner()</a></li>
+<li><a href="#org941fda2">小结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org906d9f1">上传步数</a>
+<ul>
+<li><a href="#org6ca81dd">赚取运动能量的公式</a></li>
+<li><a href="#org008a005">SDK</a></li>
+</ul>
+</li>
+<li><a href="#orgbaa5c9c">错误</a>
+<ul>
+<li><a href="#orga49e844">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgee0294e" class="outline-2">
+<h2 id="orgee0294e">chaincode</h2>
+<div class="outline-text-2" id="text-orgee0294e">
+</div>
+<div id="outline-container-org976e84e" class="outline-3">
+<h3 id="org976e84e">chaincode 主要结构</h3>
+<div class="outline-text-3" id="text-org976e84e">
+<div class="org-src-container">
+<pre class="src src-Golang">// 声明包
+package main
+
+// 引入需要使用的包
+import (
+    "fmt"
+    "strconv"
+
+    "github.com/hyperledger/fabric/core/chaincode/shim"
+    pb "github.com/hyperledger/fabric/protos/peer"
+)
+
+// 声明 SimpleChaincode 结构体
+type SimpleChaincode struct {
+}
+
+// 定义资产, 在账本中将会存储 marble 和 owner
+
+// 定义 marble 结构体
+// 后面跟着的 json 表示将结构体序列化成 JSON 格式时的键名
+type Marble struct {
+    ObjectType string        `json:"docType"` //field for couchdb
+    Id       string          `json:"id"`      //the fieldtags are needed to keep case from bouncing around
+    Color      string        `json:"color"`
+    Size       int           `json:"size"`    //size in mm of marble
+    Owner      OwnerRelation `json:"owner"`
+}
+
+// 定义 owner 结构体
+type Owner struct {
+    ObjectType string `json:"docType"`     //field for couchdb
+    Id         string `json:"id"`
+    Username   string `json:"username"`
+    Company    string `json:"company"`
+    Enabled    bool   `json:"enabled"`     //disabled owners will not be visible to the application
+}
+
+type OwnerRelation struct {
+    Id         string `json:"id"`
+    Username   string `json:"username"`    //this is mostly cosmetic/handy, the real relation is by Id not Username
+    Company    string `json:"company"`     //this is mostly cosmetic/handy, the real relation is by Id not Company
+}
+
+// 入口函数
+func main() {
+    err := shim.Start(new(SimpleChaincode))
+    if err != nil {
+        fmt.Printf("Error starting Simple chaincode - %s", err)
+    }
+}
+
+// Init() 接口, 用于初始化 chaincode
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+    fmt.Println("Marbles Is Starting Up")
+    funcName, args := stub.GetFunctionAndParameters()  // 获取 SDK 传入的函数名和参数
+    var number int
+    var err error
+    txId := stub.GetTxID()  // 获取构建交易提案时生成的交易ID
+
+    fmt.Println("Init() is running")
+    fmt.Println("Transaction ID:", txId)
+    fmt.Println("  GetFunctionAndParameters() function:", funcName)
+    fmt.Println("  GetFunctionAndParameters() args count:", len(args))
+    fmt.Println("  GetFunctionAndParameters() args found:", args)
+
+    // expecting 1 arg for instantiate or upgrade
+    if len(args) == 1 {
+        fmt.Println("  GetFunctionAndParameters() arg[0] length", len(args[0]))
+
+        // args 的长度为 0 时, 用于升级 chaincode, 此处未实现
+        if len(args[0]) == 0 {
+            fmt.Println("  Uh oh, args[0] is empty...")
+        } else {
+            fmt.Println("  Great news everyone, args[0] is not empty")
+
+            // convert numeric string to integer
+            number, err = strconv.Atoi(args[0])
+            if err != nil {
+                return shim.Error("Expecting a numeric string argument to Init() for instantiate")
+            }
+
+            // 测试写入账本
+            err = stub.PutState("selftest", []byte(strconv.Itoa(number)))
+            if err != nil {
+                return shim.Error(err.Error())                  //self-test fail
+            }
+        }
+    }
+
+    // showing the alternative argument shim function
+    alt := stub.GetStringArgs()
+    fmt.Println("  GetStringArgs() args count:", len(alt))
+    fmt.Println("  GetStringArgs() args found:", alt)
+
+    // store compatible marbles application version
+    err = stub.PutState("marbles_ui", []byte("4.0.1"))
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("Ready for action")                          //self-test pass
+    return shim.Success(nil)
+}
+
+// Invoke() 接口
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
+    function, args := stub.GetFunctionAndParameters()
+    fmt.Println(" ")
+    fmt.Println("starting invoke, for - " + function)
+
+    // 根据传入的参数来确定调用哪些方法
+    if function == "init" {                    //initialize the chaincode state, used as reset
+        return t.Init(stub)
+    } else if function == "read" {             //generic read ledger
+        return read(stub, args)
+    } else if function == "write" {            //generic writes to ledger
+        return write(stub, args)
+    } else if function == "delete_marble" {    //deletes a marble from state
+        return delete_marble(stub, args)
+    } else if function == "init_marble" {      //create a new marble
+        return init_marble(stub, args)
+    } else if function == "set_owner" {        //change owner of a marble
+        return set_owner(stub, args)
+    } else if function == "init_owner"{        //create a new marble owner
+        return init_owner(stub, args)
+    } else if function == "read_everything"{   //read everything, (owners + marbles + companies)
+        return read_everything(stub)
+    } else if function == "getHistory"{        //read history of a marble (audit)
+        return getHistory(stub, args)
+    } else if function == "getMarblesByRange"{ //read a bunch of marbles by start and stop id
+        return getMarblesByRange(stub, args)
+    } else if function == "disable_owner"{     //disable a marble owner from appearing on the UI
+        return disable_owner(stub, args)
+    }
+
+    // error out
+    fmt.Println("Received unknown invoke function name - " + function)
+    return shim.Error("Received unknown invoke function name - '" + function + "'")
+}
+
+// 查询, 未实现
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
+    return shim.Error("Unknown supported call - Query()")
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc694b4b" class="outline-3">
+<h3 id="orgc694b4b">Invoke() 接口</h3>
+<div class="outline-text-3" id="text-orgc694b4b">
+</div>
+<div id="outline-container-orgbede4d8" class="outline-4">
+<h4 id="orgbede4d8">读账本 read()</h4>
+<div class="outline-text-4" id="text-orgbede4d8">
+<div class="org-src-container">
+<pre class="src src-Golang">func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var key, jsonResp string
+    var err error
+    fmt.Println("starting read")
+
+    if len(args) != 1 {
+        return shim.Error("Incorrect number of arguments. Expecting key of the var to query")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    key = args[0]
+    valAsbytes, err := stub.GetState(key)           // 根据 key 获取 value
+    if err != nil {
+        jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+        return shim.Error(jsonResp)
+    }
+
+    fmt.Println("- end read")
+    return shim.Success(valAsbytes)                  //send it onward
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge889818" class="outline-4">
+<h4 id="orge889818">写账本 write()</h4>
+<div class="outline-text-4" id="text-orge889818">
+<div class="org-src-container">
+<pre class="src src-Golang">func write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var key, value string
+    var err error
+    fmt.Println("starting write")
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2. key of the variable and value to set")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    key = args[0]                                   //rename for funsies
+    value = args[1]
+    err = stub.PutState(key, []byte(value))         // 根据 key 写入 value
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end write")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5bb1601" class="outline-4">
+<h4 id="org5bb1601">删除 delete_marble()</h4>
+<div class="outline-text-4" id="text-org5bb1601">
+<p>
+根据 marble 的 id 来删除指定的 marble.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">func delete_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
+    fmt.Println("starting delete_marble")
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+
+    // input sanitation
+    err := sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    id := args[0]	// 获取 marble id
+    authed_by_company := args[1]
+
+    // get the marble
+    marble, err := get_marble(stub, id)  // 调用的是 GetState() 接口
+    if err != nil{
+        fmt.Println("Failed to find marble by id " + id)
+        return shim.Error(err.Error())
+    }
+
+    // check authorizing company (see note in set_owner() about how this is quirky)
+    if marble.Owner.Company != authed_by_company{
+        return shim.Error("The company '" + authed_by_company + "' cannot authorize deletion for '" + marble.Owner.Company + "'.")
+    }
+
+    // remove the marble
+    err = stub.DelState(id)  // 删除该 marble
+    if err != nil {
+        return shim.Error("Failed to delete state")
+    }
+
+    fmt.Println("- end delete_marble")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdebcecb" class="outline-4">
+<h4 id="orgdebcecb">初始化 init_marble()</h4>
+<div class="outline-text-4" id="text-orgdebcecb">
+<p>
+生成 marble, 并写入账本.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">func init_marble(stub shim.ChaincodeStubInterface, args []string) (pb.Response) {
+    var err error
+    fmt.Println("starting init_marble")
+
+    if len(args) != 5 {
+        return shim.Error("Incorrect number of arguments. Expecting 5")
+    }
+
+    //input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    // SDK 中应填入的一系列参数, 并进行一系列验证
+    id := args[0]
+    color := strings.ToLower(args[1])
+    owner_id := args[3]
+    authed_by_company := args[4]
+    size, err := strconv.Atoi(args[2])
+    if err != nil {
+        return shim.Error("3rd argument must be a numeric string")
+    }
+
+    //check if new owner exists
+    owner, err := get_owner(stub, owner_id)
+    if err != nil {
+        fmt.Println("Failed to find owner - " + owner_id)
+        return shim.Error(err.Error())
+    }
+
+    //check authorizing company (see note in set_owner() about how this is quirky)
+    if owner.Company != authed_by_company{
+        return shim.Error("The company '" + authed_by_company + "' cannot authorize creation for '" + owner.Company + "'.")
+    }
+
+    //check if marble id already exists
+    marble, err := get_marble(stub, id)
+    if err == nil {
+        fmt.Println("This marble already exists - " + id)
+        fmt.Println(marble)
+        return shim.Error("This marble already exists - " + id)  //all stop a marble by this id exists
+    }
+
+    //build the marble json string manually
+    str := `{
+        "docType":"marble", 
+        "id": "` + id + `", 
+        "color": "` + color + `", 
+        "size": ` + strconv.Itoa(size) + `, 
+        "owner": {
+            "id": "` + owner_id + `", 
+            "username": "` + owner.Username + `", 
+            "company": "` + owner.Company + `"
+        }
+    }`
+    err = stub.PutState(id, []byte(str))  // 存入账本
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end init_marble")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb6aa52c" class="outline-4">
+<h4 id="orgb6aa52c">设置所有者 set_owner()</h4>
+<div class="outline-text-4" id="text-orgb6aa52c">
+<div class="org-src-container">
+<pre class="src src-Golang">func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var err error
+    fmt.Println("starting set_owner")
+
+    // this is quirky
+    // todo - get the "company that authed the transfer" from the certificate instead of an argument
+    // should be possible since we can now add attributes to the enrollment cert
+    // as is.. this is a bit broken (security wise), but it's much much easier to demo! holding off for demos sake
+
+    if len(args) != 3 {
+        return shim.Error("Incorrect number of arguments. Expecting 3")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    var marble_id = args[0]
+    var new_owner_id = args[1]
+    var authed_by_company = args[2]
+    fmt.Println(marble_id + "-&gt;" + new_owner_id + " - |" + authed_by_company)
+
+    // check if user already exists
+    owner, err := get_owner(stub, new_owner_id)
+    if err != nil {
+        return shim.Error("This owner does not exist - " + new_owner_id)
+    }
+
+    // get marble's current state
+    marbleAsBytes, err := stub.GetState(marble_id)
+    if err != nil {
+        return shim.Error("Failed to get marble")
+    }
+
+    // 将数据反序列化, 修改后再序列化为 JSON 格式存储
+    res := Marble{}
+    json.Unmarshal(marbleAsBytes, &amp;res)           //un stringify it aka JSON.parse()
+
+    // check authorizing company
+    if res.Owner.Company != authed_by_company{
+        return shim.Error("The company '" + authed_by_company + "' cannot authorize transfers for '" + res.Owner.Company + "'.")
+    }
+
+    // transfer the marble
+    res.Owner.Id = new_owner_id                   //change the owner
+    res.Owner.Username = owner.Username
+    res.Owner.Company = owner.Company
+
+    // 修改属性后, 序列化为 JSON 格式
+    jsonAsBytes, _ := json.Marshal(res)           //convert to array of bytes
+    err = stub.PutState(args[0], jsonAsBytes)     // 重新存储到账本
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end set owner")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org35c71c2" class="outline-4">
+<h4 id="org35c71c2">初始化所有者 init_owner()</h4>
+<div class="outline-text-4" id="text-org35c71c2">
+<div class="org-src-container">
+<pre class="src src-Golang">func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var err error
+    fmt.Println("starting init_owner")
+
+    if len(args) != 3 {
+        return shim.Error("Incorrect number of arguments. Expecting 3")
+    }
+
+    //input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    var owner Owner
+    owner.ObjectType = "marble_owner"
+    owner.Id =  args[0]
+    owner.Username = strings.ToLower(args[1])
+    owner.Company = args[2]
+    owner.Enabled = true
+    fmt.Println(owner)
+
+    //check if user already exists
+    _, err = get_owner(stub, owner.Id)
+    if err == nil {
+        fmt.Println("This owner already exists - " + owner.Id)
+        return shim.Error("This owner already exists - " + owner.Id)
+    }
+
+    //store user
+    ownerAsBytes, _ := json.Marshal(owner)                         //convert to array of bytes
+    err = stub.PutState(owner.Id, ownerAsBytes)                    //store owner by its Id
+    if err != nil {
+        fmt.Println("Could not store user")
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end init_owner marble")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1013309" class="outline-4">
+<h4 id="org1013309">读取所有数据 read_everything()</h4>
+<div class="outline-text-4" id="text-org1013309">
+<div class="org-src-container">
+<pre class="src src-Golang">func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
+    type Everything struct {
+        Owners   []Owner   `json:"owners"`
+        Marbles  []Marble  `json:"marbles"`
+    }
+    var everything Everything
+
+    // ---- Get All Marbles ---- //
+    resultsIterator, err := stub.GetStateByRange("m0", "m9999999999999999999")
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer resultsIterator.Close()
+
+    for resultsIterator.HasNext() {
+        aKeyValue, err := resultsIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+        queryKeyAsStr := aKeyValue.Key
+        queryValAsBytes := aKeyValue.Value
+        fmt.Println("on marble id - ", queryKeyAsStr)
+        var marble Marble
+        json.Unmarshal(queryValAsBytes, &amp;marble)                  //un stringify it aka JSON.parse()
+        everything.Marbles = append(everything.Marbles, marble)   //add this marble to the list
+    }
+    fmt.Println("marble array - ", everything.Marbles)
+
+    // ---- Get All Owners ---- //
+    ownersIterator, err := stub.GetStateByRange("o0", "o9999999999999999999")
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer ownersIterator.Close()
+
+    for ownersIterator.HasNext() {
+        aKeyValue, err := ownersIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+        queryKeyAsStr := aKeyValue.Key
+        queryValAsBytes := aKeyValue.Value
+        fmt.Println("on owner id - ", queryKeyAsStr)
+        var owner Owner
+        json.Unmarshal(queryValAsBytes, &amp;owner)                   //un stringify it aka JSON.parse()
+
+        if owner.Enabled {                                        //only return enabled owners
+            everything.Owners = append(everything.Owners, owner)  //add this marble to the list
+        }
+    }
+    fmt.Println("owner array - ", everything.Owners)
+
+    //change to array of bytes
+    everythingAsBytes, _ := json.Marshal(everything)              //convert to array of bytes
+    return shim.Success(everythingAsBytes)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org63de959" class="outline-4">
+<h4 id="org63de959">获取历史数据 getHistory()</h4>
+<div class="outline-text-4" id="text-org63de959">
+<div class="org-src-container">
+<pre class="src src-Golang">func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    type AuditHistory struct {
+        TxId    string   `json:"txId"`
+        Value   Marble   `json:"value"`
+    }
+    var history []AuditHistory;
+    var marble Marble
+
+    if len(args) != 1 {
+        return shim.Error("Incorrect number of arguments. Expecting 1")
+    }
+
+    marbleId := args[0]
+    fmt.Printf("- start getHistoryForMarble: %s\n", marbleId)
+
+    // Get History
+    resultsIterator, err := stub.GetHistoryForKey(marbleId)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer resultsIterator.Close()
+
+    for resultsIterator.HasNext() {
+        historyData, err := resultsIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+
+        var tx AuditHistory
+        tx.TxId = historyData.TxId                     //copy transaction id over
+        json.Unmarshal(historyData.Value, &amp;marble)     //un stringify it aka JSON.parse()
+        if historyData.Value == nil {                  //marble has been deleted
+            var emptyMarble Marble
+            tx.Value = emptyMarble                 //copy nil marble
+        } else {
+            json.Unmarshal(historyData.Value, &amp;marble) //un stringify it aka JSON.parse()
+            tx.Value = marble                      //copy marble over
+        }
+        history = append(history, tx)              //add this tx to the list
+    }
+    fmt.Printf("- getHistoryForMarble returning:\n%s", history)
+
+    //change to array of bytes
+    historyAsBytes, _ := json.Marshal(history)     //convert to array of bytes
+    return shim.Success(historyAsBytes)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeaf4f1c" class="outline-4">
+<h4 id="orgeaf4f1c">根据范围查找 getMarblesByRange()</h4>
+<div class="outline-text-4" id="text-orgeaf4f1c">
+<div class="org-src-container">
+<pre class="src src-Golang">func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+
+    startKey := args[0]
+    endKey := args[1]
+
+    resultsIterator, err := stub.GetStateByRange(startKey, endKey)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+    defer resultsIterator.Close()
+
+    // buffer is a JSON array containing QueryResults
+    var buffer bytes.Buffer
+    buffer.WriteString("[")
+
+    bArrayMemberAlreadyWritten := false
+    for resultsIterator.HasNext() {
+        aKeyValue, err := resultsIterator.Next()
+        if err != nil {
+            return shim.Error(err.Error())
+        }
+        queryResultKey := aKeyValue.Key
+        queryResultValue := aKeyValue.Value
+
+        // Add a comma before array members, suppress it for the first array member
+        if bArrayMemberAlreadyWritten == true {
+            buffer.WriteString(",")
+        }
+        buffer.WriteString("{\"Key\":")
+        buffer.WriteString("\"")
+        buffer.WriteString(queryResultKey)
+        buffer.WriteString("\"")
+
+        buffer.WriteString(", \"Record\":")
+        // Record is a JSON object, so we write as-is
+        buffer.WriteString(string(queryResultValue))
+        buffer.WriteString("}")
+        bArrayMemberAlreadyWritten = true
+    }
+    buffer.WriteString("]")
+
+    fmt.Printf("- getMarblesByRange queryResult:\n%s\n", buffer.String())
+
+    return shim.Success(buffer.Bytes())
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69f3f56" class="outline-4">
+<h4 id="org69f3f56">disable_owner()</h4>
+<div class="outline-text-4" id="text-org69f3f56">
+<div class="org-src-container">
+<pre class="src src-Golang">func disable_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    var err error
+    fmt.Println("starting disable_owner")
+
+    if len(args) != 2 {
+        return shim.Error("Incorrect number of arguments. Expecting 2")
+    }
+
+    // input sanitation
+    err = sanitize_arguments(args)
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    var owner_id = args[0]
+    var authed_by_company = args[1]
+
+    // get the marble owner data
+    owner, err := get_owner(stub, owner_id)
+    if err != nil {
+        return shim.Error("This owner does not exist - " + owner_id)
+    }
+
+    // check authorizing company
+    if owner.Company != authed_by_company {
+        return shim.Error("The company '" + authed_by_company + "' cannot change another companies marble owner")
+    }
+
+    // disable the owner
+    owner.Enabled = false
+    jsonAsBytes, _ := json.Marshal(owner)         //convert to array of bytes
+    err = stub.PutState(args[0], jsonAsBytes)     //rewrite the owner
+    if err != nil {
+        return shim.Error(err.Error())
+    }
+
+    fmt.Println("- end disable_owner")
+    return shim.Success(nil)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org941fda2" class="outline-4">
+<h4 id="org941fda2">小结</h4>
+<div class="outline-text-4" id="text-org941fda2">
+<p>
+基本上都是序列化与反序列化, PutState() 与 GetState(). 熟悉这些接口, 对自己写 chaincode 有较大好处.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org906d9f1" class="outline-2">
+<h2 id="org906d9f1">上传步数</h2>
+<div class="outline-text-2" id="text-org906d9f1">
+</div>
+<div id="outline-container-org6ca81dd" class="outline-3">
+<h3 id="org6ca81dd">赚取运动能量的公式</h3>
+<div class="outline-text-3" id="text-org6ca81dd">
+<p>
+每个用户所赚取的运动能量的数量, 与当天所有用户的运动数据有关. 如:
+</p>
+
+<p>
+单个用户赚取的运动能量 = 当天发放的运动能量总数 \(\times\) 该用户的运动数据 / 所有用户的运动数据总和
+</p>
+</div>
+</div>
+
+<div id="outline-container-org008a005" class="outline-3">
+<h3 id="org008a005">SDK</h3>
+<div class="outline-text-3" id="text-org008a005">
+<p>
+在服务端将运动数据转化成运动能量之后, 调用 SDK, 利用 chaincode 将相关数据写入账本.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbaa5c9c" class="outline-2">
+<h2 id="orgbaa5c9c">错误</h2>
+<div class="outline-text-2" id="text-orgbaa5c9c">
+</div>
+<div id="outline-container-orga49e844" class="outline-3">
+<h3 id="orga49e844">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</h3>
+<div class="outline-text-3" id="text-orga49e844">
+<p>
+有多种原因会导致这个错误. 有可能是修改了 chaincode, 但是编译出错了, 或者 chaincode 容器没有启动, 等等.
+</p>
+
+<p>
+我遇到这个问题, 先检查是否把 fabcar 目录下的 hfc-key-store 和 ~/.hfc-key-store 删除了, 如果没有, 则删除之. 再次启动时, 问题依旧. 因此我推测可能是 chaincode 容器未启动成功, 输入命令 docker ps -a 后, 未看到 chaincode 容器, 再输入命令 docker images, 发现有很多之前启动 marbles 时的 chaincode 镜像未删除, 依次删除之后, 启动成功.
+</p>
+
+<p>
+如果 chaincode 容器启动成功了, 可以再查看该容器的日志, 进一步排查原因.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-01</span>
+            <span title="last modification date" class="post-info">2018-05-04</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/04/01/fabric-marbles";
+         var disqus_url = "https://pinvondev.github.io/blog/2018/04/01/fabric-marbles";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

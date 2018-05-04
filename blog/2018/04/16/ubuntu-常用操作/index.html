@@ -55,31 +55,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc0dd084">tree 查看目录结构</a></li>
-<li><a href="#org30387b3">SSH</a>
+<li><a href="#orgd49178d">tree 查看目录结构</a></li>
+<li><a href="#org2a039f2">SSH</a>
 <ul>
-<li><a href="#orgccb1261">基本用法</a>
+<li><a href="#org3fe6b9b">基本用法</a>
 <ul>
-<li><a href="#org6c05ed9">使用SSH远程登录</a></li>
-<li><a href="#orgc669047">连接到目标主机的其他端口</a></li>
-<li><a href="#org8bd9668">构建SSH密钥对</a></li>
-<li><a href="#org4b30983">寻找主机密钥</a></li>
-<li><a href="#org243be47">删除主机密钥</a></li>
+<li><a href="#orgc1f10fa">使用SSH远程登录</a></li>
+<li><a href="#org7faa32f">连接到目标主机的其他端口</a></li>
+<li><a href="#org32c731e">构建SSH密钥对</a></li>
+<li><a href="#org5105571">寻找主机密钥</a></li>
+<li><a href="#orgb7292b7">删除主机密钥</a></li>
 </ul>
 </li>
-<li><a href="#org59de0fa">绑定本地端口</a></li>
-<li><a href="#org05a5b6e">SSH隧道</a></li>
-<li><a href="#orgd36ceb0">SSH反向连接</a></li>
+<li><a href="#org9f05dfc">绑定本地端口</a></li>
+<li><a href="#org4f28d97">SSH隧道</a></li>
+<li><a href="#org4943630">SSH反向连接</a></li>
 </ul>
 </li>
-<li><a href="#org73e4987">du 查看占用磁盘大小</a></li>
+<li><a href="#org36af166">du 查看占用磁盘大小</a></li>
+<li><a href="#org5df8a94">screen 实现使用键盘在终端选中复制</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc0dd084" class="outline-2">
-<h2 id="orgc0dd084">tree 查看目录结构</h2>
-<div class="outline-text-2" id="text-orgc0dd084">
+<div id="outline-container-orgd49178d" class="outline-2">
+<h2 id="orgd49178d">tree 查看目录结构</h2>
+<div class="outline-text-2" id="text-orgd49178d">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install tree
 tree -L 4 pathname # -L指定层级
@@ -88,9 +89,9 @@ tree -L 4 pathname # -L指定层级
 </div>
 </div>
 
-<div id="outline-container-org30387b3" class="outline-2">
-<h2 id="org30387b3">SSH</h2>
-<div class="outline-text-2" id="text-org30387b3">
+<div id="outline-container-org2a039f2" class="outline-2">
+<h2 id="org2a039f2">SSH</h2>
+<div class="outline-text-2" id="text-org2a039f2">
 <p>
 SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如果工作环境中的防火墙限制了一些网络端口的使用, 但允许SSH连接, 那么也可以通过将TCP端口转发来使用SSH进行通讯. 总的来说, SSH端口转发能够提供两大功能:
 </p>
@@ -100,13 +101,13 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </ol>
 </div>
 
-<div id="outline-container-orgccb1261" class="outline-3">
-<h3 id="orgccb1261">基本用法</h3>
-<div class="outline-text-3" id="text-orgccb1261">
+<div id="outline-container-org3fe6b9b" class="outline-3">
+<h3 id="org3fe6b9b">基本用法</h3>
+<div class="outline-text-3" id="text-org3fe6b9b">
 </div>
-<div id="outline-container-org6c05ed9" class="outline-4">
-<h4 id="org6c05ed9">使用SSH远程登录</h4>
-<div class="outline-text-4" id="text-org6c05ed9">
+<div id="outline-container-orgc1f10fa" class="outline-4">
+<h4 id="orgc1f10fa">使用SSH远程登录</h4>
+<div class="outline-text-4" id="text-orgc1f10fa">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh pinvon@192.168.1.104
 </pre>
@@ -114,9 +115,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-orgc669047" class="outline-4">
-<h4 id="orgc669047">连接到目标主机的其他端口</h4>
-<div class="outline-text-4" id="text-orgc669047">
+<div id="outline-container-org7faa32f" class="outline-4">
+<h4 id="org7faa32f">连接到目标主机的其他端口</h4>
+<div class="outline-text-4" id="text-org7faa32f">
 <p>
 默认情况下, SSH连接到目标主机的22端口上, 我们也可以指定其他的端口:
 </p>
@@ -127,9 +128,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org8bd9668" class="outline-4">
-<h4 id="org8bd9668">构建SSH密钥对</h4>
-<div class="outline-text-4" id="text-org8bd9668">
+<div id="outline-container-org32c731e" class="outline-4">
+<h4 id="org32c731e">构建SSH密钥对</h4>
+<div class="outline-text-4" id="text-org32c731e">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh-keygen -t rsa
 </pre>
@@ -137,9 +138,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org4b30983" class="outline-4">
-<h4 id="org4b30983">寻找主机密钥</h4>
-<div class="outline-text-4" id="text-org4b30983">
+<div id="outline-container-org5105571" class="outline-4">
+<h4 id="org5105571">寻找主机密钥</h4>
+<div class="outline-text-4" id="text-org5105571">
 <p>
 在准备添加密钥之前, 可以先检查是否已经添加对应主机的密钥:
 </p>
@@ -150,9 +151,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org243be47" class="outline-4">
-<h4 id="org243be47">删除主机密钥</h4>
-<div class="outline-text-4" id="text-org243be47">
+<div id="outline-container-orgb7292b7" class="outline-4">
+<h4 id="orgb7292b7">删除主机密钥</h4>
+<div class="outline-text-4" id="text-orgb7292b7">
 <div class="org-src-container">
 <pre class="src src-Shell">ssh-keygen -R 192.168.1.104
 </pre>
@@ -161,9 +162,9 @@ SSH能够自动加密和解密SSH客户端和服务器之间的网络数据; 如
 </div>
 </div>
 
-<div id="outline-container-org59de0fa" class="outline-3">
-<h3 id="org59de0fa">绑定本地端口</h3>
-<div class="outline-text-3" id="text-org59de0fa">
+<div id="outline-container-org9f05dfc" class="outline-3">
+<h3 id="org9f05dfc">绑定本地端口</h3>
+<div class="outline-text-3" id="text-org9f05dfc">
 <p>
 SSH可以传送数据, 我们可以让那些不加密的网络连接, 全部改走SSH连接, 从而提高安全性.
 </p>
@@ -186,9 +187,9 @@ SSH会建立一个socket, 监听本地的8080端口(注意, 不是pinvon@192.168
 </div>
 </div>
 
-<div id="outline-container-org05a5b6e" class="outline-3">
-<h3 id="org05a5b6e">SSH隧道</h3>
-<div class="outline-text-3" id="text-org05a5b6e">
+<div id="outline-container-org4f28d97" class="outline-3">
+<h3 id="org4f28d97">SSH隧道</h3>
+<div class="outline-text-3" id="text-org4f28d97">
 <p>
 命令格式:
 </p>
@@ -222,9 +223,9 @@ SSH会建立一个socket, 监听本地的8080端口(注意, 不是pinvon@192.168
 </div>
 </div>
 
-<div id="outline-container-orgd36ceb0" class="outline-3">
-<h3 id="orgd36ceb0">SSH反向连接</h3>
-<div class="outline-text-3" id="text-orgd36ceb0">
+<div id="outline-container-org4943630" class="outline-3">
+<h3 id="org4943630">SSH反向连接</h3>
+<div class="outline-text-3" id="text-org4943630">
 <p>
 命令格式:
 </p>
@@ -254,9 +255,9 @@ ssh -R 123.207.62.191:8080:192.168.1.100:80 ubuntu@123.207.62.191
 </div>
 </div>
 
-<div id="outline-container-org73e4987" class="outline-2">
-<h2 id="org73e4987">du 查看占用磁盘大小</h2>
-<div class="outline-text-2" id="text-org73e4987">
+<div id="outline-container-org36af166" class="outline-2">
+<h2 id="org36af166">du 查看占用磁盘大小</h2>
+<div class="outline-text-2" id="text-org36af166">
 <p>
 du即disk usage
 </p>
@@ -290,13 +291,42 @@ du -h --max-depth=0 filename
 </div>
 </div>
 </div>
+<div id="outline-container-org5df8a94" class="outline-2">
+<h2 id="org5df8a94">screen 实现使用键盘在终端选中复制</h2>
+<div class="outline-text-2" id="text-org5df8a94">
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt install screen
+</pre>
+</div>
+
+<p>
+<code>ctrl+a,[</code> 进入复制模式.
+</p>
+
+<p>
+使用 vi 的按键模式进行光标移动.
+</p>
+
+<p>
+将光标移动到复制的起始处, 回车.
+</p>
+
+<p>
+将光标移动到复制的结束处, 回车.
+</p>
+
+<p>
+<code>ctrl+a,]</code> 进行粘贴.
+</p>
+</div>
+</div>
 
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-04-16</span>
-            <span title="last modification date" class="post-info">2018-04-17</span>
+            <span title="last modification date" class="post-info">2018-05-04</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/ubuntu">Ubuntu</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
@@ -355,6 +385,8 @@ du -h --max-depth=0 filename
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

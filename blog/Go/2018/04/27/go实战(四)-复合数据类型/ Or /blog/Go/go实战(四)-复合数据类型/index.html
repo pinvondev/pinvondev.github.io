@@ -55,39 +55,49 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd459b9c">注</a>
+<li><a href="#org2c8c5f2">注</a>
 <ul>
-<li><a href="#org5e4e5f9">概述</a></li>
+<li><a href="#org9d1df12">概述</a></li>
 </ul>
 </li>
-<li><a href="#org377fe80">数组</a>
+<li><a href="#org081407a">数组</a>
 <ul>
-<li><a href="#orgd76a30e">初始化</a></li>
-<li><a href="#org814085a">索引和对应的值</a></li>
-<li><a href="#org33ddffb">数组运算</a></li>
-<li><a href="#org114baf0">遍历</a></li>
+<li><a href="#org5909fdd">初始化</a></li>
+<li><a href="#orgfb033af">索引和对应的值</a></li>
+<li><a href="#org4570737">数组运算</a></li>
+<li><a href="#orgef4f071">遍历</a></li>
 </ul>
 </li>
-<li><a href="#org20d0468">slice</a>
+<li><a href="#orgc0c327f">slice</a>
 <ul>
-<li><a href="#orgb201bcd">slice 的数据结构</a></li>
+<li><a href="#org0b0116f">slice 的数据结构</a></li>
+<li><a href="#orgd9a6965">声明和初始化</a></li>
+<li><a href="#orgc070389">切片</a></li>
+<li><a href="#org99b2d49">slice 作为函数参数</a></li>
+<li><a href="#orgefbf787">比较</a></li>
+<li><a href="#orgd4722f8">append()</a>
+<ul>
+<li><a href="#org7392c2f">append() 原理</a></li>
+</ul>
+</li>
+<li><a href="#orgb9cbc09">在 slice 原有内存空间修改元素</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd459b9c" class="outline-2">
-<h2 id="orgd459b9c">注</h2>
-<div class="outline-text-2" id="text-orgd459b9c">
+<div id="outline-container-org2c8c5f2" class="outline-2">
+<h2 id="org2c8c5f2">注</h2>
+<div class="outline-text-2" id="text-org2c8c5f2">
 <p>
 学习自: Go 语言圣经
 </p>
 </div>
 
-<div id="outline-container-org5e4e5f9" class="outline-3">
-<h3 id="org5e4e5f9">概述</h3>
-<div class="outline-text-3" id="text-org5e4e5f9">
+<div id="outline-container-org9d1df12" class="outline-3">
+<h3 id="org9d1df12">概述</h3>
+<div class="outline-text-3" id="text-org9d1df12">
 <p>
 数组和结构体有固定内存大小的数据结构; slice 和 map 是动态的数据结构, 会根据需要而动态增长.
 </p>
@@ -95,9 +105,9 @@
 </div>
 </div>
 
-<div id="outline-container-org377fe80" class="outline-2">
-<h2 id="org377fe80">数组</h2>
-<div class="outline-text-2" id="text-org377fe80">
+<div id="outline-container-org081407a" class="outline-2">
+<h2 id="org081407a">数组</h2>
+<div class="outline-text-2" id="text-org081407a">
 <p>
 数组的长度固定, 我们一般不直接使用数组. slice 提供的功能会更多, 但我们要先理解数组, 才能理解 slice 的原理.
 </p>
@@ -107,9 +117,9 @@
 </p>
 </div>
 
-<div id="outline-container-orgd76a30e" class="outline-3">
-<h3 id="orgd76a30e">初始化</h3>
-<div class="outline-text-3" id="text-orgd76a30e">
+<div id="outline-container-org5909fdd" class="outline-3">
+<h3 id="org5909fdd">初始化</h3>
+<div class="outline-text-3" id="text-org5909fdd">
 <p>
 默认每个元素都被初始化为元素类型所对应的零值. 也可以自己赋予初始值:
 </p>
@@ -143,9 +153,9 @@ q = [4]int{1,2,3,4}  // 编译错误
 </div>
 </div>
 
-<div id="outline-container-org814085a" class="outline-3">
-<h3 id="org814085a">索引和对应的值</h3>
-<div class="outline-text-3" id="text-org814085a">
+<div id="outline-container-orgfb033af" class="outline-3">
+<h3 id="orgfb033af">索引和对应的值</h3>
+<div class="outline-text-3" id="text-orgfb033af">
 <p>
 我们可以在数组里存放索引-值, 做法如下:
 </p>
@@ -178,9 +188,9 @@ fmt.Println(RMB, symbol[RMB]) // "3 ￥"
 </div>
 </div>
 
-<div id="outline-container-org33ddffb" class="outline-3">
-<h3 id="org33ddffb">数组运算</h3>
-<div class="outline-text-3" id="text-org33ddffb">
+<div id="outline-container-org4570737" class="outline-3">
+<h3 id="org4570737">数组运算</h3>
+<div class="outline-text-3" id="text-org4570737">
 <p>
 如果数组元素类型是可比较的, 且两个数组的所有元素都相等, 则这两个数组是相等的.
 </p>
@@ -196,9 +206,9 @@ fmt.Println(a == d) // compile error: cannot compare [2]int == [3]int
 </div>
 </div>
 
-<div id="outline-container-org114baf0" class="outline-3">
-<h3 id="org114baf0">遍历</h3>
-<div class="outline-text-3" id="text-org114baf0">
+<div id="outline-container-orgef4f071" class="outline-3">
+<h3 id="orgef4f071">遍历</h3>
+<div class="outline-text-3" id="text-orgef4f071">
 <div class="org-src-container">
 <pre class="src src-Golang">var a [3]int             // array of 3 integers
 fmt.Println(a[0])        // print the first element
@@ -219,17 +229,17 @@ for _, v := range a {
 </div>
 </div>
 
-<div id="outline-container-org20d0468" class="outline-2">
-<h2 id="org20d0468">slice</h2>
-<div class="outline-text-2" id="text-org20d0468">
+<div id="outline-container-orgc0c327f" class="outline-2">
+<h2 id="orgc0c327f">slice</h2>
+<div class="outline-text-2" id="text-orgc0c327f">
 <p>
 slice 的语法和数组很像, 但不固定长度.
 </p>
 </div>
 
-<div id="outline-container-orgb201bcd" class="outline-3">
-<h3 id="orgb201bcd">slice 的数据结构</h3>
-<div class="outline-text-3" id="text-orgb201bcd">
+<div id="outline-container-org0b0116f" class="outline-3">
+<h3 id="org0b0116f">slice 的数据结构</h3>
+<div class="outline-text-3" id="text-org0b0116f">
 <p>
 slice 的底层引用了一个数组对象.
 </p>
@@ -242,6 +252,255 @@ slice 的底层引用了一个数组对象.
 <li>长度: slice 中的元素数目, 不能超过容量, 使用 len() 获得.</li>
 <li>容量: 从 slice 的开始位置到底层数据的结尾位置, 使用 cap() 获得.</li>
 </ol>
+
+<p>
+如下图所示, 多个 slice 之间可以共享底层数据, 并且引用的数组部分区间可以重叠.
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Go/2018/04/27/go实战(四)-复合数据类型/ Or /blog/Go/go实战(四)-复合数据类型/7.png" alt="7.png" />
+</p>
+</div>
+
+<p>
+从这个图中, 也可以看出, len() 指的是 slice 的长度, cap() 指的是从 slice[0] 开始到底层数组最后一个元素之间的长度.
+</p>
+
+<p>
+slice 在初始化时不需要指定长度, 而数组需要指定长度. 但是 slice 的底层数据结构又是数组, 这个背后的原理是什么?
+</p>
+
+<p>
+其实, 在初始化 slice 时, 会隐式创建一个合适大小的数组, 然后 slice 的指针指向底层的数组.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd9a6965" class="outline-3">
+<h3 id="orgd9a6965">声明和初始化</h3>
+<div class="outline-text-3" id="text-orgd9a6965">
+<ul class="org-ul">
+<li>声明一个未指定大小的数组来定义切片: var name []type</li>
+
+<li>使用 make() 创建切片: var slice1 []type = make([]type, len)</li>
+
+<li>slice1 := make([]type, len)</li>
+
+<li>可以初始化的时候就指定容量: slice1 := make([]type, len, cap)</li>
+
+<li>利用已有的数组来创建 slice: slice1 := array[m:n]</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc070389" class="outline-3">
+<h3 id="orgc070389">切片</h3>
+<div class="outline-text-3" id="text-orgc070389">
+<p>
+假设 x 是 slice 类型的, 则对 x 进行切片, 可以写成: y := x[m:n].
+</p>
+
+<p>
+其中, \(0 \leq m \leq n \leq cap(s)\). y 引用 x 从第 m 个元素到第 n-1 个元素之间的数据. 
+</p>
+
+<p>
+如果切片操作超过了 cap(x), 则会出现 <code>panic:out of range</code> 错误; 如果切片操作超过了 len(x), 则意味着对 x 进行扩展, 此时 y 里面的数据会比 x 还多.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org99b2d49" class="outline-3">
+<h3 id="org99b2d49">slice 作为函数参数</h3>
+<div class="outline-text-3" id="text-org99b2d49">
+<p>
+因为 slice 的底层数据结构是数组, 且多个 slice 可以共享同一个底层数据结构, 因此, 对 slice 进行复制, 其实只是为底层数组创建了一个新的 slice 别名. 如果在函数内部对 slice 进行了修改, 会影响到函数外部. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">// reverse reverses a slice of ints in place.
+func reverse(s []int) {
+    for i, j := 0, len(s)-1; i &lt; j; i, j = i+1, j-1 {
+        s[i], s[j] = s[j], s[i]
+    }
+}
+
+a := [...]int{0, 1, 2, 3, 4, 5}  // a 是数组, a[:] 是 slice
+reverse(a[:])
+fmt.Println(a) // "[5 4 3 2 1 0]"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgefbf787" class="outline-3">
+<h3 id="orgefbf787">比较</h3>
+<div class="outline-text-3" id="text-orgefbf787">
+<p>
+slice 不能像数组那样, 通过 == 操作符来判断两个 slice 是否含有全部相同的元素. 但有个例外: 如果这个 slice 是 []byte 类型的, 则可以使用 bytes.Equal() 来判断; 对于其他类型, 只能通过遍历每个元素来比较.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">func equal(x, y []string) bool {
+    if len(x) != len(y) {
+        return false
+    }
+    for i := range x {
+        if x[i] != y[i] {
+            return false
+        }
+    }
+    return true
+}
+</pre>
+</div>
+
+<p>
+slice 可以和 nil 作比较. slice 类型的零值就是 nil, 此时 slice 没有底层数组, len() 和 cap() 都是 0.
+</p>
+
+<pre class="example">
+var s []int    // len(s) == 0, s == nil
+s = nil        // len(s) == 0, s == nil
+s = []int(nil) // len(s) == 0, s == nil
+s = []int{}    // len(s) == 0, s != nil
+</pre>
+<p>
+可以看出, 如果要判断一个 slice 是否为空, 应该判断 len() 是否为 0, 而不能将其与 nil 作比较. 因为一个 nil 值的 slice 的行为与其他任意 0 长度的 slice 是一样的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd4722f8" class="outline-3">
+<h3 id="orgd4722f8">append()</h3>
+<div class="outline-text-3" id="text-orgd4722f8">
+<p>
+append() 用于向 slice 添加新元素. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var runes []rune
+for _, r := range "Hello, 世界" {
+    runes = append(runes, r)
+}
+fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
+</pre>
+</div>
+
+<p>
+当然, 这一段代码只是用来演示 append() 的用法, 其实际效果与 runes = []rune("Hello, 世界") 一样.
+</p>
+</div>
+
+<div id="outline-container-org7392c2f" class="outline-4">
+<h4 id="org7392c2f">append() 原理</h4>
+<div class="outline-text-4" id="text-org7392c2f">
+<p>
+假设 appendInt() 就是 []int 类型的 slice 的 append() 操作.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Golang">func appendInt(x []int, y int) []int {
+    var z []int
+    zlen := len(x) + 1
+    if zlen &lt;= cap(x) {
+        // There is room to grow.  Extend the slice.
+        z = x[:zlen]
+    } else {
+        // There is insufficient space.  Allocate a new array.
+        // Grow by doubling, for amortized linear complexity.
+        zcap := zlen
+        if zcap &lt; 2*len(x) {
+            zcap = 2 * len(x)
+        }
+        z = make([]int, zlen, zcap)
+        copy(z, x) // a built-in function; see text
+    }
+    z[len(x)] = y
+    return z
+}
+</pre>
+</div>
+<p>
+通过代码可以看出来, 每次添加新元素到 x 时, 都会先判断 len(x) 是否有足够空间来容纳新元素.
+</p>
+
+<p>
+如果足够容纳, 则直接扩展 x, 然后将新元素添加进来, 添加新元素后的 slice 与原来的 slice 共享同一个数组;
+</p>
+
+<p>
+如果空间不足, 则创建一个新的 slice, 其 cap() 至少要设置成添加新元素后的长度的两倍. 然后再将所有元素放进新的 slice 中, 添加新元素后的 slice 与原来的 slice 不共享同一数组.
+</p>
+
+<p>
+copy() 是 Go 语言内置的函数, 可以将第二个参数复制给第一个参数.
+</p>
+
+<p>
+内置的 append() 的实现会更加复杂, 它还可以追加多个元素, 甚至是另一个 slice. 如(注意最后一次追加时, 使用了省略号, 表示接收变长的 slice 参数):
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var x []int
+x = append(x, 1)
+x = append(x, 2, 3)
+x = append(x, 4, 5, 6)
+x = append(x, x...) // append the slice x
+fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
+</pre>
+</div>
+
+<p>
+我们可以适当修改 appendInt() 来达到同样的目的:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func appendInt(x []int, y ...int) []int {
+    var z []int
+    zlen := len(x) + len(y)
+    // ...expand z to at least zlen...
+    copy(z[len(x):], y)
+    return z
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9cbc09" class="outline-3">
+<h3 id="orgb9cbc09">在 slice 原有内存空间修改元素</h3>
+<div class="outline-text-3" id="text-orgb9cbc09">
+<p>
+nonempty() 在原有 slice 内存空间上返回不包含空字符串的列表:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">// Nonempty is an example of an in-place slice algorithm.
+package main
+
+import "fmt"
+
+// nonempty returns a slice holding only the non-empty strings.
+// The underlying array is modified during the call.
+func nonempty(strings []string) []string {
+    i := 0
+    for _, s := range strings {
+        if s != "" {
+            strings[i] = s
+            i++
+        }
+    }
+    return strings[:i]
+}
+
+...
+
+data := []string{"one", "", "three"}
+fmt.Printf("%q\n", nonempty(data)) // `["one" "three"]`
+fmt.Printf("%q\n", data)           // `["one" "three" "three"]`
+</pre>
+</div>
+<p>
+在这边, 输入的 slice 和输出的 slice 共享一个底层数组, 这样可以避免分配另一个数组, 不过原来的数据可能会被覆盖.
+</p>
 </div>
 </div>
 </div>
@@ -251,7 +510,7 @@ slice 的底层引用了一个数组对象.
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-04-27</span>
-            <span title="last modification date" class="post-info">2018-05-02</span>
+            <span title="last modification date" class="post-info">2018-05-04</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/go">Go</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
@@ -310,6 +569,8 @@ slice 的底层引用了一个数组对象.
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>
