@@ -55,49 +55,59 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2c8c5f2">注</a>
+<li><a href="#orgbc7e8ab">注</a>
 <ul>
-<li><a href="#org9d1df12">概述</a></li>
+<li><a href="#orgbdef0ca">概述</a></li>
 </ul>
 </li>
-<li><a href="#org081407a">数组</a>
+<li><a href="#orgb7099d5">数组</a>
 <ul>
-<li><a href="#org5909fdd">初始化</a></li>
-<li><a href="#orgfb033af">索引和对应的值</a></li>
-<li><a href="#org4570737">数组运算</a></li>
-<li><a href="#orgef4f071">遍历</a></li>
+<li><a href="#org5288f1f">初始化</a></li>
+<li><a href="#org9209c2f">索引和对应的值</a></li>
+<li><a href="#orgafeb976">数组运算</a></li>
+<li><a href="#org42f1979">遍历</a></li>
 </ul>
 </li>
-<li><a href="#orgc0c327f">slice</a>
+<li><a href="#org658546b">slice</a>
 <ul>
-<li><a href="#org0b0116f">slice 的数据结构</a></li>
-<li><a href="#orgd9a6965">声明和初始化</a></li>
-<li><a href="#orgc070389">切片</a></li>
-<li><a href="#org99b2d49">slice 作为函数参数</a></li>
-<li><a href="#orgefbf787">比较</a></li>
-<li><a href="#orgd4722f8">append()</a>
+<li><a href="#org66ab2ec">slice 的数据结构</a></li>
+<li><a href="#org9a8bd4d">声明和初始化</a></li>
+<li><a href="#orga584e4a">切片</a></li>
+<li><a href="#org243a0e2">slice 作为函数参数</a></li>
+<li><a href="#org21b6dba">比较</a></li>
+<li><a href="#org90fde0c">append()</a>
 <ul>
-<li><a href="#org7392c2f">append() 原理</a></li>
+<li><a href="#org431be41">append() 原理</a></li>
 </ul>
 </li>
-<li><a href="#orgb9cbc09">在 slice 原有内存空间修改元素</a></li>
+<li><a href="#org3be4566">在 slice 原有内存空间修改元素</a></li>
+</ul>
+</li>
+<li><a href="#org22ca0ec">map</a>
+<ul>
+<li><a href="#org6fee1b9">创建 map 类型的数据</a></li>
+<li><a href="#orgf9b2d65">访问 map 元素</a></li>
+<li><a href="#org196d449">禁止取址操作</a></li>
+<li><a href="#org69e7288">遍历</a></li>
+<li><a href="#org83a04bf">map 类型的零值</a></li>
+<li><a href="#org1d308a9">比较</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2c8c5f2" class="outline-2">
-<h2 id="org2c8c5f2">注</h2>
-<div class="outline-text-2" id="text-org2c8c5f2">
+<div id="outline-container-orgbc7e8ab" class="outline-2">
+<h2 id="orgbc7e8ab">注</h2>
+<div class="outline-text-2" id="text-orgbc7e8ab">
 <p>
 学习自: Go 语言圣经
 </p>
 </div>
 
-<div id="outline-container-org9d1df12" class="outline-3">
-<h3 id="org9d1df12">概述</h3>
-<div class="outline-text-3" id="text-org9d1df12">
+<div id="outline-container-orgbdef0ca" class="outline-3">
+<h3 id="orgbdef0ca">概述</h3>
+<div class="outline-text-3" id="text-orgbdef0ca">
 <p>
 数组和结构体有固定内存大小的数据结构; slice 和 map 是动态的数据结构, 会根据需要而动态增长.
 </p>
@@ -105,9 +115,9 @@
 </div>
 </div>
 
-<div id="outline-container-org081407a" class="outline-2">
-<h2 id="org081407a">数组</h2>
-<div class="outline-text-2" id="text-org081407a">
+<div id="outline-container-orgb7099d5" class="outline-2">
+<h2 id="orgb7099d5">数组</h2>
+<div class="outline-text-2" id="text-orgb7099d5">
 <p>
 数组的长度固定, 我们一般不直接使用数组. slice 提供的功能会更多, 但我们要先理解数组, 才能理解 slice 的原理.
 </p>
@@ -117,9 +127,9 @@
 </p>
 </div>
 
-<div id="outline-container-org5909fdd" class="outline-3">
-<h3 id="org5909fdd">初始化</h3>
-<div class="outline-text-3" id="text-org5909fdd">
+<div id="outline-container-org5288f1f" class="outline-3">
+<h3 id="org5288f1f">初始化</h3>
+<div class="outline-text-3" id="text-org5288f1f">
 <p>
 默认每个元素都被初始化为元素类型所对应的零值. 也可以自己赋予初始值:
 </p>
@@ -153,9 +163,9 @@ q = [4]int{1,2,3,4}  // 编译错误
 </div>
 </div>
 
-<div id="outline-container-orgfb033af" class="outline-3">
-<h3 id="orgfb033af">索引和对应的值</h3>
-<div class="outline-text-3" id="text-orgfb033af">
+<div id="outline-container-org9209c2f" class="outline-3">
+<h3 id="org9209c2f">索引和对应的值</h3>
+<div class="outline-text-3" id="text-org9209c2f">
 <p>
 我们可以在数组里存放索引-值, 做法如下:
 </p>
@@ -188,9 +198,9 @@ fmt.Println(RMB, symbol[RMB]) // "3 ￥"
 </div>
 </div>
 
-<div id="outline-container-org4570737" class="outline-3">
-<h3 id="org4570737">数组运算</h3>
-<div class="outline-text-3" id="text-org4570737">
+<div id="outline-container-orgafeb976" class="outline-3">
+<h3 id="orgafeb976">数组运算</h3>
+<div class="outline-text-3" id="text-orgafeb976">
 <p>
 如果数组元素类型是可比较的, 且两个数组的所有元素都相等, 则这两个数组是相等的.
 </p>
@@ -206,9 +216,9 @@ fmt.Println(a == d) // compile error: cannot compare [2]int == [3]int
 </div>
 </div>
 
-<div id="outline-container-orgef4f071" class="outline-3">
-<h3 id="orgef4f071">遍历</h3>
-<div class="outline-text-3" id="text-orgef4f071">
+<div id="outline-container-org42f1979" class="outline-3">
+<h3 id="org42f1979">遍历</h3>
+<div class="outline-text-3" id="text-org42f1979">
 <div class="org-src-container">
 <pre class="src src-Golang">var a [3]int             // array of 3 integers
 fmt.Println(a[0])        // print the first element
@@ -229,17 +239,17 @@ for _, v := range a {
 </div>
 </div>
 
-<div id="outline-container-orgc0c327f" class="outline-2">
-<h2 id="orgc0c327f">slice</h2>
-<div class="outline-text-2" id="text-orgc0c327f">
+<div id="outline-container-org658546b" class="outline-2">
+<h2 id="org658546b">slice</h2>
+<div class="outline-text-2" id="text-org658546b">
 <p>
 slice 的语法和数组很像, 但不固定长度.
 </p>
 </div>
 
-<div id="outline-container-org0b0116f" class="outline-3">
-<h3 id="org0b0116f">slice 的数据结构</h3>
-<div class="outline-text-3" id="text-org0b0116f">
+<div id="outline-container-org66ab2ec" class="outline-3">
+<h3 id="org66ab2ec">slice 的数据结构</h3>
+<div class="outline-text-3" id="text-org66ab2ec">
 <p>
 slice 的底层引用了一个数组对象.
 </p>
@@ -277,9 +287,9 @@ slice 在初始化时不需要指定长度, 而数组需要指定长度. 但是 
 </div>
 </div>
 
-<div id="outline-container-orgd9a6965" class="outline-3">
-<h3 id="orgd9a6965">声明和初始化</h3>
-<div class="outline-text-3" id="text-orgd9a6965">
+<div id="outline-container-org9a8bd4d" class="outline-3">
+<h3 id="org9a8bd4d">声明和初始化</h3>
+<div class="outline-text-3" id="text-org9a8bd4d">
 <ul class="org-ul">
 <li>声明一个未指定大小的数组来定义切片: var name []type</li>
 
@@ -294,9 +304,9 @@ slice 在初始化时不需要指定长度, 而数组需要指定长度. 但是 
 </div>
 </div>
 
-<div id="outline-container-orgc070389" class="outline-3">
-<h3 id="orgc070389">切片</h3>
-<div class="outline-text-3" id="text-orgc070389">
+<div id="outline-container-orga584e4a" class="outline-3">
+<h3 id="orga584e4a">切片</h3>
+<div class="outline-text-3" id="text-orga584e4a">
 <p>
 假设 x 是 slice 类型的, 则对 x 进行切片, 可以写成: y := x[m:n].
 </p>
@@ -311,9 +321,9 @@ slice 在初始化时不需要指定长度, 而数组需要指定长度. 但是 
 </div>
 </div>
 
-<div id="outline-container-org99b2d49" class="outline-3">
-<h3 id="org99b2d49">slice 作为函数参数</h3>
-<div class="outline-text-3" id="text-org99b2d49">
+<div id="outline-container-org243a0e2" class="outline-3">
+<h3 id="org243a0e2">slice 作为函数参数</h3>
+<div class="outline-text-3" id="text-org243a0e2">
 <p>
 因为 slice 的底层数据结构是数组, 且多个 slice 可以共享同一个底层数据结构, 因此, 对 slice 进行复制, 其实只是为底层数组创建了一个新的 slice 别名. 如果在函数内部对 slice 进行了修改, 会影响到函数外部. 如:
 </p>
@@ -333,9 +343,9 @@ fmt.Println(a) // "[5 4 3 2 1 0]"
 </div>
 </div>
 
-<div id="outline-container-orgefbf787" class="outline-3">
-<h3 id="orgefbf787">比较</h3>
-<div class="outline-text-3" id="text-orgefbf787">
+<div id="outline-container-org21b6dba" class="outline-3">
+<h3 id="org21b6dba">比较</h3>
+<div class="outline-text-3" id="text-org21b6dba">
 <p>
 slice 不能像数组那样, 通过 == 操作符来判断两个 slice 是否含有全部相同的元素. 但有个例外: 如果这个 slice 是 []byte 类型的, 则可以使用 bytes.Equal() 来判断; 对于其他类型, 只能通过遍历每个元素来比较.
 </p>
@@ -371,9 +381,9 @@ s = []int{}    // len(s) == 0, s != nil
 </div>
 </div>
 
-<div id="outline-container-orgd4722f8" class="outline-3">
-<h3 id="orgd4722f8">append()</h3>
-<div class="outline-text-3" id="text-orgd4722f8">
+<div id="outline-container-org90fde0c" class="outline-3">
+<h3 id="org90fde0c">append()</h3>
+<div class="outline-text-3" id="text-org90fde0c">
 <p>
 append() 用于向 slice 添加新元素. 如:
 </p>
@@ -391,9 +401,9 @@ fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
 </p>
 </div>
 
-<div id="outline-container-org7392c2f" class="outline-4">
-<h4 id="org7392c2f">append() 原理</h4>
-<div class="outline-text-4" id="text-org7392c2f">
+<div id="outline-container-org431be41" class="outline-4">
+<h4 id="org431be41">append() 原理</h4>
+<div class="outline-text-4" id="text-org431be41">
 <p>
 假设 appendInt() 就是 []int 类型的 slice 的 append() 操作.
 </p>
@@ -466,9 +476,9 @@ fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
 </div>
 </div>
 
-<div id="outline-container-orgb9cbc09" class="outline-3">
-<h3 id="orgb9cbc09">在 slice 原有内存空间修改元素</h3>
-<div class="outline-text-3" id="text-orgb9cbc09">
+<div id="outline-container-org3be4566" class="outline-3">
+<h3 id="org3be4566">在 slice 原有内存空间修改元素</h3>
+<div class="outline-text-3" id="text-org3be4566">
 <p>
 nonempty() 在原有 slice 内存空间上返回不包含空字符串的列表:
 </p>
@@ -500,6 +510,212 @@ fmt.Printf("%q\n", data)           // `["one" "three" "three"]`
 </div>
 <p>
 在这边, 输入的 slice 和输出的 slice 共享一个底层数组, 这样可以避免分配另一个数组, 不过原来的数据可能会被覆盖.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22ca0ec" class="outline-2">
+<h2 id="org22ca0ec">map</h2>
+<div class="outline-text-2" id="text-org22ca0ec">
+<p>
+hash table 是一个无序的 k-v 对的集合, 所有的 k 都是不同的, 根据给定的 k, 可以在常数时间复杂度内检索, 更新或删除对应的 v. 在 Go 中, map 就是一个 hash table 的引用.
+</p>
+
+<p>
+一个 map 类型的数据, 其所有的 k 必须是相同的类型, 所有的 v 也必须是相同的类型, 但 k 和 v 两者之间的类型可以不同. 另外, k 的类型要能支持 == 运算符, 这样可以判断 k 是否相等来判断是否已经存在. 最后, 浮点类型虽然可以作为 k, 但不是一个好选择, 因为直接比较浮点数, 得到的结果往往都是不相等.
+</p>
+</div>
+
+<div id="outline-container-org6fee1b9" class="outline-3">
+<h3 id="org6fee1b9">创建 map 类型的数据</h3>
+<div class="outline-text-3" id="text-org6fee1b9">
+<p>
+使用内置的 map() 创建 map:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">ages := make(map[string]int)  // mapping from strings to ints
+</pre>
+</div>
+
+<p>
+使用 map 字面值的语法创建 map:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">ages := map[string]int{
+    "alice": 31,
+    "charlie": 34,
+}
+</pre>
+</div>
+<p>
+这相当于:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">ages := make(map[string]int)
+ages["alice"] = 31
+ages["charlie"] = 34
+</pre>
+</div>
+
+<p>
+创建空 map 的表达式:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">ages := map[string]int{}
+</pre>
+</div>
+
+<p>
+上面的初始化都是使用简短变量声明的. 如果先声明, 再创建, 可以这样:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var ages map[string]int
+ages = make(map[string]int)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9b2d65" class="outline-3">
+<h3 id="orgf9b2d65">访问 map 元素</h3>
+<div class="outline-text-3" id="text-orgf9b2d65">
+<div class="org-src-container">
+<pre class="src src-Golang">// 更新元素, 如果不存在该键, 则新增
+ages["alice"] = 32
+
+// 查询
+fmt.Println(ages["alice"])  // "32"
+
+// 删除元素
+delete(ages, "alice")  // remove element ages["alice"]
+</pre>
+</div>
+<p>
+这些操作都是安全的, 如果查询一个不存在的元素, 则会返回 v 的类型所对应的零值. 如, ages["bob"] 将返回 0.
+</p>
+
+<p>
+但是, 如果 bob 键存在, 且对应的值就是 0, 程序中该如何判断这是 bob 键不存在而返回的 0, 还是原本就存在的 0?
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">age, ok := ages["bob"]
+if !ok { /* "bob" is not a key in this map; age == 0. */ }
+</pre>
+</div>
+<p>
+或直接写成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">if age, ok := ages["bob"]; !ok { ... }
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org196d449" class="outline-3">
+<h3 id="org196d449">禁止取址操作</h3>
+<div class="outline-text-3" id="text-org196d449">
+<div class="org-src-container">
+<pre class="src src-Golang">_ = &amp;ages["bob"]  // compile error: cannot take address of map element
+</pre>
+</div>
+
+<p>
+禁止对 map 元素取地址的原因在于, map 可能随着元素数量的增大而重新分配更大的空间, 从而可能导致之前的地址无效.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org69e7288" class="outline-3">
+<h3 id="org69e7288">遍历</h3>
+<div class="outline-text-3" id="text-org69e7288">
+<div class="org-src-container">
+<pre class="src src-Golang">for name, age := range ages {
+    fmt.Println("%s\t%d\n", name, age)
+}
+</pre>
+</div>
+<p>
+每次遍历的顺序都可能不同. 如果想按顺序遍历 key/value 对, 需要显式地对 key 进行排序. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">import "sort"
+
+names := make([]string, 0, len(ages))
+for name := range ages {
+    names = append(names, name)
+}
+sort.Strings(names)
+for _, name := range names {
+    fmt.Printf("%s\t%d\n", name, ages[name])
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org83a04bf" class="outline-3">
+<h3 id="org83a04bf">map 类型的零值</h3>
+<div class="outline-text-3" id="text-org83a04bf">
+<p>
+map 类型的零值为 nil.
+</p>
+
+<p>
+大部分操作: 查找, 删除, len(), range循环都可以安全地工作在 nil 值的 map 上, 它们的行为和空 map 类似.
+</p>
+
+<p>
+但是如果向 nil 值的 map 存入元素, 将会导致一个 panic 异常:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var ages map[string]int
+fmt.Println(ages == nil)    // "true"
+fmt.Println(len(ages) == 0) // "true"
+ages["carol"] = 21 // panic: assignment to entry in nil map
+</pre>
+</div>
+<p>
+修改办法是将 ages 的声明语句改成:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">var ages map[string]int
+ages = make(map[string]int)
+
+// 或
+ages := make(map[string]int)
+</pre>
+</div>
+
+<p>
+所以要注意: 在向 map 存数据之前必须先创建 map.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1d308a9" class="outline-3">
+<h3 id="org1d308a9">比较</h3>
+<div class="outline-text-3" id="text-org1d308a9">
+<p>
+map 和 slice 一样, map 类型的数据相互之间不能用 == 来比较, 唯一的例外是可以与 nil 比较. 如果要判断两个 map 是否包含相同的 k-v 对, 需要通过循环实现:
+</p>
+<div class="org-src-container">
+<pre class="src src-Golang">func equal(x, y map[string]int) bool {
+    if len(x) != len(y) {
+        return false
+    }
+    for k, xv := range x {
+        if yv, ok := y[k]; !ok || yv != xv {
+            return false
+        }
+    }
+    return true
+}
+</pre>
+</div>
+<p>
+在这个例子中, 使用 !ok 来区分元素不同和元素缺失.
 </p>
 </div>
 </div>
