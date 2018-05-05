@@ -416,3 +416,596 @@ func equal(x, y map[string]int) bool {
 }
 #+END_SRC
 在这个例子中, 使用 !ok 来区分元素不同和元素缺失.
+
+*** slice 等不可比较的类型作为 map 的 Key
+
+根据前面所述, 可以知道 map 的 Key 是要可以比较的类型. 但是如果我们想让 slice 或其他不可比较的类型作为 map 的 Key, 可以通过两个步骤来绕过这个限制, 以 slice 为例:
+- 定义辅助函数, 将 slice 转化为 string 类型.
+- 创建 map, 其中, key 为 string 类型, 每次对 map 操作时先用辅助函数将 slice 转化为 string.
+#+BEGIN_SRC Golang
+var m = make(map[string]int)
+func k(list []string) string { return fmt.Sprintf("%q", list) }
+func Add(list []string)       { m[k(list)]++ }
+func Count(list []string) int { return m[k(list)] }
+#+END_SRC
+k() 将输入的参数转化为 string 类型. 如果参数是整数类型, %q 占位符将其转化为单引号引起来的字符串, 如果参数是字符串或 slice, %q 占位符将其转化成双引号引起来的字符串.
+
+** 把 map 当作 set 来使用
+
+在 Go 语言中, 没有 set 类型. set 是指元素不重复的集合, 在 map 中, key 是不重复的, 所以如果忽略 value, 则 map 就相当于 set.
+
+** Value 的聚合
+
+map 的 Value 可以是聚合的, 意思就是, map 的 Value 可能又是一个 map. 如:
+#+BEGIN_SRC Golang
+var graph = make(map[string]map[string]bool)
+
+func addEdge(from, to string) {
+    edges := graph[from]
+    if edges == nil {
+        edges = make(map[string]bool)
+        graph[from] = edges
+    }
+    edges[to] = true
+}
+
+func hasEdge(from, to string) bool {
+    return graph[from][to]
+}
+#+END_SRC
+
+* struct
+
+struct 是一种聚合类型, struct 类型的实体的成员可以由零个或多个任意类型的值聚合而成.
+
+** 声明
+
+#+BEGIN_SRC Golang
+type Employee struct {
+    ID        int
+    Name      string
+    Address   string
+    DoB       time.Time
+    Position  string
+    Salary    int
+    ManagerID int
+}
+
+var dilbert Employee
+#+END_SRC
+这段代码声明了一个 Employee 结构体类型, 然后声明了一个 Employee 类型的变量 dilbert.
+
+结构体成员的顺序很重要, 即使成员都相同, 但顺序不同, Go 也认为这两个结构体是不同的. 通常情况下, 结构体成员一行只写一个, 不过如果相邻两个成员的类型相同, 可以合并到一行.
+
+** 访问 struct 变量的成员
+
+使用点操作符对 struct 类型变量的成员进行访问. 如:
+#+BEGIN_SRC Golang
+dilbert.Salary -= 5000 // demoted, for writing too few lines of code
+#+END_SRC
+
+还可以对成员取地址, 然后通过指针访问:
+#+BEGIN_SRC Golang
+position := &dilbert.Position
+*position = "Senior " + *position // promoted, for outsourcing to Elbonia
+#+END_SRC
+
+还可以定义结构体类型的变量的指针, 通过指针来访问变量的成员:
+#+BEGIN_SRC Golang
+var employeeOfTheMonth *Employee = &dilbert
+employeeOfTheMonth.Position += " (proactive team player)"
+
+// 或者
+(*employeeOfTheMonth).Position += " (proactive team player)"
+#+END_SRC
+
+** 成员
+
+如果有个名为 S 的结构体类型, 则该结构体不能再包含 S 类型的成员. 即: 一个聚合的值不能包含它自身. 但是, 可以包含 *S 指针类型的成员. 这可以让我们创建递归的数据结构, 如链表和树等.
+
+#+BEGIN_SRC Golang
+type tree struct {
+    value       int
+    left, right *tree
+}
+
+// Sort sorts values in place.
+func Sort(values []int) {
+    var root *tree
+    for _, v := range values {
+        root = add(root, v)
+    }
+    appendValues(values[:0], root)
+}
+
+// appendValues appends the elements of t to values in order
+// and returns the resulting slice.
+func appendValues(values []int, t *tree) []int {
+    if t != nil {
+        values = appendValues(values, t.left)
+        values = append(values, t.value)
+        values = appendValues(values, t.right)
+    }
+    return values
+}
+
+func add(t *tree, value int) *tree {
+    if t == nil {
+        // Equivalent to return &tree{value: value}.
+        t = new(tree)
+        t.value = value
+        return t
+    }
+    if value < t.value {
+        t.left = add(t.left, value)
+    } else {
+        t.right = add(t.right, value)
+    }
+    return t
+}
+#+END_SRC
+
+*** 注
+
+Go 语言中, 如果 struct 的成员名是以小写字母开头, 则其他包无法访问该成员.
+
+** struct 类型的零值
+
+struct 类型的零值就是每个成员都是其对应的零值.
+
+** 空 struct
+
+#+BEGIN_SRC Golang
+struct{}
+#+END_SRC
+大小为 0.
+
+** 初始化
+
+*** 根据成员的定义顺序初始化
+
+#+BEGIN_SRC Golang
+type Point struct{ X, Y int }
+p := Point{1, 2}
+#+END_SRC
+
+*** 根据成员的名字来初始化(推荐)
+
+#+BEGIN_SRC Golang
+type Point struct{ X, Y int }
+p := Point{X: 1, Y: 2}
+#+END_SRC
+如果未提供 Y: 2, 则 Y 的初始值为零值.
+
+*** 注
+
+由于结构体在使用时, 一般都是通过指针来引用的. 所以可以这样来创建并初始化一个结构体变量:
+#+BEGIN_SRC Golang
+p := &Point{1, 2}
+
+// 或
+p := &Point{X: 1, Y: 2}
+#+END_SRC
+
+这种写法等价于:
+#+BEGIN_SRC Golang
+p := new(Point)
+
+*p = Point{1, 2}
+// 或
+*p = Point{X: 1, Y: 2}
+#+END_SRC
+
+** struct 作为函数参数或返回值
+
+#+BEGIN_SRC Golang
+func Scale(p Point, factor int) Point {
+    return Point{p.X * factor, p.Y * factor}
+}
+fmt.Println(Scale(Point{1, 2}, 5)) // "{5 10}"
+#+END_SRC
+
+但是这种直接传递的方式, 效率较低. 一般更推荐使用指针的方式传递参数. 
+
+在 Go 中, 如果不指定使用指针传参, 都会被默认为使用值传递, 即函数内部使用的参数, 其实是传递进去的参数的一份拷贝, 在函数内部所做的修改, 影响不到外面. 所以, 可以看出, 当 struct 较大时, 值传递要消耗较多内存, 因为值传递要另外拷贝一份 struct.
+
+可以这样声明函数:
+#+BEGIN_SRC Golang
+func Bonus(e *Employee, percent int) int {
+    return e.Salary * percent / 100
+}
+#+END_SRC
+
+** struct 比较
+
+如果 struct 的全部成员都是可比较的, 则 struct 也是可比较的.
+
+** struct 嵌套
+
+#+BEGIN_SRC Golang
+type Point struct {
+    X, Y int
+}
+
+type Circle struct {
+    Center Point
+    Radius int
+}
+
+type Wheel struct {
+    Circle Circle
+    Spokes int
+}
+
+var w Wheel
+w.Circle.Center.X = 8
+w.Circle.Center.Y = 8
+w.Circle.Radius = 5
+w.Spokes = 20
+#+END_SRC
+
+*** 匿名嵌入
+
+#+BEGIN_SRC Golang
+type Circle struct {
+    Point
+    Radius int
+}
+
+type Wheel struct {
+    Circle
+    Spokes int
+}
+
+var w Wheel
+w.X = 8            // equivalent to w.Circle.Point.X = 8
+w.Y = 8            // equivalent to w.Circle.Point.Y = 8
+w.Radius = 5       // equivalent to w.Circle.Radius = 5
+w.Spokes = 20
+#+END_SRC
+
+匿名成员是指那些只给出了类型, 而没给出名字的成员.
+
+从上面的代码中可以看出, 访问匿名成员时, 会自顶向下, 一级一级往下找, 直到找到最后一个匿名成员, 然后将值赋给该类型的变量. 如, w.X 是找到 w.Circle.Point.X, 而不是找到 w.Circle.X.
+
+由于匿名成员有隐式的名字, 所以不能同时包含两个类型相同的匿名成员, 否则会导致名字冲突.
+
+在初始化时, 不能使用匿名成员的方式来初始化, 必须给出完整路径. 如:
+#+BEGIN_SRC Golang
+w = Wheel{Circle{Point{8, 8}, 5}, 20}
+
+w = Wheel{
+    Circle: Circle{
+        Point:  Point{X: 8, Y: 8},
+        Radius: 5,
+    },
+    Spokes: 20, // NOTE: trailing comma necessary here (and at Radius)
+}
+
+fmt.Printf("%#v\n", w)
+// Output:
+// Wheel{Circle:Circle{Point:Point{X:8, Y:8}, Radius:5}, Spokes:20}
+
+w.X = 42
+
+fmt.Printf("%#v\n", w)
+// Output:
+// Wheel{Circle:Circle{Point:Point{X:42, Y:8}, Radius:5}, Spokes:20}
+#+END_SRC
+
+* JSON
+
+JSON 是一种用于发送和接收结构化信息的标准协议.
+
+** JSON 的数据类型
+
+在 JSON 中, 有数字, 布尔值, 字符串, 数组, 对象. 其中, 数组和对象是通过前三个类型组合而来的. 如下所示:
+#+BEGIN_SRC Golang
+boolean         true
+number          -273.15
+string          "She said \"Hello, BF\""
+array           ["gold", "silver", "bronze"]
+object          {"year": 1980,
+                 "event": "archery",
+                 "medals": ["gold", "silver", "bronze"]}
+#+END_SRC
+
+** marshaling(编码)
+
+在 Go 中, 如果有一个 slice, 其元素都是 struct, 将这样的 slice 转化成 JSON 的过程, 就叫 marshaling(编组). 如:
+
+有一个 struct, 名为 Movie:
+#+BEGIN_SRC Golang
+type Movie struct {
+    Title  string
+    Year   int  `json:"released"`
+    Color  bool `json:"color,omitempty"`
+    Actors []string
+}
+#+END_SRC
+
+有一个 slice, 其元素都是 Movie 类型:
+#+BEGIN_SRC Golang
+var movies = []Movie{
+    {Title: "Casablanca", Year: 1942, Color: false,
+        Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
+    {Title: "Cool Hand Luke", Year: 1967, Color: true,
+        Actors: []string{"Paul Newman"}},
+    {Title: "Bullitt", Year: 1968, Color: true,
+        Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
+    // ...
+}
+#+END_SRC
+
+使用 Marshal():
+#+BEGIN_SRC Golang
+data, err := json.Marshal(movies)
+if err != nil {
+    log.Fatalf("JSON marshaling failed: %s", err)
+}
+fmt.Printf("%s\n", data)
+#+END_SRC
+
+打印结果:
+#+BEGIN_EXAMPLE
+[{"Title":"Casablanca","released":1942,"Actors":["Humphrey Bogart","Ingr
+id Bergman"]},{"Title":"Cool Hand Luke","released":1967,"color":true,"Ac
+tors":["Paul Newman"]},{"Title":"Bullitt","released":1968,"color":true,"
+Actors":["Steve McQueen","Jacqueline Bisset"]}]
+#+END_EXAMPLE
+
+如果觉得这种输出难以阅读, 可以使用 MarshalIndent():
+#+BEGIN_SRC Golang
+data, err := json.MarshalIndent(movies, "", "    ")
+if err != nil {
+    log.Fatalf("JSON marshaling failed: %s", err)
+}
+fmt.Printf("%s\n", data)
+#+END_SRC
+
+打印结果如下:
+#+BEGIN_EXAMPLE
+[
+    {
+        "Title": "Casablanca",
+        "released": 1942,
+        "Actors": [
+            "Humphrey Bogart",
+            "Ingrid Bergman"
+        ]
+    },
+    {
+        "Title": "Cool Hand Luke",
+        "released": 1967,
+        "color": true,
+        "Actors": [
+            "Paul Newman"
+        ]
+    },
+    {
+        "Title": "Bullitt",
+        "released": 1968,
+        "color": true,
+        "Actors": [
+            "Steve McQueen",
+            "Jacqueline Bisset"
+        ]
+    }
+]
+#+END_EXAMPLE
+
+*** 注
+
+由于 Go 中 struct 的成员名如果是以小写字母开头, 则其他包无法访问, 所以 JSON 无法访问我们的 struct 里以小写字母开头的成员, 因此也就无法 marshaling, 不会出现在 JSON 编码的结果中.
+
+所以到这里, 我们就可以明白, 为什么上面的例子中, struct 的成员都是大写字母开头的.
+
+另外, 对比 Movie 的成员名和 marshaling 后 JSON 的成员名, 可以发现, Year 变成了 released, Color 变成了 color. 要知道为什么会这样, 需要先了解 结构体成员Tag 的概念.
+
+**** 结构体成员Tag
+
+结构体成员Tag 是任意的字符串, 不过我们一般写成 key:"value" 这样的格式.
+
+如果 key 为 json, 表示使用 encoding/json 包的编码和解码行为; 如果 key 为 xml, 表示使用 encoding/xml 包的编码和解码行为.
+
+value 中的第一个值用于指定 JSON 对象的名字, 比如将 Go 语言中的 Year 对应到 JSON 中的 released.
+
+如果 value 中还有第二个值, 表示额外的选项, omitempty 选项表示 Go 语言结构体成员为空或零值时不生成 JSON 对象. 由于电影 Casablanca 中 Color 为 false, 所以不输出 JSON 的 color 项.
+
+** unmarshaling(解码)
+
+下面的例子将 JSON 格式的电影数据解码为一个 slice, 该 slice 的元素是 struct. 该例子中只解码 Title 成员:
+#+BEGIN_SRC Golang
+var titles []struct{ Title string }
+if err := json.Unmarshal(data, &titles); err != nil {
+    log.Fatalf("JSON unmarshaling failed: %s", err)
+}
+fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
+#+END_SRC
+
+** 例子
+
+通过例子来演示, 如何通过 HTTP 接口发送 JSON 格式的请求, 并返回 JSON 格式的信息.
+
+定义合适的类型和常量:
+#+BEGIN_SRC Golang
+// Package github provides a Go API for the GitHub issue tracker.
+// See https://developer.github.com/v3/search/#search-issues.
+package github
+
+import "time"
+
+const IssuesURL = "https://api.github.com/search/issues"
+
+type IssuesSearchResult struct {
+    TotalCount int `json:"total_count"`
+    Items          []*Issue
+}
+
+type Issue struct {
+    Number    int
+    HTMLURL   string `json:"html_url"`
+    Title     string
+    State     string
+    User      *User
+    CreatedAt time.Time `json:"created_at"`
+    Body      string    // in Markdown format
+}
+
+type User struct {
+    Login   string
+    HTMLURL string `json:"html_url"`
+}
+#+END_SRC
+
+SearchIssues() 发出一个 HTTP 请求, 然后解码返回的 JSON 格式的结果:
+#+BEGIN_SRC Golang
+package github
+
+import (
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "net/url"
+    "strings"
+)
+
+// SearchIssues queries the GitHub issue tracker.
+func SearchIssues(terms []string) (*IssuesSearchResult, error) {
+    q := url.QueryEscape(strings.Join(terms, " "))
+    resp, err := http.Get(IssuesURL + "?q=" + q)
+    if err != nil {
+        return nil, err
+    }
+
+    // We must close resp.Body on all execution paths.
+    // (Chapter 5 presents 'defer', which makes this simpler.)
+    if resp.StatusCode != http.StatusOK {
+        resp.Body.Close()
+        return nil, fmt.Errorf("search query failed: %s", resp.Status)
+    }
+
+    var result IssuesSearchResult
+    if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+        resp.Body.Close()
+        return nil, err
+    }
+    resp.Body.Close()
+    return &result, nil
+}
+#+END_SRC
+
+#+BEGIN_SRC Golang
+// Issues prints a table of GitHub issues matching the search terms.
+package main
+
+import (
+    "fmt"
+    "log"
+    "os"
+
+    "gopl.io/ch4/github"
+)
+
+func main() {
+    result, err := github.SearchIssues(os.Args[1:])
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("%d issues:\n", result.TotalCount)
+    for _, item := range result.Items {
+        fmt.Printf("#%-5d %9.9s %.55s\n",
+            item.Number, item.User.Login, item.Title)
+    }
+}
+#+END_SRC
+
+输出结果为:
+#+BEGIN_EXAMPLE
+$ go build gopl.io/ch4/issues
+$ ./issues repo:golang/go is:open json decoder
+13 issues:
+#5680    eaigner encoding/json: set key converter on en/decoder
+#6050  gopherbot encoding/json: provide tokenizer
+#8658  gopherbot encoding/json: use bufio
+#8462  kortschak encoding/json: UnmarshalText confuses json.Unmarshal
+#5901        rsc encoding/json: allow override type marshaling
+#9812  klauspost encoding/json: string tag not symmetric
+#7872  extempora encoding/json: Encoder internally buffers full output
+#9650    cespare encoding/json: Decoding gives errPhase when unmarshalin
+#6716  gopherbot encoding/json: include field name in unmarshal error me
+#6901  lukescott encoding/json, encoding/xml: option to treat unknown fi
+#6384    joeshaw encoding/json: encode precise floating point integers u
+#6647    btracey x/tools/cmd/godoc: display type kind of each named type
+#4237  gjemiller encoding/base64: URLEncoding padding is optional
+#+END_EXAMPLE
+
+* TEXT 模板 和 HTML 模板
+
+text/template 和 html/template 等模板包提供了一个将变量值填充到一个 text 或 html 格式的模板的机制.
+
+模板可以是一个文件, 也可以是一个字符串, 里面包含若干个 {{action}} 对象, action 将会触发其他的行为.
+
+** TEXT 模板
+
+下面是一个简单的模板字符串:
+#+BEGIN_SRC Golang
+const templ = `{{.TotalCount}} issues:
+{{range .Items}}----------------------------------------
+Number: {{.Number}}
+User:   {{.User.Login}}
+Title:  {{.Title | printf "%.64s"}}
+Age:    {{.CreatedAt | daysAgo}} days
+{{end}}`
+#+END_SRC
+
+每个 action 前都有一个点操作符".", 表示当前值, 也就是最初被初始化为调用模板时的参数.
+
+{{range .Items}} 和 {{end}} 对应一个循环 action, 因此它们之间的内容可能会被展开多次.
+
+"|" 操作符表示将前一个表达式的值作为后一个函数的参数.
+
+Title 这一行的函数就是 printf(), 这个函数在所有模板中都可以直接使用.
+
+Age 这一行的函数就是 daysAgo(), 函数原型如下:
+#+BEGIN_SRC Golang
+func daysAgo(t time.Time) int {
+	return int(time.Since(t).Hours() / 24)
+}
+#+END_SRC
+
+生成模板的输出有两个步骤:
+- 分析模板并转化为内部表示
+- 基于指定的输入执行模板
+
+如下代码创建并分析上面定义的模板 templ:
+#+BEGIN_SRC Golang
+report, err := template.New("report").
+	Funcs(template.FuncMap{"daysAgo": daysAgo}).
+	Parse(templ)
+if err != nil {
+	log.Fatal(err)
+}
+#+END_SRC
+首先使用 template.New() 创建并返回一个模板; 然后使用 Funcs() 将 daysAgo 等自定义函数注册到模板中; 最后调用 Parse() 分析模板.
+
+接下来执行模板:
+#+BEGIN_SRC Golang
+var report = template.Must(template.New("issuelist").
+	Funcs(template.FuncMap{"daysAgo": daysAgo}).
+	Parse(templ))
+
+func main() {
+	result, err := github.SearchIssues(os.Args[1:])
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := report.Execute(os.Stdout, result); err != nil {
+		log.Fatal(err)
+	}
+}
+#+END_SRC
+
+** HTML 模板
+
+暂时跳过, 用到再看.
