@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Internet 控制报文协议(ICMP) - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="计算机网络" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Internet 控制报文协议(ICMP)</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org318bc97">概述</a></li>
+<li><a href="#orgaa5704f">ICMP 报文格式</a></li>
+<li><a href="#orga8af269">ICMP 报文类型</a></li>
+<li><a href="#orgb66076e">ICMP 时间戳请求与应答</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org318bc97" class="outline-2">
+<h2 id="org318bc97">概述</h2>
+<div class="outline-text-2" id="text-org318bc97">
+<p>
+IP 协议是一种不可靠无连接的协议, 当数据包经过多个网络传输后, 可能会出现目的主机不响应, 包拥塞, 包丢失等问题. 为了处理这些问题, 引入了 ICMP 协议. 通常我们认为 ICMP 是 IP 层的一个组成部分. 如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/5.png" alt="5.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa5704f" class="outline-2">
+<h2 id="orgaa5704f">ICMP 报文格式</h2>
+<div class="outline-text-2" id="text-orgaa5704f">
+<p>
+ICMP 报文有两种类型: 差错报文, 查询报文. 这两种报文的前 4 个字节的内容是相同的, 而接下来的字节内容则互不相同. 如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/6.png" alt="6.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga8af269" class="outline-2">
+<h2 id="orga8af269">ICMP 报文类型</h2>
+<div class="outline-text-2" id="text-orga8af269">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/7.png" alt="7.png" />
+</p>
+</div>
+
+<p>
+如上图所示, 8 位类型字段和 8 位代码字段共同决定了具体的 ICMP 报文类型(差错报文和查询报文只是最粗的分类, 在差错报文里面, 又细分了许多类型, 类型字段和代码字段共同决定了最具体的类型). 
+</p>
+
+<p>
+为什么不能直接分成查询报文和差错报文?
+</p>
+
+<p>
+因为对于差错报文, 有时需要特殊处理, 比如, 对于一个 ICMP 差错报文进行响应时, 永远不会生成另一份 ICMP 差错报文. 因为 ICMP 报文也是不可靠的, 也可能会出错, 如果不进行限制, 可能会出现因为一个差错而产生另一个差错的情况, 而另一个差错报文又产生了它的差错报文, 这样就无休无止了.
+</p>
+
+<p>
+从图中可以看出, 类型字段为 0, 8, 9, 10, 13, 14, 15, 16, 17, 18 时, 表示查询报文, 类型字段为 3, 4, 5, 11, 12 时, 大部分表示的是差错报文.
+</p>
+
+<p>
+不会产生差错报文的情况:
+</p>
+<ul class="org-ul">
+<li>ICMP 差错报文(ICMP 查询报文可能会产生 ICMP 差错报文)</li>
+<li>目的地址是广播地址或多播地址的 IP 数据报</li>
+<li>作为链路层广播的数据报</li>
+<li>不是 IP 分片的第一个分片</li>
+<li>源地址不是单个主机的数据报(即源地址不能是零地址, 环回地址, 广播地址, 多播地址)</li>
+</ul>
+
+<p>
+如果不对这些情况进行限制, 很可能会产生广播风暴.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb66076e" class="outline-2">
+<h2 id="orgb66076e">ICMP 时间戳请求与应答</h2>
+<div class="outline-text-2" id="text-orgb66076e">
+<p>
+ICMP 时间戳请求允许系统向另一个系统查询当前的时间. 返回值可以有多种类型的参考. 比较建议的做法是返回自午夜(UTC)开始计算的毫秒数. 这种 ICMP 报文的好处是它提供了毫秒级的分辨率, 而利用其他方法从别的主机获取的时间只能提供秒级的分辨率. 但由于获取的时间是从午夜开始计算的毫秒数, 所以当前日期需要根据其他途径获取.
+</p>
+
+<p>
+报文格式如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/8.png" alt="8.png" />
+</p>
+</div>
+
+<p>
+请求端填写的是发起时间戳, 然后发送报文. 响应端填写的是接收时间戳和传送时间戳(实际上大多数的实现都是把后两者设成相同的值). 发送端可以根据这三个字段来计算发送请求的时间和发送应答的时间.
+</p>
+
+<p>
+在 《TCP/IP详解卷一》中举了一个例子, 编写程序给某主机发送 ICMP 时间戳请求. 结果如下:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/9.png" alt="9.png" />
+</p>
+</div>
+
+<p>
+其中, difference = recv - orig
+</p>
+
+<p>
+而 rtt 是根据发送端发出的时间和发送端接收的时间来计算的.
+</p>
+
+<p>
+如果信任 rtt 的值, 且认为 rtt 的值有一半用于传输请求, 一半用于传输响应. 那么, 如果要让发送端与响应端的时间一致, 发送端应这样调整: difference - rtt/2. 得到的值为正, 说明发送端慢了, 得到的值为负, 说明发送端快了.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-08</span>
+            <span title="last modification date" class="post-info">2018-05-08</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/计算机网络">计算机网络</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/";
+         var disqus_url = "https://pinvondev.github.io/blog/Network/2018/05/08/internet-控制报文协议(icmp)/ Or /blog/Network/internet-控制报文协议(icmp)/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@ubuntu">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

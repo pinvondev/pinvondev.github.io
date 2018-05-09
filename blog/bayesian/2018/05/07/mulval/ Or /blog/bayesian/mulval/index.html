@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MulVAL - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="贝叶斯网" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">MulVAL</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org714e8f8">规则</a>
+<ul>
+<li><a href="#orgef070b6">advisories</a></li>
+<li><a href="#org16c0d5d">host configuration</a></li>
+<li><a href="#orga5c4af8">network configuration</a></li>
+<li><a href="#org52916fc">principal</a></li>
+<li><a href="#orgf8eaae8">interaction</a></li>
+<li><a href="#org6b958ee">policy</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org714e8f8" class="outline-2">
+<h2 id="org714e8f8">规则</h2>
+<div class="outline-text-2" id="text-org714e8f8">
+<p>
+OVAL(Open Vulnerability Assessment Language, 开放漏洞评估语言), 用来定义如何正确识别计算机系统中存在的漏洞.
+</p>
+</div>
+
+<div id="outline-container-orgef070b6" class="outline-3">
+<h3 id="orgef070b6">advisories</h3>
+<div class="outline-text-3" id="text-orgef070b6">
+<p>
+vulExists(webServer, 'CAN-2002-0392', httpd): webServer 机器的守护进程 httpd 存在 CVE ID 为 CAN-2002-0392 的漏洞.
+</p>
+
+<p>
+vulProperty('CAN-2002-0392',remoteExploit, privileEscalation): 远程攻击者利用 'CAN-2002-0392' 漏洞可以获得权限的升级.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org16c0d5d" class="outline-3">
+<h3 id="org16c0d5d">host configuration</h3>
+<div class="outline-text-3" id="text-org16c0d5d">
+<p>
+networkService(webServer, httpd, TCP, 80, apache): 在 webServer 机器上, apache 用户运行 httpd 进程, 并使用 TCP 协议监听 80 端口.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga5c4af8" class="outline-3">
+<h3 id="orga5c4af8">network configuration</h3>
+<div class="outline-text-3" id="text-orga5c4af8">
+<p>
+HACL(host access control lists, 主机访问控制列表).
+</p>
+
+<p>
+hacl(internet, webServer, TCP, 80): TCP 流量从 internet 流向 webServer 的 80 端口.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org52916fc" class="outline-3">
+<h3 id="org52916fc">principal</h3>
+<div class="outline-text-3" id="text-org52916fc">
+<p>
+格式: principal(user, projectPC, userAccount). 如:
+</p>
+
+<p>
+principal(sysAdmin, webServer, root): 将 sysAdmin 标识符绑定到 webServer 的 root 帐户.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf8eaae8" class="outline-3">
+<h3 id="orgf8eaae8">interaction</h3>
+<div class="outline-text-3" id="text-orgf8eaae8">
+<p>
+在多阶段攻击中, 漏洞和操作系统的语义决定了攻击者在每个阶段的选择. 我们将其编码为 Horn 子句, 其中, 第一行是结论, 其他行是使能条件. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Prolog">execCode(Attacker, Host, Priv) :-
+    vulExists(Host, VulID, Program),
+    vulProperty(VulID, remoteExploit, privEscalation),
+    networkService(Host, Program, Protocol, Port, Priv),
+    netAccess(Attacker, Host, Protocol, Port),
+    malicious(Attacker).
+</pre>
+</div>
+<p>
+如果 Host 的 Program 程序存在 VulID 漏洞, 远程攻击者可以利用该漏洞进行权限升级. 现在, Host 的 Program 在 Priv 权限下运行, 监听 Protocol 协议和 Port 端口, 攻击者可以通过网络访问到 Program, 并且如果攻击成功, 攻击者可以以 Priv 权限执行 Host 上的任何代码.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6b958ee" class="outline-3">
+<h3 id="org6b958ee">policy</h3>
+<div class="outline-text-3" id="text-org6b958ee">
+<p>
+每条策略都指定了某标识符(principal 中的内容)可以以什么方式访问什么内容.
+</p>
+
+<p>
+allow(Everyone, read, webPages). 
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-07</span>
+            <span title="last modification date" class="post-info">2018-05-09</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/贝叶斯网">贝叶斯网</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/bayesian/2018/05/07/mulval/ Or /blog/bayesian/mulval/";
+         var disqus_url = "https://pinvondev.github.io/blog/bayesian/2018/05/07/mulval/ Or /blog/bayesian/mulval/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
