@@ -1,0 +1,56 @@
+#+TITLE:       MulVAL
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-07 一
+
+#+URI:         /blog/bayesian/%y/%m/%d/%t/ Or /blog/bayesian/%t/
+#+TAGS:        贝叶斯网
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 规则
+
+OVAL(Open Vulnerability Assessment Language, 开放漏洞评估语言), 用来定义如何正确识别计算机系统中存在的漏洞.
+
+** advisories
+
+vulExists(webServer, 'CAN-2002-0392', httpd): webServer 机器的守护进程 httpd 存在 CVE ID 为 CAN-2002-0392 的漏洞.
+
+vulProperty('CAN-2002-0392',remoteExploit, privileEscalation): 远程攻击者利用 'CAN-2002-0392' 漏洞可以获得权限的升级.
+
+** host configuration
+
+networkService(webServer, httpd, TCP, 80, apache): 在 webServer 机器上, apache 用户运行 httpd 进程, 并使用 TCP 协议监听 80 端口.
+
+** network configuration
+
+HACL(host access control lists, 主机访问控制列表).
+
+hacl(internet, webServer, TCP, 80): TCP 流量从 internet 流向 webServer 的 80 端口.
+
+** principal
+
+格式: principal(user, projectPC, userAccount). 如:
+
+principal(sysAdmin, webServer, root): 将 sysAdmin 标识符绑定到 webServer 的 root 帐户.
+
+** interaction
+
+在多阶段攻击中, 漏洞和操作系统的语义决定了攻击者在每个阶段的选择. 我们将其编码为 Horn 子句, 其中, 第一行是结论, 其他行是使能条件. 如:
+#+BEGIN_SRC Prolog
+execCode(Attacker, Host, Priv) :-
+	vulExists(Host, VulID, Program),
+	vulProperty(VulID, remoteExploit, privEscalation),
+	networkService(Host, Program, Protocol, Port, Priv),
+	netAccess(Attacker, Host, Protocol, Port),
+	malicious(Attacker).
+#+END_SRC
+如果 Host 的 Program 程序存在 VulID 漏洞, 远程攻击者可以利用该漏洞进行权限升级. 现在, Host 的 Program 在 Priv 权限下运行, 监听 Protocol 协议和 Port 端口, 攻击者可以通过网络访问到 Program, 并且如果攻击成功, 攻击者可以以 Priv 权限执行 Host 上的任何代码.
+
+** policy
+
+每条策略都指定了某标识符(principal 中的内容)可以以什么方式访问什么内容.
+
+allow(Everyone, read, webPages). 
