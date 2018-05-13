@@ -1,0 +1,149 @@
+#+TITLE:       运动
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-10 四
+
+#+URI:         /blog/Record/%y/%m/%d/%t/ Or /blog/Record/%t/
+#+TAGS:        Record
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 环境
+
+node version: v6.10.0
+fabric version: v1.1.0
+
+#+BEGIN_SRC Shell
+npm install express-generator -g
+express --view=hbs sport
+#+END_SRC
+
+创建完成后, 进入 sport 目录, 填写 package.json:
+#+BEGIN_SRC JSON
+{
+  "name": "sportchain",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+	"express-session": "^1.15.6",
+    "hbs": "~4.0.1",
+    "http-errors": "~1.6.2",
+    "morgan": "~1.9.0",
+    "fabric-ca-client": "~1.1.0",
+    "fabric-client": "~1.1.0",
+    "grpc": "^1.6.0" 
+  }
+}
+#+END_SRC
+也可以通过 npm install module-name --save 这样来安装依赖.
+
+修改:
+#+BEGIN_SRC JavaScript
+var hbs = require('hbs');  // 增加
+var session = require('express-session');  // 增加, 使用 session
+...
+app.set('view engine', 'html');  // 修改, 使用 html 后缀
+app.engine('html', hbs.__express);  // 运行 hbs 模块
+...
+// 设置 session
+app.use(session({
+  secret: 'test',  // 后期应改成随机字符串
+  cookie: {maxAge: 60 * 1000}
+}));
+#+END_SRC
+
+运行:
+#+BEGIN_SRC Shell
+DEBUG=sport:* npm start
+#+END_SRC
+
+* 增加路由
+
+** 服务端代码
+
+#+BEGIN_SRC JavaScript
+var adminRouter = require('./routes/admin');  // 增加
+app.use('/admin', adminRouter);  // 增加
+#+END_SRC
+
+routes/admin.js 内容如下:
+#+BEGIN_SRC JavaScript
+var express = require('express');
+var enroll = require('../utils/enrollAdmin');
+var router = express.Router();
+
+/* GET admin listing. */
+router.get('/', function(req, res, next) {
+    res.render('enrollAdmin', {title: 'Admin'});
+});
+
+router.get('/enroll', function(req, res, next) {
+    enroll.enrollAdmin(function(isEnrolled, msg){
+        if (isEnrolled) {
+            console.log('pinvon', 'msg', msg);
+            result = {
+                code: 200,
+                msg: msg
+            }
+            res.json(result);
+        } else {
+            result = {
+                code: 400,
+                msg: msg
+            }
+            res.json(result);
+        }
+    });
+});
+
+module.exports = router;
+#+END_SRC
+
+** 客户端代码
+
+#+BEGIN_SRC JavaScript
+<html>
+<head>
+    <script src="/javascripts/jquery-3.3.1.min.js"></script>
+    <script src="/javascripts/layer/layer.js"></script>
+</head>
+
+<body>
+    <h1>管理员登陆</h1>
+    <button id="btnQuery" type="submit">管理员登陆</button>
+    <p id="msg"></p>
+
+    <script type="text/javascript">
+        $('#btnQuery').click(function(){
+            console.log('查询');
+            $.ajax({
+                url:'/admin/enroll',
+                type:'get',
+                success:function(data, status){
+                    console.log(data);
+                    if (data.code == 200) {
+                        layer.msg('登陆成功');
+                        $('#msg').text(data.msg);
+                    }
+                    if (data.code == 400) {
+                        layer.msg('登陆失败');
+                        $('#msg').text(data.msg);
+                    }
+                },
+                error:function(data, err){
+                    console.log(err);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+#+END_SRC

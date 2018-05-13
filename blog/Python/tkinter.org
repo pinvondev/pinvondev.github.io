@@ -1,0 +1,323 @@
+#+TITLE:       Tkinter 学习笔记
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-12 六
+
+#+URI:         /blog/Python/%y/%m/%d/%t/ Or /blog/Python/%t/
+#+TAGS:        Python
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+Tkinter 是 Python 的标准 GUI 库, 已内置到 Python 中.
+
+创建一个 GUI 程序, 主要包括 4 个步骤:
+- 导入 Tkinter 模块
+- 创建控件
+- 指定这个控件的所有者
+- 告诉 GM(geometry manager) 有控件产生
+
+* 创建主窗口
+
+#+BEGIN_SRC Shell
+import tkinter as tk
+window = tk.Tk()
+window.mainloop()
+#+END_SRC
+
+还可以通过 window.title('my window') 和 window.geometry('200x100') 指定窗口的标题与大小.
+
+* Label
+
+#+BEGIN_SRC Python
+var = tk.StringVar()
+var.set('my label')
+label = tk.Label(
+    window,					# 标签的文字
+    textvariable = var,		
+    bg = 'green',			# 背景颜色
+    font = ('Arial', 12),	# 字体和字体大小
+    width = 15,				# 标签的长宽
+    height = 2)
+label.pack()				# 固定窗口位置
+#+END_SRC
+
+* Button
+
+#+BEGIN_SRC Python
+on_hit = False
+def hit_me():
+    global on_hit
+    if on_hit == False:
+        on_hit = True
+        var.set('you hit me')
+    else:
+        on_hit = False
+        var.set('')
+
+button = tk.Button(
+    window,
+    text='hit me',
+    width=15,
+    height=2,
+    command=hit_me			# 点击按钮时触发hit_me事件
+)
+button.pack()
+#+END_SRC
+
+* Entry
+
+Entry 用于用户输入数据, 在这个例子中, 不论用户输入什么, 显示的都是 * 号.
+#+BEGIN_SRC Python
+entry = tk.Entry(
+    window,
+    show='*'
+)
+entry.pack()
+#+END_SRC
+
+* Text
+
+#+BEGIN_SRC Python
+text = tk.Text(window, height=2)
+text.pack()
+text.insert('insert', 'pinvon')
+text.insert('end', 'pinvon-end')
+#+END_SRC
+
+* Listbox
+
+** 创建 Listbox
+
+#+BEGIN_SRC Python
+var2 = tk.StringVar()
+var2.set((11, 22, 33, 44))
+
+# 创建 Listbox
+listbox = tk.Listbox(
+    window,
+    listvariable=var2
+)
+listbox.pack()
+#+END_SRC
+
+** 插入 Listbox
+
+#+BEGIN_SRC Python
+listbox.insert('end', 'abc')  # 在末尾添加 abc
+listbox.insert(2, 'second')
+#+END_SRC
+
+** 删除 Listbox 元素
+
+#+BEGIN_SRC Python
+listbox.delete(2)  # 删除第二个位置的元素
+#+END_SRC
+
+** 访问 Listbox 元素
+
+#+BEGIN_SRC Python
+listbox.curselection()  # 获取当前选中的元素
+listbox.get(2)			# 获取索引为 2 的元素
+#+END_SRC
+
+* Radiobutton
+
+#+BEGIN_SRC Python
+def print_selection():
+    print(var2.get())
+
+var2 = tk.StringVar()
+radiobutton = tk.Radiobutton(
+    window,
+    text='Option A',
+    variable=var2,
+    value='A',
+    command=print_selection
+)
+radiobutton.pack()
+#+END_SRC
+variable=var2, value='A' 的意思是, 当鼠标选中了该选项, 就把 value 的值 A 放到变量 var2 中, 然后赋值给 variable.
+
+* Scale(滚动条)
+
+#+BEGIN_SRC Python
+def print_selection(v):
+    print(v)
+
+scale = tk.Scale(
+    window,
+    label='try me',
+    from_=5,
+    to=11,
+    orient=tk.HORIZONTAL,
+    length=200,			# 长度: 200 个像素
+    showvalue=1,		# 在滚动条上方显示值, 如果不显示, 改为 0
+    tickinterval=2,		# 坐标间隔
+    resolution=0.01,
+    command=print_selection
+)
+scale.pack()
+#+END_SRC
+注意, Scale 的 command 参数会传递一个当前值给 print_selection().
+
+* Checkbutton
+
+#+BEGIN_SRC Python
+def print_selection():
+    if (var2.get()==1):  # 选中第一个选项
+        print('Python')
+
+var2 = tk.IntVar()
+checkbutton = tk.Checkbutton(
+    window,
+    text='Python',
+    variable=var2,
+    onvalue=1,
+    offvalue=0,
+    command=print_selection
+)
+checkbutton.pack()
+#+END_SRC
+当选中 checkbutton 后, onvalue 的值就会传给 var2, var2 再将这个值传给 variable. offvalue 是没选中 checkbutton 时放入 variable 的值.
+
+* Canvas(画布)
+
+#+BEGIN_SRC Python
+canvas = tk.Canvas(
+    window,
+    bg='blue',
+    height=100,
+    width=200
+)
+canvas.pack()
+
+image_file = tk.PhotoImage(file='ins.gif')
+image = canvas.create_image(
+    10,10,		    # 图片坐标
+    anchor='nw',	    # 图片锚点为左上角
+    image=image_file)
+
+line = canvas.create_line(	# 画直线
+    50, 50,			# 起点
+    80, 80)			# 终点
+
+oval = canvas.create_oval(
+    50, 50,
+    80, 80,
+    fill='red'
+)
+
+arc = canvas.create_arc(
+    80, 80,
+    110, 110,
+    start=0,
+    extent=180		# 扇形的度数
+)
+
+rect = canvas.create_rectangle(
+    100, 30, 120, 50
+)
+#+END_SRC
+
+如果要让画布内的某个实体移动, 可以使用类似 canvas.move(rect, 0, 2) 的语句, 在这里, rect 横坐标移动 0 个单个, 纵坐标移动 2 个单位.
+
+* Menubar(菜单栏)
+
+#+BEGIN_SRC Python
+def do_job():
+    print('do_job')
+menubar = tk.Menu(window)
+filemenu = tk.Menu(menubar, tearoff=0)
+menubar.add_cascade(label='File', menu=filemenu)
+filemenu.add_command(label='New', command=do_job)
+filemenu.add_command(label='Open', command=do_job)
+filemenu.add_command(label='Save', command=do_job)
+filemenu.add_separator()
+filemenu.add_command(label='Exit', command=window.quit)
+
+submenu = tk.Menu(filemenu)	# 子菜单
+filemenu.add_cascade(label='Import', menu=submenu, underline=0)
+submenu.add_command(label='Submenu1', command=do_job)
+window.config(menu=menubar)
+#+END_SRC
+
+* Frame
+
+我们可以把 Frame 看成是一个容器. 可以在容器上放其他控件(包括另一个 Frame), 最后将 Frame 加载到 Window 即可.
+
+#+BEGIN_SRC Python
+frm = tk.Frame(window)
+frm.pack()
+
+frm1 = tk.Frame(frm)
+frm2 = tk.Frame(frm)
+
+frm1.pack(side='left')
+frm2.pack(side='right')
+
+tk.Label(frm, text='frm').pack()
+tk.Label(frm1, text='frm1').pack()
+tk.Label(frm2, text='frm2').pack()
+#+END_SRC
+
+* messagebox
+
+要使用 messagebox, 需要使用语句
+#+BEGIN_SRC Python
+import tkinter.messagebox
+#+END_SRC
+引入.
+
+使用:
+#+BEGIN_SRC Python
+def hit_me():
+    tk.messagebox.showinfo(title='Hi', message='pinvon')
+tk.Button(
+    window,
+    text='hit me',
+    command=hit_me
+).pack()
+#+END_SRC
+
+* pack, grid, place
+
+我们可以通过 pack, grid, place 这三个方法来设置控件的位置.
+
+** pack
+
+#+BEGIN_SRC Python
+tk.Label(window, text='1').pack(side='top')
+#+END_SRC
+pack() 的 side 还可以有 bottom, left, right 这些属性.
+
+** grid
+
+#+BEGIN_SRC Python
+for i in range(4):
+    for j in range(3):
+        tk.Label(window, text=1).grid(
+                row=i,
+                column=j,
+                padx=10,
+                pady=10)
+#+END_SRC
+上面的代码创建了一个四行三列的表格, grid 通过表格的形式定位.
+
+** place
+
+place 是直接以坐标为单位进行定位的.
+
+#+BEGIN_SRC Python
+tk.Label(
+	window,
+	text='1'
+).place(
+	x=20,
+	y=10,
+	anchor='nw'
+)
+#+END_SRC

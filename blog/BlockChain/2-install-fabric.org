@@ -186,11 +186,47 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 
 如果从环境变量中读取配置信息, 需要以 =CORE_= 前缀打头. 如配置 =peer.id=, 环境变量应为 =CORE_PEER_ID=.
 
-Peer节点读取配置文件时, 先查找 =$FABRIC_CFG_PATH/core.yaml=. 如果没找到, 则查找 =./core.yaml=. 如果没找到, 则查找 =/etc/hyperledger/fabric/core.yaml=.
+Peer节点读取配置文件时, 先查找 =$FABRIC_CFG_PATH/core.yaml=. 如果没找到, 则查找 =./core.yaml=. 如果没找到, 则查找 =/etc/hyperledger/fabric/core.yaml=. 
+
+Fabric 也有提供 core.yaml 的参考配置, 在目录 =sampleconfig/core.yaml= 中.
 
 =core.yaml= 中一般包括 =logging, peer, vm, chaincode, ledger= 五个部分.
 
 *** logging
+
+日志. 有 critcal, error, warning, notice, info, debug 六个级别, 越往后级别越低, 输出的内容也越丰富, 默认情况下为 info 级别.
+
+#+BEGIN_SRC YAML
+logging:
+	peer:info
+	cauthdsl:warning
+	gossip:warning
+	ledger:info
+	msp:warning
+	policies:warning
+	grpc:error
+#+END_SRC
+
+日志的输出格式为:
+#+BEGIN_SRC YAML
+format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+#+END_SRC
+
+*** peer
+
+peer 部分的配置项较多, 可以分为通用配置, gossip, events, tls 等多个部分.
+
+**** 通用配置
+
+#+BEGIN_SRC YAML
+id  					# peer 在网络中的 id
+networkId  				# 网络 id, 可以通过 id 指定多个隔离的网络
+listenAddress			# 服务器监听的本地地址, 如果有多个网卡, 可以指定监听某网卡, 默认情况下监听本地所有网卡(0.0.0.0), 端口号为 7051
+chaincodeListenAddress	# 链码容器监听的地址, 不指定则为 listenAddress, 在生产环境中, 建议指定, 端口号为 7052
+address					# 外部访问服务的地址
+addressAutoDetect		# 是否自动探测服务地址, 如果 peer 的运行环境是动态分配地址的, 该配置可以进行自动探测, 探测将内部地址作为服务地址. 如果启用 TLS, 则建议关闭该配置项
+gomaxprocs				# 配置运行该 Go 应用的最大进程数
+#+END_SRC
 
 ** cryptogen
 
