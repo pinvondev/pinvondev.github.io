@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tkinter 学习笔记 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Python" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Tkinter 学习笔记</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd881b22">概述</a></li>
+<li><a href="#orgd6c75df">创建主窗口</a></li>
+<li><a href="#org0fe5300">Label</a></li>
+<li><a href="#org01c567b">Button</a></li>
+<li><a href="#orgb9d4bcc">Entry</a></li>
+<li><a href="#org185dcf1">Text</a></li>
+<li><a href="#org21410e6">Listbox</a>
+<ul>
+<li><a href="#orgfd4dbd7">创建 Listbox</a></li>
+<li><a href="#org62282f5">插入 Listbox</a></li>
+<li><a href="#orgf896834">删除 Listbox 元素</a></li>
+<li><a href="#orge40de89">访问 Listbox 元素</a></li>
+</ul>
+</li>
+<li><a href="#org1412f9e">Radiobutton</a></li>
+<li><a href="#org8adea91">Scale(滚动条)</a></li>
+<li><a href="#orga48ed4a">Checkbutton</a></li>
+<li><a href="#orgbff93a4">Canvas(画布)</a></li>
+<li><a href="#org2f9148a">Menubar(菜单栏)</a></li>
+<li><a href="#org9f8dbe6">Frame</a></li>
+<li><a href="#org4f091d4">messagebox</a></li>
+<li><a href="#org491a56f">pack, grid, place</a>
+<ul>
+<li><a href="#org9015cef">pack</a></li>
+<li><a href="#org9ab310c">grid</a></li>
+<li><a href="#orga66ef5c">place</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd881b22" class="outline-2">
+<h2 id="orgd881b22">概述</h2>
+<div class="outline-text-2" id="text-orgd881b22">
+<p>
+Tkinter 是 Python 的标准 GUI 库, 已内置到 Python 中.
+</p>
+
+<p>
+创建一个 GUI 程序, 主要包括 4 个步骤:
+</p>
+<ul class="org-ul">
+<li>导入 Tkinter 模块</li>
+<li>创建控件</li>
+<li>指定这个控件的所有者</li>
+<li>告诉 GM(geometry manager) 有控件产生</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd6c75df" class="outline-2">
+<h2 id="orgd6c75df">创建主窗口</h2>
+<div class="outline-text-2" id="text-orgd6c75df">
+<div class="org-src-container">
+<pre class="src src-Shell">import tkinter as tk
+window = tk.Tk()
+window.mainloop()
+</pre>
+</div>
+
+<p>
+还可以通过 window.title('my window') 和 window.geometry('200x100') 指定窗口的标题与大小.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0fe5300" class="outline-2">
+<h2 id="org0fe5300">Label</h2>
+<div class="outline-text-2" id="text-org0fe5300">
+<div class="org-src-container">
+<pre class="src src-Python">var = tk.StringVar()
+var.set('my label')
+label = tk.Label(
+    window,					# 标签的文字
+    textvariable = var,		
+    bg = 'green',			# 背景颜色
+    font = ('Arial', 12),	# 字体和字体大小
+    width = 15,				# 标签的长宽
+    height = 2)
+label.pack()				# 固定窗口位置
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org01c567b" class="outline-2">
+<h2 id="org01c567b">Button</h2>
+<div class="outline-text-2" id="text-org01c567b">
+<div class="org-src-container">
+<pre class="src src-Python">on_hit = False
+def hit_me():
+    global on_hit
+    if on_hit == False:
+        on_hit = True
+        var.set('you hit me')
+    else:
+        on_hit = False
+        var.set('')
+
+button = tk.Button(
+    window,
+    text='hit me',
+    width=15,
+    height=2,
+    command=hit_me			# 点击按钮时触发hit_me事件
+)
+button.pack()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9d4bcc" class="outline-2">
+<h2 id="orgb9d4bcc">Entry</h2>
+<div class="outline-text-2" id="text-orgb9d4bcc">
+<p>
+Entry 用于用户输入数据, 在这个例子中, 不论用户输入什么, 显示的都是 * 号.
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">entry = tk.Entry(
+    window,
+    show='*'
+)
+entry.pack()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org185dcf1" class="outline-2">
+<h2 id="org185dcf1">Text</h2>
+<div class="outline-text-2" id="text-org185dcf1">
+<div class="org-src-container">
+<pre class="src src-Python">text = tk.Text(window, height=2)
+text.pack()
+text.insert('insert', 'pinvon')
+text.insert('end', 'pinvon-end')
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org21410e6" class="outline-2">
+<h2 id="org21410e6">Listbox</h2>
+<div class="outline-text-2" id="text-org21410e6">
+</div>
+<div id="outline-container-orgfd4dbd7" class="outline-3">
+<h3 id="orgfd4dbd7">创建 Listbox</h3>
+<div class="outline-text-3" id="text-orgfd4dbd7">
+<div class="org-src-container">
+<pre class="src src-Python">var2 = tk.StringVar()
+var2.set((11, 22, 33, 44))
+
+# 创建 Listbox
+listbox = tk.Listbox(
+    window,
+    listvariable=var2
+)
+listbox.pack()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org62282f5" class="outline-3">
+<h3 id="org62282f5">插入 Listbox</h3>
+<div class="outline-text-3" id="text-org62282f5">
+<div class="org-src-container">
+<pre class="src src-Python">listbox.insert('end', 'abc')  # 在末尾添加 abc
+listbox.insert(2, 'second')
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf896834" class="outline-3">
+<h3 id="orgf896834">删除 Listbox 元素</h3>
+<div class="outline-text-3" id="text-orgf896834">
+<div class="org-src-container">
+<pre class="src src-Python">listbox.delete(2)  # 删除第二个位置的元素
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge40de89" class="outline-3">
+<h3 id="orge40de89">访问 Listbox 元素</h3>
+<div class="outline-text-3" id="text-orge40de89">
+<div class="org-src-container">
+<pre class="src src-Python">listbox.curselection()  # 获取当前选中的元素
+listbox.get(2)			# 获取索引为 2 的元素
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1412f9e" class="outline-2">
+<h2 id="org1412f9e">Radiobutton</h2>
+<div class="outline-text-2" id="text-org1412f9e">
+<div class="org-src-container">
+<pre class="src src-Python">def print_selection():
+    print(var2.get())
+
+var2 = tk.StringVar()
+radiobutton = tk.Radiobutton(
+    window,
+    text='Option A',
+    variable=var2,
+    value='A',
+    command=print_selection
+)
+radiobutton.pack()
+</pre>
+</div>
+<p>
+variable=var2, value='A' 的意思是, 当鼠标选中了该选项, 就把 value 的值 A 放到变量 var2 中, 然后赋值给 variable.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8adea91" class="outline-2">
+<h2 id="org8adea91">Scale(滚动条)</h2>
+<div class="outline-text-2" id="text-org8adea91">
+<div class="org-src-container">
+<pre class="src src-Python">def print_selection(v):
+    print(v)
+
+scale = tk.Scale(
+    window,
+    label='try me',
+    from_=5,
+    to=11,
+    orient=tk.HORIZONTAL,
+    length=200,			# 长度: 200 个像素
+    showvalue=1,		# 在滚动条上方显示值, 如果不显示, 改为 0
+    tickinterval=2,		# 坐标间隔
+    resolution=0.01,
+    command=print_selection
+)
+scale.pack()
+</pre>
+</div>
+<p>
+注意, Scale 的 command 参数会传递一个当前值给 print_selection().
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga48ed4a" class="outline-2">
+<h2 id="orga48ed4a">Checkbutton</h2>
+<div class="outline-text-2" id="text-orga48ed4a">
+<div class="org-src-container">
+<pre class="src src-Python">def print_selection():
+    if (var2.get()==1):  # 选中第一个选项
+        print('Python')
+
+var2 = tk.IntVar()
+checkbutton = tk.Checkbutton(
+    window,
+    text='Python',
+    variable=var2,
+    onvalue=1,
+    offvalue=0,
+    command=print_selection
+)
+checkbutton.pack()
+</pre>
+</div>
+<p>
+当选中 checkbutton 后, onvalue 的值就会传给 var2, var2 再将这个值传给 variable. offvalue 是没选中 checkbutton 时放入 variable 的值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbff93a4" class="outline-2">
+<h2 id="orgbff93a4">Canvas(画布)</h2>
+<div class="outline-text-2" id="text-orgbff93a4">
+<div class="org-src-container">
+<pre class="src src-Python">canvas = tk.Canvas(
+    window,
+    bg='blue',
+    height=100,
+    width=200
+)
+canvas.pack()
+
+image_file = tk.PhotoImage(file='ins.gif')
+image = canvas.create_image(
+    10,10,		    # 图片坐标
+    anchor='nw',	    # 图片锚点为左上角
+    image=image_file)
+
+line = canvas.create_line(	# 画直线
+    50, 50,			# 起点
+    80, 80)			# 终点
+
+oval = canvas.create_oval(
+    50, 50,
+    80, 80,
+    fill='red'
+)
+
+arc = canvas.create_arc(
+    80, 80,
+    110, 110,
+    start=0,
+    extent=180		# 扇形的度数
+)
+
+rect = canvas.create_rectangle(
+    100, 30, 120, 50
+)
+</pre>
+</div>
+
+<p>
+如果要让画布内的某个实体移动, 可以使用类似 canvas.move(rect, 0, 2) 的语句, 在这里, rect 横坐标移动 0 个单个, 纵坐标移动 2 个单位.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f9148a" class="outline-2">
+<h2 id="org2f9148a">Menubar(菜单栏)</h2>
+<div class="outline-text-2" id="text-org2f9148a">
+<div class="org-src-container">
+<pre class="src src-Python">def do_job():
+    print('do_job')
+menubar = tk.Menu(window)
+filemenu = tk.Menu(menubar, tearoff=0)
+menubar.add_cascade(label='File', menu=filemenu)
+filemenu.add_command(label='New', command=do_job)
+filemenu.add_command(label='Open', command=do_job)
+filemenu.add_command(label='Save', command=do_job)
+filemenu.add_separator()
+filemenu.add_command(label='Exit', command=window.quit)
+
+submenu = tk.Menu(filemenu)	# 子菜单
+filemenu.add_cascade(label='Import', menu=submenu, underline=0)
+submenu.add_command(label='Submenu1', command=do_job)
+window.config(menu=menubar)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9f8dbe6" class="outline-2">
+<h2 id="org9f8dbe6">Frame</h2>
+<div class="outline-text-2" id="text-org9f8dbe6">
+<p>
+我们可以把 Frame 看成是一个容器. 可以在容器上放其他控件(包括另一个 Frame), 最后将 Frame 加载到 Window 即可.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Python">frm = tk.Frame(window)
+frm.pack()
+
+frm1 = tk.Frame(frm)
+frm2 = tk.Frame(frm)
+
+frm1.pack(side='left')
+frm2.pack(side='right')
+
+tk.Label(frm, text='frm').pack()
+tk.Label(frm1, text='frm1').pack()
+tk.Label(frm2, text='frm2').pack()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4f091d4" class="outline-2">
+<h2 id="org4f091d4">messagebox</h2>
+<div class="outline-text-2" id="text-org4f091d4">
+<p>
+要使用 messagebox, 需要使用语句
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">import tkinter.messagebox
+</pre>
+</div>
+<p>
+引入.
+</p>
+
+<p>
+使用:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">def hit_me():
+    tk.messagebox.showinfo(title='Hi', message='pinvon')
+tk.Button(
+    window,
+    text='hit me',
+    command=hit_me
+).pack()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org491a56f" class="outline-2">
+<h2 id="org491a56f">pack, grid, place</h2>
+<div class="outline-text-2" id="text-org491a56f">
+<p>
+我们可以通过 pack, grid, place 这三个方法来设置控件的位置.
+</p>
+</div>
+
+<div id="outline-container-org9015cef" class="outline-3">
+<h3 id="org9015cef">pack</h3>
+<div class="outline-text-3" id="text-org9015cef">
+<div class="org-src-container">
+<pre class="src src-Python">tk.Label(window, text='1').pack(side='top')
+</pre>
+</div>
+<p>
+pack() 的 side 还可以有 bottom, left, right 这些属性.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9ab310c" class="outline-3">
+<h3 id="org9ab310c">grid</h3>
+<div class="outline-text-3" id="text-org9ab310c">
+<div class="org-src-container">
+<pre class="src src-Python">for i in range(4):
+    for j in range(3):
+        tk.Label(window, text=1).grid(
+                row=i,
+                column=j,
+                padx=10,
+                pady=10)
+</pre>
+</div>
+<p>
+上面的代码创建了一个四行三列的表格, grid 通过表格的形式定位.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga66ef5c" class="outline-3">
+<h3 id="orga66ef5c">place</h3>
+<div class="outline-text-3" id="text-orga66ef5c">
+<p>
+place 是直接以坐标为单位进行定位的.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Python">tk.Label(
+    window,
+    text='1'
+).place(
+    x=20,
+    y=10,
+    anchor='nw'
+)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-12</span>
+            <span title="last modification date" class="post-info">2018-05-13</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Python/2018/05/12/tkinter-学习笔记/ Or /blog/Python/tkinter-学习笔记/";
+         var disqus_url = "https://pinvondev.github.io/blog/Python/2018/05/12/tkinter-学习笔记/ Or /blog/Python/tkinter-学习笔记/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

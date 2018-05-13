@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>JavaScript笔记--Cookie与Session - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Web" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">JavaScript笔记--Cookie与Session</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga536a65">概述</a></li>
+<li><a href="#org7d589ed">Cookie</a></li>
+<li><a href="#orgb243124">Session</a></li>
+<li><a href="#org30e2683">signedCookie</a></li>
+<li><a href="#org26e7096">在 Express 中使用</a>
+<ul>
+<li><a href="#org5201b29">使用 Cookie</a>
+<ul>
+<li><a href="#org5dfbd33">cookie-parser</a></li>
+<li><a href="#org00e3419">使用</a>
+<ul>
+<li><a href="#org75b5b01">例 1</a></li>
+<li><a href="#org2c14386">例 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org64d59c9">使用 Session</a>
+<ul>
+<li><a href="#orge141f90">express-session</a></li>
+<li><a href="#orgd49f987">Session 的参数</a></li>
+<li><a href="#org92780f6">例 1</a></li>
+<li><a href="#orgc83599b">例 2</a></li>
+<li><a href="#org6e7cae1">使用 mongodb 存储 Session</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga536a65" class="outline-2">
+<h2 id="orga536a65">概述</h2>
+<div class="outline-text-2" id="text-orga536a65">
+<p>
+HTTP 是一种无状态协议, 即, 当客户端发出请求的时候, 无法得知上一次请求的状态. 一旦数据交换完毕, 客户端与服务器的连接就会关闭, 再次交换数据需要建立新的连接.
+</p>
+
+<p>
+如, 用户下单, 由于 HTTP 无状态, 服务器并不知道是哪个用户下的单.
+</p>
+
+<p>
+于是产生了 Cookie 和 Session. Cookie 在客户端记录信息, 用于确定用户身份, Session 在服务器记录信息, 用于确定用户身份.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7d589ed" class="outline-2">
+<h2 id="org7d589ed">Cookie</h2>
+<div class="outline-text-2" id="text-org7d589ed">
+<p>
+可以简单理解为, Cookie 是服务器向客户端颁发的证书, 客户端用这个证书来证明自己的身份. 这样服务器就知道是哪个用户给自己发送了请求.
+</p>
+
+<p>
+<a href="https://pinvondev.github.io/blog/2018/03/19/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%8E%AF%E5%A2%83%E6%A6%82%E8%BF%B0/#org7090079">Cookie 笔记</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb243124" class="outline-2">
+<h2 id="orgb243124">Session</h2>
+<div class="outline-text-2" id="text-orgb243124">
+<p>
+Session 是另一种记录用户状态的机制, 当客户端访问服务器的时候, 服务器就把客户端的信息通过 Session 记录在服务器上. 与 Cookie 不同, Session 保存在服务器. 保存的方式很多, 内存, 数据库, 文件, 都可以.
+</p>
+
+<p>
+为什么有了 Cookie, 还要用 Session? 主要是因为 Cookie 保存在客户端, 数据很有可能被伪造, 所以重要的数据不能保存在 Cookie; 其次, 是因为 Cookie 中数据如果太多, 影响传输效率.
+</p>
+
+<p>
+Session 的使用需要依赖于 Session id, 而 Session id 存在于 Cookie 中(在 Express 中默认是 connect.sid 属性), 所以, 可以说 Session 依赖于 Cookie. 但也不绝对, 如果浏览器禁用了 Cookie, 还可以通过其他方式实现 Session, 如在 url 中传递 session_id. 可以把 session_id 看成是客户端的唯一标识. 当请求到来时, 服务器检查 Cookie 中保存的 session_id, 然后通过这个 id 与服务器的 session data 关联起来, 进行数据的保存和修改.
+</p>
+
+<p>
+具体来说, 当客户端发送请求到服务器时, 服务器会随机产生一个 1024bit 的字符串, 存在 Cookie 的 connect.sid 属性里. 当下次客户端再发送请求到服务器里时, 附带的 Cookie 中就会有这个字符串, 这样服务器就知道这个用户的身份了, 然后根据这个身份在服务器中取出相应的数据.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org30e2683" class="outline-2">
+<h2 id="org30e2683">signedCookie</h2>
+<div class="outline-text-2" id="text-org30e2683">
+<p>
+其实, 伪造 Cookie 是一件非常难的事, 因为有经验的开发人员, 都不会直接存储 Cookie, 他们会将 Cookie 进行签名(对内容生成摘要), 再存储.
+</p>
+
+<p>
+如, 原本的 Cookie 长这样:
+</p>
+<div class="org-src-container">
+<pre class="src src-JSON">{dotcom_user: 'alsotang'}
+</pre>
+</div>
+
+<p>
+然后我们设置一个秘密字符串, 根据这个秘密字符串, 对 Cookie 进行签名. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">{'dotcom_user.sig': '4850a42e3bc0d39c978770392cbd8dc2923e3d1d'}
+</pre>
+</div>
+<p>
+现在, 如果浏览器更改了 Cookie 中的信息, 服务器就会发现 hash 校验结果不同.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org26e7096" class="outline-2">
+<h2 id="org26e7096">在 Express 中使用</h2>
+<div class="outline-text-2" id="text-org26e7096">
+</div>
+<div id="outline-container-org5201b29" class="outline-3">
+<h3 id="org5201b29">使用 Cookie</h3>
+<div class="outline-text-3" id="text-org5201b29">
+</div>
+<div id="outline-container-org5dfbd33" class="outline-4">
+<h4 id="org5dfbd33">cookie-parser</h4>
+<div class="outline-text-4" id="text-org5dfbd33">
+<div class="org-src-container">
+<pre class="src src-Shell">npm install cookie-parser
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org00e3419" class="outline-4">
+<h4 id="org00e3419">使用</h4>
+<div class="outline-text-4" id="text-org00e3419">
+</div>
+<div id="outline-container-org75b5b01" class="outline-5">
+<h5 id="org75b5b01">例 1</h5>
+<div class="outline-text-5" id="text-org75b5b01">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+
+// 可以直接使用req.cookies.cname来访问cookie
+var cookie = require('cookie-parser');
+
+// 创建app对象
+var app = express();
+app.use(cookie())
+
+// 设置cookie
+app.get('/setc',function(req,res){
+    res.cookie('resc', '设置到cookie里的值', { expires: new Date(Date.now() + 900000), httpOnly: true });
+    res.end('cookies set ok')
+})
+
+// 取得cookie
+app.get('/getc',function(req,res){
+    console.log('取得的cookie:'+req.cookies.resc)
+    res.end('cookies get ok')
+})
+
+// 在3000端口监听http请求
+app.listen(3000);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2c14386" class="outline-5">
+<h5 id="org2c14386">例 2</h5>
+<div class="outline-text-5" id="text-org2c14386">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+// 首先引入 cookie-parser 这个模块
+var cookieParser = require('cookie-parser');
+
+var app = express();
+app.listen(3000);
+
+// 使用 cookieParser 中间件，cookieParser(secret, options)
+// 其中 secret 用来加密 cookie 字符串（下面会提到 signedCookies）
+// options 传入上面介绍的 cookie 可选参数
+app.use(cookieParser());
+
+app.get('/', function (req, res) {
+  // 如果请求中的 cookie 存在 isVisit, 则输出 cookie
+  // 否则，设置 cookie 字段 isVisit, 并设置过期时间为1分钟
+  if (req.cookies.isVisit) {
+    console.log(req.cookies);
+    res.send("再次欢迎访问");
+  } else {
+    res.cookie('isVisit', 1, {maxAge: 60 * 1000});
+    res.send("欢迎第一次访问");
+  }
+});
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org64d59c9" class="outline-3">
+<h3 id="org64d59c9">使用 Session</h3>
+<div class="outline-text-3" id="text-org64d59c9">
+</div>
+<div id="outline-container-orge141f90" class="outline-4">
+<h4 id="orge141f90">express-session</h4>
+<div class="outline-text-4" id="text-orge141f90">
+<p>
+express-session 中间件默认将 Session 存放到内存, 我们也可以设置使用其他方式存储.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd49f987" class="outline-4">
+<h4 id="orgd49f987">Session 的参数</h4>
+<div class="outline-text-4" id="text-orgd49f987">
+<ul class="org-ul">
+<li>name: 设置 Cookie 中保存 Session 的字段名, 默认为 connect.sid</li>
+<li>store: Session 的存储方式, 默认为内存</li>
+<li>secret: 计算 secret 对应的 hash 值, 放在 Cookie 中, 使产生的 signedCookie 防篡改</li>
+<li>cookie: 设置存放 session id 的 Cookie 的相关选项, 默认为 (default: { path: '/', httpOnly: true, secure: false, maxAge: null })</li>
+<li>genid: 产生新 session id 时使用的函数</li>
+<li>rolling: 为每个请求都重新设置 Cookie, 默认为 false</li>
+<li>resave: 即使 session 未修改, 也重新保存 session 值, 默认为 true</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org92780f6" class="outline-4">
+<h4 id="org92780f6">例 1</h4>
+<div class="outline-text-4" id="text-org92780f6">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var express = require('express');
+// 首先引入 express-session 这个模块
+var session = require('express-session');
+
+var app = express();
+app.listen(5000);
+
+// 按照上面的解释，设置 session 的可选参数
+app.use(session({
+  secret: 'recommand 128 bytes random string', // 建议使用 128 个字符的随机字符串
+  cookie: { maxAge: 60 * 1000 }
+}));
+
+app.get('/', function (req, res) {
+
+  // 检查 session 中的 isVisit 字段
+  // 如果存在则增加一次，否则为 session 设置 isVisit 字段，并初始化为 1。
+  if(req.session.isVisit) {
+    req.session.isVisit++;
+    res.send('&lt;p&gt;第 ' + req.session.isVisit + '次来此页面&lt;/p&gt;');
+  } else {
+    req.session.isVisit = 1;
+    res.send("欢迎第一次来这里");
+    console.log(req.session);
+  }
+});
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc83599b" class="outline-4">
+<h4 id="orgc83599b">例 2</h4>
+<div class="outline-text-4" id="text-orgc83599b">
+<div class="org-src-container">
+<pre class="src src-JavaScript">// session功能
+var session = require('express-session');
+
+// secret是设置在cookie里的sessionkey
+app.use(session({'secret':'WBLOG'})) 
+
+// 设置session
+app.get('/login',function(req,res){
+    req.session.user = {
+        'name':req.query.name,
+        'pass':req.query.pass,
+        'avatar':req.query.avatar
+    }
+    res.end('session is OK.');
+})
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6e7cae1" class="outline-4">
+<h4 id="org6e7cae1">使用 mongodb 存储 Session</h4>
+<div class="outline-text-4" id="text-org6e7cae1">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var MongoStore  = require('connect-mongo')(session);
+app.use(session({
+    'secret':'WBLOG',
+    'store':new MongoStore({
+        'db':'esession',
+        'host': 'localhost',
+        'port': 27017,	
+        'collection':'sessions',// 存在哪个集合里，默认为sessions	
+        'ttl':10, // session过期时间
+        'autoRemove': 'native',// mongo2.2+自动移除过期的session，disable为禁用
+        'autoRemoveInterval': 10, //移除过期session间隔时间,默认为10分钟
+        'touchAfter': 24 * 3600 //同步session间隔，默认每次请求都会同步到数据库
+    })
+})) 
+// secret是设置在cookie里的sessionkey
+// store用来指定session存储位置
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-11</span>
+            <span title="last modification date" class="post-info">2018-05-13</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/web">Web</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Web/JavaScript/2018/05/11/javascript笔记--cookie与session/ Or /blog/Web/JavaScript/javascript笔记--cookie与session/";
+         var disqus_url = "https://pinvondev.github.io/blog/Web/JavaScript/2018/05/11/javascript笔记--cookie与session/ Or /blog/Web/JavaScript/javascript笔记--cookie与session/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

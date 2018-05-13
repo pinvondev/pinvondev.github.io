@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>JavaScript笔记--语法 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Web" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">JavaScript笔记--语法</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org628f1d1">声明</a></li>
+<li><a href="#orgd3ac85a">基本语法</a>
+<ul>
+<li><a href="#org775bd15">变量</a></li>
+<li><a href="#org50a0b86">注释</a></li>
+<li><a href="#orgd99be72">区块</a></li>
+<li><a href="#orgeb6b1ff">if语句</a></li>
+<li><a href="#orgeb2126d">switch语句</a></li>
+<li><a href="#org8ab892d">三目运算符</a></li>
+<li><a href="#org4c61789">循环</a></li>
+</ul>
+</li>
+<li><a href="#org90cdb8b">数据类型</a>
+<ul>
+<li><a href="#org2d1b2ec">typeof运算符</a></li>
+<li><a href="#org421e1ab">布尔值</a></li>
+</ul>
+</li>
+<li><a href="#org0039519">数值</a>
+<ul>
+<li><a href="#org011ab9e">整数和浮点数</a></li>
+<li><a href="#orgc527bb8">数值精度</a></li>
+<li><a href="#orge36986e">数值范围</a></li>
+<li><a href="#orgc398909">数值表示法</a></li>
+<li><a href="#orga0222a1">与数值相关的全局方法</a></li>
+</ul>
+</li>
+<li><a href="#org5d1778a">字符串</a>
+<ul>
+<li><a href="#orgb465e9d">字符串与数组</a></li>
+</ul>
+</li>
+<li><a href="#org068802a">对象</a>
+<ul>
+<li><a href="#org0cfda6e">对象的引用</a></li>
+<li><a href="#orgd237ff4">属性的操作</a>
+<ul>
+<li><a href="#org67be98b">读取属性</a></li>
+<li><a href="#orge618096">属性的赋值</a></li>
+<li><a href="#org8a896a0">查看所有属性</a></li>
+<li><a href="#org843f039">delete命令</a></li>
+<li><a href="#orga58e2d0">in运算符</a></li>
+<li><a href="#orga62c00e">for ... in 循环</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org0929e78">数组</a>
+<ul>
+<li><a href="#org64be9e5">数组的本质</a></li>
+<li><a href="#org566d355">length属性</a></li>
+<li><a href="#orgf9e014f">遍历数组</a></li>
+</ul>
+</li>
+<li><a href="#orgb125453">函数</a>
+<ul>
+<li><a href="#orgbf99fa0">函数声明</a>
+<ul>
+<li><a href="#org36f4773">function命令</a></li>
+<li><a href="#org28bc644">函数表达式</a></li>
+<li><a href="#org9543fe2">Function构造函数</a></li>
+</ul>
+</li>
+<li><a href="#org93bc265">函数的重复声明</a></li>
+<li><a href="#orgded050e">函数作为参数</a></li>
+<li><a href="#orge5ba62d">函数的属性和方法</a></li>
+<li><a href="#org5f788f9">参数</a>
+<ul>
+<li><a href="#org588e4bc">参数的传递方式</a></li>
+<li><a href="#orgeac6f04">arguments对象(可变参数个数)</a></li>
+</ul>
+</li>
+<li><a href="#org017e507">闭包</a></li>
+</ul>
+</li>
+<li><a href="#orgfe7a0fc">数据类型转换</a>
+<ul>
+<li><a href="#org1d1e708">强制转换</a></li>
+</ul>
+</li>
+<li><a href="#orgf7eb2c0">错误处理机制</a>
+<ul>
+<li><a href="#orgee647ba">Error实例对象</a></li>
+<li><a href="#org6fc118d">原生错误类型</a></li>
+<li><a href="#orgaa9ce26">自定义错误</a></li>
+<li><a href="#org3acd102">throw语句</a></li>
+<li><a href="#orgf890747">try ... catch 结构</a></li>
+<li><a href="#orgc753780">finally 代码块</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org628f1d1" class="outline-2">
+<h2 id="org628f1d1">声明</h2>
+<div class="outline-text-2" id="text-org628f1d1">
+<p>
+本系列的笔记来自于: <a href="http://javascript.ruanyifeng.com/introduction/intro.html">阮一峰老师的JavaScript教程</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd3ac85a" class="outline-2">
+<h2 id="orgd3ac85a">基本语法</h2>
+<div class="outline-text-2" id="text-orgd3ac85a">
+</div>
+<div id="outline-container-org775bd15" class="outline-3">
+<h3 id="org775bd15">变量</h3>
+<div class="outline-text-3" id="text-org775bd15">
+<p>
+变量的声明与赋值:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var a = 1;
+a = 'hello';
+</pre>
+</div>
+<p>
+如果不写 <code>var</code>, 程序也有效, 但这种做法会在不知不觉中创建全局变量.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org50a0b86" class="outline-3">
+<h3 id="org50a0b86">注释</h3>
+<div class="outline-text-3" id="text-org50a0b86">
+<p>
+单行注释: <i>/
+多行注释: /* ...  *</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd99be72" class="outline-3">
+<h3 id="orgd99be72">区块</h3>
+<div class="outline-text-3" id="text-orgd99be72">
+<p>
+对于 <code>var</code> 命令来说, JavaScript的区块不构成单独的作用域. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">{
+    var a = 1;
+}
+console.log(a); // 1
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb6b1ff" class="outline-3">
+<h3 id="orgeb6b1ff">if语句</h3>
+<div class="outline-text-3" id="text-orgeb6b1ff">
+<p>
+与C++/Java相同.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb2126d" class="outline-3">
+<h3 id="orgeb2126d">switch语句</h3>
+<div class="outline-text-3" id="text-orgeb2126d">
+<p>
+与C++/Java相同.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8ab892d" class="outline-3">
+<h3 id="org8ab892d">三目运算符</h3>
+<div class="outline-text-3" id="text-org8ab892d">
+<p>
+JavaScript中存在三目运算符.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4c61789" class="outline-3">
+<h3 id="org4c61789">循环</h3>
+<div class="outline-text-3" id="text-org4c61789">
+<p>
+for, while, do...while 使用方法与C++/Java一样.
+</p>
+
+<p>
+JavaScript有关键字 <code>break</code> 和 <code>continue</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org90cdb8b" class="outline-2">
+<h2 id="org90cdb8b">数据类型</h2>
+<div class="outline-text-2" id="text-org90cdb8b">
+<p>
+JavaScript的数据类型有6种.
+</p>
+<ul class="org-ul">
+<li>数值(number): 整数和小数</li>
+<li>字符串(string): 文本</li>
+<li>布尔值(boolean)</li>
+<li>undefined: 表示未定义</li>
+<li>null: 空值</li>
+<li>对象(object): 各种值组成的集合</li>
+</ul>
+</div>
+
+<div id="outline-container-org2d1b2ec" class="outline-3">
+<h3 id="org2d1b2ec">typeof运算符</h3>
+<div class="outline-text-3" id="text-org2d1b2ec">
+<p>
+JavaScript有三种方法可以确定一个值是什么类型: typedef运算符, instanceof运算符, Object.prototype.toString方法. 这边先介绍typeof运算符.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">typeof 123;  //  "number"
+typeof '123';  //  "string"
+typeof false  //  "boolean"
+
+function f() {}
+typeof f  //  "function"
+</pre>
+</div>
+
+<p>
+应用:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">if (typeof v === "undefined") { ... }
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org421e1ab" class="outline-3">
+<h3 id="org421e1ab">布尔值</h3>
+<div class="outline-text-3" id="text-org421e1ab">
+<p>
+以下六个值在转换为布尔值时, 被转为false:
+</p>
+<ul class="org-ul">
+<li>undefined</li>
+<li>null</li>
+<li>false</li>
+<li>0</li>
+<li>NaN</li>
+<li>""或''</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0039519" class="outline-2">
+<h2 id="org0039519">数值</h2>
+<div class="outline-text-2" id="text-org0039519">
+</div>
+<div id="outline-container-org011ab9e" class="outline-3">
+<h3 id="org011ab9e">整数和浮点数</h3>
+<div class="outline-text-3" id="text-org011ab9e">
+<p>
+在JavaScript内部, 所有数字都是以64位浮点数形式储存, 即使整数也是如此. 因此, 1和1.0是相同的:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">1 === 1.0  // true
+</pre>
+</div>
+
+<p>
+由于浮点数不是精确的值, 所以涉及小数的比较和运算, 需要特别小心:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">0.1 + 0.2 === 0.3  //  false
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc527bb8" class="outline-3">
+<h3 id="orgc527bb8">数值精度</h3>
+<div class="outline-text-3" id="text-orgc527bb8">
+<p>
+首先介绍 <code>IEEE 754标准</code>, 在64位的情况下:
+</p>
+<ul class="org-ul">
+<li>第1位: 符号位</li>
+<li>第2~12位(共11位): 指数部分</li>
+<li>第13~64位(共52位): 小数部分(即有效数字)</li>
+</ul>
+<p>
+符号位决定一个数的正负, 指数部分决定数值大小, 小数部分决定数值精度.
+</p>
+
+<p>
+指数部分共11个二进制位, 大小范围在0~2047之间. <code>IEEE 754</code> 规定, 如果指数部分的值在区间(0, 2047), 则小数部分的第1位默认是1, 且不保存在64位浮点数中. 所以, JavaScript提供的有效数字最长为53个二进制位. 即:
+\[(-1)^{符号位} \times 1.xx...xx \times 2^{指数部分}\]
+</p>
+
+<p>
+精度最多只能到53位二进制位, 这意味着, 绝对值小于等于2的53次方的整数, 都可以精确表示. 大于2的53次方的数值, 无法保持精度.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge36986e" class="outline-3">
+<h3 id="orge36986e">数值范围</h3>
+<div class="outline-text-3" id="text-orge36986e">
+<p>
+指数部分为11个二进制位, 可以表示的最大值是2047, 还要分一半表示负数, 因此, JavaScript能够表示的数值范围为 \(2^{1024}\) 到 \(2^{-1023}\) 之间(开区间), 超出这个范围的数无法表示.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc398909" class="outline-3">
+<h3 id="orgc398909">数值表示法</h3>
+<div class="outline-text-3" id="text-orgc398909">
+<p>
+十进制, 十六进制(0xFF), 科学计数法(123e3)
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga0222a1" class="outline-3">
+<h3 id="orga0222a1">与数值相关的全局方法</h3>
+<div class="outline-text-3" id="text-orga0222a1">
+<ul class="org-ul">
+<li>parseInt(): 将字符串转成整数</li>
+<li>parseFloat(): 将字符串转成浮点数</li>
+<li>isNaN(): 判断是否为NaN</li>
+<li>isFinite(): 判断是否为正常数值</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org5d1778a" class="outline-2">
+<h2 id="org5d1778a">字符串</h2>
+<div class="outline-text-2" id="text-org5d1778a">
+<p>
+字符串就是0个或多个排在一起的字符, 放在单引号或双引号之中.
+</p>
+
+<p>
+单引号字符串内部, 可使用双引号; 双引号字符串内部, 可使用单引号.
+</p>
+
+<p>
+字符串拼接使用+.
+</p>
+</div>
+
+<div id="outline-container-orgb465e9d" class="outline-3">
+<h3 id="orgb465e9d">字符串与数组</h3>
+<div class="outline-text-3" id="text-orgb465e9d">
+<p>
+字符串可以看成是数组, 因此可以使用数组的方括号运算符, 用来返回某个位置的字符, 索引从0开始. 无法改变字符串之中的单个字符. <code>length</code> 属性返回字符串长度.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var s = 'hello';
+s[0]  //  "h"
+
+s[1] = 'a';
+s  //  "hello"
+
+s.length  //  5
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org068802a" class="outline-2">
+<h2 id="org068802a">对象</h2>
+<div class="outline-text-2" id="text-org068802a">
+<p>
+简单说, 对象就是一组"键值对"的集合, 是一种无序的复合数据集合.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var obj = {
+    foo: 'Hello',
+    bar: 'World'
+};
+</pre>
+</div>
+
+<p>
+对象的每一个键名又称为"属性", 它的"键值"可以是任何数据类型. 如果一个属性的值为函数, 通常把这个属性称为"方法", 它可以像函数那样调用.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var obj = {
+    p: function (x) {
+        return 2 * x;
+    }
+};
+obj.p(1)  // 2
+</pre>
+</div>
+
+<p>
+如果属性的值是另一个对象, 就形成了链式引用:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var o1 = {};
+var o2 = {bar: 'hello'};
+o1.foo = o2;
+o1.foo.bar  // "hello"
+</pre>
+</div>
+<p>
+该例子还说明, 属性可以动态创建, 不必在对象声明时就指定.
+</p>
+</div>
+
+<div id="outline-container-org0cfda6e" class="outline-3">
+<h3 id="org0cfda6e">对象的引用</h3>
+<div class="outline-text-3" id="text-org0cfda6e">
+<p>
+如果把一个变量赋值为一个对象, 则它们都是这个对象的引用, 指向同一个内存地址, 修改其中一个变量, 会影响到其他所有变量. 如果把该变量又赋值为另一个值, 不会对原有对象造成影响.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd237ff4" class="outline-3">
+<h3 id="orgd237ff4">属性的操作</h3>
+<div class="outline-text-3" id="text-orgd237ff4">
+</div>
+<div id="outline-container-org67be98b" class="outline-4">
+<h4 id="org67be98b">读取属性</h4>
+<div class="outline-text-4" id="text-org67be98b">
+<p>
+两种方法, 点运算符, 或方括号运算符.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var obj = {
+    p: 'Hello World'
+};
+obj.p
+obj['p']
+</pre>
+</div>
+<p>
+注意: 属性名必须放在引号中间.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge618096" class="outline-4">
+<h4 id="orge618096">属性的赋值</h4>
+<div class="outline-text-4" id="text-orge618096">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var obj = {};
+obj.foo = 'Hello';
+obj['bar'] = 'World';
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8a896a0" class="outline-4">
+<h4 id="org8a896a0">查看所有属性</h4>
+<div class="outline-text-4" id="text-org8a896a0">
+<p>
+Object.keys(obj);
+</p>
+</div>
+</div>
+
+<div id="outline-container-org843f039" class="outline-4">
+<h4 id="org843f039">delete命令</h4>
+<div class="outline-text-4" id="text-org843f039">
+<p>
+delete obj.p
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga58e2d0" class="outline-4">
+<h4 id="orga58e2d0">in运算符</h4>
+<div class="outline-text-4" id="text-orga58e2d0">
+<p>
+用于检查对象是否包含某个属性.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga62c00e" class="outline-4">
+<h4 id="orga62c00e">for ... in 循环</h4>
+<div class="outline-text-4" id="text-orga62c00e">
+<p>
+用来遍历一个对象的全部属性. 但有些属性是不可遍历的, 如toString在对象创建之初就存在, 但是不可遍历.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0929e78" class="outline-2">
+<h2 id="org0929e78">数组</h2>
+<div class="outline-text-2" id="text-org0929e78">
+<p>
+数组是按次序排列的一组值, 下标从0开始. 数组的赋值方法:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// 法1
+var arr = ['a', 'b', 'c'];
+
+// 法2
+var arr = [];
+arr[0] = 'a';
+</pre>
+</div>
+
+<p>
+任何类型的数据都可以放入数组:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var arr = [
+    {a: 1},
+    [1, 2, 3],
+    function () { return true; }
+];
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org64be9e5" class="outline-3">
+<h3 id="org64be9e5">数组的本质</h3>
+<div class="outline-text-3" id="text-org64be9e5">
+<p>
+数组本质上是一种特殊的对象. <code>typeof</code> 运算符会返回数组的类型是 <code>object</code>. 数组的特殊性在于, 它的键名(属性)是按次序排列的一组整数(0, 1, 2, ...). 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var arr = ['a', 'b', 'c'];
+Object.keys(arr)  // ["0", "1", "2"]
+</pre>
+</div>
+<p>
+<code>Object.keys()</code> 返回数组的所有键名.
+</p>
+
+<p>
+JavaScript规定, 对象的键名一律为字符串, 所以, 数组的键名其实也是字符串, 之所以可以用数值读取, 是因为非字符串的键名会被转为字符串.
+</p>
+
+<p>
+对象读取成员有两种方法: 点结构(object.key)和方括号结构(object[key]). 但是, 对于数值的键名, 不能使用点结构:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var arr = [1, 2, 3];
+arr.0  // SyntaxError
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org566d355" class="outline-3">
+<h3 id="org566d355">length属性</h3>
+<div class="outline-text-3" id="text-org566d355">
+<p>
+数组的 <code>length</code> 属性, 返回数组的成员数量.
+</p>
+
+<p>
+数组的 <code>length</code> 属性是动态可变的, 如果你想清空一个数组, 就把 <code>length</code> 属性设为0.
+</p>
+
+<p>
+有一点需要注意, 数组的 <code>length</code> 属性是键名最大的数字加1, 这就需要数组的键名是整数. 如果我们把数组的键名改成字符串或小数, 则 <code>length</code> 属性保持不变:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var arr = [];
+
+arr['p'] = 'abc';
+a.length  // 0
+
+a[2.1] = 'abc';
+a.length  // 0
+</pre>
+</div>
+
+<p>
+使用 <code>delete</code> 命令删除一个数组成员, 会形成空位, 不影响 <code>length</code> 的值:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var a = [1, 2, 3];
+delete a[1];
+a[1]  // undefined
+a.length  // 3
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9e014f" class="outline-3">
+<h3 id="orgf9e014f">遍历数组</h3>
+<div class="outline-text-3" id="text-orgf9e014f">
+<p>
+遍历数组的键名, 使用: in
+</p>
+
+<p>
+遍历数组的值, 使用: for ... in(不推荐), while, for, forEach
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb125453" class="outline-2">
+<h2 id="orgb125453">函数</h2>
+<div class="outline-text-2" id="text-orgb125453">
+</div>
+<div id="outline-container-orgbf99fa0" class="outline-3">
+<h3 id="orgbf99fa0">函数声明</h3>
+<div class="outline-text-3" id="text-orgbf99fa0">
+<p>
+声明函数有三种方法.
+</p>
+</div>
+
+<div id="outline-container-org36f4773" class="outline-4">
+<h4 id="org36f4773">function命令</h4>
+<div class="outline-text-4" id="text-org36f4773">
+<div class="org-src-container">
+<pre class="src src-JavaScript">function print (s) {
+    console.log(s);
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org28bc644" class="outline-4">
+<h4 id="org28bc644">函数表达式</h4>
+<div class="outline-text-4" id="text-org28bc644">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var print = function (s) {
+    console.log(s);
+};
+print(1)
+</pre>
+</div>
+<p>
+注意, 这种写法在函数表达式后面有分号结尾.
+</p>
+
+<p>
+也可以在采用函数表达式声明函数时, <code>function</code> 命令后面带上函数名. 但是这个函数名只在函数内部有效, 在函数外部无效. 建议加上函数名, 因为这样可以在程序出错时, 通过函数调用栈定位.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var print = function x () {
+    console.log(typeof x);
+};
+print()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9543fe2" class="outline-4">
+<h4 id="org9543fe2">Function构造函数</h4>
+<div class="outline-text-4" id="text-org9543fe2">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var add = new Function (
+    'x',
+    'y',
+    'return x + y'
+);
+//  等同于
+function add (x, y) {
+    return x + y;
+}
+</pre>
+</div>
+<p>
+不推荐这种方法.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org93bc265" class="outline-3">
+<h3 id="org93bc265">函数的重复声明</h3>
+<div class="outline-text-3" id="text-org93bc265">
+<p>
+后面的声明会覆盖前面的声明.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgded050e" class="outline-3">
+<h3 id="orgded050e">函数作为参数</h3>
+<div class="outline-text-3" id="text-orgded050e">
+<div class="org-src-container">
+<pre class="src src-JavaScript">function add(x, y) {
+    return x + y;
+}
+function a(op) {
+    return op;
+}
+a(add)(1, 1)  // 2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge5ba62d" class="outline-3">
+<h3 id="orge5ba62d">函数的属性和方法</h3>
+<div class="outline-text-3" id="text-orge5ba62d">
+<ul class="org-ul">
+<li>name: 返回函数的名字  (f1.name)</li>
+<li>length: 返回参数个数  (f1.length)</li>
+<li>toString(): 返回函数内部代码  (f1.toString())</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5f788f9" class="outline-3">
+<h3 id="org5f788f9">参数</h3>
+<div class="outline-text-3" id="text-org5f788f9">
+<p>
+如果在定义时提供了两个参数, 而调用时使用了更多或更少参数, 都不会报错.
+</p>
+</div>
+
+<div id="outline-container-org588e4bc" class="outline-4">
+<h4 id="org588e4bc">参数的传递方式</h4>
+<div class="outline-text-4" id="text-org588e4bc">
+<p>
+如果参数是原始数据类型(数值, 字符串, 布尔值), 则采用值传递, 这意味着, 在函数体内修改参数值, 不会影响到函数外部.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var p = 2;
+function f(p) {
+    p = 3;
+}
+f(p);
+p  // 2
+</pre>
+</div>
+
+<p>
+如果参数是复合类型的值(数组, 对象, 其他函数), 则采用地址传递, 也就是说, 传入函数的原始值的地址, 因此, 在函数内部修改参数, 会影响到原始值.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var obj = { p:1 };
+function f(o) { o.p = 2; }
+f(obj);
+obj.p  // 2
+</pre>
+</div>
+
+<p>
+注意, 如果函数内部修改的, 是不参数对象的某个属性, 而是替换掉整个参数, 则不会影响到原始值.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var obj = [1, 2, 3];
+function f(o) { o = [2, 3, 4]; }
+f(obj);
+obj  // [1, 2, 3]
+</pre>
+</div>
+<p>
+解析: 形式参数 <code>o</code> 的值一开始是参数 <code>obj</code> 的地址, 重新对 <code>o</code> 赋值, 会导致 <code>o</code> 指向另一个地址, 保存在原地址上的值当然不受影响.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeac6f04" class="outline-4">
+<h4 id="orgeac6f04">arguments对象(可变参数个数)</h4>
+<div class="outline-text-4" id="text-orgeac6f04">
+<p>
+<code>arguments</code> 对象包含了函数运行时的所有参数. 使用方法: <code>arguments[index]</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">function f() {
+    return arguments.length;
+}
+f(1, 2, 3)  // 3
+f(1)  // 1
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org017e507" class="outline-3">
+<h3 id="org017e507">闭包</h3>
+<div class="outline-text-3" id="text-org017e507">
+<p>
+闭包的由来: 由于变量存在作用域, 所以函数内部可以直接读取全局变量, 而函数外部无法读取函数内部声明的变量. 要想在函数外部获得函数内部的局部变量, 正常情况下是办不到的, 但可以变通方法.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">function f1() {
+    var n = 999;
+    function f2() {
+        console.log(n);
+    }
+    return f2;
+}
+
+var result = f1();
+result();  // 999
+</pre>
+</div>
+
+<p>
+在上面的代码中, 函数 <code>f1</code> 的返回值就是函数 <code>f2</code>, 由于 <code>f2</code> 可以读取 <code>f1</code> 的内部变量, 所以就可以在外部获得 <code>f1</code> 的内部变量了.
+</p>
+
+<p>
+闭包就是函数 <code>f2</code>, 即能够读取其他函数内部变量的函数. 在本质上, 闭包是把函数内部和外部连接起来的一座桥梁.
+</p>
+
+<p>
+闭包的最大用处有两个, 一是可读取函数内部的变量, 二是让这些变量始终保持在内存中, 即闭包可以使它诞生环境一直存在. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">function createIncrementor(start) {
+    return function() {
+        return start++;
+    };
+}
+
+var inc = createIncrementor(5);
+
+inc()  // 5
+inc()  // 6
+inc()  // 7
+</pre>
+</div>
+<p>
+通过闭包, <code>start</code> 的状态被保留了, 每一次调用都是在上一次调用的基础上进行计算.
+</p>
+
+<p>
+因为 <code>inc</code> 始终在内存中, 而 <code>inc</code> 的存在依赖于 <code>createIncrementor</code>, 因此也始终在内存中, 不会在调用结束后, 被垃圾回收机制回收.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe7a0fc" class="outline-2">
+<h2 id="orgfe7a0fc">数据类型转换</h2>
+<div class="outline-text-2" id="text-orgfe7a0fc">
+</div>
+<div id="outline-container-org1d1e708" class="outline-3">
+<h3 id="org1d1e708">强制转换</h3>
+<div class="outline-text-3" id="text-org1d1e708">
+<ul class="org-ul">
+<li>Number(): 强制转换为数值, 比 <code>parseInt()</code> 严格</li>
+<li>String(): 将任意类型的值转化成字符串</li>
+<li>Boolean(): 将任意类型的值转化为布尔值</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf7eb2c0" class="outline-2">
+<h2 id="orgf7eb2c0">错误处理机制</h2>
+<div class="outline-text-2" id="text-orgf7eb2c0">
+</div>
+<div id="outline-container-orgee647ba" class="outline-3">
+<h3 id="orgee647ba">Error实例对象</h3>
+<div class="outline-text-3" id="text-orgee647ba">
+<p>
+JavaScript解析或运行时, 一旦发生错误, 引擎就会抛出一个错误对象. JavaScript原生提供Error构造函数, 所有抛出的错误都是这个构造函数的实例.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var err = new Error('出错了');
+err.message  //  "出错了"
+</pre>
+</div>
+<p>
+抛出Error实例对象后, 整个程序就中断在发生错误的地方, 不再往下执行.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6fc118d" class="outline-3">
+<h3 id="org6fc118d">原生错误类型</h3>
+<div class="outline-text-3" id="text-org6fc118d">
+<ul class="org-ul">
+<li>SyntaxError: 解析代码时发生的语法错误</li>
+<li>ReferenceError: 引用一个不存在的变量时发生的错误</li>
+<li>RangeError: 一个值超出有效范围时发生的错误</li>
+<li>TypeError: 变量或参数不是预期类型时发生的错误</li>
+<li>URIError: URI相关函数的参数不正确时抛出的错误</li>
+<li>EvalError: eval函数没有被正确执行时抛出的错误</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgaa9ce26" class="outline-3">
+<h3 id="orgaa9ce26">自定义错误</h3>
+<div class="outline-text-3" id="text-orgaa9ce26">
+<div class="org-src-container">
+<pre class="src src-JavaSript">function UserError(message) {
+    this.message = message || '默认信息';
+    this.name = 'UserError';
+}
+UserError.prototype = new Error();  //  继承自Error对象
+UserError.prototype.constructor = UserError;
+
+// 用法
+new UserError('这是自定义的错误');
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3acd102" class="outline-3">
+<h3 id="org3acd102">throw语句</h3>
+<div class="outline-text-3" id="text-org3acd102">
+<p>
+<code>throw</code> 的作用是手动中断程序执行, 抛出一个错误.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">if(x &lt; 0) {
+    throw new Error('x 必须为正数');
+}
+</pre>
+</div>
+<p>
+对于JavaScript引擎来说, 遇到 <code>throw</code> 语句, 程序就中止了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf890747" class="outline-3">
+<h3 id="orgf890747">try ... catch 结构</h3>
+<div class="outline-text-3" id="text-orgf890747">
+<p>
+<code>try ... catch</code> 结构允许对错误进行处理, 选择是否往下执行.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">try {
+    throw "出错了";
+} catch(e) {
+    console.log(111);
+}
+console.log(222);
+</pre>
+</div>
+<p>
+<code>try</code> 代码块抛出的错误, 如果被 <code>catch</code> 代码块捕获后, 程序就会继续向下执行.
+</p>
+
+<p>
+可以捕获不同类型的错误:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">try {
+    foo.bar();
+} catch(e) {
+    if(e instanceof EvalError) {
+        console.log(e.name + ":" + e.message);
+    } else if(e instanceof RangeError) {
+        console.log(e.name + ":" + e.message);
+    }
+    // ...
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc753780" class="outline-3">
+<h3 id="orgc753780">finally 代码块</h3>
+<div class="outline-text-3" id="text-orgc753780">
+<p>
+<code>try ... catch</code> 结构允许在最后添加一个 <code>finally</code> 代码块, 表示不管是否出现错误, 都必须在最后运行的语句, 即使在 <code>try</code> 代码块中有 <code>return</code> 语句, 也还会去执行 <code>finally</code>.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-13</span>
+            <span title="last modification date" class="post-info">2018-05-13</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/web">Web</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/13/javascript笔记--语法";
+         var disqus_url = "https://pinvondev.github.io/blog/2018/03/13/javascript笔记--语法";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

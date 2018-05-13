@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>pgmpy 教程 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="贝叶斯网" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">pgmpy 教程</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1fd26ad">创建贝叶斯网</a>
+<ul>
+<li><a href="#orgc11d37d">建立网络结构</a></li>
+<li><a href="#org174711c">填入参数</a></li>
+<li><a href="#org77cb5b0">将数据加入网络</a></li>
+<li><a href="#org484f672">相关的检查</a></li>
+</ul>
+</li>
+<li><a href="#org210eb5a">使用 Asia 网络进行推理</a>
+<ul>
+<li><a href="#org8180348">变量消除法</a></li>
+</ul>
+</li>
+<li><a href="#orgcd3ccea">利用训练数据学习</a>
+<ul>
+<li><a href="#org52813a6">更复杂的例子(学生例子)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1fd26ad" class="outline-2">
+<h2 id="org1fd26ad">创建贝叶斯网</h2>
+<div class="outline-text-2" id="text-org1fd26ad">
+<p>
+在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
+</p>
+</div>
+
+<div id="outline-container-orgc11d37d" class="outline-3">
+<h3 id="orgc11d37d">建立网络结构</h3>
+<div class="outline-text-3" id="text-orgc11d37d">
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.models import BayesianModel
+
+cancer_model = BayesianModel([('Pollution', 'Cancer'), 
+                              ('Smoker', 'Cancer'),
+                              ('Cancer', 'Xray'),
+                              ('Cancer', 'Dyspnoea')])
+</pre>
+</div>
+
+<p>
+这个网络中有五个节点: Pollution, Cancer, Smoker, Xray, Dyspnoea.
+</p>
+
+<p>
+('Pollution', 'Cancer'): 一条有向边, 从 Pollution 指向 Cancer, 表示环境污染有可能导致癌症.
+</p>
+
+<p>
+('Smoker', 'Cancer'): 吸烟有可能导致癌症.
+</p>
+
+<p>
+('Cancer', 'Xray'): 得癌症的人可能会去照X射线.
+</p>
+
+<p>
+('Cancer', 'Dyspnoea'): 得癌症的人可能会呼吸困难.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org174711c" class="outline-3">
+<h3 id="org174711c">填入参数</h3>
+<div class="outline-text-3" id="text-org174711c">
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.factors.discrete import TabularCPD
+
+cpd_poll = TabularCPD(variable='Pollution', variable_card=2,
+                      values=[[0.9], [0.1]])
+cpd_smoke = TabularCPD(variable='Smoker', variable_card=2,
+                       values=[[0.3], [0.7]])
+cpd_cancer = TabularCPD(variable='Cancer', variable_card=2,
+                        values=[[0.03, 0.05, 0.001, 0.02],
+                                [0.97, 0.95, 0.999, 0.98]],
+                        evidence=['Smoker', 'Pollution'],
+                        evidence_card=[2, 2])
+cpd_xray = TabularCPD(variable='Xray', variable_card=2,
+                      values=[[0.9, 0.2], [0.1, 0.8]],
+                      evidence=['Cancer'], evidence_card=[2])
+cpd_dysp = TabularCPD(variable='Dyspnoea', variable_card=2,
+                      values=[[0.65, 0.3], [0.35, 0.7]],
+                      evidence=['Cancer'], evidence_card=[2])
+</pre>
+</div>
+
+<p>
+这些代码, 主要是建立一些概率表, 然后往表里面填入了一些参数.
+</p>
+
+<p>
+Pollution: 有两种概率, 分别是 0.9 和 0.1.
+</p>
+
+<p>
+Smoker: 有两种概率, 分别是 0.3 和 0.7. (意思是在一个人群里, 有 30% 的人吸烟, 有 70% 的人不吸烟)
+</p>
+
+<p>
+Cancer: envidence 表示有 Smoker 和 Pollution 两个节点指向 Cancer 节点; 
+</p>
+
+<p>
+[0.03, 0.05, 0.001, 0.02] 的意思, 通过下表可以较容易看出来:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Pollution</th>
+<th scope="col" class="org-right">Pollution_0</th>
+<th scope="col" class="org-right">Pollution_0</th>
+<th scope="col" class="org-right">Pollution_1</th>
+<th scope="col" class="org-right">Pollution_1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Smoker</td>
+<td class="org-right">Smoker_0</td>
+<td class="org-right">Smoker_1</td>
+<td class="org-right">Smoker_0</td>
+<td class="org-right">Smoker_1</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Cancer_0</td>
+<td class="org-right">0.03</td>
+<td class="org-right">0.05</td>
+<td class="org-right">0.001</td>
+<td class="org-right">0.02</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Cancer_1</td>
+<td class="org-right">0.97</td>
+<td class="org-right">0.95</td>
+<td class="org-right">0.999</td>
+<td class="org-right">0.98</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+可以看出, 环境不好, 又抽烟的人, 有 0.98 的概率得癌症.
+</p>
+
+<p>
+Xray: 通过 envidence 可以看出, 只有 Cancer 指向它; [0.9, 0.2] 表示, 未得癌症的人去照X光, 有 0.9 的概率正常, 而得了癌症的人去照X光, 有 0.2 的概率正常, [0.1, 0.8] 表示, 未得癌症的人去照X光, 有 0.1 的概率不正常, 而得癌症的人有 0.8 的概率不正常.
+</p>
+
+<p>
+Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人只有 0.3 的可能性呼吸正常; 未得癌症的人有 0.35 的可能性呼吸困难, 得癌症的人有 0.7 的可能性呼吸困难.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org77cb5b0" class="outline-3">
+<h3 id="org77cb5b0">将数据加入网络</h3>
+<div class="outline-text-3" id="text-org77cb5b0">
+<div class="org-src-container">
+<pre class="src src-Python"># Associating the parameters with the model structure.
+cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
+
+# Checking if the cpds are valid for the model.
+cancer_model.check_model()
+</pre>
+</div>
+
+<p>
+第一行代码表示将概率分布表加入网络中; 第二行代码验证模型数据的正确性(至于怎么验证的, 我没有看源码, 但是猜测是验证相关数据的和是否为1, 验证数据中是否有负数, 等等).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org484f672" class="outline-3">
+<h3 id="org484f672">相关的检查</h3>
+<div class="outline-text-3" id="text-org484f672">
+<div class="org-src-container">
+<pre class="src src-Python">cancer_model.is_active_trail('Pollution', 'Smoker')  # False
+cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
+cancer_model.local_independencies('Xray')  # (Xray _|_ Dyspnoea, Smoker, Pollution | Cancer)
+cancer_model.get_independencies()
+</pre>
+</div>
+
+<p>
+第一行代码表示, Pollution 节点是否指向 Smoker 节点, 返回的是 False.
+</p>
+
+<p>
+第二行代码表示, Cancer 节点的计算, 是否与 Pollution 和 Smoker 两个节点有关, 返回的是 True.
+</p>
+
+<p>
+第三行代码的输出表示, Xray 与 Dyspnoea, Smoker, Pollution 不相关, 与 Cancer 相关.
+</p>
+
+<p>
+第四行代码输出所有的依赖关系.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org210eb5a" class="outline-2">
+<h2 id="org210eb5a">使用 Asia 网络进行推理</h2>
+<div class="outline-text-2" id="text-org210eb5a">
+<p>
+在构建了贝叶斯网之后, 我们使用贝叶斯网来进行推理. 推理算法分精确推理和近似推理. 精确推理有变量消元法和团树传播法; 近似推理算法是基于随机抽样的算法.
+</p>
+
+<p>
+Asia 网络是早期贝叶斯网文献中给出的一个网络, 与肺结核, 肺癌, 支气管炎等有关, 和我们之前的那个网络很相似. 我们使用 Asia 网络来看一下如何进行推理.
+</p>
+
+<p>
+创建源文件 asia.py
+</p>
+
+<p>
+下载网络模型放到源文件目录下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">wget http://www.bnlearn.com/bnrepository/asia/asia.bif.gz
+gzip -qd asia.bif.gz
+</pre>
+</div>
+
+<p>
+编辑 asia.py:
+</p>
+
+<p>
+导入 Asia 网络:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.readwrite import BIFReader
+reader = BIFReader('asia.bif')
+asia_model = reader.get_model()
+</pre>
+</div>
+
+<p>
+输出节点信息:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.nodes())
+
+# ['xray', 'bronc', 'asia', 'dysp', 'lung', 'either', 'smoke', 'tub']
+</pre>
+</div>
+
+<p>
+输出依赖关系:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.edges())
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
+[('bronc', 'dysp'),
+ ('asia', 'tub'),
+ ('lung', 'either'),
+ ('either', 'dysp'),
+ ('either', 'xray'),
+ ('smoke', 'bronc'),
+ ('smoke', 'lung'),
+ ('tub', 'either')]
+</pre>
+
+<p>
+查看概率分布:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.get_cpds())
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
+[&lt;TabularCPD representing P(asia:2) at 0x7f92cf1e46d0&gt;,
+ &lt;TabularCPD representing P(bronc:2 | smoke:2) at 0x7f92ea70f990&gt;,
+ &lt;TabularCPD representing P(dysp:2 | bronc:2, either:2) at 0x7f92f80f4ed0&gt;,
+ &lt;TabularCPD representing P(either:2 | lung:2, tub:2) at 0x7f92e8e71dd0&gt;,
+ &lt;TabularCPD representing P(lung:2 | smoke:2) at 0x7f92cf1e4c50&gt;,
+ &lt;TabularCPD representing P(smoke:2) at 0x7f92cf1e4ed0&gt;,
+ &lt;TabularCPD representing P(tub:2 | asia:2) at 0x7f92cf1ec210&gt;,
+ &lt;TabularCPD representing P(xray:2 | either:2) at 0x7f92cf1ec410&gt;]
+</pre>
+
+<p>
+直观显示某节点的概率分布:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">print(asia_model.get_cpds('xray').values)
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
+[[0.98 0.05]
+ [0.02 0.95]]
+</pre>
+</div>
+
+<div id="outline-container-org8180348" class="outline-3">
+<h3 id="org8180348">变量消除法</h3>
+<div class="outline-text-3" id="text-org8180348">
+<p>
+变量消除法是精确推断的一种方法. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.inference import VariableElimination
+asia_infer = VariableElimination(asia_model)
+q = asia_infer.query(variables=['bronc'], evidence={'smoke': 0})
+print(q['bronc'])
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+--------------+
+| bronc   |   phi(bronc) |
+|---------+--------------|
+| bronc_0 |       0.6000 |
+| bronc_1 |       0.4000 |
++---------+--------------+
+</pre>
+<p>
+意思是, 在不吸烟的情况下, 得支气管炎的概率是 0.4, 未得支气管炎的概率是 0.6.
+</p>
+
+<p>
+在在吸烟情况下, 得支气管炎的概率和未得支气管炎的概率可以这样查询:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">q = asia_infer.query(variables=['bronc'], evidence={'smoke': 1})
+print(q['bronc'])
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+--------------+
+| bronc   |   phi(bronc) |
+|---------+--------------|
+| bronc_0 |       0.3000 |
+| bronc_1 |       0.7000 |
++---------+--------------+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd3ccea" class="outline-2">
+<h2 id="orgcd3ccea">利用训练数据学习</h2>
+<div class="outline-text-2" id="text-orgcd3ccea">
+<p>
+场景: 投硬币, 训练数据中, 有 30% 的正面朝上, 有 70% 的反面朝上. 我们使用极大似然估计和狄利克雷分布下贝叶斯参数先验估计硬币的条件概率分布.
+</p>
+
+<p>
+生成数据:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">import numpy as np
+import pandas as pd
+raw_data = np.array([0] * 30 + [1] * 70)
+data = pd.DataFrame(raw_data, columns=['coin'])
+</pre>
+</div>
+
+<p>
+定义贝叶斯网:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel()
+model.add_node('coin')
+</pre>
+</div>
+
+<p>
+使用极大似然估计:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">model.fit(data, estimator=MaximumLikelihoodEstimator)
+print(model.get_cpds('coin'))
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+-----+
+| coin(0) | 0.3 |
++---------+-----+
+| coin(1) | 0.7 |
++---------+-----+
+</pre>
+
+<p>
+使用狄利克雷分布作为先验分布的贝叶斯推论:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts={'coin': [50, 50]})
+print(model.get_cpds('coin'))
+</pre>
+</div>
+<p>
+结果如下:
+</p>
+<pre class="example">
++---------+-----+
+| coin(0) | 0.4 |
++---------+-----+
+| coin(1) | 0.6 |
++---------+-----+
+</pre>
+</div>
+
+<div id="outline-container-org52813a6" class="outline-3">
+<h3 id="org52813a6">更复杂的例子(学生例子)</h3>
+<div class="outline-text-3" id="text-org52813a6">
+<p>
+学生例子中包含5个随机变量, 如下所示:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">变量</th>
+<th scope="col" class="org-left">含义</th>
+<th scope="col" class="org-left">取值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Difficulty</td>
+<td class="org-left">课程本身难度</td>
+<td class="org-left">0=easy, 1=difficult</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Intelligence</td>
+<td class="org-left">学生聪明程度</td>
+<td class="org-left">0=stupid, 1=smart</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Grade</td>
+<td class="org-left">学生课程成绩</td>
+<td class="org-left">1=A, 2=B, 3=C</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">SAT</td>
+<td class="org-left">学生高考成绩</td>
+<td class="org-left">0=low, 1=high</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Letter</td>
+<td class="org-left">可否获得推荐信</td>
+<td class="org-left">0=未获得, 1=获得</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+生成数据:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">import numpy as np
+import pandas as pd
+raw_data = np.random.randint(low=0, high=2, size=(1000, 5))
+data = pd.DataFrame(raw_data, columns=['D', 'I', 'G', 'L', 'S'])
+</pre>
+</div>
+
+<p>
+定义模型:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel([('D', 'G'), ('I', 'G'), ('I', 'S'), ('G', 'L')])
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+for cpd in model.get_cpds():
+    print("CPD of {variable}:".format(variable=cpd.variable))
+    print(cpd)
+</pre>
+</div>
+
+<p>
+结果如下:
+</p>
+<pre class="example">
+CPD of D:
++------+-------+
+| D(0) | 0.501 |
++------+-------+
+| D(1) | 0.499 |
++------+-------+
+CPD of G:
++------+------+----------------+----------------+----------------+
+| D    | D(0) | D(0)           | D(1)           | D(1)           |
++------+------+----------------+----------------+----------------+
+| I    | I(0) | I(1)           | I(0)           | I(1)           |
++------+------+----------------+----------------+----------------+
+| G(0) | 0.48 | 0.509960159363 | 0.444915254237 | 0.551330798479 |
++------+------+----------------+----------------+----------------+
+| G(1) | 0.52 | 0.490039840637 | 0.555084745763 | 0.448669201521 |
++------+------+----------------+----------------+----------------+
+CPD of I:
++------+-------+
+| I(0) | 0.486 |
++------+-------+
+| I(1) | 0.514 |
++------+-------+
+CPD of L:
++------+----------------+----------------+
+| G    | G(0)           | G(1)           |
++------+----------------+----------------+
+| L(0) | 0.489959839357 | 0.501992031873 |
++------+----------------+----------------+
+| L(1) | 0.510040160643 | 0.498007968127 |
++------+----------------+----------------+
+CPD of S:
++------+----------------+----------------+
+| I    | I(0)           | I(1)           |
++------+----------------+----------------+
+| S(0) | 0.512345679012 | 0.468871595331 |
++------+----------------+----------------+
+| S(1) | 0.487654320988 | 0.531128404669 |
++------+----------------+----------------+
+</pre>
+
+<p>
+参数学习:
+</p>
+<div class="org-src-container">
+<pre class="src src-Python">pseudo_counts = {'D': [300, 700], 'I': [500, 500], 'G': [800, 200], 'L': [500, 500], 'S': [400, 600]}
+model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts=pseudo_counts)
+for cpd in model.get_cpds():
+    print("CPD of {variable}:".format(variable=cpd.variable))
+    print(cpd)
+</pre>
+</div>
+
+<p>
+结果如下:
+</p>
+<pre class="example">
+CPD of D:
++------+--------+
+| D(0) | 0.4005 |
++------+--------+
+| D(1) | 0.5995 |
++------+--------+
+CPD of G:
++------+-------+----------------+----------------+----------------+
+| D    | D(0)  | D(0)           | D(1)           | D(1)           |
++------+-------+----------------+----------------+----------------+
+| I    | I(0)  | I(1)           | I(0)           | I(1)           |
++------+-------+----------------+----------------+----------------+
+| G(0) | 0.736 | 0.741806554756 | 0.732200647249 | 0.748218527316 |
++------+-------+----------------+----------------+----------------+
+| G(1) | 0.264 | 0.258193445244 | 0.267799352751 | 0.251781472684 |
++------+-------+----------------+----------------+----------------+
+CPD of I:
++------+-------+
+| I(0) | 0.493 |
++------+-------+
+| I(1) | 0.507 |
++------+-------+
+CPD of L:
++------+----------------+----------------+
+| G    | G(0)           | G(1)           |
++------+----------------+----------------+
+| L(0) | 0.496662216288 | 0.500665778961 |
++------+----------------+----------------+
+| L(1) | 0.503337783712 | 0.499334221039 |
++------+----------------+----------------+
+CPD of S:
++------+----------------+----------------+
+| I    | I(0)           | I(1)           |
++------+----------------+----------------+
+| S(0) | 0.436742934051 | 0.423381770145 |
++------+----------------+----------------+
+| S(1) | 0.563257065949 | 0.576618229855 |
++------+----------------+----------------+
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-04-21</span>
+            <span title="last modification date" class="post-info">2018-05-13</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/贝叶斯网">贝叶斯网</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/bayesian/2018/04/21/pgmpy-教程/ Or /blog/bayesian/pgmpy-教程/";
+         var disqus_url = "https://pinvondev.github.io/blog/bayesian/2018/04/21/pgmpy-教程/ Or /blog/bayesian/pgmpy-教程/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
