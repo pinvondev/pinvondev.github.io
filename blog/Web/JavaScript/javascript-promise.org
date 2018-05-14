@@ -1,0 +1,213 @@
+#+TITLE:       JavaScript笔记--Promise
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-14 一
+
+#+URI:         /blog/Web/JavaScript/%y/%m/%d/%t/ Or /blog/Web/JavaScript/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 问题的引入
+
+读取文件, 在控制台输出文件内容:
+#+BEGIN_SRC JavaScript
+var fs = require('fs')
+fs.readFile('index.txt', 'utf8', function (err, data) {
+    console.log(data);
+});
+#+END_SRC
+
+如果接下来要读取的文件, 存放在 index.txt 文件了, 需要打开 index.txt 才能知道接下来要访问的文件是什么, 就需要获取 data 后, 再继续下一步的读取工作:
+#+BEGIN_SRC JavaScript
+var fs = require('fs')
+fs.readFile('pass.txt', 'utf8', function (err, data) {
+    console.log(data);
+    var arrIndex = data.split('\n');
+    console.log(arrIndex);
+    fs.readFile(arrIndex[0], 'utf8', function (err, data) {
+        console.log(data);
+    })
+});
+#+END_SRC
+
+如果要读取更多文件, 每个文件读完之后, 才知道下一个要读的文件是什么, 则会出现类似如下的程序结构:
+#+BEGIN_SRC JavaScript
+step1(function(result1){
+    step2(function(result2){
+        step3(function(result3){
+            //...
+        });
+    });
+});
+#+END_SRC
+
+这种结构, 层层嵌套, 难以阅读.
+
+有如下办法进行改善.
+
+* promise 入门
+
+关于 Promise, 在 [[https://pinvondev.github.io/blog/Web/JavaScript/2018/05/10/javascript%E7%AC%94%E8%AE%B0--%E5%BC%82%E6%AD%A5/%20Or%20/blog/Web/JavaScript/javascript%E7%AC%94%E8%AE%B0--%E5%BC%82%E6%AD%A5/#org7f26022][JavaScript笔记--异步]] 中已有记录. 这边再记录一遍.
+
+promise 的三种状态: pending(进行), fulfilled(成功), rejected(失败)
+
+状态转换: pending->fulfilled, pending->rejected
+
+状态转换只发生一次, 如果已经发生了, 再对 promise 对象调用回调函数, 也会立即得到相同的结果.
+
+先对上面的读取文件的程序, 改成使用 promise, 以对 promise 有个认识, 然后再学习下面的内容.
+
+#+BEGIN_SRC JavaScript
+var fs = require('fs');
+function getData(fileName, type) {
+    return new Promise(function(resolve, reject){
+        fs.readFile(fileName, type, (err, data) => {
+            err ? reject(err) : resolve(data);
+        });
+    });
+}
+
+getData('pass.txt', 'utf8').then(function (data) {
+    console.log(data);
+});
+#+END_SRC
+
+可以看到, 我们在 then() 里面进行打印, then() 方法返回的又是 promise 对象, 可以一直这样 .then() 下去. 每次要做的事都放在 then() 里进行, 这样就避免了所有的程序都写在第一次读取文件时的回调函数里. 如:
+#+BEGIN_SRC JavaScript
+aPromise.then(function taskA(value){
+// task A
+}).then(function taskB(vaue){
+// task B
+}).catch(function onRejected(error){
+    console.log(error);
+});
+#+END_SRC
+
+** 创建 promise 对象
+
+#+BEGIN_SRC JavaScript
+var promise = new Promise(function (resolve, reject) {
+	// 异步处理
+	// 处理结束后, 调用 resolve 或 reject
+});
+#+END_SRC
+
+** then()
+
+使用 new Promise(function(){...}) 生成 promise 实例以后, 会有两个状态: resolved(成功) 或 rejected(失败). 一旦确定了状态, 就会触发回调函数. then() 可以作为这两种状态的回调函数. 
+
+即, 当 promise 对象的状态发生变化时, 用 then() 来定义只会被调用一次的函数.
+
+promise.then() 可以接受 3 个函数作为参数, 其中, 第 1 个函数在 resolved 时会进入, 第 2 个函数在 rejected 时会进入.
+#+BEGIN_SRC JavaScript
+promiseSomething().then(function(fulfilled){
+		//当promise状态变成fulfilled时，调用此函数
+	},function(rejected){
+		//当promise状态变成rejected时，调用此函数
+	},function(progress){
+		//当返回进度信息时，调用此函数
+	});
+#+END_SRC
+
+如果只想对失败的情况进行处理, 有以下两种选择:
+#+BEGIN_SRC JavaScript
+promiseSomething().then(undefined, function(rejected){...});
+promiseSomething().catch(function(rejected){...});
+#+END_SRC
+
+如:
+#+BEGIN_SRC JavaScript
+function asyncFunction() {
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve('Async Hello world');
+        }, 16);
+    });
+}
+
+asyncFunction().then(function (value) {
+    console.log(value);    // => 'Async Hello world'
+}).catch(function (error) {
+    console.log(error);
+});
+#+END_SRC
+catch() 相当于 then() 的第二个参数.
+
+在这个例子中, 使用 then() 来设置 resolve 后的回调函数, 使用 catch() 来设置 rejected 后的回调函数.
+
+如果不使用 catch(), 代码可以改成这样:
+#+BEGIN_SRC JavaScript
+asyncFunction().then(function (value) {
+    console.log(value);
+}, function (error) {
+    console.log(error);
+});
+#+END_SRC
+
+** 小结
+
+使用 promise 进行异步编程的流程如下:
+- new Promise(fn) 返回一个 promise 对象
+- 在 fn 中指定异步处理: 如果处理结果正常, 调用 resolve(处理结果); 如果处理出错, 调用 reject(Error对象)
+
+* promise 方法
+
+除了使用 *new Promise()* 来创建一个 promise 对象之外, 还可以使用 *Promise.resolve()* 和 *Promise.reject()* 两个方法来创建 promise 对象.
+
+** Promise.resolve()
+
+#+BEGIN_SRC JavaScript
+Promise.resolve(42);
+
+// 等价于
+
+new Promise(function (resolve) {
+	resolve(42);  // 直接进入 resolve 状态, 并将 42 传递给 then() 中对应的回调函数
+});
+#+END_SRC
+
+而 *Promise.resolve(42).then(function (value) {...})* 也是这样, 它返回一个 promise 对象, 并将 42 传递给 then().
+
+*** thenable
+
+thenable 的意思是, 如果一个对象有 then() 方法, 则它就是 thenable 的.
+
+如果一个非 promise 对象是 thenable 的, 则可以使用 Promise.resolve() 将其转为 promise 对象. 如, jQuery.ajax() 的返回值有 then():
+#+BEGIN_SRC JavaScript
+var promise = Promise.resolve($.ajax('/json/comment.json'));
+promise.then(function (value) {
+	console.log(value);
+});
+#+END_SRC
+
+** Promise.reject()
+
+与 Promise.resolve() 类似, 但内部调用的是 reject().
+
+** promise 方法链
+
+#+BEGIN_SRC JavaScript
+function doubleUp(value) {
+    return value * 2;
+}
+function increment(value) {
+    return value + 1;
+}
+function output(value) {
+    console.log(value);// => (1 + 1) * 2
+}
+
+var promise = Promise.resolve(1);
+promise
+    .then(increment)
+    .then(doubleUp)
+    .then(output)
+    .catch(function(error){
+        // promise chain中出现异常的时候会被调用
+        console.error(error);
+    });
+#+END_SRC
+注意参数的传递, 上一个方法中 return 的值直接作为下一个方法的参数.
