@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>精通比特币读书笔记--0 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">精通比特币读书笔记--0</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcfe6dd1">介绍</a>
+<ul>
+<li><a href="#org2c4c9b7">什么是比特币</a></li>
+<li><a href="#org811a382">钱包</a></li>
+</ul>
+</li>
+<li><a href="#org89eb02f">比特币原理</a>
+<ul>
+<li><a href="#org7ed240e">比特币概述</a></li>
+<li><a href="#org48912a1">交易</a>
+<ul>
+<li><a href="#org3d3e8de">交易输入输出</a></li>
+<li><a href="#org43fa00b">交易链</a></li>
+<li><a href="#orge757d69">找零</a></li>
+<li><a href="#org3f49747">常见的交易形式</a></li>
+</ul>
+</li>
+<li><a href="#org7a43156">交易的构建</a>
+<ul>
+<li><a href="#org9095624">获取正确的输入</a></li>
+<li><a href="#orga3c2269">创建交易的输出</a></li>
+</ul>
+</li>
+<li><a href="#org8a67f22">将交易放入账本</a>
+<ul>
+<li><a href="#orgbcf1f60">比特币网络</a></li>
+<li><a href="#org0314ef7">交易的传播</a></li>
+<li><a href="#org090f0cb">接收者</a></li>
+</ul>
+</li>
+<li><a href="#org1d3017d">挖矿</a></li>
+<li><a href="#org23e5485">区块中的挖矿交易记录</a></li>
+<li><a href="#org31fd405">消费一笔交易</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcfe6dd1" class="outline-2">
+<h2 id="orgcfe6dd1">介绍</h2>
+<div class="outline-text-2" id="text-orgcfe6dd1">
+</div>
+<div id="outline-container-org2c4c9b7" class="outline-3">
+<h3 id="org2c4c9b7">什么是比特币</h3>
+<div class="outline-text-3" id="text-org2c4c9b7">
+<p>
+比特币是构成数字货币生态系统基础的概念和技术的集合. 它代表了密码学和分布式系统研究的高潮, 有四个创新点:
+</p>
+<ul class="org-ul">
+<li>A decentralized peer-to-peer network(这边我使用原文, 而非中文版的去中心化对等网络, decentralized 只表明不是单中心模式, 可能是中文版的去中心, 也有可能是多中心)</li>
+<li>公共交易账本(区块链)</li>
+<li>独立交易确认和货币发行的一套规则(共识)</li>
+<li>所有用户都承认的将新区块写入链的机制(工作量证明)</li>
+</ul>
+
+<p>
+要成为数字货币, 需要解决三个基本问题:
+</p>
+<ul class="org-ul">
+<li>如何证明数字货币的真实性</li>
+<li>如何解决双重支付</li>
+<li>如何证明数字货币的所有者</li>
+</ul>
+
+<p>
+这三个问题, 可以通过密码学来解决. 加密数字签名使用户能够签署数字资产或证明该资产所有权的交易, 数字签名可以解决双重支付问题.
+</p>
+
+<p>
+比特币使用工作量证明算法, 每 10 分钟进行一次全球性的"选举", 从而允许分布式网络达成关于交易状态的共识, 这也解决了双重支付问题.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org811a382" class="outline-3">
+<h3 id="org811a382">钱包</h3>
+<div class="outline-text-3" id="text-org811a382">
+<p>
+私钥: 一个随机数, 通过计算机算法生成(密码学安全的随机数生成器).
+</p>
+
+<p>
+公钥: 有了私钥后, 可以计算公钥(反过来则不成立).
+</p>
+
+<p>
+地址: 比特币程序加上校验码(公钥哈希)进行两次 sha256 后, 取前 4B 和比特币主网版本号(0x00), 形成最终地址.
+</p>
+
+<p>
+钱包: 地址及对应私钥的管理工具(可以管理多个地址多个私钥).
+</p>
+
+<p>
+我们可以使用比特币钱包来随机生成一个私钥及对应的比特币地址. 但如果未参与交易, 这个比特币地址并不为比特币网络所知.
+</p>
+
+<p>
+B 是一个新用户, 其比特币地址现在还不为比特币网络所知. 
+</p>
+
+<p>
+A 给 B 转账: A 的钱包构造一个交易, 并用 A 的私钥为交易签名, 然后将比特币从 A 的比特币地址转向 B 的比特币地址. 这个交易会被传播到比特币网络, 网络中的其他节点收到交易后, 认识了 B 的比特币地址.
+</p>
+
+<p>
+B 的钱包会周期性查询比特币网络上的交易. 如果钱包发现交易中有地址与钱包中的地址匹配, 就会显示正确接收比特币. 但是现在, 这个交易还处于"未确认"状态, 要成为"确认"状态, 需要将交易写入区块链, 这会每 10 分钟写入一次.
+</p>
+
+<p>
+写入区块链后, 这些比特币就为 B 所有了.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org89eb02f" class="outline-2">
+<h2 id="org89eb02f">比特币原理</h2>
+<div class="outline-text-2" id="text-org89eb02f">
+</div>
+<div id="outline-container-org7ed240e" class="outline-3">
+<h3 id="org7ed240e">比特币概述</h3>
+<div class="outline-text-3" id="text-org7ed240e">
+<p>
+比特币系统由用户, 交易和矿工组成.
+</p>
+
+<p>
+用户: 通过密钥控制钱包.
+</p>
+
+<p>
+交易: 每一笔交易都会被广播到整个比特币网络.
+</p>
+
+<p>
+矿工: 通过竞争计算生成在每个节点达成共识的区块链, 区块链是一个分布式的公共账本, 包含了比特币网络发生的所有交易.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org48912a1" class="outline-3">
+<h3 id="org48912a1">交易</h3>
+<div class="outline-text-3" id="text-org48912a1">
+<p>
+交易告诉全网: 比特币的持有者已授权把比特币转账给其他人. 接收者可以再次授权, 将比特币转给其他用户.
+</p>
+</div>
+
+<div id="outline-container-org3d3e8de" class="outline-4">
+<h4 id="org3d3e8de">交易输入输出</h4>
+<div class="outline-text-4" id="text-org3d3e8de">
+<p>
+交易包含一个或多个输入, 也包含一个或多个输出. 输入不一定要等于输出. 如果输出略小于输入, 中间的差值表示矿工费, 由矿工收取. 如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/05/15/精通比特币读书笔记--0/ Or /blog/BlockChain/精通比特币读书笔记--0/74.png" alt="74.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org43fa00b" class="outline-4">
+<h4 id="org43fa00b">交易链</h4>
+<div class="outline-text-4" id="text-org43fa00b">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/05/15/精通比特币读书笔记--0/ Or /blog/BlockChain/精通比特币读书笔记--0/75.png" alt="75.png" />
+</p>
+</div>
+
+<p>
+从图中可以看出:
+</p>
+
+<p>
+Joe --(0.1BTC)--&gt; Alice, 因为输出地址是 Alice's Address, 所以如果没有 Alice 的私钥, 是无法取出里面的 BTC 的.
+</p>
+
+<p>
+Alice --(0.015BTC)--&gt; Bob, Alice 通过私钥打开 Alice's Address, 这样可以向全网证明, 自己的确拥有这笔钱.
+</p>
+
+<p>
+注意, 这里的地址非常重要, 你如何向别人证明这钱是你的? 因为只有你的私钥能打开这地址.
+</p>
+
+<p>
+上一笔交易的输出, 会成为下一笔交易的输入, 由此形成了一条交易链.
+</p>
+
+<p>
+思考: 说明如果收到了多笔比特币, 在钱包里显示的是总和, 但是要花出去时, 并不是将这个总和作为输入. 比如账户里收到了两笔 10BTC, 要转账 15BTC, 并不是将 20BTC 作为一个整体来输入, 也不是从 20BTC 中拿出 15BTC 来作为输入, 而是产生两个输入, 每个输入是上次的输出, 即两个 10BTC, 然后产生两个输出, 一个输出是接收者的 15BTC, 还有一个输出是自己的 4.xBTC(相当于找钱), 然后中间少了 0.xBTC, 是作为矿工费, 被矿工收取了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge757d69" class="outline-4">
+<h4 id="orge757d69">找零</h4>
+<div class="outline-text-4" id="text-orge757d69">
+<p>
+关于找零, 上面的思考部分也提到了, 跟现实的找零是一样的. 但是找零的地址, 可以不用与输入时提供的地址相同. 出于隐私, 许多人会把钱包中的另一个地址作为找零地址.
+</p>
+
+<p>
+也许有些钱包可以将输入进行汇总, 以匹配刚好所需的输出. 如果没有这种钱包, 并且如果只使用最大的面额, 最后会得到许多零钱, 如果只使用零钱, 最后会得到整钱.
+</p>
+
+<p>
+不管怎样, 一笔交易的输出可以被当成另一笔交易的输入, 这样随着钱从一个地址移动到另一个地址的同时, 形成了一条所有权链.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3f49747" class="outline-4">
+<h4 id="org3f49747">常见的交易形式</h4>
+<div class="outline-text-4" id="text-org3f49747">
+<p>
+一个输入, 多个输出: 如找零, 如发工资
+</p>
+
+<p>
+多个输入, 一个输出: 用零钱凑满一次转账. 这种情况的发生, 一般是钱包里有太多的小额 BTC 了, 钱包通过这种方式来清理小额 BTC.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7a43156" class="outline-3">
+<h3 id="org7a43156">交易的构建</h3>
+<div class="outline-text-3" id="text-org7a43156">
+<p>
+用户需要做的事, 应该尽可能简单, 所以如何选取合适的输入, 应由钱包在后台完成, 用户只需要输出目标地址和金额即可.
+</p>
+</div>
+
+<div id="outline-container-org9095624" class="outline-4">
+<h4 id="org9095624">获取正确的输入</h4>
+<div class="outline-text-4" id="text-org9095624">
+<p>
+钱包会跟踪钱包中某个地址的所有可用的(上一次交易的)输出. 完整的客户端会包括整个区块链中所有可用的输出, 但这会占用太大的硬盘空间, 所以钱包一般只保存钱包中的地址的可用输出.
+</p>
+
+<p>
+如果钱包中连自己的地址的可用输出都没有保存, 则可以使用 API, 从比特币网络中获取这一信息, 所需的参数主要就是自己的地址. 这样就可以知道自己有哪些钱可以作为下一次交易的输入了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga3c2269" class="outline-4">
+<h4 id="orga3c2269">创建交易的输出</h4>
+<div class="outline-text-4" id="text-orga3c2269">
+<p>
+交易的输出会被创建成一个包含这笔数额的脚本的形式, 这个脚本说, "谁的签名能和 Bob 的公开地址匹配, 这笔钱就给谁". 由于只有通过 Bob 的私钥进行签名, 才能与这个地址匹配, 所以, 只有 Bob 的钱包可以提供这个签名, 以兑换这笔输出. 因此, Alice 还需要 Bob 的签名, 来包装这个输出.
+</p>
+
+<p>
+另外, 输出还有可能包含自己的找零地址, 以及矿工费. 矿工费的作用是让这笔交易尽快被处理.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8a67f22" class="outline-3">
+<h3 id="org8a67f22">将交易放入账本</h3>
+<div class="outline-text-3" id="text-org8a67f22">
+</div>
+<div id="outline-container-orgbcf1f60" class="outline-4">
+<h4 id="orgbcf1f60">比特币网络</h4>
+<div class="outline-text-4" id="text-orgbcf1f60">
+<p>
+比特币网络是许多比特币客户端组成的 P2P 网络. 比特币网络的目的是将交易和区块传播给所有参与者.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0314ef7" class="outline-4">
+<h4 id="org0314ef7">交易的传播</h4>
+<div class="outline-text-4" id="text-org0314ef7">
+<p>
+Alice 的钱包应用可以发送新的交易给其他任意一个已连接到互联网的比特币客户端, Alice 的钱包不必直接连着 Bob 的钱包. 任何比特币网络的节点在收到一个之前没有见过的有效交易时, 会立刻将它转发给与自身直接相连的其他节点. 所以, 这个交易会迅速从 P2P 网络中传播开来, 几秒内就能到达大多数节点.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org090f0cb" class="outline-4">
+<h4 id="org090f0cb">接收者</h4>
+<div class="outline-text-4" id="text-org090f0cb">
+<p>
+Bob 可以很快确认 Alice 的交易, 因为交易中包含只能用 Bob 的私钥兑换的输出.
+</p>
+
+<p>
+由于 Alice 的地址是公开的, 该交易是否正确构建(主要是验证 Alice 的输入是未消费的), 可以很容易被 Bob 验证. 比如, Bob 可以将 Alice 的地址作为参数, 使用 API 查询其未消费输入.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d3017d" class="outline-3">
+<h3 id="org1d3017d">挖矿</h3>
+<div class="outline-text-3" id="text-org1d3017d">
+<p>
+挖矿可以验证交易, 然后将交易加入区块. 多个交易被打包放到区块中, 需要极大的计算量来证明, 但只需要少量的计算就能验证其已被证明.
+</p>
+
+<p>
+挖矿在构建区块时会创造新的 BTC, 每个区块创造的 BTC 数量固定, 随时间逐渐减少.
+</p>
+
+<p>
+如果一个矿工正确验证了所有的交易, 并且完成了工作量证明, 则可以获得这些交易的矿工费和构建区块时创建的新 BTC.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org23e5485" class="outline-3">
+<h3 id="org23e5485">区块中的挖矿交易记录</h3>
+<div class="outline-text-3" id="text-org23e5485">
+<p>
+新交易会不断从用户钱包或其他应用流入比特币网络, 比特币网络中的节点看到这些交易后, 会先将它们放到各自节点维护的一个临时的未经验证的交易池中. 当矿工构建一个新区块时, 会将这些交易从交易池中取出, 放到新区块中, 然后通过工作量证明, 来证明这个新区块的合法性.
+</p>
+
+<p>
+每个矿工会在他的区块中包含一个特殊的交易, 将新生成的 BTC 和矿工费作为报酬支付到自己的地址中.
+</p>
+
+<p>
+交易会以矿工费的高低来排序(可能还有一些其他规则), 矿工费高的区块将优先被处理.
+</p>
+
+<p>
+如果一个区块后面又链了六个区块, 则这个区块就被认为是不可撤销的了, 因为要撤销和重建六个区块需要巨量的计算.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31fd405" class="outline-3">
+<h3 id="org31fd405">消费一笔交易</h3>
+<div class="outline-text-3" id="text-org31fd405">
+<p>
+如果交易已经成为区块的一部分, 加到了区块链上, 则它就全网可见, 每个比特币客户端都可以独立验证这笔交易是有效且可消费的. 全网都可以追溯钱款的来源. 如果一个交易在区块链中, 且它后面有几个新区块, 轻量级客户端(钱包)就认为这个支付是合法的.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-15</span>
+            <span title="last modification date" class="post-info">2018-05-16</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/BlockChain/2018/05/15/精通比特币读书笔记--0/ Or /blog/BlockChain/精通比特币读书笔记--0/";
+         var disqus_url = "https://pinvondev.github.io/blog/BlockChain/2018/05/15/精通比特币读书笔记--0/ Or /blog/BlockChain/精通比特币读书笔记--0/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
