@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>精通比特币读书笔记--1 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">精通比特币读书笔记--1</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8556e43">钱包</a>
+<ul>
+<li><a href="#orgf225276">钱包技术概述</a></li>
+<li><a href="#org7f7f90a">非确定性钱包</a></li>
+<li><a href="#org1ce00c7">确定性钱包</a>
+<ul>
+<li><a href="#org42edb4c">种子和助记词</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgcd2e292">交易</a>
+<ul>
+<li><a href="#orgb8052ea">概述</a></li>
+<li><a href="#org3ae26ec">交易细节</a>
+<ul>
+<li><a href="#org37c1cc2">解码后的交易</a></li>
+</ul>
+</li>
+<li><a href="#orgdc122b4">交易的输入输出</a>
+<ul>
+<li><a href="#org04b562e">UTXO</a></li>
+<li><a href="#org2f20594">交易输出</a></li>
+<li><a href="#orgaaf5782">交易序列化--输出</a></li>
+<li><a href="#org7be908a">交易输入</a></li>
+<li><a href="#orgb6a345e">交易费</a></li>
+</ul>
+</li>
+<li><a href="#org76ec0f9">交易脚本</a>
+<ul>
+<li><a href="#org441babb">脚本构建</a>
+<ul>
+<li><a href="#orgb9ce83d">一个简单的例子</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8556e43" class="outline-2">
+<h2 id="org8556e43">钱包</h2>
+<div class="outline-text-2" id="text-org8556e43">
+<p>
+广义上, 钱包是一个应用程序, 为用户提供交互界面, 钱包控制用户访问权限, 管理密钥和地址, 跟踪余额以及创建和签名交易.
+</p>
+
+<p>
+狭义上, 钱包是指存储和管理用户密钥的数据结构.
+</p>
+</div>
+
+<div id="outline-container-orgf225276" class="outline-3">
+<h3 id="orgf225276">钱包技术概述</h3>
+<div class="outline-text-3" id="text-orgf225276">
+<p>
+有一种常见的误解是, 比特币钱包里含有比特币. 事实上, 钱包里只含有钥匙, 比特币是被记录在区块链中的. 用户通过钱包中的密钥签名交易, 从而对区块链中的比特币进行控制.
+</p>
+
+<p>
+用户用密钥签名交易, 从而证明他们拥有交易输出(比特币), 比特币以交易输出的形式存储在区块链中(通常记为 vout 或 txout).
+</p>
+
+<p>
+钱包分成确定性钱包(deterministic wallet)和非确定性钱包(nondeterministic wallet). 其中, 非确定性钱包中的密钥从随机数独立生成, 彼此之间无关. 确定性钱包中的密钥从一个主密钥派生出来, 彼此相关关联.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7f7f90a" class="outline-3">
+<h3 id="org7f7f90a">非确定性钱包</h3>
+<div class="outline-text-3" id="text-org7f7f90a">
+<p>
+所有密钥彼此独立, 不便管理, 不推荐使用.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ce00c7" class="outline-3">
+<h3 id="org1ce00c7">确定性钱包</h3>
+<div class="outline-text-3" id="text-org1ce00c7">
+<p>
+种子足够恢复所有已经产生的私钥, 所以只要备份种子即可. 这样用户可以轻松地在钱包之间转移私钥.
+</p>
+
+<p>
+HD 钱包包含以树状结构衍生的密钥, 父密钥可以衍生一系列子密钥, 每个子密钥又可以衍生出一系列孙密钥, 以此类推, 无限衍生. 这种钱包可以应用于企业环境中, 如, 一个特定分支的子密钥用于某部门.
+</p>
+</div>
+
+<div id="outline-container-org42edb4c" class="outline-4">
+<h4 id="org42edb4c">种子和助记词</h4>
+<div class="outline-text-4" id="text-org42edb4c">
+<p>
+由一系列英文单词生成种子, 这样易于在钱包中转移, 导入, 导出. 这些英文单词就称为助记词.
+</p>
+
+<p>
+助记词的选择是有讲究的, 其生成的步骤如下:
+</p>
+<ul class="org-ul">
+<li>创建一个 128 或 256 位的随机序列(熵)</li>
+<li>提取 SHA256 哈希前几位(熵长/32), 得到校验和</li>
+<li>将校验和添加到随机序列末尾</li>
+<li>将序列以 11bit 的长度进行划分</li>
+<li>预先定义 2048 个单词, 根据子序列找出对应的单词</li>
+<li>生成的有顺序的单词就是助记词</li>
+</ul>
+
+<p>
+如图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/05/16/精通比特币读书笔记--1/ Or /blog/BlockChain/精通比特币读书笔记--1/76.png" alt="76.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd2e292" class="outline-2">
+<h2 id="orgcd2e292">交易</h2>
+<div class="outline-text-2" id="text-orgcd2e292">
+</div>
+<div id="outline-container-orgb8052ea" class="outline-3">
+<h3 id="orgb8052ea">概述</h3>
+<div class="outline-text-3" id="text-orgb8052ea">
+<p>
+比特币交易是比特币系统中最重要的部分. 比特币交易的本质是数据结构, 这些数据结构中含有比特币交易参与者价值转移的相关信息. 比特币区块链是个总账本, 每个比特币交易都是在比特币区块链上的一个公开记录.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3ae26ec" class="outline-3">
+<h3 id="org3ae26ec">交易细节</h3>
+<div class="outline-text-3" id="text-org3ae26ec">
+<p>
+交易中存储的数据是非常简单的, 区块浏览器中所看到的信息, 很多都是由区块浏览器所构建的, 并非从交易读取.
+</p>
+</div>
+
+<div id="outline-container-org37c1cc2" class="outline-4">
+<h4 id="org37c1cc2">解码后的交易</h4>
+<div class="outline-text-4" id="text-org37c1cc2">
+<p>
+Alice--&gt;Bob 的交易, 解码后如下所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/05/16/精通比特币读书笔记--1/ Or /blog/BlockChain/精通比特币读书笔记--1/77.png" alt="77.png" />
+</p>
+</div>
+
+<p>
+仔细查看图中内容, 会发现, 没有 Alice 的地址, 没有 Bob 的地址, 没有 Alice 转出的 0.1BTC. 那么, 没有这些信息, 是如何通过交易链, 找出比特币的最终源头的呢?
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc122b4" class="outline-3">
+<h3 id="orgdc122b4">交易的输入输出</h3>
+<div class="outline-text-3" id="text-orgdc122b4">
+</div>
+<div id="outline-container-org04b562e" class="outline-4">
+<h4 id="org04b562e">UTXO</h4>
+<div class="outline-text-4" id="text-org04b562e">
+<p>
+unspent transaction outputs(UTXO): 未消费的交易输出.
+</p>
+
+<p>
+UTXO 是比特币交易中的基础构建单元, 不可分割, 记录在区块上.
+</p>
+
+<p>
+比特币网络中, 所有的 UTXO 的集合, 称为 UTXO集, 当新的 UTXO 被创建, UTXO集 就会变大, 当 UTXO 被消耗时, UTXO集 就会缩小. 每个交易都代表着 UTXO集 的变化(状态转换).
+</p>
+
+<p>
+当钱包显示收到比特币时, 实际上的意思是指钱包检测其控制的密钥可用的 UTXO. 通过钱包控制的密钥, 可以将这些 UTXO 花费出去. 钱包中显示的比特币总和, 是指 UTXO 的总和, 这些 UTXO 可能分散在许多区块中, 钱包会扫描区块链, 把属于该用户的 UTXO 都聚集起来. 钱包会维护一个数据库, 存储该用户的所有 UTXO集.
+</p>
+
+<p>
+一个 UTXO 是 1聪 的整数倍, 一旦一个 UTXO 被创建, 就意味着它是不可分割的, 只能作为一个整体被消耗. 即使一个 UTXO 大于一笔所需的花费, 它仍然会当成一个整体被消耗, 同时会产生两个输出: 花费和找零. 但这些细节都由钱包处理, 用户感觉不到.
+</p>
+
+<p>
+一笔交易会消耗已存在的 UTXO, 并创建新的 UTXO 来作为未来的交易消耗. 所以, 一笔比特币, 通过在交易链中创建和消耗 UTXO, 在不同的所有者之间转移. 一笔比特币的交易, 通过使用所有者的签名(私钥签名)来解锁 UTXO, 使用接收者的比特币地址(公钥)来锁定并创建 UTXO.
+</p>
+
+<p>
+除了交易的输入输出之外, 挖矿时会产生新的比特币, 这也是 UTXO, 会作为区块的第一笔交易写入区块链.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2f20594" class="outline-4">
+<h4 id="org2f20594">交易输出</h4>
+<div class="outline-text-4" id="text-org2f20594">
+<p>
+几乎每一笔交易, 都会产生 UTXO. UTXO 在 UTXO集 中被每一个全节点比特币客户端追踪. 交易输出包括两个部分:
+</p>
+<ul class="org-ul">
+<li>一定量的比特币(以聪为单位)</li>
+<li>确定花费输出所需条件的加密难题(也称为locking script 或 witness script 或 scriptPubKey)</li>
+</ul>
+
+<p>
+在上面解码交易的图片中, 仔细查看 vout 数组中的内容, 可以看到交易包含两个输出, 每个输出都包括一个值和一个加密难题.
+</p>
+
+<p>
+注意, locking script 中的内容包括 <b>接收者的公钥哈希</b>, 意思是, 有谁能提供一个签名和一个公钥, 让这个脚本运行通过, 谁就能花这笔交易的资金. 由于创建签名只能使用接收者的私钥, 其他人的私钥创建的签名无法通过这个脚本的验证, 所以其他人无法假冒接收者来花费这笔输出.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaaf5782" class="outline-4">
+<h4 id="orgaaf5782">交易序列化--输出</h4>
+<div class="outline-text-4" id="text-orgaaf5782">
+<p>
+序列化: 将内部的数据结构转换为字节流的过程. 当交易通过网络传输或在应用程序之间进行交换时, 交易会被序列化.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7be908a" class="outline-4">
+<h4 id="org7be908a">交易输入</h4>
+<div class="outline-text-4" id="text-org7be908a">
+<p>
+交易输入将 UTXO 标记为被消费, 并通过解锁脚本(unlock script)提供所有权证明(即将之前加密难题解锁).
+</p>
+
+<p>
+如果要构建交易, 就创建一个或若干个指向 UTXO 的输入, 然后用解锁脚本解锁它(们). 一般情况下, 解锁脚本就是一个证明比特币所有权的数字签名和公钥.
+</p>
+
+<p>
+输入包含四个元素:
+</p>
+<ul class="org-ul">
+<li>交易 ID, 引用正在使用的 UTXO 的交易(交易链中关于这个 UTXO 的上一个 ID).</li>
+<li>输出索引, 用于标识来自该交易的哪个 UTXO 被引用.</li>
+<li>解锁脚本</li>
+<li>序列号</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb6a345e" class="outline-4">
+<h4 id="orgb6a345e">交易费</h4>
+<div class="outline-text-4" id="text-orgb6a345e">
+<p>
+目前的设置是: 1kB 收取 0.00001BTC. 如果一笔交易, 只有一个输入, 一个输出, 那么这笔交易所占的字节数就比较少, 交易费会比较低; 如果有几百个小额输入, 一个大额输出, 这笔交易所占的字节数就多, 交易费也会比较高. 所以, 交易费与交易额的大小无关, 与交易占的字节数有关.
+</p>
+
+<p>
+交易的数据结构中没有交易费, 它通过输入输出的差值来计算.
+</p>
+
+<p>
+也许钱包会自动帮我们构造交易费的大小, 但是如果我们选择手动构造, 一定要记得填写找零的输出, 否则剩下的钱就都会被当做交易费被矿工收取.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org76ec0f9" class="outline-3">
+<h3 id="org76ec0f9">交易脚本</h3>
+<div class="outline-text-3" id="text-org76ec0f9">
+<p>
+当一笔比特币交易被验证时, 每一个输入值中的解锁脚本和锁定脚本并行执行, 以确定这笔交易是否满足支付条件.
+</p>
+
+<p>
+比特币脚本语言没有循环和条件中转, 所以它是图灵非完备语言. 因此, 比特币只能编写简单的智能合约, 能做的事情有限. 比特币脚本被设计成图灵非完备语言, 是有它的原因的, 如果不怀好意的人, 在脚本中写了个无限循环, 会导致资源被严重浪费(类似拒绝服务攻击).
+</p>
+</div>
+
+<div id="outline-container-org441babb" class="outline-4">
+<h4 id="org441babb">脚本构建</h4>
+<div class="outline-text-4" id="text-org441babb">
+<p>
+锁定脚本包含公钥或比特币地址(公钥的哈希值), 解锁脚本包含一个由用户的比特币钱包(通过用户的私钥)生成的数字签名(一般情况下, 但不是所有解锁脚本都这样).
+</p>
+
+<p>
+输入 = 解锁脚本 + UTXO.
+</p>
+
+<p>
+UTXO = 锁定脚本 + ...
+</p>
+
+<p>
+这样, 就可以通过输入, 得到解锁脚本和锁定脚本, 然后分别单独执行. 如果解锁脚本满足锁定脚本条件, 则输入有效.
+</p>
+</div>
+
+<div id="outline-container-orgb9ce83d" class="outline-5">
+<h5 id="orgb9ce83d">一个简单的例子</h5>
+<div class="outline-text-5" id="text-orgb9ce83d">
+<p>
+任何解锁和锁定脚本的组合如果结果为 TRUE, 则为有效.
+</p>
+
+<p>
+假设锁定脚本为: 3 OP_ADD 5 OP_EQUAL
+</p>
+
+<p>
+意思是, 哪个数和 3 相加, 如果与 5 相等, 就验证通过.
+</p>
+
+<p>
+然后, 解锁脚本的内容为: 2
+</p>
+
+<p>
+验证软件将锁定脚本和解锁脚本的内容组合起来, 就是: 2 3 OP_ADD 5 OP_EQUAL
+</p>
+
+<p>
+于是, 验证通过.
+</p>
+
+<p>
+在实际中, 锁定脚本包含一个公钥哈希值; 解锁脚本包含接收者的公钥和由相应私钥创建的数字签名. 将这两个结合起来, 即可通过验证.
+</p>
+
+<p>
+以 Alice --&gt; Bob 为例.
+</p>
+
+<p>
+该交易的 UTXO 中, 包含 Bob 的公钥哈希(即下面的 Cafe Public Key Hash):
+</p>
+<div class="org-src-container">
+<pre class="src src-BTC">OP_DUP OP_HASH160 &lt;Cafe Public Key Hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+</pre>
+</div>
+
+<p>
+解锁脚本是:
+</p>
+<div class="org-src-container">
+<pre class="src src-BTC">&lt;Cafe Signature&gt; &lt;Cafe Public Key&gt;
+</pre>
+</div>
+
+<p>
+将两个脚本组合:
+</p>
+<div class="org-src-container">
+<pre class="src src-BTC">&lt;Cafe Signature&gt; &lt;Cafe Public Key&gt; OP_DUP OP_HASH160 &lt;Cafe Public Key Hash&gt; OP_EQUALVERIFY OP_CHECKSIG
+</pre>
+</div>
+
+<p>
+可以理解为: 当解锁脚本得到了接收者的有效签名, 验证就会通过. 这个有效签名是从与公钥哈希对应的私钥获取.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-16</span>
+            <span title="last modification date" class="post-info">2018-05-23</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/BlockChain/2018/05/16/精通比特币读书笔记--1/ Or /blog/BlockChain/精通比特币读书笔记--1/";
+         var disqus_url = "https://pinvondev.github.io/blog/BlockChain/2018/05/16/精通比特币读书笔记--1/ Or /blog/BlockChain/精通比特币读书笔记--1/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

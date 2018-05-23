@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>用户数据报协议 UDP - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="计算机网络" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">用户数据报协议 UDP</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org5005475">进程间通信</a>
+<ul>
+<li><a href="#org3edcccf">端口号</a></li>
+<li><a href="#org1553706">套接字地址(Socket)</a></li>
+</ul>
+</li>
+<li><a href="#org92f73ce">面向连接服务和面向无连接服务</a>
+<ul>
+<li><a href="#org1184e9d">面向连接服务(虚电路)</a></li>
+<li><a href="#orga52c5cf">面向无连接服务</a></li>
+</ul>
+</li>
+<li><a href="#orga64304c">UDP 协议</a>
+<ul>
+<li><a href="#orgb860908">报文格式</a></li>
+</ul>
+</li>
+<li><a href="#org048f617">UDP 应用</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5005475" class="outline-2">
+<h2 id="org5005475">进程间通信</h2>
+<div class="outline-text-2" id="text-org5005475">
+<p>
+IP 协议负责把数据报从源主机交付到目的主机. 这是一种不完整的交付, 因为报文没有被送到正确的进程. TCP/UDP 这些传输层协议负责进程到进程的通信.
+</p>
+</div>
+
+<div id="outline-container-org3edcccf" class="outline-3">
+<h3 id="org3edcccf">端口号</h3>
+<div class="outline-text-3" id="text-org3edcccf">
+<p>
+在 C/S 架构中, 客户端进程使用端口号标识自己, 这种端口号称为 <b>短暂端口号</b>. 
+</p>
+
+<p>
+服务端进程也要用端口号标识自己, 但服务端的端口号不能随便选取, 因为随便选取的话, 客户端进程就不知道是哪个端口了. 服务端选取的端口号, 称为 <b>熟知端口号</b>.
+</p>
+
+<p>
+UDP 的熟知端口号如下表所示:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">端口</th>
+<th scope="col" class="org-left">协议</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">7</td>
+<td class="org-left">Echo</td>
+<td class="org-left">把收到的数据报发回给发送端</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">9</td>
+<td class="org-left">Discard</td>
+<td class="org-left">丢弃收到的任何数据报</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">11</td>
+<td class="org-left">Users</td>
+<td class="org-left">活跃的用户</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">13</td>
+<td class="org-left">Daytime</td>
+<td class="org-left">返回时间</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">17</td>
+<td class="org-left">Quote</td>
+<td class="org-left">返回时间</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">19</td>
+<td class="org-left">Chargen</td>
+<td class="org-left">返回字符串</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">53</td>
+<td class="org-left">Nameserver</td>
+<td class="org-left">域名服务</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">67</td>
+<td class="org-left">Bootps</td>
+<td class="org-left">下载引导程序信息的服务器端口</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">68</td>
+<td class="org-left">Bootpc</td>
+<td class="org-left">下载引导程序信息的客户端端口</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">69</td>
+<td class="org-left">TFTP</td>
+<td class="org-left">简单文件传送协议</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">111</td>
+<td class="org-left">RPC</td>
+<td class="org-left">远程过程调用</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">123</td>
+<td class="org-left">NTP</td>
+<td class="org-left">网络时间协议</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">161</td>
+<td class="org-left">SNMP</td>
+<td class="org-left">简单网络管理协议</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">520</td>
+<td class="org-left">RIP</td>
+<td class="org-left">路由信息协议</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org1553706" class="outline-3">
+<h3 id="org1553706">套接字地址(Socket)</h3>
+<div class="outline-text-3" id="text-org1553706">
+<p>
+Socket = IP + Port. 它唯一标识了某一主机上的某一进程.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org92f73ce" class="outline-2">
+<h2 id="org92f73ce">面向连接服务和面向无连接服务</h2>
+<div class="outline-text-2" id="text-org92f73ce">
+</div>
+<div id="outline-container-org1184e9d" class="outline-3">
+<h3 id="org1184e9d">面向连接服务(虚电路)</h3>
+<div class="outline-text-3" id="text-org1184e9d">
+<p>
+在进行数据交换前, 先建立连接, 当数据传输结束后, 释放这个连接. 具体包括以下三个阶段:
+</p>
+<ul class="org-ul">
+<li>建立连接: 给出完整的源和目的地址.</li>
+<li>数据交换: 该阶段每个报文不必包含完整的源和目的地址, 只需使用一个连接标识符来代替, 提高效率.</li>
+<li>释放连接</li>
+</ul>
+
+<p>
+由于面向连接服务中, 报文有序发送和接收.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga52c5cf" class="outline-3">
+<h3 id="orga52c5cf">面向无连接服务</h3>
+<div class="outline-text-3" id="text-orga52c5cf">
+<p>
+每个数据报都要给出完整的源和目的地址, 开销较大.
+</p>
+
+<p>
+面向无连接服务主要有三种类型:
+</p>
+<ul class="org-ul">
+<li>数据报: 发完报文就结束, 对方不做任何响应, 可靠性较差.</li>
+<li>证实交付: 对每一个报文产生一个证实给发送方, 但这种证实只能保证报文已经发送到目的站了, 不能保证对方正确接收.</li>
+<li>请求回答: 接收端用户每收到一个报文, 就向发送端发送一个应答报文.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga64304c" class="outline-2">
+<h2 id="orga64304c">UDP 协议</h2>
+<div class="outline-text-2" id="text-orga64304c">
+<p>
+UDP 协议是无连接的, 不可靠的. 在发送数据前, 不建立连接.
+</p>
+
+<p>
+UDP 不提供确认, 也不对数据的到达顺序加以控制, 因此, UDP 报文可能会丢失.
+</p>
+</div>
+
+<div id="outline-container-orgb860908" class="outline-3">
+<h3 id="orgb860908">报文格式</h3>
+<div class="outline-text-3" id="text-orgb860908">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/23/用户数据报协议-udp/ Or /blog/Network/用户数据报协议-udp/10.png" alt="10.png" />
+</p>
+</div>
+
+<p>
+有效负载长度 = IP总长度 - IP首部长度
+</p>
+
+<p>
+校验和包括伪首部, UDP首部 和 UDP数据, 该字段可选, 如果为 0, 表示不进行校验. 伪首部是 IP首部 的一部分. 如果不包括伪首部, 用户数据报也可能是安全的, 但是, 如果 IP首部 受到损伤, 则它可能被交付到错误的主机.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org048f617" class="outline-2">
+<h2 id="org048f617">UDP 应用</h2>
+<div class="outline-text-2" id="text-org048f617">
+<p>
+TCP 协议是基于连接的可靠协议, 有流量控制和差错控制, 传输效率较低.
+</p>
+
+<p>
+UDP 协议是基于无连接的不可靠协议, 没有控制手段, 仅仅是将数据发送给对方, 效率较高.
+</p>
+
+<p>
+所以, UDP 适用于对效率要求较高, 对准确性要求较低的场景.
+</p>
+
+<p>
+如:
+</p>
+<ul class="org-ul">
+<li>即时通信(如 QQ聊天): 对准确性和丢包要求较低, 但速度必须快.</li>
+<li>在线视频: 保证视频连续, 偶尔一个图像不清晰, 是可以接受的.</li>
+<li>网络语音通话: 保证通话连续, 偶尔断音或串音, 是可以接受的.</li>
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-23</span>
+            <span title="last modification date" class="post-info">2018-05-23</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/计算机网络">计算机网络</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Network/2018/05/23/用户数据报协议-udp/ Or /blog/Network/用户数据报协议-udp/";
+         var disqus_url = "https://pinvondev.github.io/blog/Network/2018/05/23/用户数据报协议-udp/ Or /blog/Network/用户数据报协议-udp/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

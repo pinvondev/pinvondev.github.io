@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>精通比特币读书笔记--2 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">精通比特币读书笔记--2</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9be3a89">比特币网络</a>
+<ul>
+<li><a href="#org0b49c5b">P2P 网络架构</a></li>
+<li><a href="#orgc4eb8c2">节点类型及角色</a></li>
+</ul>
+</li>
+<li><a href="#orgd80131d">区块链</a>
+<ul>
+<li><a href="#org4be2aae">区块结构</a></li>
+<li><a href="#org951457f">区块头</a></li>
+<li><a href="#org92e1946">区块标识符: 区块头哈希值和区块高度</a></li>
+<li><a href="#orgeb419d5">创世区块</a></li>
+<li><a href="#org6795631">将区块加入区块链</a></li>
+<li><a href="#orgf8a0bd0">Merkle树</a>
+<ul>
+<li><a href="#orgf142fca">Merkle树 的构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9be3a89" class="outline-2">
+<h2 id="org9be3a89">比特币网络</h2>
+<div class="outline-text-2" id="text-org9be3a89">
+</div>
+<div id="outline-container-org0b49c5b" class="outline-3">
+<h3 id="org0b49c5b">P2P 网络架构</h3>
+<div class="outline-text-3" id="text-org0b49c5b">
+<p>
+比特币采用了基于国际互联网的 P2P 网络架构. P2P 的意思是每个节点都是对等的, 没有服务端, 分层等概念.
+</p>
+
+<p>
+除了 P2P 协议之外, 比特币网络中还运行了 Stratum协议(挖矿).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc4eb8c2" class="outline-3">
+<h3 id="orgc4eb8c2">节点类型及角色</h3>
+<div class="outline-text-3" id="text-orgc4eb8c2">
+<p>
+每个比特币节点都是路由, 区块链数据库, 挖矿, 钱包四个服务的集合. 其中, 全节点的区块链数据库是完整的拷贝.
+</p>
+
+<p>
+除了全节点之外, 还有"轻量级节点(SPV节点)"的概念. 这种节点只保留了区块链的一部分, SPV节点 也有区块链数据库, 只不过这里的数据只是完整区块链的一部分.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd80131d" class="outline-2">
+<h2 id="orgd80131d">区块链</h2>
+<div class="outline-text-2" id="text-orgd80131d">
+<p>
+区块链的数据结构是由包含交易信息的区块按照从远到近的顺序有序链接起来的.
+</p>
+
+<p>
+对每个区块头进行 SHA256 加密哈希, 可生成一个哈希值, 可以通过这个哈希值唯一地区别一个区块, 区块头中有一个字段, 包含了父区块的哈希值, 根据这个值, 可以将区块一个一个链接起来. 正因为这个特征, 所以如果父区块有任何改动, 父区块哈希值会随着改变, 最终导致当前区块的哈希值也会改变. 如果被改变的区块后面包含许多区块, 重新计算这些区块的哈希值将会耗费大量的计算资源, 所以一个长区块链的存在, 可以让区块链的历史不可改变, 这是比特币安全的一个重要原因.
+</p>
+</div>
+
+<div id="outline-container-org4be2aae" class="outline-3">
+<h3 id="org4be2aae">区块结构</h3>
+<div class="outline-text-3" id="text-org4be2aae">
+<p>
+区块头: 80B
+</p>
+
+<p>
+平均每个交易: 250B
+</p>
+
+<p>
+平均每个区块包含的交易数: 500
+</p>
+
+<p>
+数据结构如下表所示:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Size</th>
+<th scope="col" class="org-left">Field</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">4B</td>
+<td class="org-left">Block Size</td>
+<td class="org-left">区块大小</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">80B</td>
+<td class="org-left">Block Header</td>
+<td class="org-left">区块头</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">1-9B</td>
+<td class="org-left">Transaction Counter</td>
+<td class="org-left">交易数</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">Variable</td>
+<td class="org-left">Transactions</td>
+<td class="org-left">交易</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org951457f" class="outline-3">
+<h3 id="org951457f">区块头</h3>
+<div class="outline-text-3" id="text-org951457f">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Size</th>
+<th scope="col" class="org-left">Field</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">4B</td>
+<td class="org-left">Version</td>
+<td class="org-left">版本号</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">32B</td>
+<td class="org-left">Previous Block Hash</td>
+<td class="org-left">上一个区块的哈希值</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">32B</td>
+<td class="org-left">Merkle Root</td>
+<td class="org-left">Merkle 树根节点的哈希值</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">4B</td>
+<td class="org-left">Timestamp</td>
+<td class="org-left">时间戳</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">4B</td>
+<td class="org-left">Difficulty Target</td>
+<td class="org-left">该区块的工作量证明算法的难度目标</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">4B</td>
+<td class="org-left">Nonce</td>
+<td class="org-left">难题的解</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+注意, Merkle树是一种用来有效地总结区块中所有交易的数据结构.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org92e1946" class="outline-3">
+<h3 id="org92e1946">区块标识符: 区块头哈希值和区块高度</h3>
+<div class="outline-text-3" id="text-org92e1946">
+<p>
+区块哈希值可以唯一地标识一个区块.
+</p>
+
+<p>
+区块高度是找出一个区块的必要不充分条件. 因为有可能多个区块在竞争同一高度.
+</p>
+
+<p>
+区块哈希值和区块高度实际上都不存在区块的数据结构里, 它们一般被存储在一个独立的数据库表中, 以便于索引, 更快地从磁盘检索区块.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb419d5" class="outline-3">
+<h3 id="orgeb419d5">创世区块</h3>
+<div class="outline-text-3" id="text-orgeb419d5">
+<p>
+区块链里的第一个区块.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6795631" class="outline-3">
+<h3 id="org6795631">将区块加入区块链</h3>
+<div class="outline-text-3" id="text-org6795631">
+<p>
+假设前一个区块的区块头哈希值为: 00000000000000027e7ba6fe7bad39faf3b5a83daed765f05f7d1b71a1632249
+</p>
+
+<p>
+则新块的内容类似如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-JSON">{
+    "size" : 43560,
+    "version" : 2,
+    "previousblockhash" : "00000000000000027e7ba6fe7bad39faf3b5a83daed765f05f7d1b71a1632249",
+    "merkleroot" : "5e049f4030e0ab2debb92378f53c0a6e09548aea083f3ab25e1d94ea1155e29d",
+    "time" : 1388185038,
+    "difficulty" : 1180923195.25802612,
+    "nonce" : 4215469401,
+    "tx" : [
+        "257e7497fb8bc68421eb2c7b699dbab234831600e7352f0d9e6522c7cf3f6c77",
+        ...
+        "05cfd38f6ae6aa83674cc99e4d75a1458c165b7ab84725eda41d018a09176634"
+        ]
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf8a0bd0" class="outline-3">
+<h3 id="orgf8a0bd0">Merkle树</h3>
+<div class="outline-text-3" id="text-orgf8a0bd0">
+<p>
+区块链中的每个区块都包含了产生于该区块的所有交易, 以 Merkle树 表示.
+</p>
+
+<p>
+Merkle树 是一种哈希二叉树, 它是一种用作快速归纳和校验大规模数据完整性的数据结构.
+</p>
+
+<p>
+在比特币网络中, Merkle树 被用来归纳一个区块中的所有交易, 同时生成整个交易集合的数字指纹, 且提供了一种校验区块是否存在某交易的高效途径. 当 N 个数据元素经过加密后插入 Merkle树 时, 可以用很高的效率计算出某元素是否在该树中.
+</p>
+</div>
+
+<div id="outline-container-orgf142fca" class="outline-4">
+<h4 id="orgf142fca">Merkle树 的构建</h4>
+<div class="outline-text-4" id="text-orgf142fca">
+<p>
+Merkle树 是自底向上构建的. 假设有 A, B, C, D 四个交易, 构建的 Merkle树 如下所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/05/18/精通比特币读书笔记--2/ Or /blog/BlockChain/精通比特币读书笔记--2/78.png" alt="78.png" />
+</p>
+</div>
+
+<p>
+交易哈希化后存储在相应的叶子节点. 如: \(H_A = SHA256(SHA256(Transaction A))\)
+</p>
+
+<p>
+而 \(H_{AB}\) 是将 \(H_A\) 和 \(H_B\) 进行串联后, 再哈希化得到的值.
+</p>
+
+<p>
+最终, 得到了 Merkle根, 产生的 32B 的哈希值存储在区块头.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-18</span>
+            <span title="last modification date" class="post-info">2018-05-23</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/BlockChain/2018/05/18/精通比特币读书笔记--2/ Or /blog/BlockChain/精通比特币读书笔记--2/";
+         var disqus_url = "https://pinvondev.github.io/blog/BlockChain/2018/05/18/精通比特币读书笔记--2/ Or /blog/BlockChain/精通比特币读书笔记--2/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

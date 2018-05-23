@@ -55,30 +55,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgcdbbd5f">概述</a></li>
-<li><a href="#org594fcc5">Cookie</a></li>
-<li><a href="#org05d2d20">Session</a></li>
-<li><a href="#orga982812">signedCookie</a></li>
-<li><a href="#org9fea88e">在 Express 中使用</a>
+<li><a href="#org6fc8d53">概述</a></li>
+<li><a href="#org3ab6b93">Cookie</a></li>
+<li><a href="#orge2c3c99">Session</a></li>
+<li><a href="#org3c4dabb">signedCookie</a></li>
+<li><a href="#org35293f2">在 Express 中使用</a>
 <ul>
-<li><a href="#org8b28122">使用 Cookie</a>
+<li><a href="#org80ce60a">使用 Cookie</a>
 <ul>
-<li><a href="#orgcf4d092">cookie-parser</a></li>
-<li><a href="#org81983e7">使用</a>
+<li><a href="#orgf050264">cookie-parser</a></li>
+<li><a href="#orgda14022">使用</a>
 <ul>
-<li><a href="#orgf8fc3ab">例 1</a></li>
-<li><a href="#org4fcf907">例 2</a></li>
+<li><a href="#orgea08c91">例 1</a></li>
+<li><a href="#org54d9338">例 2</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org80a7087">使用 Session</a>
+<li><a href="#orgafae604">使用 Session</a>
 <ul>
-<li><a href="#org22d474d">express-session</a></li>
-<li><a href="#org4678881">Session 的参数</a></li>
-<li><a href="#orge9d68e9">例 1</a></li>
-<li><a href="#org0e543c2">例 2</a></li>
-<li><a href="#orgb93d636">使用 mongodb 存储 Session</a></li>
+<li><a href="#org4747e72">express-session</a></li>
+<li><a href="#org1c3cd4b">Session 的参数</a></li>
+<li><a href="#org3eb5037">例 1</a></li>
+<li><a href="#orgda3ecb1">例 2</a></li>
+<li><a href="#org56e2edb">使用 mongodb 存储 Session</a></li>
 </ul>
 </li>
 </ul>
@@ -87,9 +87,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgcdbbd5f" class="outline-2">
-<h2 id="orgcdbbd5f">概述</h2>
-<div class="outline-text-2" id="text-orgcdbbd5f">
+<div id="outline-container-org6fc8d53" class="outline-2">
+<h2 id="org6fc8d53">概述</h2>
+<div class="outline-text-2" id="text-org6fc8d53">
 <p>
 HTTP 是一种无状态协议, 即, 当客户端发出请求的时候, 无法得知上一次请求的状态. 一旦数据交换完毕, 客户端与服务器的连接就会关闭, 再次交换数据需要建立新的连接.
 </p>
@@ -104,9 +104,9 @@ HTTP 是一种无状态协议, 即, 当客户端发出请求的时候, 无法得
 </div>
 </div>
 
-<div id="outline-container-org594fcc5" class="outline-2">
-<h2 id="org594fcc5">Cookie</h2>
-<div class="outline-text-2" id="text-org594fcc5">
+<div id="outline-container-org3ab6b93" class="outline-2">
+<h2 id="org3ab6b93">Cookie</h2>
+<div class="outline-text-2" id="text-org3ab6b93">
 <p>
 可以简单理解为, Cookie 是服务器向客户端颁发的证书, 客户端用这个证书来证明自己的身份. 这样服务器就知道是哪个用户给自己发送了请求.
 </p>
@@ -117,9 +117,9 @@ HTTP 是一种无状态协议, 即, 当客户端发出请求的时候, 无法得
 </div>
 </div>
 
-<div id="outline-container-org05d2d20" class="outline-2">
-<h2 id="org05d2d20">Session</h2>
-<div class="outline-text-2" id="text-org05d2d20">
+<div id="outline-container-orge2c3c99" class="outline-2">
+<h2 id="orge2c3c99">Session</h2>
+<div class="outline-text-2" id="text-orge2c3c99">
 <p>
 Session 是另一种记录用户状态的机制, 当客户端访问服务器的时候, 服务器就把客户端的信息通过 Session 记录在服务器上. 与 Cookie 不同, Session 保存在服务器. 保存的方式很多, 内存, 数据库, 文件, 都可以.
 </p>
@@ -138,9 +138,9 @@ Session 的使用需要依赖于 Session id, 而 Session id 存在于 Cookie 中
 </div>
 </div>
 
-<div id="outline-container-orga982812" class="outline-2">
-<h2 id="orga982812">signedCookie</h2>
-<div class="outline-text-2" id="text-orga982812">
+<div id="outline-container-org3c4dabb" class="outline-2">
+<h2 id="org3c4dabb">signedCookie</h2>
+<div class="outline-text-2" id="text-org3c4dabb">
 <p>
 其实, 伪造 Cookie 是一件非常难的事, 因为有经验的开发人员, 都不会直接存储 Cookie, 他们会将 Cookie 进行签名(对内容生成摘要), 再存储.
 </p>
@@ -166,17 +166,17 @@ Session 的使用需要依赖于 Session id, 而 Session id 存在于 Cookie 中
 </div>
 </div>
 
-<div id="outline-container-org9fea88e" class="outline-2">
-<h2 id="org9fea88e">在 Express 中使用</h2>
-<div class="outline-text-2" id="text-org9fea88e">
+<div id="outline-container-org35293f2" class="outline-2">
+<h2 id="org35293f2">在 Express 中使用</h2>
+<div class="outline-text-2" id="text-org35293f2">
 </div>
-<div id="outline-container-org8b28122" class="outline-3">
-<h3 id="org8b28122">使用 Cookie</h3>
-<div class="outline-text-3" id="text-org8b28122">
+<div id="outline-container-org80ce60a" class="outline-3">
+<h3 id="org80ce60a">使用 Cookie</h3>
+<div class="outline-text-3" id="text-org80ce60a">
 </div>
-<div id="outline-container-orgcf4d092" class="outline-4">
-<h4 id="orgcf4d092">cookie-parser</h4>
-<div class="outline-text-4" id="text-orgcf4d092">
+<div id="outline-container-orgf050264" class="outline-4">
+<h4 id="orgf050264">cookie-parser</h4>
+<div class="outline-text-4" id="text-orgf050264">
 <div class="org-src-container">
 <pre class="src src-Shell">npm install cookie-parser
 </pre>
@@ -184,13 +184,13 @@ Session 的使用需要依赖于 Session id, 而 Session id 存在于 Cookie 中
 </div>
 </div>
 
-<div id="outline-container-org81983e7" class="outline-4">
-<h4 id="org81983e7">使用</h4>
-<div class="outline-text-4" id="text-org81983e7">
+<div id="outline-container-orgda14022" class="outline-4">
+<h4 id="orgda14022">使用</h4>
+<div class="outline-text-4" id="text-orgda14022">
 </div>
-<div id="outline-container-orgf8fc3ab" class="outline-5">
-<h5 id="orgf8fc3ab">例 1</h5>
-<div class="outline-text-5" id="text-orgf8fc3ab">
+<div id="outline-container-orgea08c91" class="outline-5">
+<h5 id="orgea08c91">例 1</h5>
+<div class="outline-text-5" id="text-orgea08c91">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var express = require('express');
 
@@ -220,9 +220,9 @@ app.listen(3000);
 </div>
 </div>
 
-<div id="outline-container-org4fcf907" class="outline-5">
-<h5 id="org4fcf907">例 2</h5>
-<div class="outline-text-5" id="text-org4fcf907">
+<div id="outline-container-org54d9338" class="outline-5">
+<h5 id="org54d9338">例 2</h5>
+<div class="outline-text-5" id="text-org54d9338">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var express = require('express');
 // 首先引入 cookie-parser 这个模块
@@ -254,22 +254,22 @@ app.get('/', function (req, res) {
 </div>
 </div>
 
-<div id="outline-container-org80a7087" class="outline-3">
-<h3 id="org80a7087">使用 Session</h3>
-<div class="outline-text-3" id="text-org80a7087">
+<div id="outline-container-orgafae604" class="outline-3">
+<h3 id="orgafae604">使用 Session</h3>
+<div class="outline-text-3" id="text-orgafae604">
 </div>
-<div id="outline-container-org22d474d" class="outline-4">
-<h4 id="org22d474d">express-session</h4>
-<div class="outline-text-4" id="text-org22d474d">
+<div id="outline-container-org4747e72" class="outline-4">
+<h4 id="org4747e72">express-session</h4>
+<div class="outline-text-4" id="text-org4747e72">
 <p>
 express-session 中间件默认将 Session 存放到内存, 我们也可以设置使用其他方式存储.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4678881" class="outline-4">
-<h4 id="org4678881">Session 的参数</h4>
-<div class="outline-text-4" id="text-org4678881">
+<div id="outline-container-org1c3cd4b" class="outline-4">
+<h4 id="org1c3cd4b">Session 的参数</h4>
+<div class="outline-text-4" id="text-org1c3cd4b">
 <ul class="org-ul">
 <li>name: 设置 Cookie 中保存 Session 的字段名, 默认为 connect.sid</li>
 <li>store: Session 的存储方式, 默认为内存</li>
@@ -282,9 +282,9 @@ express-session 中间件默认将 Session 存放到内存, 我们也可以设�
 </div>
 </div>
 
-<div id="outline-container-orge9d68e9" class="outline-4">
-<h4 id="orge9d68e9">例 1</h4>
-<div class="outline-text-4" id="text-orge9d68e9">
+<div id="outline-container-org3eb5037" class="outline-4">
+<h4 id="org3eb5037">例 1</h4>
+<div class="outline-text-4" id="text-org3eb5037">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var express = require('express');
 // 首先引入 express-session 这个模块
@@ -317,9 +317,9 @@ app.get('/', function (req, res) {
 </div>
 </div>
 
-<div id="outline-container-org0e543c2" class="outline-4">
-<h4 id="org0e543c2">例 2</h4>
-<div class="outline-text-4" id="text-org0e543c2">
+<div id="outline-container-orgda3ecb1" class="outline-4">
+<h4 id="orgda3ecb1">例 2</h4>
+<div class="outline-text-4" id="text-orgda3ecb1">
 <div class="org-src-container">
 <pre class="src src-JavaScript">// session功能
 var session = require('express-session');
@@ -341,9 +341,9 @@ app.get('/login',function(req,res){
 </div>
 </div>
 
-<div id="outline-container-orgb93d636" class="outline-4">
-<h4 id="orgb93d636">使用 mongodb 存储 Session</h4>
-<div class="outline-text-4" id="text-orgb93d636">
+<div id="outline-container-org56e2edb" class="outline-4">
+<h4 id="org56e2edb">使用 mongodb 存储 Session</h4>
+<div class="outline-text-4" id="text-org56e2edb">
 <div class="org-src-container">
 <pre class="src src-JavaScript">var MongoStore  = require('connect-mongo')(session);
 app.use(session({

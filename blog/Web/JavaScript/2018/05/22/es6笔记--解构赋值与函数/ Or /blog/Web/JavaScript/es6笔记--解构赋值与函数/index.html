@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ES6笔记--解构赋值与函数 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Web" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">ES6笔记--解构赋值与函数</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbf96a02">解构赋值</a>
+<ul>
+<li><a href="#org515a2e6">数组的解构赋值</a>
+<ul>
+<li><a href="#org49d0ee8">默认值</a></li>
+<li><a href="#org323d9e7">解析一个从函数返回的数组</a></li>
+<li><a href="#orgd40b963">将剩余数组赋值给一个变量</a></li>
+</ul>
+</li>
+<li><a href="#org6dc5be8">对象的解构赋值</a>
+<ul>
+<li><a href="#org8743f11">基本用法</a></li>
+<li><a href="#org6a72f27">默认值</a></li>
+<li><a href="#orgced026c">给新的变量名赋值</a></li>
+<li><a href="#org8e79793">函数参数默认值</a></li>
+<li><a href="#org582b09f">嵌套</a></li>
+<li><a href="#org272540c">从作为函数实参的对象中提取数据</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgd3d9f0b">函数</a>
+<ul>
+<li><a href="#orgc3da1c1">参数默认值</a></li>
+<li><a href="#org9c48584">箭头函数</a>
+<ul>
+<li><a href="#orgdb4388f">基本用法</a>
+<ul>
+<li><a href="#org881892a">参数</a></li>
+<li><a href="#org3e3a53c">函数体</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbf96a02" class="outline-2">
+<h2 id="orgbf96a02">解构赋值</h2>
+<div class="outline-text-2" id="text-orgbf96a02">
+</div>
+<div id="outline-container-org515a2e6" class="outline-3">
+<h3 id="org515a2e6">数组的解构赋值</h3>
+<div class="outline-text-3" id="text-org515a2e6">
+<div class="org-src-container">
+<pre class="src src-JavaScript">let [foo, [[bar], baz]] = [1, [[2], 3]];
+foo // 1
+bar // 2
+baz // 3
+
+let [ , , third] = ["foo", "bar", "baz"];
+third // "baz"
+</pre>
+</div>
+
+<p>
+只要等号两边的模式相同, 左边的变量就会被赋予对应的值.
+</p>
+
+<p>
+注意, 不要认为这是在初始化数组, 实际上是采用了数组的形式, 为每一个变量赋值.
+</p>
+</div>
+
+<div id="outline-container-org49d0ee8" class="outline-4">
+<h4 id="org49d0ee8">默认值</h4>
+<div class="outline-text-4" id="text-org49d0ee8">
+<p>
+为了防止从数组中取出一个值为 undefined 的对象, 可以为这个对象设置默认值.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var a, b;
+
+[a=5, b=7] = [1];
+console.log(a); // 1
+console.log(b); // 7
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org323d9e7" class="outline-4">
+<h4 id="org323d9e7">解析一个从函数返回的数组</h4>
+<div class="outline-text-4" id="text-org323d9e7">
+<p>
+这是一个常见情况, 需要注意.
+</p>
+
+<p>
+当函数的返回值为数组时, 使用解构来处理会非常方便.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">function f() {
+  return [1, 2];
+}
+
+var a, b; 
+[a, b] = f(); 
+console.log(a); // 1
+console.log(b); // 2
+</pre>
+</div>
+
+<p>
+也可以忽略某些返回值: [, b] = f();
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd40b963" class="outline-4">
+<h4 id="orgd40b963">将剩余数组赋值给一个变量</h4>
+<div class="outline-text-4" id="text-orgd40b963">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var [a, ...b] = [1, 2, 3];
+console.log(a); // 1
+console.log(b); // [2, 3]
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6dc5be8" class="outline-3">
+<h3 id="org6dc5be8">对象的解构赋值</h3>
+<div class="outline-text-3" id="text-org6dc5be8">
+<p>
+对象的解构赋值与次序无关, 变量与属性同名的时候, 可以正确赋值.
+</p>
+</div>
+
+<div id="outline-container-org8743f11" class="outline-4">
+<h4 id="org8743f11">基本用法</h4>
+<div class="outline-text-4" id="text-org8743f11">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var {p, q} = {p: 42, q: true};
+
+// 或
+({p, q} = {a: 1, b: 2});
+
+// 或
+var o = {p: 42, q: true};
+var {p, q} = o;
+
+console.log(p); // 42
+console.log(q); // true
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6a72f27" class="outline-4">
+<h4 id="org6a72f27">默认值</h4>
+<div class="outline-text-4" id="text-org6a72f27">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var {a = 10, b = 5} = {a: 3};
+
+console.log(a); // 3
+console.log(b); // 5
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgced026c" class="outline-4">
+<h4 id="orgced026c">给新的变量名赋值</h4>
+<div class="outline-text-4" id="text-orgced026c">
+<p>
+可以从一个对象中提取变量, 然后赋值给另一个新的变量.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-JavaScript">var o = {p: 42, q: true};
+var {p: foo, q: bar} = o;
+
+console.log(foo); // 42 
+console.log(bar); // true
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8e79793" class="outline-4">
+<h4 id="org8e79793">函数参数默认值</h4>
+<div class="outline-text-4" id="text-org8e79793">
+<div class="org-src-container">
+<pre class="src src-JavaScript">function drawES2015Chart({size = 'big', cords = { x: 0, y: 0 }, radius = 25} = {}) 
+{
+  console.log(size, cords, radius);
+  // do some chart drawing
+}
+
+drawES2015Chart({
+  cords: { x: 18, y: 30 },
+  radius: 30
+});
+</pre>
+</div>
+
+<p>
+注意, 如果没有 {...}={} 中右边的 {}, 在调用该函数时, 还是需要提供至少一个参数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org582b09f" class="outline-4">
+<h4 id="org582b09f">嵌套</h4>
+<div class="outline-text-4" id="text-org582b09f">
+<p>
+这个非常有用, 需要注意.
+</p>
+
+<p>
+解构可以用于嵌套结构的对象和数组. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var metadata = {
+    title: "Scratchpad",
+    translations: [
+       {
+        locale: "de",
+        localization_tags: [ ],
+        last_edit: "2014-04-14T08:43:37",
+        url: "/de/docs/Tools/Scratchpad",
+        title: "JavaScript-Umgebung"
+       }
+    ],
+    url: "/en-US/docs/Tools/Scratchpad"
+};
+
+var { title: englishTitle, translations: [{ title: localeTitle }] } = metadata;
+
+console.log(englishTitle); // "Scratchpad"
+console.log(localeTitle);  // "JavaScript-Umgebung"
+</pre>
+</div>
+
+<p>
+再看一个例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var people = [
+  {
+    name: "Mike Smith",
+    family: {
+      mother: "Jane Smith",
+      father: "Harry Smith",
+      sister: "Samantha Smith"
+    },
+    age: 35
+  },
+  {
+    name: "Tom Jones",
+    family: {
+      mother: "Norah Jones",
+      father: "Richard Jones",
+      brother: "Howard Jones"
+    },
+    age: 25
+  }
+];
+
+for (var {name: n, family: { father: f } } of people) {
+  console.log("Name: " + n + ", Father: " + f);
+}
+
+// "Name: Mike Smith, Father: Harry Smith"
+// "Name: Tom Jones, Father: Richard Jones"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org272540c" class="outline-4">
+<h4 id="org272540c">从作为函数实参的对象中提取数据</h4>
+<div class="outline-text-4" id="text-org272540c">
+<div class="org-src-container">
+<pre class="src src-JavaScript">function userId({id}) {
+  return id;
+}
+
+function whois({displayName: displayName, fullName: {firstName: name}}){
+  console.log(displayName + " is " + name);
+}
+
+var user = { 
+  id: 42, 
+  displayName: "jdoe",
+  fullName: { 
+      firstName: "John",
+      lastName: "Doe"
+  }
+};
+
+console.log("userId: " + userId(user)); // "userId: 42"
+whois(user); // "jdoe is John"
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd3d9f0b" class="outline-2">
+<h2 id="orgd3d9f0b">函数</h2>
+<div class="outline-text-2" id="text-orgd3d9f0b">
+</div>
+<div id="outline-container-orgc3da1c1" class="outline-3">
+<h3 id="orgc3da1c1">参数默认值</h3>
+<div class="outline-text-3" id="text-orgc3da1c1">
+<p>
+ES6 之前, 不允许为函数的参数指定默认值. 只能间接实现: 在函数内部, 判断该参数是否被赋值, 如果没有, 再赋默认值.
+</p>
+
+<p>
+ES6 可以使用默认值:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">function Point(x = 0, y = 0) {
+  this.x = x;
+  this.y = y;
+}
+
+const p = new Point();
+p // { x: 0, y: 0 }
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9c48584" class="outline-3">
+<h3 id="org9c48584">箭头函数</h3>
+<div class="outline-text-3" id="text-org9c48584">
+</div>
+<div id="outline-container-orgdb4388f" class="outline-4">
+<h4 id="orgdb4388f">基本用法</h4>
+<div class="outline-text-4" id="text-orgdb4388f">
+</div>
+<div id="outline-container-org881892a" class="outline-5">
+<h5 id="org881892a">参数</h5>
+<div class="outline-text-5" id="text-org881892a">
+<div class="org-src-container">
+<pre class="src src-JavaScript">var f = v =&gt; v;
+
+// 等同于
+var f = function (v) {
+  return v;
+};
+</pre>
+</div>
+
+<p>
+如果函数没有参数, 或者有一个以上的参数, 则参数要用括号括起来.
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var f = () =&gt; 5;
+// 等同于
+var f = function () { return 5 };
+
+var sum = (num1, num2) =&gt; num1 + num2;
+// 等同于
+var sum = function(num1, num2) {
+  return num1 + num2;
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3e3a53c" class="outline-5">
+<h5 id="org3e3a53c">函数体</h5>
+<div class="outline-text-5" id="text-org3e3a53c">
+<p>
+如果函数体不止一条语句, 则要用花括号括起来, 并使用 return 返回:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">var sum = (num1, num2) =&gt; { return num1 + num2; }
+</pre>
+</div>
+
+<p>
+如果箭头函数直接返回一个对象, 要用圆括号把花括号括起来:
+</p>
+<div class="org-src-container">
+<pre class="src src-JavaScript">// 报错
+let getTempItem = id =&gt; { id: id, name: "Temp" };
+
+// 不报错
+let getTempItem = id =&gt; ({ id: id, name: "Temp" });
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-22</span>
+            <span title="last modification date" class="post-info">2018-05-23</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/web">Web</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Web/JavaScript/2018/05/22/es6笔记--解构赋值与函数/ Or /blog/Web/JavaScript/es6笔记--解构赋值与函数/";
+         var disqus_url = "https://pinvondev.github.io/blog/Web/JavaScript/2018/05/22/es6笔记--解构赋值与函数/ Or /blog/Web/JavaScript/es6笔记--解构赋值与函数/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/particle.js"></script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
