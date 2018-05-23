@@ -1,0 +1,267 @@
+#+TITLE:       ES6笔记--解构赋值与函数
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-22 二
+
+#+URI:         /blog/Web/JavaScript/%y/%m/%d/%t/ Or /blog/Web/JavaScript/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 解构赋值
+
+** 数组的解构赋值
+
+#+BEGIN_SRC JavaScript
+let [foo, [[bar], baz]] = [1, [[2], 3]];
+foo // 1
+bar // 2
+baz // 3
+
+let [ , , third] = ["foo", "bar", "baz"];
+third // "baz"
+#+END_SRC
+
+只要等号两边的模式相同, 左边的变量就会被赋予对应的值.
+
+注意, 不要认为这是在初始化数组, 实际上是采用了数组的形式, 为每一个变量赋值.
+
+*** 默认值
+
+为了防止从数组中取出一个值为 undefined 的对象, 可以为这个对象设置默认值.
+#+BEGIN_SRC JavaScript
+var a, b;
+
+[a=5, b=7] = [1];
+console.log(a); // 1
+console.log(b); // 7
+#+END_SRC
+
+*** 解析一个从函数返回的数组
+
+这是一个常见情况, 需要注意.
+
+当函数的返回值为数组时, 使用解构来处理会非常方便.
+
+#+BEGIN_SRC JavaScript
+function f() {
+  return [1, 2];
+}
+
+var a, b; 
+[a, b] = f(); 
+console.log(a); // 1
+console.log(b); // 2
+#+END_SRC
+
+也可以忽略某些返回值: [, b] = f();
+
+*** 将剩余数组赋值给一个变量
+
+#+BEGIN_SRC JavaScript
+var [a, ...b] = [1, 2, 3];
+console.log(a); // 1
+console.log(b); // [2, 3]
+#+END_SRC
+
+** 对象的解构赋值
+
+对象的解构赋值与次序无关, 变量与属性同名的时候, 可以正确赋值.
+
+*** 基本用法
+
+#+BEGIN_SRC JavaScript
+var {p, q} = {p: 42, q: true};
+
+// 或
+({p, q} = {a: 1, b: 2});
+
+// 或
+var o = {p: 42, q: true};
+var {p, q} = o;
+
+console.log(p); // 42
+console.log(q); // true
+#+END_SRC
+
+*** 默认值
+
+#+BEGIN_SRC JavaScript
+var {a = 10, b = 5} = {a: 3};
+
+console.log(a); // 3
+console.log(b); // 5
+#+END_SRC
+
+*** 给新的变量名赋值
+
+可以从一个对象中提取变量, 然后赋值给另一个新的变量.
+
+#+BEGIN_SRC JavaScript
+var o = {p: 42, q: true};
+var {p: foo, q: bar} = o;
+ 
+console.log(foo); // 42 
+console.log(bar); // true
+#+END_SRC
+
+*** 函数参数默认值
+
+#+BEGIN_SRC JavaScript
+function drawES2015Chart({size = 'big', cords = { x: 0, y: 0 }, radius = 25} = {}) 
+{
+  console.log(size, cords, radius);
+  // do some chart drawing
+}
+
+drawES2015Chart({
+  cords: { x: 18, y: 30 },
+  radius: 30
+});
+#+END_SRC
+
+注意, 如果没有 {...}={} 中右边的 {}, 在调用该函数时, 还是需要提供至少一个参数.
+
+*** 嵌套
+
+这个非常有用, 需要注意.
+
+解构可以用于嵌套结构的对象和数组. 如:
+#+BEGIN_SRC JavaScript
+var metadata = {
+    title: "Scratchpad",
+    translations: [
+       {
+        locale: "de",
+        localization_tags: [ ],
+        last_edit: "2014-04-14T08:43:37",
+        url: "/de/docs/Tools/Scratchpad",
+        title: "JavaScript-Umgebung"
+       }
+    ],
+    url: "/en-US/docs/Tools/Scratchpad"
+};
+
+var { title: englishTitle, translations: [{ title: localeTitle }] } = metadata;
+
+console.log(englishTitle); // "Scratchpad"
+console.log(localeTitle);  // "JavaScript-Umgebung"
+#+END_SRC
+
+再看一个例子:
+#+BEGIN_SRC JavaScript
+var people = [
+  {
+    name: "Mike Smith",
+    family: {
+      mother: "Jane Smith",
+      father: "Harry Smith",
+      sister: "Samantha Smith"
+    },
+    age: 35
+  },
+  {
+    name: "Tom Jones",
+    family: {
+      mother: "Norah Jones",
+      father: "Richard Jones",
+      brother: "Howard Jones"
+    },
+    age: 25
+  }
+];
+
+for (var {name: n, family: { father: f } } of people) {
+  console.log("Name: " + n + ", Father: " + f);
+}
+
+// "Name: Mike Smith, Father: Harry Smith"
+// "Name: Tom Jones, Father: Richard Jones"
+#+END_SRC
+
+*** 从作为函数实参的对象中提取数据
+
+#+BEGIN_SRC JavaScript
+function userId({id}) {
+  return id;
+}
+
+function whois({displayName: displayName, fullName: {firstName: name}}){
+  console.log(displayName + " is " + name);
+}
+
+var user = { 
+  id: 42, 
+  displayName: "jdoe",
+  fullName: { 
+      firstName: "John",
+      lastName: "Doe"
+  }
+};
+
+console.log("userId: " + userId(user)); // "userId: 42"
+whois(user); // "jdoe is John"
+#+END_SRC
+
+* 函数
+
+** 参数默认值
+
+ ES6 之前, 不允许为函数的参数指定默认值. 只能间接实现: 在函数内部, 判断该参数是否被赋值, 如果没有, 再赋默认值.
+
+ ES6 可以使用默认值:
+ #+BEGIN_SRC JavaScript
+ function Point(x = 0, y = 0) {
+   this.x = x;
+   this.y = y;
+ }
+
+ const p = new Point();
+ p // { x: 0, y: 0 }
+ #+END_SRC
+
+** 箭头函数
+
+*** 基本用法
+
+**** 参数
+
+#+BEGIN_SRC JavaScript
+var f = v => v;
+
+// 等同于
+var f = function (v) {
+  return v;
+};
+#+END_SRC
+
+如果函数没有参数, 或者有一个以上的参数, 则参数要用括号括起来.
+#+BEGIN_SRC JavaScript
+var f = () => 5;
+// 等同于
+var f = function () { return 5 };
+
+var sum = (num1, num2) => num1 + num2;
+// 等同于
+var sum = function(num1, num2) {
+  return num1 + num2;
+};
+#+END_SRC
+
+**** 函数体
+
+如果函数体不止一条语句, 则要用花括号括起来, 并使用 return 返回:
+#+BEGIN_SRC JavaScript
+var sum = (num1, num2) => { return num1 + num2; }
+#+END_SRC
+
+如果箭头函数直接返回一个对象, 要用圆括号把花括号括起来:
+#+BEGIN_SRC JavaScript
+// 报错
+let getTempItem = id => { id: id, name: "Temp" };
+
+// 不报错
+let getTempItem = id => ({ id: id, name: "Temp" });
+#+END_SRC

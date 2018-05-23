@@ -1,0 +1,137 @@
+#+TITLE:       React Navigation 使用
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-21 一
+
+#+URI:         /blog/ReactNative/%y/%m/%d/%t/ Or /blog/ReactNative/%t/
+#+TAGS:        ReactNative
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 基本用法
+
+** 安装
+
+#+BEGIN_SRC Shell
+npm install --save react-navigation
+#+END_SRC
+
+或
+#+BEGIN_SRC Shell
+yarn add react-navigation
+#+END_SRC
+
+** StackNavigator
+
+StackNavigator 比较常用, 以它为例进行介绍.
+
+*** 创建 StackNavigator
+
+创建 StackNavigator 并把页面加进去.
+
+#+BEGIN_SRC JavaScript
+import React from 'react';
+import { Button, View, Text } from 'react-native';
+import { createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
+
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Details"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
+      </View>
+    );
+  }
+}
+
+class DetailsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
+        <Button
+          title="Go to Details... again"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
+      </View>
+    );
+  }
+}
+
+const RootStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+  {
+    initialRouteName: 'Home',
+  }
+);
+
+export default class App extends React.Component {
+  render() {
+    return <RootStack />;
+  }
+}
+#+END_SRC
+
+* 多个页面的结构组织
+
+如果所有页面都写在一个文件, 会让文件过于臃肿.
+
+可以在 App.js 中, 设置导航器.
+
+#+BEGIN_SRC JavaScript
+const RootStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+  {
+    initialRouteName: 'Home',
+  }
+);
+
+export default class App extends React.Component {
+  render() {
+    return <RootStack />;
+  }
+}
+#+END_SRC
+
+新建其他文件, 如: HomeScreen
+#+BEGIN_SRC JavaScript
+...
+
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Details"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
+      </View>
+    );
+  }
+}
+
+...
+#+END_SRC
+
+在 HomeScreen.js 文件最后, 将其导出:
+#+BEGIN_SRC JavaScript
+export default HomeScreen;
+#+END_SRC
+
+在 App.js 文件中, 将 HomeScreen 导入:
+#+BEGIN_SRC JavaScript
+import HomeScreen from './HomeScreen'
+#+END_SRC

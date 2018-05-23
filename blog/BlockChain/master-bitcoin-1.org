@@ -146,4 +146,27 @@ UTXO = 锁定脚本 + ...
 
 然后, 解锁脚本的内容为: 2
 
+验证软件将锁定脚本和解锁脚本的内容组合起来, 就是: 2 3 OP_ADD 5 OP_EQUAL
 
+于是, 验证通过.
+
+在实际中, 锁定脚本包含一个公钥哈希值; 解锁脚本包含接收者的公钥和由相应私钥创建的数字签名. 将这两个结合起来, 即可通过验证.
+
+以 Alice --> Bob 为例.
+
+该交易的 UTXO 中, 包含 Bob 的公钥哈希(即下面的 Cafe Public Key Hash):
+#+BEGIN_SRC BTC
+OP_DUP OP_HASH160 <Cafe Public Key Hash> OP_EQUALVERIFY OP_CHECKSIG
+#+END_SRC
+
+解锁脚本是:
+#+BEGIN_SRC BTC
+<Cafe Signature> <Cafe Public Key>
+#+END_SRC
+
+将两个脚本组合:
+#+BEGIN_SRC BTC
+<Cafe Signature> <Cafe Public Key> OP_DUP OP_HASH160 <Cafe Public Key Hash> OP_EQUALVERIFY OP_CHECKSIG
+#+END_SRC
+
+可以理解为: 当解锁脚本得到了接收者的有效签名, 验证就会通过. 这个有效签名是从与公钥哈希对应的私钥获取.

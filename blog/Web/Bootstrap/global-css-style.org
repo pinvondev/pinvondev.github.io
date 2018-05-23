@@ -1,0 +1,93 @@
+#+TITLE:       Bootstrap学习--1
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-19 六
+
+#+URI:         /blog/Web/Bootstrap/%y/%m/%d/%t/ Or /blog/Web/Bootstrap/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概览
+
+先介绍一些在每个页面都要写的内容, 这些是固定写法.
+
+** 使用 HTML5
+
+在 Bootstrap 中有些 HTML 元素和 CSS 属性使用了 HTML5 规范, 所以项目中的每个页面, 都需要这样设置:
+#+BEGIN_SRC HTML
+<!DOCTYPE html>
+<html lang="zh-CN">
+  ...
+</html>
+#+END_SRC
+
+** 移动设备优先
+
+Bootstrap 是移动设备优先的, 为了确保适当的绘制和触屏缩放, 需要在 <head> 之间添加 viewport 元数据标签:
+#+BEGIN_SRC HTML
+<meta name="viewport" content="width=device-width, initial-scale=1">
+#+END_SRC
+
+如果想在移动设备上禁用缩放功能, 可以这样设置:
+#+BEGIN_SRC HTML
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+#+END_SRC
+
+* 栅格系统
+
+Bootstrap 的栅格系统, 可以简单理解成布局, 比如网格布局等, 但 Bootstrap 中的栅格系统, 是移动设备优先的, 可以随着屏幕或视口的尺寸变化而变化.
+
+** 工作原理
+
+栅格系统通过 row 和 column 的组合, 创建不同的页面布局, 我们的内容就放入到这些创建好的布局中.
+
+- 行(.row)必须包含在容器(.container 或 .container-fluid)里
+- 在行内创建一组水平排开的列(.col)
+- 每一行被分为 12 格, 类 .col-sm-4 指定每一列占4格, 还可以使用其他类来指定一列的格数
+- 每一行所占的格数超过 12, 换行
+- 可以对不同大小的屏幕定义不同的布局
+
+注意几个类前缀:
+- .col-xs-: 超小屏幕(手机), 默认为这个类前缀.
+- .col-sm-: 小屏幕(平板)
+- .col-md-: 中等屏幕(桌面显示器)
+- .col-lg-: 大屏幕
+
+响应式布局, 指的是这几个类前缀, 是系统根据当前屏幕尺寸自动选择的.
+
+举个例子:
+#+BEGIN_SRC HTML
+<div class="row">
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+  <div class="col-md-1">.col-md-1</div>
+</div>
+<div class="row">
+  <div class="col-md-8">.col-md-8</div>
+  <div class="col-md-4">.col-md-4</div>
+</div>
+<div class="row">
+  <div class="col-md-4">.col-md-4</div>
+  <div class="col-md-4">.col-md-4</div>
+  <div class="col-md-4">.col-md-4</div>
+</div>
+<div class="row">
+  <div class="col-md-6">.col-md-6</div>
+  <div class="col-md-6">.col-md-6</div>
+</div>
+#+END_SRC
+得到的界面如图所示:
+[[./0.png]]
+
