@@ -55,41 +55,41 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org023853d">词汇表</a></li>
-<li><a href="#org5eb05ce">简介</a>
+<li><a href="#org075b30c">词汇表</a></li>
+<li><a href="#org22504a5">简介</a>
 <ul>
-<li><a href="#org6177a34">分布式账本</a></li>
-<li><a href="#orgbe0b337">智能合约</a></li>
-<li><a href="#orge62252f">共识</a></li>
-<li><a href="#orgdff66f3">Hyperledger Fabric</a></li>
+<li><a href="#org5392c83">分布式账本</a></li>
+<li><a href="#orgf7c624f">智能合约</a></li>
+<li><a href="#org31c7a3b">共识</a></li>
+<li><a href="#orgd36cdcc">Hyperledger Fabric</a></li>
 </ul>
 </li>
-<li><a href="#org8703925">快速入门</a>
+<li><a href="#org92f3080">快速入门</a>
 <ul>
-<li><a href="#org3ab7f0d">先决条件</a>
+<li><a href="#orge8fd8d9">先决条件</a>
 <ul>
-<li><a href="#org87c7058">Git安装</a></li>
-<li><a href="#org9fa1ea9">Go语言</a></li>
-<li><a href="#orgbe32364">Docker</a></li>
+<li><a href="#org678a783">Git安装</a></li>
+<li><a href="#org4879dd0">Go语言</a></li>
+<li><a href="#org72a5855">Docker</a></li>
 </ul>
 </li>
-<li><a href="#org7a2de6d">安装Hyperledger Fabric</a>
+<li><a href="#org1086fb5">安装Hyperledger Fabric</a>
 <ul>
-<li><a href="#org4cb7967">创建GOPATH</a></li>
-<li><a href="#org048ded0">获取Fabric源码</a></li>
-<li><a href="#org9c9dfd5">安装Go相关库</a></li>
-<li><a href="#org9fa0052">Orderer节点的编译</a></li>
-<li><a href="#org0266e8a">Peer节点的编译</a></li>
-<li><a href="#org3580f8a">编译Fabric工具</a></li>
-<li><a href="#org6ece014">Docker镜像</a></li>
-<li><a href="#org96d043f">其他Docker镜像</a></li>
+<li><a href="#orgb520050">创建GOPATH</a></li>
+<li><a href="#orgb3c20a4">获取Fabric源码</a></li>
+<li><a href="#orged8efb5">安装Go相关库</a></li>
+<li><a href="#orgdef5ff4">Orderer节点的编译</a></li>
+<li><a href="#org8098c8c">Peer节点的编译</a></li>
+<li><a href="#org78580e8">编译Fabric工具</a></li>
+<li><a href="#orgc3e805c">Docker镜像</a></li>
+<li><a href="#orgcb21f02">其他Docker镜像</a></li>
 </ul>
 </li>
-<li><a href="#org33b7b0a">运行</a></li>
-<li><a href="#orgcd84161">手动运行</a>
+<li><a href="#orgd270470">运行</a></li>
+<li><a href="#org4de6bd7">手动运行</a>
 <ul>
-<li><a href="#orga13f555">启动网络</a></li>
-<li><a href="#org2cc64ae">创建Channel</a></li>
+<li><a href="#orgd5f9e42">启动网络</a></li>
+<li><a href="#org40fe0a7">创建Channel</a></li>
 </ul>
 </li>
 </ul>
@@ -98,13 +98,13 @@
 </div>
 </div>
 
-<div id="outline-container-org023853d" class="outline-2">
-<h2 id="org023853d">词汇表</h2>
-<div class="outline-text-2" id="text-org023853d">
+<div id="outline-container-org075b30c" class="outline-2">
+<h2 id="org075b30c">词汇表</h2>
+<div class="outline-text-2" id="text-org075b30c">
 </div>
 <ul class="org-ul">
-<li><a id="orga5f03ff"></a>Anchor Peer(锚节点)<br />
-<div class="outline-text-6" id="text-orga5f03ff">
+<li><a id="org5683dac"></a>Anchor Peer(锚节点)<br />
+<div class="outline-text-6" id="text-org5683dac">
 <p>
 锚节点是通道中能被所有对等节点探测, 并能与之进行通信的一种对等节点. 通道中的每个成员都有一个(或多个, 以防单点故障)锚节点, 允许属于不同成员身份的节点来发现通道中存在的其他节点.
 </p>
@@ -115,32 +115,32 @@
 </div>
 </li>
 
-<li><a id="org967e6df"></a>Block(区块)<br />
-<div class="outline-text-6" id="text-org967e6df">
+<li><a id="org39e69a8"></a>Block(区块)<br />
+<div class="outline-text-6" id="text-org39e69a8">
 <p>
 在一个通道上, 区块是一组有序交易的集合. 区块往往通过密码学手段(Hash)连接到前一个区块.
 </p>
 </div>
 </li>
 
-<li><a id="org30ba221"></a>Chain(链)<br />
-<div class="outline-text-6" id="text-org30ba221">
+<li><a id="orgdbbafef"></a>Chain(链)<br />
+<div class="outline-text-6" id="text-orgdbbafef">
 <p>
 链就是区块经过"哈希连接"结构化的交易日志. 对等节点(peer)从共识服务(order service)接收区块, 并根据背书策略和并发冲突标记区块的交易是否有效, 然后将该区块追加到对等节点文件系统的哈希链上.
 </p>
 </div>
 </li>
 
-<li><a id="org99e4cac"></a>Chaincode(链码)<br />
-<div class="outline-text-6" id="text-org99e4cac">
+<li><a id="org3e84f2f"></a>Chaincode(链码)<br />
+<div class="outline-text-6" id="text-org3e84f2f">
 <p>
 链码是一个运行在账本上的软件, 可以对资产进行编码, 其中的交易指令(或业务逻辑)也可以用来修改资产.
 </p>
 </div>
 </li>
 
-<li><a id="org8975d21"></a>Channel(通道)<br />
-<div class="outline-text-6" id="text-org8975d21">
+<li><a id="org29d9944"></a>Channel(通道)<br />
+<div class="outline-text-6" id="text-org29d9944">
 <p>
 通道是构建在"Fabric"网络上的私有区块链, 实现了数据的隔离和保密. 通道特定的账本在通道中是与所有对等节点共享的, 并且交易方必须通过该通道的正确验证才能与账本进行交互. 通道是由一个配置块来定义的.
 </p>
@@ -151,8 +151,8 @@
 </div>
 </li>
 
-<li><a id="org20ddb3f"></a>Commitment(提交)<br />
-<div class="outline-text-6" id="text-org20ddb3f">
+<li><a id="org5b36bd2"></a>Commitment(提交)<br />
+<div class="outline-text-6" id="text-org5b36bd2">
 <p>
 一个通道中的每个对等节点都会验证交易的有序区块, 然后将区块提交(写或追加)到该通道上账本的各个副本, 对等节点也会标记每个区块中的每笔交易的状态是有效还是无效.
 </p>
@@ -163,8 +163,8 @@
 </div>
 </li>
 
-<li><a id="orgae6efd4"></a>Concurrency Control Version Check(并发控制版本检查CCVC)<br />
-<div class="outline-text-6" id="text-orgae6efd4">
+<li><a id="org9da5801"></a>Concurrency Control Version Check(并发控制版本检查CCVC)<br />
+<div class="outline-text-6" id="text-org9da5801">
 <p>
 CCVC是保持通道中各对等节点状态同步的一种方法.
 </p>
@@ -175,32 +175,32 @@ CCVC是保持通道中各对等节点状态同步的一种方法.
 </div>
 </li>
 
-<li><a id="orgb010b6a"></a>Configuration Block(配置区块)<br />
-<div class="outline-text-6" id="text-orgb010b6a">
+<li><a id="orga467ed9"></a>Configuration Block(配置区块)<br />
+<div class="outline-text-6" id="text-orga467ed9">
 <p>
 为系统链或通道定义成员和策略的配置数据. 对某个通道或整个网络的配置修改都将导致生成一个新的配置区块, 并追加到适当的链上.
 </p>
 </div>
 </li>
 
-<li><a id="orgb45d46e"></a>Consensus(共识)<br />
-<div class="outline-text-6" id="text-orgb45d46e">
+<li><a id="orgf086d17"></a>Consensus(共识)<br />
+<div class="outline-text-6" id="text-orgf086d17">
 <p>
 共识是贯穿整个交易流程的广义术语, 用于产生一个对于排序的同意书和确认构成区块的交易集的正确性.
 </p>
 </div>
 </li>
 
-<li><a id="orgc5b1979"></a>Current State(当前状态)<br />
-<div class="outline-text-6" id="text-orgc5b1979">
+<li><a id="org596de51"></a>Current State(当前状态)<br />
+<div class="outline-text-6" id="text-org596de51">
 <p>
 ledger的当前状态表示其chain交易log中所有key的最新值.
 </p>
 </div>
 </li>
 
-<li><a id="orgcc7b79e"></a>Ordering Service(排序服务或共识服务)<br />
-<div class="outline-text-6" id="text-orgcc7b79e">
+<li><a id="org44c81f1"></a>Ordering Service(排序服务或共识服务)<br />
+<div class="outline-text-6" id="text-org44c81f1">
 <p>
 Ordering Service独立于Peer, 以先到先得的方式为网络上所有的channel做交易排序, 包含与每个Member相关的加密材料.
 </p>
@@ -213,13 +213,13 @@ Orderer为区块链写入操作提供时序保证, 具体实现可以是共识�
 </ul>
 </div>
 
-<div id="outline-container-org5eb05ce" class="outline-2">
-<h2 id="org5eb05ce">简介</h2>
-<div class="outline-text-2" id="text-org5eb05ce">
+<div id="outline-container-org22504a5" class="outline-2">
+<h2 id="org22504a5">简介</h2>
+<div class="outline-text-2" id="text-org22504a5">
 </div>
-<div id="outline-container-org6177a34" class="outline-3">
-<h3 id="org6177a34">分布式账本</h3>
-<div class="outline-text-3" id="text-org6177a34">
+<div id="outline-container-org5392c83" class="outline-3">
+<h3 id="org5392c83">分布式账本</h3>
+<div class="outline-text-3" id="text-org5392c83">
 <p>
 去中心化: 在整个区块链网络中, 每个参与者都保存着一个区块链账本的副本.
 </p>
@@ -234,9 +234,9 @@ Orderer为区块链写入操作提供时序保证, 具体实现可以是共识�
 </div>
 </div>
 
-<div id="outline-container-orgbe0b337" class="outline-3">
-<h3 id="orgbe0b337">智能合约</h3>
-<div class="outline-text-3" id="text-orgbe0b337">
+<div id="outline-container-orgf7c624f" class="outline-3">
+<h3 id="orgf7c624f">智能合约</h3>
+<div class="outline-text-3" id="text-orgf7c624f">
 <p>
 区块链网络使用智能合约来实现对账本的访问和控制.
 </p>
@@ -247,9 +247,9 @@ Orderer为区块链写入操作提供时序保证, 具体实现可以是共识�
 </div>
 </div>
 
-<div id="outline-container-orge62252f" class="outline-3">
-<h3 id="orge62252f">共识</h3>
-<div class="outline-text-3" id="text-orge62252f">
+<div id="outline-container-org31c7a3b" class="outline-3">
+<h3 id="org31c7a3b">共识</h3>
+<div class="outline-text-3" id="text-org31c7a3b">
 <p>
 共识就是保持网络中所有账本交易的同步流程. 它保证了账本只会在交易双方都确认后才进行更新. 同时在账本更新时, 交易双方能够在账本中的相同位置, 更新一个相同的交易信息.
 </p>
@@ -260,9 +260,9 @@ Orderer为区块链写入操作提供时序保证, 具体实现可以是共识�
 </div>
 </div>
 
-<div id="outline-container-orgdff66f3" class="outline-3">
-<h3 id="orgdff66f3">Hyperledger Fabric</h3>
-<div class="outline-text-3" id="text-orgdff66f3">
+<div id="outline-container-orgd36cdcc" class="outline-3">
+<h3 id="orgd36cdcc">Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-orgd36cdcc">
 <p>
 2015年, Linux基金会启动了Hyperledger项目, 目标是发展跨行业的区块链技术. Hyperledger Fabric是Hyperledger的一个区块链项目.
 </p>
@@ -286,13 +286,13 @@ Hyperledger Fabric需要登录才能加入网络.
 </div>
 </div>
 
-<div id="outline-container-org8703925" class="outline-2">
-<h2 id="org8703925">快速入门</h2>
-<div class="outline-text-2" id="text-org8703925">
+<div id="outline-container-org92f3080" class="outline-2">
+<h2 id="org92f3080">快速入门</h2>
+<div class="outline-text-2" id="text-org92f3080">
 </div>
-<div id="outline-container-org3ab7f0d" class="outline-3">
-<h3 id="org3ab7f0d">先决条件</h3>
-<div class="outline-text-3" id="text-org3ab7f0d">
+<div id="outline-container-orge8fd8d9" class="outline-3">
+<h3 id="orge8fd8d9">先决条件</h3>
+<div class="outline-text-3" id="text-orge8fd8d9">
 <p>
 在v1.0.0发行之前, 使用Ubuntu的Vagrant来作为开发环境. 而Docker容器可以为MacOS, Windows, Linux三个平台的开发人员提供一致的体验, 因此, 现在更推荐使用Docker容器进行开发环境的搭建.
 </p>
@@ -302,13 +302,13 @@ Hyperledger Fabric需要登录才能加入网络.
 </p>
 </div>
 
-<div id="outline-container-org87c7058" class="outline-4">
-<h4 id="org87c7058">Git安装</h4>
+<div id="outline-container-org678a783" class="outline-4">
+<h4 id="org678a783">Git安装</h4>
 </div>
 
-<div id="outline-container-org9fa1ea9" class="outline-4">
-<h4 id="org9fa1ea9">Go语言</h4>
-<div class="outline-text-4" id="text-org9fa1ea9">
+<div id="outline-container-org4879dd0" class="outline-4">
+<h4 id="org4879dd0">Go语言</h4>
+<div class="outline-text-4" id="text-org4879dd0">
 <p>
 安装 Go 1.9 或者更后的版本.
 </p>
@@ -368,9 +368,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orgbe32364" class="outline-4">
-<h4 id="orgbe32364">Docker</h4>
-<div class="outline-text-4" id="text-orgbe32364">
+<div id="outline-container-org72a5855" class="outline-4">
+<h4 id="org72a5855">Docker</h4>
+<div class="outline-text-4" id="text-org72a5855">
 <p>
 Docker是一个容器, 在这个容器中, 我们可以运行我们的实例. 可以把Docker大致当成一个虚拟机, 但是Docker不需要占用那么多空间.
 </p>
@@ -562,13 +562,13 @@ docker-compose常用命令:
 </div>
 </div>
 
-<div id="outline-container-org7a2de6d" class="outline-3">
-<h3 id="org7a2de6d">安装Hyperledger Fabric</h3>
-<div class="outline-text-3" id="text-org7a2de6d">
+<div id="outline-container-org1086fb5" class="outline-3">
+<h3 id="org1086fb5">安装Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-org1086fb5">
 </div>
-<div id="outline-container-org4cb7967" class="outline-4">
-<h4 id="org4cb7967">创建GOPATH</h4>
-<div class="outline-text-4" id="text-org4cb7967">
+<div id="outline-container-orgb520050" class="outline-4">
+<h4 id="orgb520050">创建GOPATH</h4>
+<div class="outline-text-4" id="text-orgb520050">
 <div class="org-src-container">
 <pre class="src src-Shell">mkdir -p $GOPATH
 
@@ -584,9 +584,9 @@ cd hyperledger
 </div>
 </div>
 
-<div id="outline-container-org048ded0" class="outline-4">
-<h4 id="org048ded0">获取Fabric源码</h4>
-<div class="outline-text-4" id="text-org048ded0">
+<div id="outline-container-orgb3c20a4" class="outline-4">
+<h4 id="orgb3c20a4">获取Fabric源码</h4>
+<div class="outline-text-4" id="text-orgb3c20a4">
 <p>
 在hyperledger目录下, 执行如下命令:
 </p>
@@ -597,9 +597,9 @@ cd hyperledger
 </div>
 </div>
 
-<div id="outline-container-org9c9dfd5" class="outline-4">
-<h4 id="org9c9dfd5">安装Go相关库</h4>
-<div class="outline-text-4" id="text-org9c9dfd5">
+<div id="outline-container-orged8efb5" class="outline-4">
+<h4 id="orged8efb5">安装Go相关库</h4>
+<div class="outline-text-4" id="text-orged8efb5">
 <p>
 安装必要工具:
 </p>
@@ -649,9 +649,9 @@ go get github.com/golang/protobuf/protoc-gen-go
 </div>
 </div>
 
-<div id="outline-container-org9fa0052" class="outline-4">
-<h4 id="org9fa0052">Orderer节点的编译</h4>
-<div class="outline-text-4" id="text-org9fa0052">
+<div id="outline-container-orgdef5ff4" class="outline-4">
+<h4 id="orgdef5ff4">Orderer节点的编译</h4>
+<div class="outline-text-4" id="text-orgdef5ff4">
 <p>
 Orderer节点容器里面运行的是Orderer服务, 要想生成Orderer镜像, 就需要先编译出Orderer程序.
 </p>
@@ -662,9 +662,9 @@ Orderer节点容器里面运行的是Orderer服务, 要想生成Orderer镜像, �
 </div>
 </div>
 
-<div id="outline-container-org0266e8a" class="outline-4">
-<h4 id="org0266e8a">Peer节点的编译</h4>
-<div class="outline-text-4" id="text-org0266e8a">
+<div id="outline-container-org8098c8c" class="outline-4">
+<h4 id="org8098c8c">Peer节点的编译</h4>
+<div class="outline-text-4" id="text-org8098c8c">
 <p>
 Chaincode运行在Peer所在的机器上, 需要给Chaincode准备运行的基础环境, 即ccenv和javaenv两个镜像. 由于被墙, 需要先将之前go的工具拷贝进来.
 </p>
@@ -716,9 +716,9 @@ chmod +x download-dockerimages.sh
 </div>
 </div>
 
-<div id="outline-container-org3580f8a" class="outline-4">
-<h4 id="org3580f8a">编译Fabric工具</h4>
-<div class="outline-text-4" id="text-org3580f8a">
+<div id="outline-container-org78580e8" class="outline-4">
+<h4 id="org78580e8">编译Fabric工具</h4>
+<div class="outline-text-4" id="text-org78580e8">
 <p>
 configtxgen工具用来配置Fabric的通道. 它的配置参数主要由 <code>configtx.yaml</code> 文件提供.
 </p>
@@ -766,9 +766,9 @@ cryptogen工具的编译方式也一样:
 </div>
 </div>
 
-<div id="outline-container-org6ece014" class="outline-4">
-<h4 id="org6ece014">Docker镜像</h4>
-<div class="outline-text-4" id="text-org6ece014">
+<div id="outline-container-orgc3e805c" class="outline-4">
+<h4 id="orgc3e805c">Docker镜像</h4>
+<div class="outline-text-4" id="text-orgc3e805c">
 <p>
 前面只是生成了Fabric的二进制文件, 不能直接使用. 需要将这些文件打包到Docker镜像中.
 </p>
@@ -791,9 +791,9 @@ docker images
 </div>
 </div>
 
-<div id="outline-container-org96d043f" class="outline-4">
-<h4 id="org96d043f">其他Docker镜像</h4>
-<div class="outline-text-4" id="text-org96d043f">
+<div id="outline-container-orgcb21f02" class="outline-4">
+<h4 id="orgcb21f02">其他Docker镜像</h4>
+<div class="outline-text-4" id="text-orgcb21f02">
 <p>
 CouchDB做状态数据库, Kafka做共识, Zookeeper做Kafka的高可用支持. 直接使用以下命令生成:
 </p>
@@ -805,9 +805,9 @@ CouchDB做状态数据库, Kafka做共识, Zookeeper做Kafka的高可用支持. 
 </div>
 </div>
 
-<div id="outline-container-org33b7b0a" class="outline-3">
-<h3 id="org33b7b0a">运行</h3>
-<div class="outline-text-3" id="text-org33b7b0a">
+<div id="outline-container-orgd270470" class="outline-3">
+<h3 id="orgd270470">运行</h3>
+<div class="outline-text-3" id="text-orgd270470">
 <p>
 configtxgen工具会生成两个内容: Orderer的bootstrap block和Fabric的channel configuration transaction.
 </p>
@@ -899,9 +899,9 @@ rm -rf crypto-config
 </div>
 </div>
 
-<div id="outline-container-orgcd84161" class="outline-3">
-<h3 id="orgcd84161">手动运行</h3>
-<div class="outline-text-3" id="text-orgcd84161">
+<div id="outline-container-org4de6bd7" class="outline-3">
+<h3 id="org4de6bd7">手动运行</h3>
+<div class="outline-text-3" id="text-org4de6bd7">
 <p>
 之前是使用脚本一键启动, 关闭. 我们可以手动来做一遍, 这样就明白背后发生了什么事.
 </p>
@@ -920,9 +920,9 @@ rm -rf crypto-config
 </div>
 </div>
 
-<div id="outline-container-orga13f555" class="outline-4">
-<h4 id="orga13f555">启动网络</h4>
-<div class="outline-text-4" id="text-orga13f555">
+<div id="outline-container-orgd5f9e42" class="outline-4">
+<h4 id="orgd5f9e42">启动网络</h4>
+<div class="outline-text-4" id="text-orgd5f9e42">
 <div class="org-src-container">
 <pre class="src src-Shell">docker-compose -f docker-compose-cli.yaml up
 </pre>
@@ -930,9 +930,9 @@ rm -rf crypto-config
 </div>
 </div>
 
-<div id="outline-container-org2cc64ae" class="outline-4">
-<h4 id="org2cc64ae">创建Channel</h4>
-<div class="outline-text-4" id="text-org2cc64ae">
+<div id="outline-container-org40fe0a7" class="outline-4">
+<h4 id="org40fe0a7">创建Channel</h4>
+<div class="outline-text-4" id="text-org40fe0a7">
 <p>
 Channel在逻辑上将我们自己编写的Chaincode与其他的Chaincode区分开来.
 </p>
