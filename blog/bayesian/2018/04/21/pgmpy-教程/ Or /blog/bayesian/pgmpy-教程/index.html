@@ -55,39 +55,39 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org981f545">创建贝叶斯网</a>
+<li><a href="#orgb75449c">创建贝叶斯网</a>
 <ul>
-<li><a href="#org34f0870">建立网络结构</a></li>
-<li><a href="#org0c805f7">填入参数</a></li>
-<li><a href="#orgab1d4a9">将数据加入网络</a></li>
-<li><a href="#org76e9177">相关的检查</a></li>
+<li><a href="#org24bfc64">建立网络结构</a></li>
+<li><a href="#org8aad23e">填入参数</a></li>
+<li><a href="#org021208c">将数据加入网络</a></li>
+<li><a href="#orgbc0535d">相关的检查</a></li>
 </ul>
 </li>
-<li><a href="#orga37a5d0">使用 Asia 网络进行推理</a>
+<li><a href="#orgbfdd700">使用 Asia 网络进行推理</a>
 <ul>
-<li><a href="#org77352c4">变量消除法</a></li>
+<li><a href="#org36a57b3">变量消除法</a></li>
 </ul>
 </li>
-<li><a href="#org184b141">利用训练数据学习</a>
+<li><a href="#org6cd364a">利用训练数据学习</a>
 <ul>
-<li><a href="#orgc615c61">更复杂的例子(学生例子)</a></li>
+<li><a href="#org3f5bb2f">更复杂的例子(学生例子)</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org981f545" class="outline-2">
-<h2 id="org981f545">创建贝叶斯网</h2>
-<div class="outline-text-2" id="text-org981f545">
+<div id="outline-container-orgb75449c" class="outline-2">
+<h2 id="orgb75449c">创建贝叶斯网</h2>
+<div class="outline-text-2" id="text-orgb75449c">
 <p>
 在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
 </p>
 </div>
 
-<div id="outline-container-org34f0870" class="outline-3">
-<h3 id="org34f0870">建立网络结构</h3>
-<div class="outline-text-3" id="text-org34f0870">
+<div id="outline-container-org24bfc64" class="outline-3">
+<h3 id="org24bfc64">建立网络结构</h3>
+<div class="outline-text-3" id="text-org24bfc64">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 
@@ -120,9 +120,9 @@ cancer_model = BayesianModel([('Pollution', 'Cancer'),
 </div>
 </div>
 
-<div id="outline-container-org0c805f7" class="outline-3">
-<h3 id="org0c805f7">填入参数</h3>
-<div class="outline-text-3" id="text-org0c805f7">
+<div id="outline-container-org8aad23e" class="outline-3">
+<h3 id="org8aad23e">填入参数</h3>
+<div class="outline-text-3" id="text-org8aad23e">
 <div class="org-src-container">
 <pre class="src src-Python">from pgmpy.factors.discrete import TabularCPD
 
@@ -230,9 +230,9 @@ Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人�
 </div>
 </div>
 
-<div id="outline-container-orgab1d4a9" class="outline-3">
-<h3 id="orgab1d4a9">将数据加入网络</h3>
-<div class="outline-text-3" id="text-orgab1d4a9">
+<div id="outline-container-org021208c" class="outline-3">
+<h3 id="org021208c">将数据加入网络</h3>
+<div class="outline-text-3" id="text-org021208c">
 <div class="org-src-container">
 <pre class="src src-Python"># Associating the parameters with the model structure.
 cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
@@ -248,9 +248,9 @@ cancer_model.check_model()
 </div>
 </div>
 
-<div id="outline-container-org76e9177" class="outline-3">
-<h3 id="org76e9177">相关的检查</h3>
-<div class="outline-text-3" id="text-org76e9177">
+<div id="outline-container-orgbc0535d" class="outline-3">
+<h3 id="orgbc0535d">相关的检查</h3>
+<div class="outline-text-3" id="text-orgbc0535d">
 <div class="org-src-container">
 <pre class="src src-Python">cancer_model.is_active_trail('Pollution', 'Smoker')  # False
 cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
@@ -278,9 +278,9 @@ cancer_model.get_independencies()
 </div>
 </div>
 
-<div id="outline-container-orga37a5d0" class="outline-2">
-<h2 id="orga37a5d0">使用 Asia 网络进行推理</h2>
-<div class="outline-text-2" id="text-orga37a5d0">
+<div id="outline-container-orgbfdd700" class="outline-2">
+<h2 id="orgbfdd700">使用 Asia 网络进行推理</h2>
+<div class="outline-text-2" id="text-orgbfdd700">
 <p>
 在构建了贝叶斯网之后, 我们使用贝叶斯网来进行推理. 推理算法分精确推理和近似推理. 精确推理有变量消元法和团树传播法; 近似推理算法是基于随机抽样的算法.
 </p>
@@ -384,9 +384,9 @@ asia_model = reader.get_model()
 </pre>
 </div>
 
-<div id="outline-container-org77352c4" class="outline-3">
-<h3 id="org77352c4">变量消除法</h3>
-<div class="outline-text-3" id="text-org77352c4">
+<div id="outline-container-org36a57b3" class="outline-3">
+<h3 id="org36a57b3">变量消除法</h3>
+<div class="outline-text-3" id="text-org36a57b3">
 <p>
 变量消除法是精确推断的一种方法. 
 </p>
@@ -436,9 +436,9 @@ print(q['bronc'])
 </div>
 </div>
 
-<div id="outline-container-org184b141" class="outline-2">
-<h2 id="org184b141">利用训练数据学习</h2>
-<div class="outline-text-2" id="text-org184b141">
+<div id="outline-container-org6cd364a" class="outline-2">
+<h2 id="org6cd364a">利用训练数据学习</h2>
+<div class="outline-text-2" id="text-org6cd364a">
 <p>
 场景: 投硬币, 训练数据中, 有 30% 的正面朝上, 有 70% 的反面朝上. 我们使用极大似然估计和狄利克雷分布下贝叶斯参数先验估计硬币的条件概率分布.
 </p>
@@ -504,9 +504,9 @@ print(model.get_cpds('coin'))
 </pre>
 </div>
 
-<div id="outline-container-orgc615c61" class="outline-3">
-<h3 id="orgc615c61">更复杂的例子(学生例子)</h3>
-<div class="outline-text-3" id="text-orgc615c61">
+<div id="outline-container-org3f5bb2f" class="outline-3">
+<h3 id="org3f5bb2f">更复杂的例子(学生例子)</h3>
+<div class="outline-text-3" id="text-org3f5bb2f">
 <p>
 学生例子中包含5个随机变量, 如下所示:
 </p>
