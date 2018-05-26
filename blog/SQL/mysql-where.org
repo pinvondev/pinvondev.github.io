@@ -1,4 +1,4 @@
-#+TITLE:       MySQL(四) WHERE 子句
+#+TITLE:       
 #+AUTHOR:      Pinvon
 #+EMAIL:       pinvon@Inspiron
 #+DATE:        2018-04-22 日
@@ -73,4 +73,25 @@ NULL(空值) 与 0, 空字符串, 空格不同.
 以下 SQL 语句可以检查出所有 column_2 为 NULL 的行:
 #+BEGIN_SRC SQL
 SELECT column_1 FROM table_name WHERE column_2 IS NULL;
+#+END_SRC
+* WHERE 子句组合
+
+多个 WHERE 子句可以通过 AND 或 OR 连接起来. 如:
+#+BEGIN_SRC SQL
+SELECT column_1, column_2 FROM table_name WHERE column_3 = 1003 AND column_4 <= 10;
+#+END_SRC
+如果有不止两个 WHERE 子句, 也是用 AND 将他们连接. AND 表示要满足所有给定条件的行.
+
+OR 子句的用法一样, 但表达的意思不同, 意思是只要满足其中一个条件就可以.
+
+** AND 与 OR 的组合
+
+#+BEGIN_SRC SQL
+SELECT column_1, column_2 FROM table_name WHERE column_3=1002 OR column_3=1003 AND column_2>=10;
+#+END_SRC
+由于 AND 的优先级会更高, 所以这一句的意思被认为是: 满足条件 column_3=1002 的数据, 或满足条件 column_2>=10 且 column_3=1003 的数据.
+
+如果要改成满足条件 column_3=1002 或者 column_3=1003 并且 column_2>=10 的数据, 应该这么写:
+#+BEGIN_SRC SQL
+SELECT column_1, column_2 FROM table_name WHERE (column_3=1002 OR column_3=1003) AND column_2>=10;
 #+END_SRC

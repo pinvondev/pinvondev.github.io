@@ -1,0 +1,112 @@
+#+TITLE:       Express Session
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-25 五
+
+#+URI:         /blog/Web/Nodejs/%y/%m/%d/%t/ Or /blog/Web/Nodejs/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 安装模块
+
+#+BEGIN_SRC Shell
+npm install express-session --save
+#+END_SRC
+
+** app.js
+
+#+BEGIN_SRC JavaScript
+var session = require('express-session');
+#+END_SRC
+
+* 保存到文件
+
+#+BEGIN_SRC Shell
+npm install session-file-store --save
+#+END_SRC
+
+** app.js
+
+#+BEGIN_SRC JavaScript
+var fileStore = require('session-file-store')(session);
+
+...
+
+app.use(session({
+  secret: 'penglaozi',
+  store: new fileStore(),
+  resave: false,
+  cookie: {
+    maxAge: 60 * 1000,
+  }
+}));
+#+END_SRC
+
+* 保存到 mongodb
+
+#+BEGIN_SRC Shell
+npm install connect-mongo --save
+#+END_SRC
+
+** app.js
+
+#+BEGIN_SRC JavaScript
+var mongoStore = require('connect-mongo')(session);
+
+...
+
+app.use(session({
+  secret: 'penglaozi',
+  store: new MongoStore({ //创建新的mongodb数据库
+      url: config.url, //比如：'mongodb://cha:root@localhost:27017/ch_db'
+      collection: config.sessionCollection //比如：'ch_sessions'
+  }),
+  resave: false,
+  cookie: {
+    maxAge: 60 * 1000,
+  }
+}));
+#+END_SRC
+
+* 保存到 redis
+
+#+BEGIN_SRC Shell
+npm install connect-redis --save
+#+END_SRC
+
+** app.js
+
+#+BEGIN_SRC JavaScript
+var redisStore = require('connect-redis')(session);
+
+...
+
+app.use(session({
+  secret: 'penglaozi',
+  store: new RedisStrore({
+   "host" : "192.168.0.13",
+   "port" : "6379",
+   "pass" : "123456",
+   "db" : 1,
+   "ttl" : 1800,
+   "logErrors" : true
+  }),
+  resave: false,
+  cookie: {
+    maxAge: 60 * 1000,
+  }
+}));
+#+END_SRC
+
+* 设置 session
+
+在需要的地方设置 session. 如登录时:
+#+BEGIN_SRC JavaScript
+req.session.user = {
+	'name': req.body.uname,
+    'pass': req.body.upwd
+}
+#+END_SRC

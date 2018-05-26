@@ -1,0 +1,87 @@
+#+TITLE:       Ubuntu Redis
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-25 五
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* Redis 简介
+
+Redis 是一个高性能的键值对非关系型数据库, 支持存储的值类型包括: string, list, set, zset(有序集合), 这些数据类型都支持 push/pop, add/remove, 取交集, 取并集, 取差集等原子性操作.
+
+为了保证效率, Redis 中的数据都是缓存在内存中的, 它会周期性地把更新的数据写入磁盘, 或者把修改操作写入追加的记录文件.
+
+实现了主从(master-slave)同步.
+
+* 安装
+
+** 下载编译
+
+#+BEGIN_SRC Shell
+wget http://download.redis.io/releases/redis-4.0.9.tar.gz
+tar xzf redis-4.0.9.tar.gz
+cd redis-4.0.9
+make
+#+END_SRC
+
+** 启动 Redis 服务
+
+编译好的二进制文件在 src 目录下, 通过如下命令启动 Redis 服务:
+#+BEGIN_SRC Shell
+src/redis-server
+#+END_SRC
+
+** 启动 Redis 客户端
+
+#+BEGIN_SRC Shell
+src/redis-cli
+
+// 设置键值对: foo-bar
+set foo bar
+
+get foo // "bar"
+#+END_SRC
+
+* 常用操作
+
+Redis 以 <key, value> 的形式存储数据.
+
+如果要往某个表中写入数据, key=表名:主键的值:列名, value=列值.
+
+如, Users 表中, id 为主键, name 为其中一个列名. 则 key=Users:1:name, key=Users:2:name, 等等.
+
+** 插入数据
+
+只要我们提前设计好 key 和 value 即可. 
+#+BEGIN_SRC Shell
+set Users:1:name Pinvon
+#+END_SRC
+
+** 修改数据
+
+Redis 中没有修改数据的命令, 如果想修改数据, 只能使用 set 命令, 对相同的 key 赋予和之前不同的 value. 如, 将之前的用户名 Pinvon 改成 Penglaozi.
+#+BEGIN_SRC Shell
+set Users:1:name Penglaozi
+#+END_SRC
+
+** 查询数据
+
+查询数据, 使用 get 命令, 再把 key 输入即可.
+
+#+BEGIN_SRC Shell
+get Users:1:name  // Penglaozi
+#+END_SRC
+
+** 删除数据
+
+使用 del 命令删除数据.
+#+BEGIN_SRC Shell
+del Users:1:name
+#+END_SRC
+
+此时, 再使用 get 查询该 key, 会发现输出为空.
