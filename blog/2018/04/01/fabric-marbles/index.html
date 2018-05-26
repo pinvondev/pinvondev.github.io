@@ -55,72 +55,72 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org8b9c8b9">chaincode</a>
+<li><a href="#org972a381">chaincode</a>
 <ul>
-<li><a href="#orga8a5774">chaincode 主要结构</a></li>
-<li><a href="#orga6f5cb0">Invoke() 接口</a>
+<li><a href="#org6f3a417">chaincode 主要结构</a></li>
+<li><a href="#org92c9b42">Invoke() 接口</a>
 <ul>
-<li><a href="#orge752263">读账本 read()</a></li>
-<li><a href="#orgf66a0da">写账本 write()</a></li>
-<li><a href="#orga137db9">删除 delete_marble()</a></li>
-<li><a href="#orgdbb77c0">初始化 init_marble()</a></li>
-<li><a href="#org6b621d7">设置所有者 set_owner()</a></li>
-<li><a href="#org9bf7a8d">初始化所有者 init_owner()</a></li>
-<li><a href="#org8cd7d0b">读取所有数据 read_everything()</a></li>
-<li><a href="#orge2d8e6a">获取历史数据 getHistory()</a></li>
-<li><a href="#orgb065dc6">根据范围查找 getMarblesByRange()</a></li>
-<li><a href="#org962b439">disable_owner()</a></li>
-<li><a href="#org13e0103">小结</a></li>
+<li><a href="#orgd7d1fb4">读账本 read()</a></li>
+<li><a href="#orgb0b0be1">写账本 write()</a></li>
+<li><a href="#org8bb25e1">删除 delete_marble()</a></li>
+<li><a href="#org0438143">初始化 init_marble()</a></li>
+<li><a href="#orgcbd4eb2">设置所有者 set_owner()</a></li>
+<li><a href="#org5a04eed">初始化所有者 init_owner()</a></li>
+<li><a href="#org79f6ead">读取所有数据 read_everything()</a></li>
+<li><a href="#org3785a1a">获取历史数据 getHistory()</a></li>
+<li><a href="#orgbb00219">根据范围查找 getMarblesByRange()</a></li>
+<li><a href="#org59fe586">disable_owner()</a></li>
+<li><a href="#orgc540b93">小结</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org71ac3f3">运维</a>
+<li><a href="#org86a0764">运维</a>
 <ul>
-<li><a href="#org4b93a9a">SDK</a>
+<li><a href="#org4db3bdc">SDK</a>
 <ul>
-<li><a href="#org9b804cb">Install Chaincode</a></li>
-<li><a href="#orge132db6">Instantiate Chaincode</a></li>
-<li><a href="#orgd6c0a28">Upgrade Chaincode</a></li>
+<li><a href="#orgf78cc77">Install Chaincode</a></li>
+<li><a href="#org33c84a6">Instantiate Chaincode</a></li>
+<li><a href="#org4019d9c">Upgrade Chaincode</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org235ff11">上传步数</a>
+<li><a href="#org46f2487">上传步数</a>
 <ul>
-<li><a href="#org67c8488">赚取运动能量的公式</a></li>
-<li><a href="#org6410c34">SDK</a>
+<li><a href="#orgc6ad4b2">赚取运动能量的公式</a></li>
+<li><a href="#org1365d33">SDK</a>
 <ul>
-<li><a href="#org2742b3d">Invoke Chaincode</a></li>
+<li><a href="#org0acaa19">Invoke Chaincode</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org06cdca2">查询</a>
+<li><a href="#org79b3506">查询</a>
 <ul>
-<li><a href="#org852266b">SDK</a>
+<li><a href="#orge17d0a1">SDK</a>
 <ul>
-<li><a href="#orgfda9626">Query Chaincode</a></li>
+<li><a href="#orgf97804d">Query Chaincode</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org8d9c09d">错误</a>
+<li><a href="#org53abd11">错误</a>
 <ul>
-<li><a href="#orga14e5e7">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</a></li>
+<li><a href="#org79e3f3f">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org8b9c8b9" class="outline-2">
-<h2 id="org8b9c8b9">chaincode</h2>
-<div class="outline-text-2" id="text-org8b9c8b9">
+<div id="outline-container-org972a381" class="outline-2">
+<h2 id="org972a381">chaincode</h2>
+<div class="outline-text-2" id="text-org972a381">
 </div>
-<div id="outline-container-orga8a5774" class="outline-3">
-<h3 id="orga8a5774">chaincode 主要结构</h3>
-<div class="outline-text-3" id="text-orga8a5774">
+<div id="outline-container-org6f3a417" class="outline-3">
+<h3 id="org6f3a417">chaincode 主要结构</h3>
+<div class="outline-text-3" id="text-org6f3a417">
 <div class="org-src-container">
 <pre class="src src-Golang">// 声明包
 package main
@@ -271,13 +271,13 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orga6f5cb0" class="outline-3">
-<h3 id="orga6f5cb0">Invoke() 接口</h3>
-<div class="outline-text-3" id="text-orga6f5cb0">
+<div id="outline-container-org92c9b42" class="outline-3">
+<h3 id="org92c9b42">Invoke() 接口</h3>
+<div class="outline-text-3" id="text-org92c9b42">
 </div>
-<div id="outline-container-orge752263" class="outline-4">
-<h4 id="orge752263">读账本 read()</h4>
-<div class="outline-text-4" id="text-orge752263">
+<div id="outline-container-orgd7d1fb4" class="outline-4">
+<h4 id="orgd7d1fb4">读账本 read()</h4>
+<div class="outline-text-4" id="text-orgd7d1fb4">
 <div class="org-src-container">
 <pre class="src src-Golang">func read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     var key, jsonResp string
@@ -309,9 +309,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orgf66a0da" class="outline-4">
-<h4 id="orgf66a0da">写账本 write()</h4>
-<div class="outline-text-4" id="text-orgf66a0da">
+<div id="outline-container-orgb0b0be1" class="outline-4">
+<h4 id="orgb0b0be1">写账本 write()</h4>
+<div class="outline-text-4" id="text-orgb0b0be1">
 <div class="org-src-container">
 <pre class="src src-Golang">func write(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     var key, value string
@@ -343,9 +343,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orga137db9" class="outline-4">
-<h4 id="orga137db9">删除 delete_marble()</h4>
-<div class="outline-text-4" id="text-orga137db9">
+<div id="outline-container-org8bb25e1" class="outline-4">
+<h4 id="org8bb25e1">删除 delete_marble()</h4>
+<div class="outline-text-4" id="text-org8bb25e1">
 <p>
 根据 marble 的 id 来删除指定的 marble.
 </p>
@@ -393,9 +393,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orgdbb77c0" class="outline-4">
-<h4 id="orgdbb77c0">初始化 init_marble()</h4>
-<div class="outline-text-4" id="text-orgdbb77c0">
+<div id="outline-container-org0438143" class="outline-4">
+<h4 id="org0438143">初始化 init_marble()</h4>
+<div class="outline-text-4" id="text-org0438143">
 <p>
 生成 marble, 并写入账本.
 </p>
@@ -470,9 +470,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org6b621d7" class="outline-4">
-<h4 id="org6b621d7">设置所有者 set_owner()</h4>
-<div class="outline-text-4" id="text-org6b621d7">
+<div id="outline-container-orgcbd4eb2" class="outline-4">
+<h4 id="orgcbd4eb2">设置所有者 set_owner()</h4>
+<div class="outline-text-4" id="text-orgcbd4eb2">
 <div class="org-src-container">
 <pre class="src src-Golang">func set_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     var err error
@@ -539,9 +539,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org9bf7a8d" class="outline-4">
-<h4 id="org9bf7a8d">初始化所有者 init_owner()</h4>
-<div class="outline-text-4" id="text-org9bf7a8d">
+<div id="outline-container-org5a04eed" class="outline-4">
+<h4 id="org5a04eed">初始化所有者 init_owner()</h4>
+<div class="outline-text-4" id="text-org5a04eed">
 <div class="org-src-container">
 <pre class="src src-Golang">func init_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     var err error
@@ -588,9 +588,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org8cd7d0b" class="outline-4">
-<h4 id="org8cd7d0b">读取所有数据 read_everything()</h4>
-<div class="outline-text-4" id="text-org8cd7d0b">
+<div id="outline-container-org79f6ead" class="outline-4">
+<h4 id="org79f6ead">读取所有数据 read_everything()</h4>
+<div class="outline-text-4" id="text-org79f6ead">
 <div class="org-src-container">
 <pre class="src src-Golang">func read_everything(stub shim.ChaincodeStubInterface) pb.Response {
     type Everything struct {
@@ -653,9 +653,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orge2d8e6a" class="outline-4">
-<h4 id="orge2d8e6a">获取历史数据 getHistory()</h4>
-<div class="outline-text-4" id="text-orge2d8e6a">
+<div id="outline-container-org3785a1a" class="outline-4">
+<h4 id="org3785a1a">获取历史数据 getHistory()</h4>
+<div class="outline-text-4" id="text-org3785a1a">
 <div class="org-src-container">
 <pre class="src src-Golang">func getHistory(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     type AuditHistory struct {
@@ -708,9 +708,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orgb065dc6" class="outline-4">
-<h4 id="orgb065dc6">根据范围查找 getMarblesByRange()</h4>
-<div class="outline-text-4" id="text-orgb065dc6">
+<div id="outline-container-orgbb00219" class="outline-4">
+<h4 id="orgbb00219">根据范围查找 getMarblesByRange()</h4>
+<div class="outline-text-4" id="text-orgbb00219">
 <div class="org-src-container">
 <pre class="src src-Golang">func getMarblesByRange(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     if len(args) != 2 {
@@ -765,9 +765,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org962b439" class="outline-4">
-<h4 id="org962b439">disable_owner()</h4>
-<div class="outline-text-4" id="text-org962b439">
+<div id="outline-container-org59fe586" class="outline-4">
+<h4 id="org59fe586">disable_owner()</h4>
+<div class="outline-text-4" id="text-org59fe586">
 <div class="org-src-container">
 <pre class="src src-Golang">func disable_owner(stub shim.ChaincodeStubInterface, args []string) pb.Response {
     var err error
@@ -813,9 +813,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org13e0103" class="outline-4">
-<h4 id="org13e0103">小结</h4>
-<div class="outline-text-4" id="text-org13e0103">
+<div id="outline-container-orgc540b93" class="outline-4">
+<h4 id="orgc540b93">小结</h4>
+<div class="outline-text-4" id="text-orgc540b93">
 <p>
 基本上都是序列化与反序列化, PutState() 与 GetState(). 熟悉这些接口, 对自己写 chaincode 有较大好处.
 </p>
@@ -824,21 +824,21 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org71ac3f3" class="outline-2">
-<h2 id="org71ac3f3">运维</h2>
-<div class="outline-text-2" id="text-org71ac3f3">
+<div id="outline-container-org86a0764" class="outline-2">
+<h2 id="org86a0764">运维</h2>
+<div class="outline-text-2" id="text-org86a0764">
 </div>
-<div id="outline-container-org4b93a9a" class="outline-3">
-<h3 id="org4b93a9a">SDK</h3>
-<div class="outline-text-3" id="text-org4b93a9a">
+<div id="outline-container-org4db3bdc" class="outline-3">
+<h3 id="org4db3bdc">SDK</h3>
+<div class="outline-text-3" id="text-org4db3bdc">
 <p>
 在服务端将运动数据转化成运动能量之后, 调用 SDK, 利用 chaincode 将相关数据写入账本.
 </p>
 </div>
 
-<div id="outline-container-org9b804cb" class="outline-4">
-<h4 id="org9b804cb">Install Chaincode</h4>
-<div class="outline-text-4" id="text-org9b804cb">
+<div id="outline-container-orgf78cc77" class="outline-4">
+<h4 id="orgf78cc77">Install Chaincode</h4>
+<div class="outline-text-4" id="text-orgf78cc77">
 <ul class="org-ul">
 <li>fcw.install_chaincode(obj, options, cb_done)</li>
 <li>deploy_cc.install_chaincode(obj, options, cb_done)</li>
@@ -854,9 +854,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orge132db6" class="outline-4">
-<h4 id="orge132db6">Instantiate Chaincode</h4>
-<div class="outline-text-4" id="text-orge132db6">
+<div id="outline-container-org33c84a6" class="outline-4">
+<h4 id="org33c84a6">Instantiate Chaincode</h4>
+<div class="outline-text-4" id="text-org33c84a6">
 <ul class="org-ul">
 <li>fcw.instantiate_chaincode(obj, options, cb_done)</li>
 <li>deploy_cc.instantiate_chaincode(obj, options, cb)</li>
@@ -874,9 +874,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-orgd6c0a28" class="outline-4">
-<h4 id="orgd6c0a28">Upgrade Chaincode</h4>
-<div class="outline-text-4" id="text-orgd6c0a28">
+<div id="outline-container-org4019d9c" class="outline-4">
+<h4 id="org4019d9c">Upgrade Chaincode</h4>
+<div class="outline-text-4" id="text-org4019d9c">
 <ul class="org-ul">
 <li>fcw.upgrade_chaincode(obj, options, cb_done)</li>
 <li>deploy_cc.upgrade_chaincode(obj, options, cb_done)</li>
@@ -896,13 +896,13 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org235ff11" class="outline-2">
-<h2 id="org235ff11">上传步数</h2>
-<div class="outline-text-2" id="text-org235ff11">
+<div id="outline-container-org46f2487" class="outline-2">
+<h2 id="org46f2487">上传步数</h2>
+<div class="outline-text-2" id="text-org46f2487">
 </div>
-<div id="outline-container-org67c8488" class="outline-3">
-<h3 id="org67c8488">赚取运动能量的公式</h3>
-<div class="outline-text-3" id="text-org67c8488">
+<div id="outline-container-orgc6ad4b2" class="outline-3">
+<h3 id="orgc6ad4b2">赚取运动能量的公式</h3>
+<div class="outline-text-3" id="text-orgc6ad4b2">
 <p>
 每个用户所赚取的运动能量的数量, 与当天所有用户的运动数据有关. 如:
 </p>
@@ -913,13 +913,13 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface) pb.Response {
 </div>
 </div>
 
-<div id="outline-container-org6410c34" class="outline-3">
-<h3 id="org6410c34">SDK</h3>
-<div class="outline-text-3" id="text-org6410c34">
+<div id="outline-container-org1365d33" class="outline-3">
+<h3 id="org1365d33">SDK</h3>
+<div class="outline-text-3" id="text-org1365d33">
 </div>
-<div id="outline-container-org2742b3d" class="outline-4">
-<h4 id="org2742b3d">Invoke Chaincode</h4>
-<div class="outline-text-4" id="text-org2742b3d">
+<div id="outline-container-org0acaa19" class="outline-4">
+<h4 id="org0acaa19">Invoke Chaincode</h4>
+<div class="outline-text-4" id="text-org0acaa19">
 <ul class="org-ul">
 <li>fcw.invoke_chaincode(obj, options, cb_done)</li>
 <li>invoke_cc.invoke_chaincode(obj, options, function)</li>
@@ -958,17 +958,17 @@ eventHub.registerTxEvent(request.txId.getTransactionID(), ...): 根据交易 ID 
 </div>
 </div>
 
-<div id="outline-container-org06cdca2" class="outline-2">
-<h2 id="org06cdca2">查询</h2>
-<div class="outline-text-2" id="text-org06cdca2">
+<div id="outline-container-org79b3506" class="outline-2">
+<h2 id="org79b3506">查询</h2>
+<div class="outline-text-2" id="text-org79b3506">
 </div>
-<div id="outline-container-org852266b" class="outline-3">
-<h3 id="org852266b">SDK</h3>
-<div class="outline-text-3" id="text-org852266b">
+<div id="outline-container-orge17d0a1" class="outline-3">
+<h3 id="orge17d0a1">SDK</h3>
+<div class="outline-text-3" id="text-orge17d0a1">
 </div>
-<div id="outline-container-orgfda9626" class="outline-4">
-<h4 id="orgfda9626">Query Chaincode</h4>
-<div class="outline-text-4" id="text-orgfda9626">
+<div id="outline-container-orgf97804d" class="outline-4">
+<h4 id="orgf97804d">Query Chaincode</h4>
+<div class="outline-text-4" id="text-orgf97804d">
 <ul class="org-ul">
 <li>fcw.query_chaincode(obj, options, cb_done)</li>
 <li>query_cc.query_chaincode(obj, options, function)</li>
@@ -986,13 +986,13 @@ eventHub.registerTxEvent(request.txId.getTransactionID(), ...): 根据交易 ID 
 </div>
 </div>
 
-<div id="outline-container-org8d9c09d" class="outline-2">
-<h2 id="org8d9c09d">错误</h2>
-<div class="outline-text-2" id="text-org8d9c09d">
+<div id="outline-container-org53abd11" class="outline-2">
+<h2 id="org53abd11">错误</h2>
+<div class="outline-text-2" id="text-org53abd11">
 </div>
-<div id="outline-container-orga14e5e7" class="outline-3">
-<h3 id="orga14e5e7">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</h3>
-<div class="outline-text-3" id="text-orga14e5e7">
+<div id="outline-container-org79e3f3f" class="outline-3">
+<h3 id="org79e3f3f">Error: Error endorsing chaincode: rpc error: code = Unknown desc = failed to execute transaction: timeout expired while executing transaction</h3>
+<div class="outline-text-3" id="text-org79e3f3f">
 <p>
 有多种原因会导致这个错误. 有可能是修改了 chaincode, 但是编译出错了, 或者 chaincode 容器没有启动, 等等.
 </p>
