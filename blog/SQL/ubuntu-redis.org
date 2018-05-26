@@ -36,15 +36,27 @@ make
 src/redis-server
 #+END_SRC
 
+启动 Redis 服务时, 默认监听 6379 端口. 通过 --port 参数可以自定义端口号:
+#+BEGIN_SRC Shell
+redis-server --port 6380
+#+END_SRC
+
 ** 启动 Redis 客户端
 
 #+BEGIN_SRC Shell
 src/redis-cli
+// 等价于
+src/redis-cli -h 127.0.0.1 -p 6379
 
 // 设置键值对: foo-bar
 set foo bar
 
 get foo // "bar"
+#+END_SRC
+
+如果强行停止 Redis, 可能会导致内存中的数据来不及同步到磁盘就被关闭. 因此, 正确停止 Redis 的方式为:
+#+BEGIN_SRC Shell
+redis-cli SHUTDOWN
 #+END_SRC
 
 * 常用操作
