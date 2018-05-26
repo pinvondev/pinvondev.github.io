@@ -55,59 +55,59 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd404757">概述</a>
+<li><a href="#orgd848b7f">概述</a>
 <ul>
-<li><a href="#org05101f2">启动Fabric网络的流程</a></li>
+<li><a href="#org54b6d6a">启动Fabric网络的流程</a></li>
 </ul>
 </li>
-<li><a href="#org4147cdd">本地部署Hyperledger Fabric</a>
+<li><a href="#org9a8b4ac">本地部署Hyperledger Fabric</a>
 <ul>
-<li><a href="#org93a9836">下载Docker镜像文件</a></li>
-<li><a href="#orgf7e5180">部署网络</a>
+<li><a href="#org53c37e4">下载Docker镜像文件</a></li>
+<li><a href="#orgc639985">部署网络</a>
 <ul>
-<li><a href="#org5472ffc">创建channel</a></li>
-<li><a href="#orgbb2658f">加入channel</a></li>
-<li><a href="#orge629dd7">安装chaincode</a></li>
-<li><a href="#orgaa8a2a9">实例化chaincode</a></li>
-<li><a href="#org3dcc538">调用chaincode</a></li>
-<li><a href="#org1eaec1a">调用chaincode查询</a></li>
-<li><a href="#org451d068">节点的配置参数传递规则</a></li>
+<li><a href="#org2be6b6c">创建channel</a></li>
+<li><a href="#org7652b00">加入channel</a></li>
+<li><a href="#orga0100f9">安装chaincode</a></li>
+<li><a href="#orgeee2e92">实例化chaincode</a></li>
+<li><a href="#org226839b">调用chaincode</a></li>
+<li><a href="#orgc7450ae">调用chaincode查询</a></li>
+<li><a href="#org4f1b750">节点的配置参数传递规则</a></li>
 </ul>
 </li>
-<li><a href="#org30138c3">yaml配置文件</a></li>
+<li><a href="#org2e06951">yaml配置文件</a></li>
 </ul>
 </li>
-<li><a href="#orgd3f7ec2">配置</a>
+<li><a href="#orgb62bb63">配置</a>
 <ul>
-<li><a href="#org03df4e6">简介</a>
+<li><a href="#org15cd533">简介</a>
 <ul>
-<li><a href="#org9539d96">节点</a></li>
-<li><a href="#org8bd7c36">配置管理工具</a></li>
+<li><a href="#org77d8605">节点</a></li>
+<li><a href="#orgce2d9ed">配置管理工具</a></li>
 </ul>
 </li>
-<li><a href="#orgfc6aaaf">Peer节点配置</a>
+<li><a href="#org1ba8c36">Peer节点配置</a>
 <ul>
-<li><a href="#org99e8ede">logging</a></li>
-<li><a href="#org35ffdcc">peer</a>
+<li><a href="#org6336515">logging</a></li>
+<li><a href="#org2a1488e">peer</a>
 <ul>
-<li><a href="#org51ce8c7">通用配置</a></li>
+<li><a href="#org309e4cb">通用配置</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org97bebe7">cryptogen</a>
+<li><a href="#org86c2d83">cryptogen</a>
 <ul>
-<li><a href="#org721d4db">配置文件crypto-config.yaml</a></li>
-<li><a href="#org1d404e5">例子</a></li>
-<li><a href="#org00124f3">生成密钥和证书文件</a></li>
+<li><a href="#org6c316dc">配置文件crypto-config.yaml</a></li>
+<li><a href="#org1176a73">例子</a></li>
+<li><a href="#org6889249">生成密钥和证书文件</a></li>
 </ul>
 </li>
-<li><a href="#orgae6d342">configtxgen</a>
+<li><a href="#org2cb814b">configtxgen</a>
 <ul>
-<li><a href="#orgaf55fba">configtx.yaml 文件</a>
+<li><a href="#orgb072149">configtx.yaml 文件</a>
 <ul>
-<li><a href="#orgd45c5a6">profiles</a></li>
-<li><a href="#org135af7e">organizations</a></li>
+<li><a href="#org9d19987">profiles</a></li>
+<li><a href="#org88a52c1">organizations</a></li>
 </ul>
 </li>
 </ul>
@@ -118,17 +118,17 @@
 </div>
 </div>
 
-<div id="outline-container-orgd404757" class="outline-2">
-<h2 id="orgd404757">概述</h2>
-<div class="outline-text-2" id="text-orgd404757">
+<div id="outline-container-orgd848b7f" class="outline-2">
+<h2 id="orgd848b7f">概述</h2>
+<div class="outline-text-2" id="text-orgd848b7f">
 <p>
 Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一条独立的系统通道负责管理网络中的各种配置信息, 并完成对其他应用通道的创建.
 </p>
 </div>
 
-<div id="outline-container-org05101f2" class="outline-3">
-<h3 id="org05101f2">启动Fabric网络的流程</h3>
-<div class="outline-text-3" id="text-org05101f2">
+<div id="outline-container-org54b6d6a" class="outline-3">
+<h3 id="org54b6d6a">启动Fabric网络的流程</h3>
+<div class="outline-text-3" id="text-org54b6d6a">
 <ol class="org-ol">
 <li>预备网络内各项配置, 包括网络中成员的组织结构和对应的身份证书; 生成系统通道的初始配置区块文件; 新建应用通道的配置更新交易文件; (如果需要)主节点配置更新交易文件.</li>
 <li>使用系统通道的初始配置区块文件启动排序节点, 排序节点启动后自动按照指定配置创建系统通道.</li>
@@ -141,9 +141,9 @@ Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一�
 </div>
 </div>
 
-<div id="outline-container-org4147cdd" class="outline-2">
-<h2 id="org4147cdd">本地部署Hyperledger Fabric</h2>
-<div class="outline-text-2" id="text-org4147cdd">
+<div id="outline-container-org9a8b4ac" class="outline-2">
+<h2 id="org9a8b4ac">本地部署Hyperledger Fabric</h2>
+<div class="outline-text-2" id="text-org9a8b4ac">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64">安装</a>
 </p>
@@ -153,9 +153,9 @@ Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一�
 </p>
 </div>
 
-<div id="outline-container-org93a9836" class="outline-3">
-<h3 id="org93a9836">下载Docker镜像文件</h3>
-<div class="outline-text-3" id="text-org93a9836">
+<div id="outline-container-org53c37e4" class="outline-3">
+<h3 id="org53c37e4">下载Docker镜像文件</h3>
+<div class="outline-text-3" id="text-org53c37e4">
 <div class="org-src-container">
 <pre class="src src-Shell">cd fabric/scripts
 
@@ -182,9 +182,9 @@ sed -i 's/curl/#curl/g' bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-orgf7e5180" class="outline-3">
-<h3 id="orgf7e5180">部署网络</h3>
-<div class="outline-text-3" id="text-orgf7e5180">
+<div id="outline-container-orgc639985" class="outline-3">
+<h3 id="orgc639985">部署网络</h3>
+<div class="outline-text-3" id="text-orgc639985">
 <p>
 使用 <code>fabric-samples</code> 中已经生成的配置文件来部署网络:
 </p>
@@ -206,9 +206,9 @@ docker-compose -f docker-compose.yml up -d
 </div>
 </div>
 
-<div id="outline-container-org5472ffc" class="outline-4">
-<h4 id="org5472ffc">创建channel</h4>
-<div class="outline-text-4" id="text-org5472ffc">
+<div id="outline-container-org2be6b6c" class="outline-4">
+<h4 id="org2be6b6c">创建channel</h4>
+<div class="outline-text-4" id="text-org2be6b6c">
 <div class="org-src-container">
 <pre class="src src-Shell"># 切换到管理员用户
 docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
@@ -219,9 +219,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-orgbb2658f" class="outline-4">
-<h4 id="orgbb2658f">加入channel</h4>
-<div class="outline-text-4" id="text-orgbb2658f">
+<div id="outline-container-org7652b00" class="outline-4">
+<h4 id="org7652b00">加入channel</h4>
+<div class="outline-text-4" id="text-org7652b00">
 <div class="org-src-container">
 <pre class="src src-Shell">peer channel join -b mychannel.block
 </pre>
@@ -235,9 +235,9 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-orge629dd7" class="outline-4">
-<h4 id="orge629dd7">安装chaincode</h4>
-<div class="outline-text-4" id="text-orge629dd7">
+<div id="outline-container-orga0100f9" class="outline-4">
+<h4 id="orga0100f9">安装chaincode</h4>
+<div class="outline-text-4" id="text-orga0100f9">
 <div class="org-src-container">
 <pre class="src src-Shell"># 退出peer0.org1.example.com容器
 exit
@@ -252,9 +252,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-orgaa8a2a9" class="outline-4">
-<h4 id="orgaa8a2a9">实例化chaincode</h4>
-<div class="outline-text-4" id="text-orgaa8a2a9">
+<div id="outline-container-orgeee2e92" class="outline-4">
+<h4 id="orgeee2e92">实例化chaincode</h4>
+<div class="outline-text-4" id="text-orgeee2e92">
 <div class="org-src-container">
 <pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
 </pre>
@@ -262,9 +262,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-org3dcc538" class="outline-4">
-<h4 id="org3dcc538">调用chaincode</h4>
-<div class="outline-text-4" id="text-org3dcc538">
+<div id="outline-container-org226839b" class="outline-4">
+<h4 id="org226839b">调用chaincode</h4>
+<div class="outline-text-4" id="text-org226839b">
 <p>
 实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
 </p>
@@ -281,9 +281,9 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-org1eaec1a" class="outline-4">
-<h4 id="org1eaec1a">调用chaincode查询</h4>
-<div class="outline-text-4" id="text-org1eaec1a">
+<div id="outline-container-orgc7450ae" class="outline-4">
+<h4 id="orgc7450ae">调用chaincode查询</h4>
+<div class="outline-text-4" id="text-orgc7450ae">
 <div class="org-src-container">
 <pre class="src src-Shell"># 转账
 peer chaincode invoke -C mychannel -n mycc -v v0 -c '{"Args":["invoke","a","b","10"]}'
@@ -304,9 +304,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-org451d068" class="outline-4">
-<h4 id="org451d068">节点的配置参数传递规则</h4>
-<div class="outline-text-4" id="text-org451d068">
+<div id="outline-container-org4f1b750" class="outline-4">
+<h4 id="org4f1b750">节点的配置参数传递规则</h4>
+<div class="outline-text-4" id="text-org4f1b750">
 <p>
 程序在启动的时候, 会读取配置文件和环境变量的值, 如 <code>fabric-samples/basic-network/docker-compose.yml</code> 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
 </p>
@@ -324,9 +324,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-org30138c3" class="outline-3">
-<h3 id="org30138c3">yaml配置文件</h3>
-<div class="outline-text-3" id="text-org30138c3">
+<div id="outline-container-org2e06951" class="outline-3">
+<h3 id="org2e06951">yaml配置文件</h3>
+<div class="outline-text-3" id="text-org2e06951">
 <p>
 查看 <code>fabric/examples/e2e_cli/base/docker-compose-base.yaml</code> 配置文件. 此处给出其中一些选项的解释.
 </p>
@@ -437,13 +437,13 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orgd3f7ec2" class="outline-2">
-<h2 id="orgd3f7ec2">配置</h2>
-<div class="outline-text-2" id="text-orgd3f7ec2">
+<div id="outline-container-orgb62bb63" class="outline-2">
+<h2 id="orgb62bb63">配置</h2>
+<div class="outline-text-2" id="text-orgb62bb63">
 </div>
-<div id="outline-container-org03df4e6" class="outline-3">
-<h3 id="org03df4e6">简介</h3>
-<div class="outline-text-3" id="text-org03df4e6">
+<div id="outline-container-org15cd533" class="outline-3">
+<h3 id="org15cd533">简介</h3>
+<div class="outline-text-3" id="text-org15cd533">
 <p>
 每个节点启动时, 可以通过读取本地配置文件来设置参数, 也可以通过环境变量指定的配置来设置参数, 还可以通过命令行参数来设置参数. 这三种方式可以互相结合使用. 如果三种方式都设置了某个参数, 优先级为: 命令行参数 &gt; 环境变量 &gt; 配置文件.
 </p>
@@ -457,9 +457,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </p>
 </div>
 
-<div id="outline-container-org9539d96" class="outline-4">
-<h4 id="org9539d96">节点</h4>
-<div class="outline-text-4" id="text-org9539d96">
+<div id="outline-container-org77d8605" class="outline-4">
+<h4 id="org77d8605">节点</h4>
+<div class="outline-text-4" id="text-org77d8605">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -500,9 +500,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-org8bd7c36" class="outline-4">
-<h4 id="org8bd7c36">配置管理工具</h4>
-<div class="outline-text-4" id="text-org8bd7c36">
+<div id="outline-container-orgce2d9ed" class="outline-4">
+<h4 id="orgce2d9ed">配置管理工具</h4>
+<div class="outline-text-4" id="text-orgce2d9ed">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -546,9 +546,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orgfc6aaaf" class="outline-3">
-<h3 id="orgfc6aaaf">Peer节点配置</h3>
-<div class="outline-text-3" id="text-orgfc6aaaf">
+<div id="outline-container-org1ba8c36" class="outline-3">
+<h3 id="org1ba8c36">Peer节点配置</h3>
+<div class="outline-text-3" id="text-org1ba8c36">
 <p>
 如果从环境变量中读取配置信息, 需要以 <code>CORE_</code> 前缀打头. 如配置 <code>peer.id</code>, 环境变量应为 <code>CORE_PEER_ID</code>.
 </p>
@@ -566,9 +566,9 @@ Fabric 也有提供 core.yaml 的参考配置, 在目录 <code>sampleconfig/core
 </p>
 </div>
 
-<div id="outline-container-org99e8ede" class="outline-4">
-<h4 id="org99e8ede">logging</h4>
-<div class="outline-text-4" id="text-org99e8ede">
+<div id="outline-container-org6336515" class="outline-4">
+<h4 id="org6336515">logging</h4>
+<div class="outline-text-4" id="text-org6336515">
 <p>
 日志. 有 critcal, error, warning, notice, info, debug 六个级别, 越往后级别越低, 输出的内容也越丰富, 默认情况下为 info 级别.
 </p>
@@ -595,17 +595,17 @@ Fabric 也有提供 core.yaml 的参考配置, 在目录 <code>sampleconfig/core
 </div>
 </div>
 
-<div id="outline-container-org35ffdcc" class="outline-4">
-<h4 id="org35ffdcc">peer</h4>
-<div class="outline-text-4" id="text-org35ffdcc">
+<div id="outline-container-org2a1488e" class="outline-4">
+<h4 id="org2a1488e">peer</h4>
+<div class="outline-text-4" id="text-org2a1488e">
 <p>
 peer 部分的配置项较多, 可以分为通用配置, gossip, events, tls 等多个部分.
 </p>
 </div>
 
-<div id="outline-container-org51ce8c7" class="outline-5">
-<h5 id="org51ce8c7">通用配置</h5>
-<div class="outline-text-5" id="text-org51ce8c7">
+<div id="outline-container-org309e4cb" class="outline-5">
+<h5 id="org309e4cb">通用配置</h5>
+<div class="outline-text-5" id="text-org309e4cb">
 <div class="org-src-container">
 <pre class="src src-YAML">id  					# peer 在网络中的 id
 networkId  				# 网络 id, 可以通过 id 指定多个隔离的网络
@@ -621,9 +621,9 @@ gomaxprocs				# 配置运行该 Go 应用的最大进程数
 </div>
 </div>
 
-<div id="outline-container-org97bebe7" class="outline-3">
-<h3 id="org97bebe7">cryptogen</h3>
-<div class="outline-text-3" id="text-org97bebe7">
+<div id="outline-container-org86c2d83" class="outline-3">
+<h3 id="org86c2d83">cryptogen</h3>
+<div class="outline-text-3" id="text-org86c2d83">
 <p>
 该工具生成组织身份配置.
 </p>
@@ -637,9 +637,9 @@ cryptogen可以快速根据配置自动批量生成所需要的密钥和证书�
 </p>
 </div>
 
-<div id="outline-container-org721d4db" class="outline-4">
-<h4 id="org721d4db">配置文件crypto-config.yaml</h4>
-<div class="outline-text-4" id="text-org721d4db">
+<div id="outline-container-org6c316dc" class="outline-4">
+<h4 id="org6c316dc">配置文件crypto-config.yaml</h4>
+<div class="outline-text-4" id="text-org6c316dc">
 <p>
 <code>crypto-config.yaml</code> 会指定网络的拓扑结构. 主要包括两种组织信息:
 </p>
@@ -682,9 +682,9 @@ cryptogen可以快速根据配置自动批量生成所需要的密钥和证书�
 </div>
 </div>
 
-<div id="outline-container-org1d404e5" class="outline-4">
-<h4 id="org1d404e5">例子</h4>
-<div class="outline-text-4" id="text-org1d404e5">
+<div id="outline-container-org1176a73" class="outline-4">
+<h4 id="org1176a73">例子</h4>
+<div class="outline-text-4" id="text-org1176a73">
 <div class="org-src-container">
 <pre class="src src-YAML">OrdererOrgs:
   - Name: Orderer
@@ -735,9 +735,9 @@ Peer组织则通过Template来自动生成了Count个数的主机. Users字段�
 </div>
 </div>
 
-<div id="outline-container-org00124f3" class="outline-4">
-<h4 id="org00124f3">生成密钥和证书文件</h4>
-<div class="outline-text-4" id="text-org00124f3">
+<div id="outline-container-org6889249" class="outline-4">
+<h4 id="org6889249">生成密钥和证书文件</h4>
+<div class="outline-text-4" id="text-org6889249">
 <p>
 cryptogen工具生成的文件会放在当前目录下的 <code>crypto-config</code> 目录中. 目录结构如图所示:
 </p>
@@ -822,9 +822,9 @@ CLI: 为方便操作, 将完整的 crypto-config 目录复制到 /etc/hyperledge
 </div>
 </div>
 
-<div id="outline-container-orgae6d342" class="outline-3">
-<h3 id="orgae6d342">configtxgen</h3>
-<div class="outline-text-3" id="text-orgae6d342">
+<div id="outline-container-org2cb814b" class="outline-3">
+<h3 id="org2cb814b">configtxgen</h3>
+<div class="outline-text-3" id="text-org2cb814b">
 <p>
 在 Fabric 中, 对 channel 的相关配置进行更新, 也要像应用交易一样, 经过网络中节点的共识确认.
 </p>
@@ -847,9 +847,9 @@ configtxgen 工具会依次从 $FABRIC_CFG_PATH 指定的路径, 当前路径, /
 </p>
 </div>
 
-<div id="outline-container-orgaf55fba" class="outline-4">
-<h4 id="orgaf55fba">configtx.yaml 文件</h4>
-<div class="outline-text-4" id="text-orgaf55fba">
+<div id="outline-container-orgb072149" class="outline-4">
+<h4 id="orgb072149">configtx.yaml 文件</h4>
+<div class="outline-text-4" id="text-orgb072149">
 <p>
 configtx.yaml 文件中的内容主要有 profile, organizations, orderer, application 四个部分.
 </p>
@@ -861,9 +861,9 @@ configtx.yaml 文件中的内容主要有 profile, organizations, orderer, appli
 </ul>
 </div>
 
-<div id="outline-container-orgd45c5a6" class="outline-5">
-<h5 id="orgd45c5a6">profiles</h5>
-<div class="outline-text-5" id="text-orgd45c5a6">
+<div id="outline-container-org9d19987" class="outline-5">
+<h5 id="org9d19987">profiles</h5>
+<div class="outline-text-5" id="text-org9d19987">
 <p>
 每个 profile 代表了某种应用场景下的通道配置模板. 它包括 Orderer 系统通道模板和应用通道模板.
 </p>
@@ -890,9 +890,9 @@ Orderer 系统通道模板包括 Orderer, Consortiums.
 </div>
 </div>
 
-<div id="outline-container-org135af7e" class="outline-5">
-<h5 id="org135af7e">organizations</h5>
-<div class="outline-text-5" id="text-org135af7e">
+<div id="outline-container-org88a52c1" class="outline-5">
+<h5 id="org88a52c1">organizations</h5>
+<div class="outline-text-5" id="text-org88a52c1">
 <p>
 组织主要分成 Orderer 组织(系统组织)和普通的应用组织.
 </p>
