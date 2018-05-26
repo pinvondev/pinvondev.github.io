@@ -55,29 +55,29 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6e73ecb">Redis 简介</a></li>
-<li><a href="#orgff30081">安装</a>
+<li><a href="#org4f115ab">Redis 简介</a></li>
+<li><a href="#org4c97790">安装</a>
 <ul>
-<li><a href="#orgb25edfc">下载编译</a></li>
-<li><a href="#org6496374">启动 Redis 服务</a></li>
-<li><a href="#org6bae67a">启动 Redis 客户端</a></li>
+<li><a href="#org5c18dbf">下载编译</a></li>
+<li><a href="#org47100db">启动 Redis 服务</a></li>
+<li><a href="#org6968d34">启动 Redis 客户端</a></li>
 </ul>
 </li>
-<li><a href="#org75aa89a">常用操作</a>
+<li><a href="#org7a5567a">常用操作</a>
 <ul>
-<li><a href="#org0ece235">插入数据</a></li>
-<li><a href="#orgeac90e2">修改数据</a></li>
-<li><a href="#org3e6bcdf">查询数据</a></li>
-<li><a href="#orgb0ac70c">删除数据</a></li>
+<li><a href="#org954ee4a">插入数据</a></li>
+<li><a href="#org143127f">修改数据</a></li>
+<li><a href="#orgc9aa856">查询数据</a></li>
+<li><a href="#org08da8f3">删除数据</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6e73ecb" class="outline-2">
-<h2 id="org6e73ecb">Redis 简介</h2>
-<div class="outline-text-2" id="text-org6e73ecb">
+<div id="outline-container-org4f115ab" class="outline-2">
+<h2 id="org4f115ab">Redis 简介</h2>
+<div class="outline-text-2" id="text-org4f115ab">
 <p>
 Redis 是一个高性能的键值对非关系型数据库, 支持存储的值类型包括: string, list, set, zset(有序集合), 这些数据类型都支持 push/pop, add/remove, 取交集, 取并集, 取差集等原子性操作.
 </p>
@@ -92,13 +92,13 @@ Redis 是一个高性能的键值对非关系型数据库, 支持存储的值类
 </div>
 </div>
 
-<div id="outline-container-orgff30081" class="outline-2">
-<h2 id="orgff30081">安装</h2>
-<div class="outline-text-2" id="text-orgff30081">
+<div id="outline-container-org4c97790" class="outline-2">
+<h2 id="org4c97790">安装</h2>
+<div class="outline-text-2" id="text-org4c97790">
 </div>
-<div id="outline-container-orgb25edfc" class="outline-3">
-<h3 id="orgb25edfc">下载编译</h3>
-<div class="outline-text-3" id="text-orgb25edfc">
+<div id="outline-container-org5c18dbf" class="outline-3">
+<h3 id="org5c18dbf">下载编译</h3>
+<div class="outline-text-3" id="text-org5c18dbf">
 <div class="org-src-container">
 <pre class="src src-Shell">wget http://download.redis.io/releases/redis-4.0.9.tar.gz
 tar xzf redis-4.0.9.tar.gz
@@ -109,9 +109,9 @@ make
 </div>
 </div>
 
-<div id="outline-container-org6496374" class="outline-3">
-<h3 id="org6496374">启动 Redis 服务</h3>
-<div class="outline-text-3" id="text-org6496374">
+<div id="outline-container-org47100db" class="outline-3">
+<h3 id="org47100db">启动 Redis 服务</h3>
+<div class="outline-text-3" id="text-org47100db">
 <p>
 编译好的二进制文件在 src 目录下, 通过如下命令启动 Redis 服务:
 </p>
@@ -119,14 +119,24 @@ make
 <pre class="src src-Shell">src/redis-server
 </pre>
 </div>
+
+<p>
+启动 Redis 服务时, 默认监听 6379 端口. 通过 --port 参数可以自定义端口号:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">redis-server --port 6380
+</pre>
+</div>
 </div>
 </div>
 
-<div id="outline-container-org6bae67a" class="outline-3">
-<h3 id="org6bae67a">启动 Redis 客户端</h3>
-<div class="outline-text-3" id="text-org6bae67a">
+<div id="outline-container-org6968d34" class="outline-3">
+<h3 id="org6968d34">启动 Redis 客户端</h3>
+<div class="outline-text-3" id="text-org6968d34">
 <div class="org-src-container">
 <pre class="src src-Shell">src/redis-cli
+// 等价于
+src/redis-cli -h 127.0.0.1 -p 6379
 
 // 设置键值对: foo-bar
 set foo bar
@@ -134,13 +144,21 @@ set foo bar
 get foo // "bar"
 </pre>
 </div>
+
+<p>
+如果强行停止 Redis, 可能会导致内存中的数据来不及同步到磁盘就被关闭. 因此, 正确停止 Redis 的方式为:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">redis-cli SHUTDOWN
+</pre>
+</div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org75aa89a" class="outline-2">
-<h2 id="org75aa89a">常用操作</h2>
-<div class="outline-text-2" id="text-org75aa89a">
+<div id="outline-container-org7a5567a" class="outline-2">
+<h2 id="org7a5567a">常用操作</h2>
+<div class="outline-text-2" id="text-org7a5567a">
 <p>
 Redis 以 &lt;key, value&gt; 的形式存储数据.
 </p>
@@ -154,9 +172,9 @@ Redis 以 &lt;key, value&gt; 的形式存储数据.
 </p>
 </div>
 
-<div id="outline-container-org0ece235" class="outline-3">
-<h3 id="org0ece235">插入数据</h3>
-<div class="outline-text-3" id="text-org0ece235">
+<div id="outline-container-org954ee4a" class="outline-3">
+<h3 id="org954ee4a">插入数据</h3>
+<div class="outline-text-3" id="text-org954ee4a">
 <p>
 只要我们提前设计好 key 和 value 即可. 
 </p>
@@ -167,9 +185,9 @@ Redis 以 &lt;key, value&gt; 的形式存储数据.
 </div>
 </div>
 
-<div id="outline-container-orgeac90e2" class="outline-3">
-<h3 id="orgeac90e2">修改数据</h3>
-<div class="outline-text-3" id="text-orgeac90e2">
+<div id="outline-container-org143127f" class="outline-3">
+<h3 id="org143127f">修改数据</h3>
+<div class="outline-text-3" id="text-org143127f">
 <p>
 Redis 中没有修改数据的命令, 如果想修改数据, 只能使用 set 命令, 对相同的 key 赋予和之前不同的 value. 如, 将之前的用户名 Pinvon 改成 Penglaozi.
 </p>
@@ -180,9 +198,9 @@ Redis 中没有修改数据的命令, 如果想修改数据, 只能使用 set �
 </div>
 </div>
 
-<div id="outline-container-org3e6bcdf" class="outline-3">
-<h3 id="org3e6bcdf">查询数据</h3>
-<div class="outline-text-3" id="text-org3e6bcdf">
+<div id="outline-container-orgc9aa856" class="outline-3">
+<h3 id="orgc9aa856">查询数据</h3>
+<div class="outline-text-3" id="text-orgc9aa856">
 <p>
 查询数据, 使用 get 命令, 再把 key 输入即可.
 </p>
@@ -194,9 +212,9 @@ Redis 中没有修改数据的命令, 如果想修改数据, 只能使用 set �
 </div>
 </div>
 
-<div id="outline-container-orgb0ac70c" class="outline-3">
-<h3 id="orgb0ac70c">删除数据</h3>
-<div class="outline-text-3" id="text-orgb0ac70c">
+<div id="outline-container-org08da8f3" class="outline-3">
+<h3 id="org08da8f3">删除数据</h3>
+<div class="outline-text-3" id="text-org08da8f3">
 <p>
 使用 del 命令删除数据.
 </p>
