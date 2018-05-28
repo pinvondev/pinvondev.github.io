@@ -1,0 +1,221 @@
+#+TITLE:       Redis 数据类型
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-27 日
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 键
+
+** 获取所有键
+
+#+BEGIN_SRC SQL
+KEYS pattern
+#+END_SRC
+
+其中, pattern 有以下模式:
+- ?: 匹配一个字符
+- *: 匹配任意个字符(包括 0 个)
+- []: 匹配括号间的任一字符, 可以使用 - 符号表示一个范围, 如 ab-d[] 可以匹配 ab, ac, ad
+- \x: 匹配转义字符, 如要匹配 ?, 需要使用 \?
+
+所以, 要查询所有的键, 就输入:
+#+BEGIN_SRC SQL
+KEYS *
+#+END_SRC
+
+** 判断一个键是否存在
+
+#+BEGIN_SRC SQL
+EXISTS key
+#+END_SRC
+如果存在, 返回 1, 否则返回 0.
+
+** 删除键
+
+#+BEGIN_SRC SQL
+DEL key
+#+END_SRC
+返回值是删除的键的个数.
+
+** 键值的数据类型
+
+#+BEGIN_SRC SQL
+TYPE key
+#+END_SRC
+
+* string
+
+string 类型可以存储任何形式的字符串, 如邮箱, JSON对象, 图片, 等等. 一个字符串类型键允许存储的数据的最大容量是 512MB.
+
+** 命令
+
+赋值: SET key value
+
+取值: GET key
+
+** 递增数字
+
+字符串类型可以存储任何形式的字符串, 所以也自然可以存储整数形式的字符串, 并且可以使用命令 INCR 让键值递增, 并返回递增后的值. 如:
+#+BEGIN_SRC SQL
+INCR 1  // (integer) 1
+INCR 1  // (integer) 2
+INCR 1  // (integer) 3
+#+END_SRC
+如果键不存在, 默认为 0, 所以第一次 INCR 后结果为 1.
+
+如果键的类型不是整数形式, 则使用 INCR 命令会出错.
+
+使用 INCR 命令不必担心多线程情况下的竞态问题, 因为 INCR 是原子命令.
+
+** 增加指定的整数
+
+#+BEGIN_SRC SQL
+INCRBY bar 2  // (integer) 2
+INCRBY bar 3  // (integer) 5
+#+END_SRC
+
+** 减少指定的整数
+
+#+BEGIN_SRC SQL
+DECR bar  // (integer) 4
+DECRBY bar 2  // (integer) 2
+#+END_SRC
+
+** 增加指定浮点数
+
+#+BEGIN_SRC SQL
+INCRBYFLOAT key num
+#+END_SRC
+
+** 向尾部添加值
+
+#+BEGIN_SRC SQL
+SET key hello  // OK
+APPEND key " world!"  // (integer) 12
+#+END_SRC
+APPEND 会向键值的末尾添加追加 value, 返回追加后字符串的总长度.
+
+** 获取键值的长度
+
+#+BEGIN_SRC SQL
+STRLEN key  // (integer) 12
+#+END_SRC
+
+** 同时设置多个键值对
+
+#+BEGIN_SRC SQL
+MSET k1 v1 k2 v2 k3 v3  // OK
+GET k2  // "v2"
+MGET k1 k3  // "v1" "v3"
+#+END_SRC
+
+** 位操作
+
+GETBIT, SETBIT, BITCOUNT(1的个数).
+
+BITOP 可以支持 AND, OR, XOR, NOT 操作.
+
+#+BEGIN_SRC SQL
+BITOP OR result key1 key2  // 结果保存到 result
+#+END_SRC
+
+* hash
+
+hash 类型只能存储字符串, 一个 hash 类型的键, 最多可以包含 $2^32 - 1$ 个字段.
+
+hash 类型适合存储的对象: 使用对象类别和 ID 构成键名, 使用字段表示对象的属性, 字段值存储属性值. 如: 要存储 ID 为 2 的汽车对象, 分别使用名为 color, name, price 三个字段来存储该汽车的颜色, 名称, 价格.
+
+** 赋值与取值
+
+#+BEGIN_SRC SQL
+HSET car price 500  // (integer) 1
+HSET car name BMW  // (integer) 1
+HGET car name  // "BMW"
+#+END_SRC
+
+同时设置或获取多个字段的值: HMSET, HMGET.
+
+使用 HGETALL 命令, 可以获得这个键中的所有属性对应的属性值.
+
+** 字段是否存在
+
+判断某个键的某字段是否存在:
+#+BEGIN_SRC SQL
+HEXISTS key field
+#+END_SRC
+如果存在则返回 1.
+
+EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
+
+在查询的时, 如果不存在则添加, 可以使用 HSETNX 命令, 该命令与 HSET 用法一样, 当字段已存在时, 不进行任何操作, 当字段不存在时, 添加该字段.
+#+BEGIN_SRC SQL
+HSETNX key field value
+#+END_SRC
+
+使用 HSETNX 有时可以达到 HEXISTS + HSET 的效果, 好处在于, 同时使用两个命令可能会引起竞态条件, 而仅使用原子操作 HSETNX 则不会有这种情况.
+
+** 删除字段
+
+#+BEGIN_SRC SQL
+HDEL key field
+#+END_SRC
+可以删除多个, 返回值是删除的个数.
+
+** 仅获取字段名
+
+有时候, 只想获取字段名, 而不需要字段值:
+#+BEGIN_SRC SQL
+HKEYS car
+// "name"
+// "model"
+#+END_SRC
+
+** 仅获取字段值
+
+#+BEGIN_SRC SQL
+HVALS car
+// "BMW"
+// "C200"
+#+END_SRC
+
+** 获得字段数量
+
+#+BEGIN_SRC SQL
+HLEN car
+// (integer) 2
+#+END_SRC
+
+** 例子
+
+有一篇博客, 有 title, author, time, content 等属性, 使用 string 类型可以这样存储:
+[[./1.png]]
+
+如果使用 hash 类型, 可以这样存储:
+[[./2.png]]
+
+可以看出, 在这种情况下, hash 类型更加直观, 比较适合. 并且, 事实上, 存储同样的数据, 使用 hash 类型比使用 string 类型更加节约空间.
+
+* list
+
+list 类型内部使用双向链表, 所以向列表两端添加元素的时间复杂度是 O(1), 而不管 list 内部有多少元素. 但链表这种数据结构, 用于随机访问时较慢. 一个 list 类型最多能容纳 $2^32 - 1$ 个元素.
+
+** 向 list 两端添加元素
+
+#+BEGIN_SRC SQL
+LPUSH key value [value ...]
+RPUSH key value [value ...]
+#+END_SRC
+返回值是添加元素后 list 的长度.
+
+** 获取 list 两端元素
+
+#+BEGIN_SRC SQL
+LPOP key
+RPOP key
+#+END_SRC
