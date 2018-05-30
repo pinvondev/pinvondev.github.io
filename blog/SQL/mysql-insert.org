@@ -1,0 +1,66 @@
+#+TITLE:       MySQL(六) 插入数据
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-05-30 三
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+INSERT 用来将数据插入到数据库表, 有如下几种方式:
+- 插入完整的行
+- 插入行的一部分
+- 插入多行
+- 插入某些查询的结果
+
+* 插入完整的行
+
+要指明表名和被插入到新行中的值. 
+
+假设表中只有四个字段, 则"插入完整的行"需要把所有的字段值写出来, 且顺序要与字段的顺序一致. 如果某个字段没有值, 则要使用 NULL(假定表允许对该列指定空值). 如:
+#+BEGIN_SRC SQL
+INSERT INTO table_name VALUES(value1, value2, value3, NULL);
+#+END_SRC
+这种写法过度依赖于定义表时的字段顺序, 不建议使用.
+
+比较推荐的写法是把表的字段也写上去, 虽然更繁琐, 却更安全:
+#+BEGIN_SRC SQL
+INSERT INTO table_name(field1, field3, field2, field4) VALUES(value1, value3, value2, value4);
+#+END_SRC
+即使表结构发生了变化, 这种写法依然管用.
+
+** 插入行的一部分
+
+使用带字段名的 INSERT 语句, 还有一个好处, 是可以只插入一部分的值. 如:
+#+BEGIN_SRC SQL
+INSERT INTO table_name(field3, field4) VALUES(value3, value4);
+#+END_SRC
+当然, 要想忽略其中某些字段的数据, 那些被忽略的字段, 需要满足以下两个条件中的任意一个:
+- 该列允许 NULL (表示可以无值或空值)
+- 该列有默认值 (表示如果不显式赋值, 则使用默认值)
+
+** 注意
+
+INSERT 命令可能很耗时, 因为这会引起许多索引的更新, 所以, 如果在我们的使用场景中, SELECT 是最重要的, 则 INSERT 命令可以用稍低一些的优先级:
+#+BEGIN_SRC SQL
+INSERT LOW_PRIORITY INTO ...;
+#+END_SRC
+
+* 插入多个行
+
+如果插入的多个行中, 且每个行中需要插入值对应的字段一样, 则可以一次插入多行:
+#+BEGIN_SRC SQL
+INSERT INTO table_name(field1, field2, field3) VALUES(value11, value12, value13),(value21, value22, value23);
+#+END_SRC
+
+* 插入查询结果
+
+INSERT 可以将一条 SELECT 语句的结果插入到表中. 常用场景: 将一张表中的数据合并到另一张表中. 如果用前面的写法, 需要使用一行一行输入数据.
+#+BEGIN_SRC SQL
+INSERT INTO table1(field1, field2, field3) SELECT field1, field2, field3 FROM table2;
+#+END_SRC

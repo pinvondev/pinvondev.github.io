@@ -61,3 +61,24 @@ SELECT id, name FROM users;
 SELECT * FROM users WHERE name='pinvon';
 SELECT id FROM users WHERE name='pinvon';
 #+END_SRC
+* 导入导出 SQL 脚本
+
+** 导出整个数据库
+
+#+BEGIN_SRC SQL
+mysqldump -u user_name -p database_name > output.sql
+#+END_SRC
+
+** 导出一个表
+
+#+BEGIN_SRC SQL
+mysqldump -u user_name -p database_name table_name > output.sql
+#+END_SRC
+
+** 导入 SQL 脚本
+
+#+BEGIN_SRC SQL
+mysql -u root -p
+use database_name
+source output.sql
+#+END_SRC
