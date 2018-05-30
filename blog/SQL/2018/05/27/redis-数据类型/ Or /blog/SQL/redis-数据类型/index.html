@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Redis 数据类型 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="SQL" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Redis 数据类型</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org01a4e2a">键</a>
+<ul>
+<li><a href="#orga69c179">获取所有键</a></li>
+<li><a href="#org2106eeb">判断一个键是否存在</a></li>
+<li><a href="#orgc657b1b">删除键</a></li>
+<li><a href="#org646654b">键值的数据类型</a></li>
+</ul>
+</li>
+<li><a href="#org3c4e82c">string</a>
+<ul>
+<li><a href="#org5a2d97f">命令</a></li>
+<li><a href="#org4dd7e33">递增数字</a></li>
+<li><a href="#orgd7f06e0">增加指定的整数</a></li>
+<li><a href="#orgcd62e65">减少指定的整数</a></li>
+<li><a href="#org3af71f9">增加指定浮点数</a></li>
+<li><a href="#org634a399">向尾部添加值</a></li>
+<li><a href="#org808b05f">获取键值的长度</a></li>
+<li><a href="#org9a87a93">同时设置多个键值对</a></li>
+<li><a href="#orgdf392df">位操作</a></li>
+</ul>
+</li>
+<li><a href="#org20cbe95">hash</a>
+<ul>
+<li><a href="#orga8d2448">赋值与取值</a></li>
+<li><a href="#orgda7946c">字段是否存在</a></li>
+<li><a href="#org380b7e0">删除字段</a></li>
+<li><a href="#org1131061">仅获取字段名</a></li>
+<li><a href="#orgf95d771">仅获取字段值</a></li>
+<li><a href="#org24d4f11">获得字段数量</a></li>
+<li><a href="#org981a36a">例子</a></li>
+</ul>
+</li>
+<li><a href="#org82a2c5b">list</a>
+<ul>
+<li><a href="#org3b28742">向 list 两端添加元素</a></li>
+<li><a href="#orgb480e08">获取 list 两端元素</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org01a4e2a" class="outline-2">
+<h2 id="org01a4e2a">键</h2>
+<div class="outline-text-2" id="text-org01a4e2a">
+</div>
+<div id="outline-container-orga69c179" class="outline-3">
+<h3 id="orga69c179">获取所有键</h3>
+<div class="outline-text-3" id="text-orga69c179">
+<div class="org-src-container">
+<pre class="src src-SQL">KEYS pattern
+</pre>
+</div>
+
+<p>
+其中, pattern 有以下模式:
+</p>
+<ul class="org-ul">
+<li>?: 匹配一个字符</li>
+<li>*: 匹配任意个字符(包括 0 个)</li>
+<li>[]: 匹配括号间的任一字符, 可以使用 - 符号表示一个范围, 如 ab-d[] 可以匹配 ab, ac, ad</li>
+<li>\x: 匹配转义字符, 如要匹配 ?, 需要使用 \?</li>
+</ul>
+
+<p>
+所以, 要查询所有的键, 就输入:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">KEYS *
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2106eeb" class="outline-3">
+<h3 id="org2106eeb">判断一个键是否存在</h3>
+<div class="outline-text-3" id="text-org2106eeb">
+<div class="org-src-container">
+<pre class="src src-SQL">EXISTS key
+</pre>
+</div>
+<p>
+如果存在, 返回 1, 否则返回 0.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc657b1b" class="outline-3">
+<h3 id="orgc657b1b">删除键</h3>
+<div class="outline-text-3" id="text-orgc657b1b">
+<div class="org-src-container">
+<pre class="src src-SQL">DEL key
+</pre>
+</div>
+<p>
+返回值是删除的键的个数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org646654b" class="outline-3">
+<h3 id="org646654b">键值的数据类型</h3>
+<div class="outline-text-3" id="text-org646654b">
+<div class="org-src-container">
+<pre class="src src-SQL">TYPE key
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3c4e82c" class="outline-2">
+<h2 id="org3c4e82c">string</h2>
+<div class="outline-text-2" id="text-org3c4e82c">
+<p>
+string 类型可以存储任何形式的字符串, 如邮箱, JSON对象, 图片, 等等. 一个字符串类型键允许存储的数据的最大容量是 512MB.
+</p>
+</div>
+
+<div id="outline-container-org5a2d97f" class="outline-3">
+<h3 id="org5a2d97f">命令</h3>
+<div class="outline-text-3" id="text-org5a2d97f">
+<p>
+赋值: SET key value
+</p>
+
+<p>
+取值: GET key
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4dd7e33" class="outline-3">
+<h3 id="org4dd7e33">递增数字</h3>
+<div class="outline-text-3" id="text-org4dd7e33">
+<p>
+字符串类型可以存储任何形式的字符串, 所以也自然可以存储整数形式的字符串, 并且可以使用命令 INCR 让键值递增, 并返回递增后的值. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INCR 1  // (integer) 1
+INCR 1  // (integer) 2
+INCR 1  // (integer) 3
+</pre>
+</div>
+<p>
+如果键不存在, 默认为 0, 所以第一次 INCR 后结果为 1.
+</p>
+
+<p>
+如果键的类型不是整数形式, 则使用 INCR 命令会出错.
+</p>
+
+<p>
+使用 INCR 命令不必担心多线程情况下的竞态问题, 因为 INCR 是原子命令.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd7f06e0" class="outline-3">
+<h3 id="orgd7f06e0">增加指定的整数</h3>
+<div class="outline-text-3" id="text-orgd7f06e0">
+<div class="org-src-container">
+<pre class="src src-SQL">INCRBY bar 2  // (integer) 2
+INCRBY bar 3  // (integer) 5
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd62e65" class="outline-3">
+<h3 id="orgcd62e65">减少指定的整数</h3>
+<div class="outline-text-3" id="text-orgcd62e65">
+<div class="org-src-container">
+<pre class="src src-SQL">DECR bar  // (integer) 4
+DECRBY bar 2  // (integer) 2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3af71f9" class="outline-3">
+<h3 id="org3af71f9">增加指定浮点数</h3>
+<div class="outline-text-3" id="text-org3af71f9">
+<div class="org-src-container">
+<pre class="src src-SQL">INCRBYFLOAT key num
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org634a399" class="outline-3">
+<h3 id="org634a399">向尾部添加值</h3>
+<div class="outline-text-3" id="text-org634a399">
+<div class="org-src-container">
+<pre class="src src-SQL">SET key hello  // OK
+APPEND key " world!"  // (integer) 12
+</pre>
+</div>
+<p>
+APPEND 会向键值的末尾添加追加 value, 返回追加后字符串的总长度.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org808b05f" class="outline-3">
+<h3 id="org808b05f">获取键值的长度</h3>
+<div class="outline-text-3" id="text-org808b05f">
+<div class="org-src-container">
+<pre class="src src-SQL">STRLEN key  // (integer) 12
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9a87a93" class="outline-3">
+<h3 id="org9a87a93">同时设置多个键值对</h3>
+<div class="outline-text-3" id="text-org9a87a93">
+<div class="org-src-container">
+<pre class="src src-SQL">MSET k1 v1 k2 v2 k3 v3  // OK
+GET k2  // "v2"
+MGET k1 k3  // "v1" "v3"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdf392df" class="outline-3">
+<h3 id="orgdf392df">位操作</h3>
+<div class="outline-text-3" id="text-orgdf392df">
+<p>
+GETBIT, SETBIT, BITCOUNT(1的个数).
+</p>
+
+<p>
+BITOP 可以支持 AND, OR, XOR, NOT 操作.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-SQL">BITOP OR result key1 key2  // 结果保存到 result
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20cbe95" class="outline-2">
+<h2 id="org20cbe95">hash</h2>
+<div class="outline-text-2" id="text-org20cbe95">
+<p>
+hash 类型只能存储字符串, 一个 hash 类型的键, 最多可以包含 \(2^32 - 1\) 个字段.
+</p>
+
+<p>
+hash 类型适合存储的对象: 使用对象类别和 ID 构成键名, 使用字段表示对象的属性, 字段值存储属性值. 如: 要存储 ID 为 2 的汽车对象, 分别使用名为 color, name, price 三个字段来存储该汽车的颜色, 名称, 价格.
+</p>
+</div>
+
+<div id="outline-container-orga8d2448" class="outline-3">
+<h3 id="orga8d2448">赋值与取值</h3>
+<div class="outline-text-3" id="text-orga8d2448">
+<div class="org-src-container">
+<pre class="src src-SQL">HSET car price 500  // (integer) 1
+HSET car name BMW  // (integer) 1
+HGET car name  // "BMW"
+</pre>
+</div>
+
+<p>
+同时设置或获取多个字段的值: HMSET, HMGET.
+</p>
+
+<p>
+使用 HGETALL 命令, 可以获得这个键中的所有属性对应的属性值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda7946c" class="outline-3">
+<h3 id="orgda7946c">字段是否存在</h3>
+<div class="outline-text-3" id="text-orgda7946c">
+<p>
+判断某个键的某字段是否存在:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">HEXISTS key field
+</pre>
+</div>
+<p>
+如果存在则返回 1.
+</p>
+
+<p>
+EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
+</p>
+
+<p>
+在查询的时, 如果不存在则添加, 可以使用 HSETNX 命令, 该命令与 HSET 用法一样, 当字段已存在时, 不进行任何操作, 当字段不存在时, 添加该字段.
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">HSETNX key field value
+</pre>
+</div>
+
+<p>
+使用 HSETNX 有时可以达到 HEXISTS + HSET 的效果, 好处在于, 同时使用两个命令可能会引起竞态条件, 而仅使用原子操作 HSETNX 则不会有这种情况.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org380b7e0" class="outline-3">
+<h3 id="org380b7e0">删除字段</h3>
+<div class="outline-text-3" id="text-org380b7e0">
+<div class="org-src-container">
+<pre class="src src-SQL">HDEL key field
+</pre>
+</div>
+<p>
+可以删除多个, 返回值是删除的个数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1131061" class="outline-3">
+<h3 id="org1131061">仅获取字段名</h3>
+<div class="outline-text-3" id="text-org1131061">
+<p>
+有时候, 只想获取字段名, 而不需要字段值:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">HKEYS car
+// "name"
+// "model"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf95d771" class="outline-3">
+<h3 id="orgf95d771">仅获取字段值</h3>
+<div class="outline-text-3" id="text-orgf95d771">
+<div class="org-src-container">
+<pre class="src src-SQL">HVALS car
+// "BMW"
+// "C200"
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org24d4f11" class="outline-3">
+<h3 id="org24d4f11">获得字段数量</h3>
+<div class="outline-text-3" id="text-org24d4f11">
+<div class="org-src-container">
+<pre class="src src-SQL">HLEN car
+// (integer) 2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org981a36a" class="outline-3">
+<h3 id="org981a36a">例子</h3>
+<div class="outline-text-3" id="text-org981a36a">
+<p>
+有一篇博客, 有 title, author, time, content 等属性, 使用 string 类型可以这样存储:
+<img src="https://pinvondev.github.io/assets/blog/SQL/2018/05/27/redis-数据类型/ Or /blog/SQL/redis-数据类型/1.png" alt="1.png" />
+</p>
+
+<p>
+如果使用 hash 类型, 可以这样存储:
+<img src="https://pinvondev.github.io/assets/blog/SQL/2018/05/27/redis-数据类型/ Or /blog/SQL/redis-数据类型/2.png" alt="2.png" />
+</p>
+
+<p>
+可以看出, 在这种情况下, hash 类型更加直观, 比较适合. 并且, 事实上, 存储同样的数据, 使用 hash 类型比使用 string 类型更加节约空间.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org82a2c5b" class="outline-2">
+<h2 id="org82a2c5b">list</h2>
+<div class="outline-text-2" id="text-org82a2c5b">
+<p>
+list 类型内部使用双向链表, 所以向列表两端添加元素的时间复杂度是 O(1), 而不管 list 内部有多少元素. 但链表这种数据结构, 用于随机访问时较慢. 一个 list 类型最多能容纳 \(2^32 - 1\) 个元素.
+</p>
+</div>
+
+<div id="outline-container-org3b28742" class="outline-3">
+<h3 id="org3b28742">向 list 两端添加元素</h3>
+<div class="outline-text-3" id="text-org3b28742">
+<div class="org-src-container">
+<pre class="src src-SQL">LPUSH key value [value ...]
+RPUSH key value [value ...]
+</pre>
+</div>
+<p>
+返回值是添加元素后 list 的长度.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb480e08" class="outline-3">
+<h3 id="orgb480e08">获取 list 两端元素</h3>
+<div class="outline-text-3" id="text-orgb480e08">
+<div class="org-src-container">
+<pre class="src src-SQL">LPOP key
+RPOP key
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-27</span>
+            <span title="last modification date" class="post-info">2018-05-28</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/sql">SQL</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/SQL/2018/05/27/redis-数据类型/ Or /blog/SQL/redis-数据类型/";
+         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/05/27/redis-数据类型/ Or /blog/SQL/redis-数据类型/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

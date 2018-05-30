@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MySQL(六) 插入数据 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="SQL" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">MySQL(六) 插入数据</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org723a0b5">概述</a></li>
+<li><a href="#org4de2b5d">插入完整的行</a>
+<ul>
+<li><a href="#orgbc4594f">插入行的一部分</a></li>
+<li><a href="#orgb20b393">注意</a></li>
+</ul>
+</li>
+<li><a href="#org29c32a5">插入多个行</a></li>
+<li><a href="#orgd193886">插入查询结果</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org723a0b5" class="outline-2">
+<h2 id="org723a0b5">概述</h2>
+<div class="outline-text-2" id="text-org723a0b5">
+<p>
+INSERT 用来将数据插入到数据库表, 有如下几种方式:
+</p>
+<ul class="org-ul">
+<li>插入完整的行</li>
+<li>插入行的一部分</li>
+<li>插入多行</li>
+<li>插入某些查询的结果</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4de2b5d" class="outline-2">
+<h2 id="org4de2b5d">插入完整的行</h2>
+<div class="outline-text-2" id="text-org4de2b5d">
+<p>
+要指明表名和被插入到新行中的值. 
+</p>
+
+<p>
+假设表中只有四个字段, 则"插入完整的行"需要把所有的字段值写出来, 且顺序要与字段的顺序一致. 如果某个字段没有值, 则要使用 NULL(假定表允许对该列指定空值). 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INSERT INTO table_name VALUES(value1, value2, value3, NULL);
+</pre>
+</div>
+<p>
+这种写法过度依赖于定义表时的字段顺序, 不建议使用.
+</p>
+
+<p>
+比较推荐的写法是把表的字段也写上去, 虽然更繁琐, 却更安全:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INSERT INTO table_name(field1, field3, field2, field4) VALUES(value1, value3, value2, value4);
+</pre>
+</div>
+<p>
+即使表结构发生了变化, 这种写法依然管用.
+</p>
+</div>
+
+<div id="outline-container-orgbc4594f" class="outline-3">
+<h3 id="orgbc4594f">插入行的一部分</h3>
+<div class="outline-text-3" id="text-orgbc4594f">
+<p>
+使用带字段名的 INSERT 语句, 还有一个好处, 是可以只插入一部分的值. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INSERT INTO table_name(field3, field4) VALUES(value3, value4);
+</pre>
+</div>
+<p>
+当然, 要想忽略其中某些字段的数据, 那些被忽略的字段, 需要满足以下两个条件中的任意一个:
+</p>
+<ul class="org-ul">
+<li>该列允许 NULL (表示可以无值或空值)</li>
+<li>该列有默认值 (表示如果不显式赋值, 则使用默认值)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb20b393" class="outline-3">
+<h3 id="orgb20b393">注意</h3>
+<div class="outline-text-3" id="text-orgb20b393">
+<p>
+INSERT 命令可能很耗时, 因为这会引起许多索引的更新, 所以, 如果在我们的使用场景中, SELECT 是最重要的, 则 INSERT 命令可以用稍低一些的优先级:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INSERT LOW_PRIORITY INTO ...;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org29c32a5" class="outline-2">
+<h2 id="org29c32a5">插入多个行</h2>
+<div class="outline-text-2" id="text-org29c32a5">
+<p>
+如果插入的多个行中, 且每个行中需要插入值对应的字段一样, 则可以一次插入多行:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INSERT INTO table_name(field1, field2, field3) VALUES(value11, value12, value13),(value21, value22, value23);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd193886" class="outline-2">
+<h2 id="orgd193886">插入查询结果</h2>
+<div class="outline-text-2" id="text-orgd193886">
+<p>
+INSERT 可以将一条 SELECT 语句的结果插入到表中. 常用场景: 将一张表中的数据合并到另一张表中. 如果用前面的写法, 需要使用一行一行输入数据.
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">INSERT INTO table1(field1, field2, field3) SELECT field1, field2, field3 FROM table2;
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-05-30</span>
+            <span title="last modification date" class="post-info">2018-05-30</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/sql">SQL</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/SQL/2018/05/30/mysql(六)-插入数据/ Or /blog/SQL/mysql(六)-插入数据/";
+         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/05/30/mysql(六)-插入数据/ Or /blog/SQL/mysql(六)-插入数据/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

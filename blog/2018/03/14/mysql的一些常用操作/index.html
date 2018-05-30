@@ -55,15 +55,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4741efa">创建数据库</a></li>
-<li><a href="#orgd00cb0d">查询表</a></li>
+<li><a href="#org027b982">创建数据库</a></li>
+<li><a href="#org2d50929">查询表</a></li>
+<li><a href="#org87af496">导入导出 SQL 脚本</a>
+<ul>
+<li><a href="#org6306522">导出整个数据库</a></li>
+<li><a href="#org504e377">导出一个表</a></li>
+<li><a href="#orgb64bcde">导入 SQL 脚本</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4741efa" class="outline-2">
-<h2 id="org4741efa">创建数据库</h2>
-<div class="outline-text-2" id="text-org4741efa">
+<div id="outline-container-org027b982" class="outline-2">
+<h2 id="org027b982">创建数据库</h2>
+<div class="outline-text-2" id="text-org027b982">
 <p>
 假设要创建数据库: Healthy
 </p>
@@ -109,9 +116,9 @@ mysql&gt; set global validate_password_length=4;
 </div>
 </div>
 
-<div id="outline-container-orgd00cb0d" class="outline-2">
-<h2 id="orgd00cb0d">查询表</h2>
-<div class="outline-text-2" id="text-orgd00cb0d">
+<div id="outline-container-org2d50929" class="outline-2">
+<h2 id="org2d50929">查询表</h2>
+<div class="outline-text-2" id="text-org2d50929">
 <div class="org-src-container">
 <pre class="src src-SQL"># 查询users表中的所有数据
 SELECT * FROM users;
@@ -126,13 +133,49 @@ SELECT id FROM users WHERE name='pinvon';
 </div>
 </div>
 </div>
+<div id="outline-container-org87af496" class="outline-2">
+<h2 id="org87af496">导入导出 SQL 脚本</h2>
+<div class="outline-text-2" id="text-org87af496">
+</div>
+<div id="outline-container-org6306522" class="outline-3">
+<h3 id="org6306522">导出整个数据库</h3>
+<div class="outline-text-3" id="text-org6306522">
+<div class="org-src-container">
+<pre class="src src-SQL">mysqldump -u user_name -p database_name &gt; output.sql
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org504e377" class="outline-3">
+<h3 id="org504e377">导出一个表</h3>
+<div class="outline-text-3" id="text-org504e377">
+<div class="org-src-container">
+<pre class="src src-SQL">mysqldump -u user_name -p database_name table_name &gt; output.sql
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb64bcde" class="outline-3">
+<h3 id="orgb64bcde">导入 SQL 脚本</h3>
+<div class="outline-text-3" id="text-orgb64bcde">
+<div class="org-src-container">
+<pre class="src src-SQL">mysql -u root -p
+use database_name
+source output.sql
+</pre>
+</div>
+</div>
+</div>
+</div>
 
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-03-14</span>
-            <span title="last modification date" class="post-info">2018-03-23</span>
+            <span title="last modification date" class="post-info">2018-05-30</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/sql">SQL</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
