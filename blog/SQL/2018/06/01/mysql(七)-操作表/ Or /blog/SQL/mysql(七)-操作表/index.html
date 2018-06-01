@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>MySQL(四) WHERE 子句 - Pinvon&#39;s Blog</title>
+  <title>MySQL(七) 操作表 - Pinvon&#39;s Blog</title>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport"
@@ -50,229 +50,197 @@
 
 <div>
 <div class="post">
-<h1 class="title">MySQL(四) WHERE 子句</h1>
+<h1 class="title">MySQL(七) 操作表</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6d287d7">使用 WHERE 子句</a>
+<li><a href="#orga21897f">创建表</a>
 <ul>
-<li><a href="#org7011e18">思考</a></li>
+<li><a href="#orge689158">NULL 与 NOT NULL</a></li>
+<li><a href="#org2bcc367">主键</a></li>
+<li><a href="#org40615cd">AUTO_INCREMENT</a></li>
+<li><a href="#org4868702">默认值</a></li>
+<li><a href="#orga56a2f5">引擎类型</a></li>
 </ul>
 </li>
-<li><a href="#org08a3f01">WHERE 子句操作符</a>
-<ul>
-<li><a href="#org5aa8910">WHERE 子句支持的条件操作符</a></li>
-<li><a href="#orgabd6867">检查单个值</a></li>
-<li><a href="#org5098f62">空值检查</a></li>
-</ul>
-</li>
-<li><a href="#org8635708">WHERE 子句组合</a>
-<ul>
-<li><a href="#org1809f3b">AND 与 OR 的组合</a></li>
-</ul>
-</li>
+<li><a href="#org68390e2">更新表</a></li>
+<li><a href="#orga749fb6">删除表</a></li>
+<li><a href="#org8d27ada">表重命名</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6d287d7" class="outline-2">
-<h2 id="org6d287d7">使用 WHERE 子句</h2>
-<div class="outline-text-2" id="text-org6d287d7">
-<p>
-数据库表一般都包含了大量数据, 需要检索表中所有行的情况比较少见. 通常, 我们只需要检索满足某些条件的数据.
-</p>
-
-<p>
-在 SELECT 语句中, 可以使用 WHERE 子句指定搜索条件, WHERE 子句需要放在 FROM 子句之后.
-</p>
-
+<div id="outline-container-orga21897f" class="outline-2">
+<h2 id="orga21897f">创建表</h2>
+<div class="outline-text-2" id="text-orga21897f">
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_2=2.5;
+<pre class="src src-SQL">CREATE TABLE customers IF NOT EXISTS(
+    cust_id 		int 	  NOT NULL AUTO_INCREMENT,
+    cust_name 		char(50)  NOT NULL,
+    cust_address 	char(50)  NULL,
+    cust_city		char(50)  NULL,
+    cust_state		char(5)	  NULL,
+    cust_zip		char(10)  NULL,
+    cust_country	char(50)  NULL,
+    cust_contact	char(50)  NULL,
+    cust_email		char(255) NULL,
+    PRIMARY KEY (cust_id)
+) ENGINE=InnoDB;
 </pre>
 </div>
 <p>
-这条语句的意思是, 从 table_name 中检索两个列, 但不返回所有行, 只返回 column_2 的值为 2.5 的行.
+在表名后面加 IF NOT EXISTS 是怕创建表时覆盖一张相同的表.
 </p>
 </div>
 
-<div id="outline-container-org7011e18" class="outline-3">
-<h3 id="org7011e18">思考</h3>
-<div class="outline-text-3" id="text-org7011e18">
+<div id="outline-container-orge689158" class="outline-3">
+<h3 id="orge689158">NULL 与 NOT NULL</h3>
+<div class="outline-text-3" id="text-orge689158">
 <p>
-SQL 的 SELECT 语句可以过滤数据, 而我们平时开发的应用程序, 也可以对数据进行过滤. 但我们一般会选择在数据库中对数据进行过滤, 原因有以下2点:
-</p>
-<ol class="org-ol">
-<li>数据库进行了优化, 可以快速有效地对数据进行过滤; 如果由我们开发的应用程序进行过滤, 会极大影响应用的性能.</li>
-<li>如果在我们开发的应用程序上进行过滤, 数据库必须发送多余的数据, 浪费资源.</li>
-</ol>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org08a3f01" class="outline-2">
-<h2 id="org08a3f01">WHERE 子句操作符</h2>
-<div class="outline-text-2" id="text-org08a3f01">
-</div>
-<div id="outline-container-org5aa8910" class="outline-3">
-<h3 id="org5aa8910">WHERE 子句支持的条件操作符</h3>
-<div class="outline-text-3" id="text-org5aa8910">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">操作符</th>
-<th scope="col" class="org-left">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">=</td>
-<td class="org-left">等于</td>
-</tr>
-
-<tr>
-<td class="org-left">&lt;&gt;</td>
-<td class="org-left">不等于</td>
-</tr>
-
-<tr>
-<td class="org-left">!=</td>
-<td class="org-left">不等于</td>
-</tr>
-
-<tr>
-<td class="org-left">&lt;</td>
-<td class="org-left">小于</td>
-</tr>
-
-<tr>
-<td class="org-left">&lt;=</td>
-<td class="org-left">小于等于</td>
-</tr>
-
-<tr>
-<td class="org-left">&gt;</td>
-<td class="org-left">大于</td>
-</tr>
-
-<tr>
-<td class="org-left">&gt;=</td>
-<td class="org-left">大于等于</td>
-</tr>
-
-<tr>
-<td class="org-left">BETWEEN</td>
-<td class="org-left">在指定的两个值之间</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div id="outline-container-orgabd6867" class="outline-3">
-<h3 id="orgabd6867">检查单个值</h3>
-<div class="outline-text-3" id="text-orgabd6867">
-<div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_1 = 'fuse';
-</pre>
-</div>
-<p>
-MySQL 在执行匹配时, 默认不区分大小写, 所以 fuse 和 Fuse 都会被匹配.
+每个列都是 NULL 或者 NOT NULL.
 </p>
 
 <p>
-小于号 &lt; 的例子:
+NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
+</p>
+
+<p>
+另外, 要注意, NULL 与 '' 是不同的. 给一个字段为 NOT NULL 的列赋值为 '' 是可以的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2bcc367" class="outline-3">
+<h3 id="org2bcc367">主键</h3>
+<div class="outline-text-3" id="text-org2bcc367">
+<p>
+主键必须唯一. 如果主键使用单个列, 则它的值必须唯一, 如果使用多个列, 则这些列的组合值必须唯一. 主键的定义语句如下:
 </p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_2 &lt; 10;
+<pre class="src src-SQL">PRIMARY KEY(vend_id)
 </pre>
 </div>
 
 <p>
-不等于操作符 &lt;&gt; 的例子:
+如果是多个语句, 定义语句也基本类似:
 </p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_1 &lt;&gt; 'fuse';
-</pre>
-</div>
-<p>
-注意, SQL 语句中, 如果值的类型为字符串, 需要放在单引号之间. 如果是数值类型则不用.
-</p>
-
-<p>
-范围操作符 BETWEEN 的例子:
-</p>
-<div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_2 BETWEEN 2.5 AND 10;
-</pre>
-</div>
-<p>
-BETWEEN 关键字需要两个值, 并用 AND 关键字连起来. BETWEEN 匹配的值包括指定的开始值和结束值.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org5098f62" class="outline-3">
-<h3 id="org5098f62">空值检查</h3>
-<div class="outline-text-3" id="text-org5098f62">
-<p>
-NULL(空值) 与 0, 空字符串, 空格不同.
-</p>
-
-<p>
-以下 SQL 语句可以检查出所有 column_2 为 NULL 的行:
-</p>
-<div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1 FROM table_name WHERE column_2 IS NULL;
+<pre class="src src-SQL">PRIMARY KEY(order_num, order_item)
 </pre>
 </div>
 </div>
 </div>
-</div>
-<div id="outline-container-org8635708" class="outline-2">
-<h2 id="org8635708">WHERE 子句组合</h2>
-<div class="outline-text-2" id="text-org8635708">
+
+<div id="outline-container-org40615cd" class="outline-3">
+<h3 id="org40615cd">AUTO_INCREMENT</h3>
+<div class="outline-text-3" id="text-org40615cd">
 <p>
-多个 WHERE 子句可以通过 AND 或 OR 连接起来. 如:
-</p>
-<div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_3 = 1003 AND column_4 &lt;= 10;
-</pre>
-</div>
-<p>
-如果有不止两个 WHERE 子句, 也是用 AND 将他们连接. AND 表示要满足所有给定条件的行.
+含有 AUTO_INCREMENT 的列, 表示每增加一行数据, 该列的值自动加 1. 这一列的值是唯一的, 适合用来做主键.
 </p>
 
 <p>
-OR 子句的用法一样, 但表达的意思不同, 意思是只要满足其中一个条件就可以.
-</p>
-</div>
-
-<div id="outline-container-org1809f3b" class="outline-3">
-<h3 id="org1809f3b">AND 与 OR 的组合</h3>
-<div class="outline-text-3" id="text-org1809f3b">
-<div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE column_3=1002 OR column_3=1003 AND column_2&gt;=10;
-</pre>
-</div>
-<p>
-由于 AND 的优先级会更高, 所以这一句的意思被认为是: 满足条件 column_3=1002 的数据, 或满足条件 column_2&gt;=10 且 column_3=1003 的数据.
+一张表只允许一个 AUTO_INCREMENT 列.
 </p>
 
 <p>
-如果要改成满足条件 column_3=1002 或者 column_3=1003 并且 column_2&gt;=10 的数据, 应该这么写:
+如果我们手动为该列赋予了一个值, 则后续的自动加 1 操作, 都在该值的基础上进行.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4868702" class="outline-3">
+<h3 id="org4868702">默认值</h3>
+<div class="outline-text-3" id="text-org4868702">
+<p>
+使用 DEFAULT 来指定某一列的默认值:
 </p>
 <div class="org-src-container">
-<pre class="src src-SQL">SELECT column_1, column_2 FROM table_name WHERE (column_3=1002 OR column_3=1003) AND column_2&gt;=10;
+<pre class="src src-SQL">CREATE TABLE orderitems(
+    order_num int NOT NULL,
+    order_item int NOT NULL,
+    quantity int NOT NULL DEFAULT 1,
+    PRIMARY KEY (order_num, order_item)
+) ENGINE=InnoDB;
 </pre>
 </div>
+<p>
+我们更倾向于使用默认值, 而不是 NULL 列.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga56a2f5" class="outline-3">
+<h3 id="orga56a2f5">引擎类型</h3>
+<div class="outline-text-3" id="text-orga56a2f5">
+<p>
+在创建表, 使用 SELECT 语句, 或者进行其他数据库处理时, 都是引擎在内部处理我们的请求. 不同的引擎具有不同的功能和特性.
+</p>
+
+<p>
+需要了解的常用的引擎, 有以下三个:
+</p>
+<ul class="org-ul">
+<li>InnoDB: 可靠的事务处理引擎, 它不支持全文搜索</li>
+<li>MEMORY: 功能与 MyISAM 相同, 但数据存储在内存而非磁盘, 速度很快, 适用于临时表</li>
+<li>MyISAM: 默认情况下使用这个引擎, 性能极高, 支持全文搜索, 但不支持事务处理</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org68390e2" class="outline-2">
+<h2 id="org68390e2">更新表</h2>
+<div class="outline-text-2" id="text-org68390e2">
+<p>
+增加一个列:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">ALTER TABLE vendors ADD vend_phone CHAR(20);
+</pre>
+</div>
+
+<p>
+删除一个列:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">ALTER TABLE vendors DROP COLUMN vend_phone;
+</pre>
+</div>
+
+<p>
+定义外键:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">ALTER TABLE orderitems ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders (order_num);
+</pre>
+</div>
+<p>
+fk_orderitems_orders 是为外键约束命名.
+</p>
+
+<p>
+外键约束可以用于预防破坏表之间连接的动作, 也能防止非法数据插入外键列, 因为它必须是指向的另一个表中的值之一.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga749fb6" class="outline-2">
+<h2 id="orga749fb6">删除表</h2>
+<div class="outline-text-2" id="text-orga749fb6">
+<div class="org-src-container">
+<pre class="src src-SQL">DROP TABLE table_name;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8d27ada" class="outline-2">
+<h2 id="org8d27ada">表重命名</h2>
+<div class="outline-text-2" id="text-org8d27ada">
+<div class="org-src-container">
+<pre class="src src-SQL">RENAME TABLE old_name TO new_name;
+</pre>
 </div>
 </div>
 </div>
@@ -281,7 +249,7 @@ OR 子句的用法一样, 但表达的意思不同, 意思是只要满足其中�
 </div>
 <div>
         <div class="post-meta">
-            <span title="post date" class="post-info">2018-04-22</span>
+            <span title="post date" class="post-info">2018-06-01</span>
             <span title="last modification date" class="post-info">2018-06-01</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/sql">SQL</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
@@ -296,8 +264,8 @@ OR 子句的用法一样, 但表达的意思不同, 意思是只要满足其中�
         <script type="text/javascript">
          //var disqus_developer = 1;
          var preempt_signal=false;
-         var disqus_identifier = "/blog/SQL/2018/04/22/mysql(四)-where-子句/ Or /blog/SQL/mysql(四)-where-子句/";
-         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/04/22/mysql(四)-where-子句/ Or /blog/SQL/mysql(四)-where-子句/";
+         var disqus_identifier = "/blog/SQL/2018/06/01/mysql(七)-操作表/ Or /blog/SQL/mysql(七)-操作表/";
+         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/06/01/mysql(七)-操作表/ Or /blog/SQL/mysql(七)-操作表/";
          var disqus_shortname = 'pinvon';
          /* * * DON'T EDIT BELOW THIS LINE * * */
          (function() {
