@@ -1,0 +1,111 @@
+#+TITLE:       MySQL(七) 操作表
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-01 五
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 创建表
+
+#+BEGIN_SRC SQL
+CREATE TABLE customers IF NOT EXISTS(
+	cust_id 		int 	  NOT NULL AUTO_INCREMENT,
+	cust_name 		char(50)  NOT NULL,
+	cust_address 	char(50)  NULL,
+	cust_city		char(50)  NULL,
+	cust_state		char(5)	  NULL,
+	cust_zip		char(10)  NULL,
+	cust_country	char(50)  NULL,
+	cust_contact	char(50)  NULL,
+	cust_email		char(255) NULL,
+	PRIMARY KEY (cust_id)
+) ENGINE=InnoDB;
+#+END_SRC
+在表名后面加 IF NOT EXISTS 是怕创建表时覆盖一张相同的表.
+
+** NULL 与 NOT NULL
+
+每个列都是 NULL 或者 NOT NULL.
+
+NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
+
+另外, 要注意, NULL 与 '' 是不同的. 给一个字段为 NOT NULL 的列赋值为 '' 是可以的.
+
+** 主键
+
+主键必须唯一. 如果主键使用单个列, 则它的值必须唯一, 如果使用多个列, 则这些列的组合值必须唯一. 主键的定义语句如下:
+#+BEGIN_SRC SQL
+PRIMARY KEY(vend_id)
+#+END_SRC
+
+如果是多个语句, 定义语句也基本类似:
+#+BEGIN_SRC SQL
+PRIMARY KEY(order_num, order_item)
+#+END_SRC
+
+** AUTO_INCREMENT
+
+含有 AUTO_INCREMENT 的列, 表示每增加一行数据, 该列的值自动加 1. 这一列的值是唯一的, 适合用来做主键.
+
+一张表只允许一个 AUTO_INCREMENT 列.
+
+如果我们手动为该列赋予了一个值, 则后续的自动加 1 操作, 都在该值的基础上进行.
+
+** 默认值
+
+使用 DEFAULT 来指定某一列的默认值:
+#+BEGIN_SRC SQL
+CREATE TABLE orderitems(
+	order_num int NOT NULL,
+	order_item int NOT NULL,
+	quantity int NOT NULL DEFAULT 1,
+	PRIMARY KEY (order_num, order_item)
+) ENGINE=InnoDB;
+#+END_SRC
+我们更倾向于使用默认值, 而不是 NULL 列.
+
+** 引擎类型
+
+在创建表, 使用 SELECT 语句, 或者进行其他数据库处理时, 都是引擎在内部处理我们的请求. 不同的引擎具有不同的功能和特性.
+
+需要了解的常用的引擎, 有以下三个:
+- InnoDB: 可靠的事务处理引擎, 它不支持全文搜索
+- MEMORY: 功能与 MyISAM 相同, 但数据存储在内存而非磁盘, 速度很快, 适用于临时表
+- MyISAM: 默认情况下使用这个引擎, 性能极高, 支持全文搜索, 但不支持事务处理
+
+* 更新表
+
+增加一个列:
+#+BEGIN_SRC SQL
+ALTER TABLE vendors ADD vend_phone CHAR(20);
+#+END_SRC
+
+删除一个列:
+#+BEGIN_SRC SQL
+ALTER TABLE vendors DROP COLUMN vend_phone;
+#+END_SRC
+
+定义外键:
+#+BEGIN_SRC SQL
+ALTER TABLE orderitems ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders (order_num);
+#+END_SRC
+fk_orderitems_orders 是为外键约束命名.
+
+外键约束可以用于预防破坏表之间连接的动作, 也能防止非法数据插入外键列, 因为它必须是指向的另一个表中的值之一.
+
+* 删除表
+
+#+BEGIN_SRC SQL
+DROP TABLE table_name;
+#+END_SRC
+
+* 表重命名
+
+#+BEGIN_SRC SQL
+RENAME TABLE old_name TO new_name;
+#+END_SRC
