@@ -1,0 +1,43 @@
+#+TITLE:       MySQL(八) UPDATE 和 DELETE
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-01 五
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* UPDATE
+
+可以使用 UPDATE 更新表中的某些行, 或者所有行. 所以使用 UPDATE 时, 一定要特别小心, 记得加上 WHERE 子句, 否则就会更新所有行.
+
+更新某一行中的某一列:
+#+BEGIN_SRC SQL
+UPDATE table_name SET column_2='xxx' WHERE column_1=10005;
+#+END_SRC
+
+更新某一行中的多个列:
+#+BEGIN_SRC SQL
+UPDATE table_name SET column_2='xxx', column_3='yyy' WHERE column_1=10005;
+#+END_SRC
+
+更新多个行, 就在 WHERE 子句上作文章, 不必限制在某一行. 如果更新多行, 有时可能会因为其中的一两行出现错误, 而终止更新, 可以使用 IGNORE 关键字, 使得即使发生错误, 也继续更新.
+#+BEGIN_SRC SQL
+UPDATE IGNORE table_name ...
+#+END_SRC
+
+* DELETE
+
+可以使用 DELETE 删除某些行, 或者删除所有行. 同样, 使用 DELETE 也要记得使用 WHERE 子句进行限制, 否则一不小心, 就会把整个表删除.
+
+删除某一行:
+#+BEGIN_SRC SQL
+DELETE FROM table_name WHERE column_1=10006;
+#+END_SRC
+
+如果不使用 WHERE 子句, 就会把整张表删除.
+
+如果想删除表中的所有行, 可以使用更快的命令: TRUNCATE table_name. 实际上, 它是直接删除了原来的表, 然后重新创建一个一样的表.
