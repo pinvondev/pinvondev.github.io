@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Redis 启动方式 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="SQL" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Redis 启动方式</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org693292f">直接启动</a></li>
+<li><a href="#org98ba976">使用初始化脚本启动 Redis</a>
+<ul>
+<li><a href="#org18caa04">配置初始化脚本</a></li>
+<li><a href="#orgc1ffd0c">建立需要的文件夹</a></li>
+<li><a href="#orgb92eade">修改配置文件</a>
+<ul>
+<li><a href="#orgc9da99d">配置</a></li>
+<li><a href="#org01a34b5">配置文件模板</a></li>
+<li><a href="#org4f30c2e">动态修改部分配置</a></li>
+<li><a href="#orgfbdfd45">脚本启动方式 + 配置文件</a></li>
+</ul>
+</li>
+<li><a href="#org5b1705c">启动</a></li>
+</ul>
+</li>
+<li><a href="#orgd8be5c9">客户端</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org693292f" class="outline-2">
+<h2 id="org693292f">直接启动</h2>
+<div class="outline-text-2" id="text-org693292f">
+<div class="org-src-container">
+<pre class="src src-SQL">redis-server
+</pre>
+</div>
+
+<p>
+直接启动时, 默认使用 6379 端口, 我们也可以使用 --port 参数来指定端口号:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">redis-server --port 6380
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org98ba976" class="outline-2">
+<h2 id="org98ba976">使用初始化脚本启动 Redis</h2>
+<div class="outline-text-2" id="text-org98ba976">
+<p>
+在生产环境中, 推荐使用此方法, 该方法使得 Redis 能随系统自动运行.
+</p>
+
+<p>
+脚本文件为 redis/utils/redis_init_script. 我们可以在其中配置 Redis 的运行方式, 持久化文件, 日志文件的存储位置等.
+</p>
+</div>
+
+<div id="outline-container-org18caa04" class="outline-3">
+<h3 id="org18caa04">配置初始化脚本</h3>
+<div class="outline-text-3" id="text-org18caa04">
+<p>
+系统启动时, 会自动到 /etc/init.d 中执行脚本. 因此, 我们将 redis_init_script 复制到 /etc/init.d 中, 并修改文件名为 redis_端口号, 这个端口号表示要让 Redis 监听的端口号, 客户端也通过该端口连接 Redis:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cp redis_init_script /etc/init.d
+mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
+</pre>
+</div>
+
+<p>
+将 redis_6379 脚本中第 6 行的 REDISPORT 的值修改为文件名中的端口号. 由于默认是 6379 端口, 因此这边不再修改.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc1ffd0c" class="outline-3">
+<h3 id="orgc1ffd0c">建立需要的文件夹</h3>
+<div class="outline-text-3" id="text-orgc1ffd0c">
+<p>
+/etc/redis: 存放 Redis 的配置文件
+</p>
+
+<p>
+/var/redis/端口号: 存放 Redis 的持久化文件
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb92eade" class="outline-3">
+<h3 id="orgb92eade">修改配置文件</h3>
+<div class="outline-text-3" id="text-orgb92eade">
+</div>
+<div id="outline-container-orgc9da99d" class="outline-4">
+<h4 id="orgc9da99d">配置</h4>
+<div class="outline-text-4" id="text-orgc9da99d">
+<p>
+由于 Redis 可以配置的选项很多, 如是否开启持久化, 日志级别等, Redis 支持使用配置文件来设置这些选项.
+</p>
+
+<p>
+如果使用直接启动的方式来启动 Redis, 则将配置文件的路径作为参数传递给 redis-server:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">redis-server /path/to/redis.conf
+</pre>
+</div>
+
+<p>
+命令行的参数优先级比配置文件的优先级要高, 所以如果两者重复, 以命令行的参数为准:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">redis-server /path/to/redis.conf --loglevel warning
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org01a34b5" class="outline-4">
+<h4 id="org01a34b5">配置文件模板</h4>
+<div class="outline-text-4" id="text-org01a34b5">
+<p>
+配置文件的模板位于 Redis 的根目录, 文件名为 redis.conf.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4f30c2e" class="outline-4">
+<h4 id="org4f30c2e">动态修改部分配置</h4>
+<div class="outline-text-4" id="text-org4f30c2e">
+<p>
+在 Redis 运行过程中, 动态修改部分配置(不是所有配置都能动态修改)的方式为:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">CONFIG SET loglevel warning
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfbdfd45" class="outline-4">
+<h4 id="orgfbdfd45">脚本启动方式 + 配置文件</h4>
+<div class="outline-text-4" id="text-orgfbdfd45">
+<p>
+复制 redis.conf 到 /etc/redis 目录, 以端口号命名, 如: 6379.conf
+</p>
+
+<p>
+修改以下变量值:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">参数</td>
+<td class="org-left">值</td>
+<td class="org-left">说明</td>
+</tr>
+
+<tr>
+<td class="org-left">daemonize</td>
+<td class="org-left">yes</td>
+<td class="org-left">使 Redis 以守护进程模式运行</td>
+</tr>
+
+<tr>
+<td class="org-left">pidfile</td>
+<td class="org-left">/var/run/redis_端口号.pid</td>
+<td class="org-left">设置 Redis 的 PID 文件位置</td>
+</tr>
+
+<tr>
+<td class="org-left">port</td>
+<td class="org-left">端口号</td>
+<td class="org-left">设置 Redis 监听的端口号</td>
+</tr>
+
+<tr>
+<td class="org-left">dir</td>
+<td class="org-left">/var/redis/端口号</td>
+<td class="org-left">设置持久化文件存放位置</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5b1705c" class="outline-3">
+<h3 id="org5b1705c">启动</h3>
+<div class="outline-text-3" id="text-org5b1705c">
+<div class="org-src-container">
+<pre class="src src-Shell">/etc/init.d/redis_6379 start
+</pre>
+</div>
+
+<p>
+使 Redis 随系统自动启动:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo update-rc.d redis_6379 defaults
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd8be5c9" class="outline-2">
+<h2 id="orgd8be5c9">客户端</h2>
+<div class="outline-text-2" id="text-orgd8be5c9">
+<p>
+第一种方式:
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">redis-cli -h 127.0.0.1 -p 6379
+
+//测试是否正常连接
+redis-cli PING  //PONG
+</pre>
+</div>
+
+<p>
+第二种方式(推荐):
+</p>
+<div class="org-src-container">
+<pre class="src src-SQL">redis-cli
+PING  //PONG
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-06-02</span>
+            <span title="last modification date" class="post-info">2018-06-02</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/sql">SQL</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/SQL/2018/06/02/redis-启动方式/ Or /blog/SQL/redis-启动方式/";
+         var disqus_url = "https://pinvondev.github.io/blog/SQL/2018/06/02/redis-启动方式/ Or /blog/SQL/redis-启动方式/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
