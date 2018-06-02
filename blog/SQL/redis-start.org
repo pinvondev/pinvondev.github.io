@@ -1,0 +1,109 @@
+#+TITLE:       Redis 启动方式
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-02 六
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 直接启动
+
+#+BEGIN_SRC SQL
+redis-server
+#+END_SRC
+
+直接启动时, 默认使用 6379 端口, 我们也可以使用 --port 参数来指定端口号:
+#+BEGIN_SRC SQL
+redis-server --port 6380
+#+END_SRC
+
+* 使用初始化脚本启动 Redis
+
+在生产环境中, 推荐使用此方法, 该方法使得 Redis 能随系统自动运行.
+
+脚本文件为 redis/utils/redis_init_script. 我们可以在其中配置 Redis 的运行方式, 持久化文件, 日志文件的存储位置等.
+
+** 配置初始化脚本
+
+系统启动时, 会自动到 /etc/init.d 中执行脚本. 因此, 我们将 redis_init_script 复制到 /etc/init.d 中, 并修改文件名为 redis_端口号, 这个端口号表示要让 Redis 监听的端口号, 客户端也通过该端口连接 Redis:
+#+BEGIN_SRC Shell
+cp redis_init_script /etc/init.d
+mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
+#+END_SRC
+
+将 redis_6379 脚本中第 6 行的 REDISPORT 的值修改为文件名中的端口号. 由于默认是 6379 端口, 因此这边不再修改.
+
+** 建立需要的文件夹
+
+/etc/redis: 存放 Redis 的配置文件
+
+/var/redis/端口号: 存放 Redis 的持久化文件
+
+** 修改配置文件
+
+*** 配置
+
+由于 Redis 可以配置的选项很多, 如是否开启持久化, 日志级别等, Redis 支持使用配置文件来设置这些选项.
+
+如果使用直接启动的方式来启动 Redis, 则将配置文件的路径作为参数传递给 redis-server:
+#+BEGIN_SRC SQL
+redis-server /path/to/redis.conf
+#+END_SRC
+
+命令行的参数优先级比配置文件的优先级要高, 所以如果两者重复, 以命令行的参数为准:
+#+BEGIN_SRC SQL
+redis-server /path/to/redis.conf --loglevel warning
+#+END_SRC
+
+*** 配置文件模板
+
+配置文件的模板位于 Redis 的根目录, 文件名为 redis.conf.
+
+*** 动态修改部分配置
+
+在 Redis 运行过程中, 动态修改部分配置(不是所有配置都能动态修改)的方式为:
+#+BEGIN_SRC SQL
+CONFIG SET loglevel warning
+#+END_SRC
+
+*** 脚本启动方式 + 配置文件
+
+复制 redis.conf 到 /etc/redis 目录, 以端口号命名, 如: 6379.conf
+
+修改以下变量值:
+| 参数      | 值                        | 说明                        |
+| daemonize | yes                       | 使 Redis 以守护进程模式运行 |
+| pidfile   | /var/run/redis_端口号.pid | 设置 Redis 的 PID 文件位置  |
+| port      | 端口号                    | 设置 Redis 监听的端口号     |
+| dir       | /var/redis/端口号         | 设置持久化文件存放位置      |
+
+** 启动
+
+#+BEGIN_SRC Shell
+/etc/init.d/redis_6379 start
+#+END_SRC
+
+使 Redis 随系统自动启动:
+#+BEGIN_SRC Shell
+sudo update-rc.d redis_6379 defaults
+#+END_SRC
+
+* 客户端
+
+第一种方式:
+#+BEGIN_SRC SQL
+redis-cli -h 127.0.0.1 -p 6379
+
+//测试是否正常连接
+redis-cli PING  //PONG
+#+END_SRC
+
+第二种方式(推荐):
+#+BEGIN_SRC SQL
+redis-cli
+PING  //PONG
+#+END_SRC
