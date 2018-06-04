@@ -241,6 +241,33 @@ peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
 
 具体写法, 可以参考 =fabric/examples/chaincode/go/enccc_example= 中的 =utils.go= 文件. 它使用的 =encryptAndPutState()=, =getStateAndDecrypt()= 方法.
 
+*** 调试
+
+之前讲的都是测试, 这边再讲一下关于打印调试.
+
+shim 里显示的信息有分 DEBUG, INFO, NOTICE, WARNING, ERROR, CRITICAL 这几个级别, 右边级别所显示的内容都是左边级别所显示的内容的子集.
+
+在进入 main() 之前, 定义一个全局的 Log 对象:
+#+BEGIN_SRC Golang
+var logger = shim.NewLogger("myChaincode")
+
+func main() {
+
+    logger.SetLevel(shim.LogInfo)
+
+    logLevel, _ := shim.LogLevel(os.Getenv("SHIM_LOGGING_LEVEL"))
+    shim.SetLoggingLevel(logLevel)
+    ...
+}
+#+END_SRC
+
+在需要打印的地方, 输入:
+#+BEGIN_EXAMPLE
+logger.Info("...")
+#+END_EXAMPLE
+
+然后在终端输入: docker logs -f dev-peer0.org1...(chaincode容器的名字), 就可以看到输出了.
+
 * <<2>>chaincode for Operators
 
 ** 智能合约生命周期
