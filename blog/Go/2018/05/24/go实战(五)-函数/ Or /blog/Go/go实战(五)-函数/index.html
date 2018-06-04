@@ -55,26 +55,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2edc30d">函数声明</a>
+<li><a href="#org4548ade">函数声明</a>
 <ul>
-<li><a href="#org93f665d">多个返回值</a></li>
+<li><a href="#orgd92796e">多个返回值</a></li>
 </ul>
 </li>
-<li><a href="#orge4494e0">可变参数</a></li>
-<li><a href="#orgc519f7a">传值与传指针</a>
+<li><a href="#orgc772701">可变参数</a></li>
+<li><a href="#orgffab84b">传值与传指针</a>
 <ul>
-<li><a href="#orgdca6a1a">传值</a></li>
-<li><a href="#orgedb084a">传指针</a></li>
+<li><a href="#org46ec7aa">传值</a></li>
+<li><a href="#org1779383">传指针</a></li>
 </ul>
 </li>
-<li><a href="#org4e6a720">defer</a></li>
+<li><a href="#org9518097">defer</a></li>
+<li><a href="#org2234b61">函数作为值和类型</a></li>
+<li><a href="#org2b9fb10">Panic 和 Recover</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2edc30d" class="outline-2">
-<h2 id="org2edc30d">函数声明</h2>
-<div class="outline-text-2" id="text-org2edc30d">
+<div id="outline-container-org4548ade" class="outline-2">
+<h2 id="org4548ade">函数声明</h2>
+<div class="outline-text-2" id="text-org4548ade">
 <p>
 函数的声明形式如下:
 </p>
@@ -118,9 +120,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-org93f665d" class="outline-3">
-<h3 id="org93f665d">多个返回值</h3>
-<div class="outline-text-3" id="text-org93f665d">
+<div id="outline-container-orgd92796e" class="outline-3">
+<h3 id="orgd92796e">多个返回值</h3>
+<div class="outline-text-3" id="text-orgd92796e">
 <div class="org-src-container">
 <pre class="src src-Golang">package main
 
@@ -146,9 +148,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orge4494e0" class="outline-2">
-<h2 id="orge4494e0">可变参数</h2>
-<div class="outline-text-2" id="text-orge4494e0">
+<div id="outline-container-orgc772701" class="outline-2">
+<h2 id="orgc772701">可变参数</h2>
+<div class="outline-text-2" id="text-orgc772701">
 <p>
 拥有可变参数的函数声明形式:
 </p>
@@ -185,13 +187,13 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orgc519f7a" class="outline-2">
-<h2 id="orgc519f7a">传值与传指针</h2>
-<div class="outline-text-2" id="text-orgc519f7a">
+<div id="outline-container-orgffab84b" class="outline-2">
+<h2 id="orgffab84b">传值与传指针</h2>
+<div class="outline-text-2" id="text-orgffab84b">
 </div>
-<div id="outline-container-orgdca6a1a" class="outline-3">
-<h3 id="orgdca6a1a">传值</h3>
-<div class="outline-text-3" id="text-orgdca6a1a">
+<div id="outline-container-org46ec7aa" class="outline-3">
+<h3 id="org46ec7aa">传值</h3>
+<div class="outline-text-3" id="text-org46ec7aa">
 <p>
 Go 里面给函数传递参数的形式是值传递, 所以在函数内部对参数的修改, 不影响函数外部的值. 如:
 </p>
@@ -223,9 +225,9 @@ func main() {
 </div>
 </div>
 
-<div id="outline-container-orgedb084a" class="outline-3">
-<h3 id="orgedb084a">传指针</h3>
-<div class="outline-text-3" id="text-orgedb084a">
+<div id="outline-container-org1779383" class="outline-3">
+<h3 id="org1779383">传指针</h3>
+<div class="outline-text-3" id="text-org1779383">
 <p>
 变量在内存中是存放在某个地址上的, 如果有这个地址, 就能修改这个值. 上面的例子中, 修改不了的原因, 是因为值一样, 但地址不同, 修改的是另一个地址的值. 例子如下:
 </p>
@@ -266,9 +268,9 @@ Go 语言中的 channel, slice, map 的实现类似指针, 可以直接传递, �
 </div>
 </div>
 
-<div id="outline-container-org4e6a720" class="outline-2">
-<h2 id="org4e6a720">defer</h2>
-<div class="outline-text-2" id="text-org4e6a720">
+<div id="outline-container-org9518097" class="outline-2">
+<h2 id="org9518097">defer</h2>
+<div class="outline-text-2" id="text-org9518097">
 <p>
 defer 是 Go 的关键字, defer 后面跟着的语句, 会在函数返回之前调用. 如:
 </p>
@@ -338,13 +340,71 @@ defer 常用于资源的释放. 如, 当打开某些资源时, 遇到错误要�
 </div>
 </div>
 </div>
+<div id="outline-container-org2234b61" class="outline-2">
+<h2 id="org2234b61">函数作为值和类型</h2>
+<div class="outline-text-2" id="text-org2234b61">
+<p>
+在 Go 中, 函数也是一种变量, 可以通过 type 来定义它, 在定义时会写明参数和返回值, 如果某个函数的参数和返回值与它相同, 就是同一个类型. 如:
+</p>
+<pre class="example">
+package main
+
+import "fmt"
+
+type testInt func(int) bool // 声明了一个函数类型
+
+func isOdd(integer int) bool {
+	if integer%2 == 0 {
+		return false
+	}
+	return true
+}
+
+func isEven(integer int) bool {
+	if integer%2 == 0 {
+		return true
+	}
+	return false
+}
+
+// 声明的函数类型在这个地方当做了一个参数
+
+func filter(slice []int, f testInt) []int {
+	var result []int
+	for _, value := range slice {
+		if f(value) {
+			result = append(result, value)
+		}
+	}
+	return result
+}
+
+func main(){
+	slice := []int {1, 2, 3, 4, 5, 7}
+	fmt.Println("slice = ", slice)
+	odd := filter(slice, isOdd)    // 函数当做值来传递了
+	fmt.Println("Odd elements of slice are: ", odd)
+	even := filter(slice, isEven)  // 函数当做值来传递了
+	fmt.Println("Even elements of slice are: ", even)
+}
+</pre>
+
+<p>
+<code>函数的这种用法对于编写通用接口非常有用, 我们可以使用相同类型的参数和返回值, 编写不同的逻辑, 使得程序变得更加灵活</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2b9fb10" class="outline-2">
+<h2 id="org2b9fb10">Panic 和 Recover</h2>
+</div>
 
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-05-24</span>
-            <span title="last modification date" class="post-info">2018-05-25</span>
+            <span title="last modification date" class="post-info">2018-06-03</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/go">Go</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
