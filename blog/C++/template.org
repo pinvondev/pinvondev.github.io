@@ -1,0 +1,80 @@
+#+TITLE:       模板
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-15 五
+
+#+URI:         /blog/C++/%y/%m/%d/%t/ Or /blog/C++/%t/
+#+TAGS:        C++
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 实例
+
+#+BEGIN_SRC C++
+template<class T> class String {
+	struct Srep;
+	Srep *rep;
+public:
+	String();
+	String(const T*);
+	String(const String&);
+	T read(int i) const;
+	// ...
+};
+#+END_SRC
+
+在使用的时候, 可以这么写:
+#+BEGIN_SRC C++
+String<char> cs;
+String<unsigned char> us;
+String<wchar_t> ws;
+class Jchar{
+	// ...
+};
+String<Jchar> js;
+#+END_SRC
+
+在标准库中, 提供了模板类 basic_string, 常使用的 basic_string<char> 由于太长, 不方便书写, 因此使用 typedef 将其定义为 string 的同义词, 同时可以隐藏细节:
+#+BEGIN_SRC C++
+typedef basic_string<char> string;
+#+END_SRC
+
+词频统计:
+#+BEGIN_SRC C++
+int main(){
+	string buf;
+    map<string, int> m;
+	while(cin >> buf) m[buf]++;
+	// ...
+}
+#+END_SRC
+
+* 定义一个模板类
+
+在上面的实例中, 已经看到了如何定义一个模板类, 模板类的成员在类外的定义方法如下:
+#+BEGIN_SRC C++
+template<class T> struct String<T>::Srep{
+	T* s;  // 到元素的指针
+	int sz;  // 元素个数
+	int n;	// 引用计数
+	// ...
+};
+
+// 先写 template<class T>
+// 再写返回类型 T
+// 定义类成员函数: String<T>::read(int) const
+template<class T> T String<T>::read(int) const {
+	return rep->s[i];
+}
+
+template<class T> String<T>::String() {
+	rep = new Srep(0, T());
+}
+
+// 构造函数的定义也可以写成这样:
+template<class T> String<T>::String<T>() {
+	rep = new Srep(0, T());
+}
+#+END_SRC

@@ -1,0 +1,68 @@
+#+TITLE:       JavaScript 笔记--Form
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-07 四
+
+#+URI:         /blog/Web/JavaScript/%y/%m/%d/%t/ Or /blog/Web/JavaScript/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 表单元素
+
+表单里面的 input, textarea, password, select 等元素, 使用 DOM 及服务端都可以通过 =value= 属性取到它们的值, 如, Express 框架中, 直接使用 =req.body= 就可以获得这些值.
+
+** select
+
+select 是下拉列表元素.
+
+通过 document.getElementById('select_id').value 可以获得选中的那项(从 0 开始计数).
+
+单选:
+#+BEGIN_EXAMPLE
+<select name="os" id="os">
+#+END_EXAMPLE
+
+多选:
+#+BEGIN_EXAMPLE
+<select name="categories" id="categories" multiple>
+#+END_EXAMPLE
+
+设置为多选时, document.getElementById('select_id').value 只返回选中的第一个选项, 需要遍历其中每一项的 selected 属性.
+
+** checkbox
+
+checkbox 是多选框, 每个选择框有选中和不选中两种状态. 其 checked 属性返回一个布尔值, 表示用户是否选中.
+
+** radio
+
+radio 是单选框, 同一组选择框只能选中一个, 通过 checked 属性表示是否选中.
+
+* 表单的验证
+
+表单的验证, 是否浏览器检查用户提供的数据是否符合要求.
+
+如:
+#+BEGIN_EXAMPLE
+<input type="date" >
+#+END_EXAMPLE
+表示只能输入日期, 否则浏览器会报错.
+
+如果要关闭表单的自动验证(因为有时验证可能不是我们想要的), 就要使用 noValidate 属性:
+#+BEGIN_EXAMPLE
+var form = document.getElementById("myform");
+form.noValidate = true;
+
+form.onsubmit = validateForm;
+#+END_EXAMPLE
+最后一句, 指定在 submit 事件时, 由自己写的 JavaScript 来验证.
+
+使用 onsubmit 属性, 来指定提交时会触发的函数, 如:
+#+BEGIN_EXAMPLE
+<form action="/shop/person" method="post" enctype="multipart/form-data" onsubmit="return valid()">
+...
+</form>
+#+END_EXAMPLE
+这时, 在 submit 事件发生时, 触发 valid() 函数, 只有 valid() 返回 true 时, 才会提交.

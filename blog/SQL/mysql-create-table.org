@@ -90,6 +90,16 @@ ALTER TABLE vendors ADD vend_phone CHAR(20);
 ALTER TABLE vendors DROP COLUMN vend_phone;
 #+END_SRC
 
+更改一个列的属性:
+#+BEGIN_SRC SQL
+ALTER TABLE vendors CHANGE vend_phone vend_phone CHAR(20) NOT NULL;
+#+END_SRC
+
+更改一个列的名称:
+#+BEGIN_SRC SQL
+ALTER TABLE vendors CHANGE vend_phone phone CHAR(20) NOT NULL;
+#+END_SRC
+
 定义外键:
 #+BEGIN_SRC SQL
 ALTER TABLE orderitems ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders (order_num);

@@ -1,0 +1,41 @@
+#+TITLE:       MySQL 存储过程与定时任务
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-10 日
+
+#+URI:         /blog/SQL/%y/%m/%d/%t/ Or /blog/SQL/%t/
+#+TAGS:        SQL
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 场景
+
+定时执行某些任务, 如每天的某时刻定时删除某些数据.
+
+一般会编写存储过程, 设置删除条件, 然后使用定时任务运行存储过程.
+
+* 存储过程
+
+在 MySQL 5 以后, 开始支持存储过程.
+
+存储过程常使用在需要一次性执行多条语句, 编译后放在数据库中, 指定存储过程的名字及相应的参数, 就可以调用它.
+
+其实这相当于平时编程时用到的函数, 通过多条语句完成一定的功能. 所以其实可以读取数据库, 在函数中完成相关的逻辑. 但是数据库性能极高, 如果能在数据库中处理好再返回, 可以提高程序的整体性能.
+
+** 创建存储过程
+
+#+BEGIN_SRC SQL
+CREATE PROCEDURE productpricing()
+BEGIN
+    SELECT Avg(prod_price) AS priceaverage FROM products;
+END;
+#+END_SRC
+
+* 查看定时器是否开启
+
+#+BEGIN_SRC SQL
+SHOW VARIABLES LIKE 'event_scheduler';  // 查看定时器状态
+SET GLOBAL event_scheduler = 1;			// 开启事件设置
+#+END_SRC
