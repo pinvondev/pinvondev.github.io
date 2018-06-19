@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Make - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="C++" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Make</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org9eff298">概述</a></li>
+<li><a href="#org66a2afd">Make</a></li>
+<li><a href="#orgb984fb1">Makefile</a>
+<ul>
+<li><a href="#org9be740a">Makefile 文件的规则</a></li>
+<li><a href="#org32e29ff">target</a></li>
+<li><a href="#org0987b20">phony target</a></li>
+<li><a href="#orgbc8a7d5">prerequisites</a></li>
+<li><a href="#orgfd8faca">commands</a></li>
+</ul>
+</li>
+<li><a href="#org92b951b">Makefile 语法</a>
+<ul>
+<li><a href="#org8b01d57">注释 # 号</a></li>
+<li><a href="#orgc29150b">echo</a></li>
+<li><a href="#orga7eda63">通配符</a></li>
+<li><a href="#orga0511f2">模式匹配</a></li>
+<li><a href="#org94e1d0d">变量和赋值符</a>
+<ul>
+<li><a href="#org7f1ba5f">自定义变量</a></li>
+<li><a href="#org7131c40">Shell 变量</a>
+<ul>
+<li><a href="#orgb4e8f52">= 操作符</a></li>
+<li><a href="#org121b478">:= 操作符</a></li>
+<li><a href="#org799dca2">?= 操作符</a></li>
+<li><a href="#org68b0b2c">+= 操作符</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org47bcc05">内置变量</a></li>
+<li><a href="#orgd79e527">自动变量</a></li>
+<li><a href="#orgafedc66">判断和循环</a></li>
+<li><a href="#orgcb35403">函数</a></li>
+</ul>
+</li>
+<li><a href="#org3bdf936">例子</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9eff298" class="outline-2">
+<h2 id="org9eff298">概述</h2>
+<div class="outline-text-2" id="text-org9eff298">
+<p>
+编译(compile): 使用编译器, 将源代码转化为目标文件(.o).
+</p>
+
+<p>
+链接(link): 把多个 .o 文件或 lib 库文件转化为可执行文件(.exe 或 .dll).
+</p>
+
+<p>
+构建(build): 指用源代码生成可执行文件的整个过程, 如先编译哪个文件, 再编译哪个文件, 先链接哪个文件, 再链接哪个文件, 都属于构建的范畴.
+</p>
+
+<p>
+学习 Make 的网址: <a href="https://www.gnu.org/software/make/manual/make.html">GNU Make</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org66a2afd" class="outline-2">
+<h2 id="org66a2afd">Make</h2>
+<div class="outline-text-2" id="text-org66a2afd">
+<p>
+Make 根据指定的 Shell 命令进行构建. 我们应该告诉 Make, 有哪些文件要参与构建, 这些文件的依赖关系是怎样的, 当有文件变动时, 应如何重新构建它.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb984fb1" class="outline-2">
+<h2 id="orgb984fb1">Makefile</h2>
+<div class="outline-text-2" id="text-orgb984fb1">
+<p>
+Make 使用的构建规则, 都写在 Makefile 文件里面.
+</p>
+</div>
+
+<div id="outline-container-org9be740a" class="outline-3">
+<h3 id="org9be740a">Makefile 文件的规则</h3>
+<div class="outline-text-3" id="text-org9be740a">
+<p>
+一个 Makefile 文件内部包含了许多规则, 每条规则的形式如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">&lt;target&gt; : &lt;prerequisites&gt;
+[tab] &lt;commands&gt;
+</pre>
+</div>
+<p>
+其中, &lt;commands&gt; 前面的 [tab] 表示一个 tab 键, 这是规定; &lt;target&gt; 是必需的; &lt;prerequisites&gt; 和 &lt;commands&gt; 都是可选的, 但两者必须至少有一个.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org32e29ff" class="outline-3">
+<h3 id="org32e29ff">target</h3>
+<div class="outline-text-3" id="text-org32e29ff">
+<p>
+一个 target 构成一条规则. 一般来说, target 就是文件名, <code>如果有多个文件名, 使用空格分隔</code>. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">main: main.o
+    g++ main.o -o main
+main.o: main.cpp
+    g++ -c main.cpp -o main.o
+</pre>
+</div>
+<p>
+这样就会生成一个可执行文件 main.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0987b20" class="outline-3">
+<h3 id="org0987b20">phony target</h3>
+<div class="outline-text-3" id="text-org0987b20">
+<p>
+target 除了可以是某些文件名之外, 还可以是某个操作的名字, 称为 phony target. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">clean:
+    rm *.o
+</pre>
+</div>
+<p>
+当我们执行 <code>make clean</code> 时, 就相当于执行 <code>rm *.o</code>, 把所有 .o 文件删除了.
+</p>
+
+<p>
+但是, 上面的写法有一些小问题. 如果当前目录下正好有一个叫做 clean 的文件, 则这条命令不会执行, <code>因为 Make 发现 clean 文件已经存在, 就不再重新构建了</code>.
+</p>
+
+<p>
+解决办法是将 clean 声明为 phony target. 如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">.PHONY: clean
+clean:
+    rm *.o
+</pre>
+</div>
+<p>
+这样, make 就不会去检查是否存在一个 clean 文件, 直接执行命令.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc8a7d5" class="outline-3">
+<h3 id="orgbc8a7d5">prerequisites</h3>
+<div class="outline-text-3" id="text-orgbc8a7d5">
+<p>
+prerequisites 通常是一组文件名, 文件名之间用空格分隔. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">main: main.o scene.o layer.o
+    g++ main.o scene.o layer.o -o main
+</pre>
+</div>
+<p>
+重新构建目标 main 的情况: main.o scene.o layer.o 三个中有一个不存在, 或者有更新过(对比文件的最后修改时间和目标的时间). 如果 main.o 不存在, 则需要另外写一条规则来生成 main.o:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">main.o: main.cpp
+    g++ -c main.cpp -o main.o
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfd8faca" class="outline-3">
+<h3 id="orgfd8faca">commands</h3>
+<div class="outline-text-3" id="text-orgfd8faca">
+<p>
+commands 就是一条或多条 Shell 命令, 每个命令前都必须有一个 tab 键. 注意, 不同行的 Shell 命令会在不同的 Shell 中执行, 这些 Shell 之间没有继承关系. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">var-lost:
+    export foo=bar
+    echo "foo=[$$foo]"
+</pre>
+</div>
+<p>
+这样写是取不到 foo 的值的. 如果要想取到 foo 的值, 有以下几种办法:
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="orgc9bafb2"></a>写在同一行, 使用分号分隔<br />
+<div class="outline-text-6" id="text-orgc9bafb2">
+<div class="org-src-container">
+<pre class="src src-Make">var-kept:
+    export foo=bar; echo "foo=[$$foo]"
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org031a830"></a>写在不同行, 换行符前加反斜杠转义<br />
+<div class="outline-text-6" id="text-org031a830">
+<div class="org-src-container">
+<pre class="src src-Make">var-kept:
+    export foo=bar; \
+    echo "foo=[$$foo]"
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org2623564"></a>使用 .ONESHELL 命令<br />
+<div class="outline-text-6" id="text-org2623564">
+<div class="org-src-container">
+<pre class="src src-Make">.ONESHELL:
+var-kept:
+    export foo=bar;
+    echo "foo=[$$foo]"
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org92b951b" class="outline-2">
+<h2 id="org92b951b">Makefile 语法</h2>
+<div class="outline-text-2" id="text-org92b951b">
+</div>
+<div id="outline-container-org8b01d57" class="outline-3">
+<h3 id="org8b01d57">注释 # 号</h3>
+</div>
+
+<div id="outline-container-orgc29150b" class="outline-3">
+<h3 id="orgc29150b">echo</h3>
+<div class="outline-text-3" id="text-orgc29150b">
+<p>
+make 会打印每条命令, 然后再执行. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">test:
+    # this is a test!
+</pre>
+</div>
+<p>
+执行 <code>make test</code> 后, 会显示 <code>this is a test!</code>.
+</p>
+
+<p>
+如果在命令的前面加上 @ 符号, 就可以关闭输出. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">test:
+    @# this is a test!
+</pre>
+</div>
+
+<p>
+在构建的过程中, 我们常常需要了解当前正在执行哪条命令, 所以一般只在注释和 echo 命令前加上 @ 符号.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga7eda63" class="outline-3">
+<h3 id="orga7eda63">通配符</h3>
+<div class="outline-text-3" id="text-orga7eda63">
+<p>
+如果当前目录下有 1.c, 2.c, test.c, 1.h
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">print:
+    @echo *.c  		# 1.c, 2.c, test.c
+    @echo ?.c  		# 1.c, 2.c
+    @echo [12].*  	# 1.c, 1.h, 2.c
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga0511f2" class="outline-3">
+<h3 id="orga0511f2">模式匹配</h3>
+<div class="outline-text-3" id="text-orga0511f2">
+<p>
+Make 命令允许对文件名进行类似正则运算的匹配, 主要是使用匹配符 %.
+</p>
+
+<p>
+如果当前目录下有 f1.c, f2.c 两个源码文件, 需要将它们编译为对应的对象文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">%.o: %.c
+</pre>
+</div>
+<p>
+相当于:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">f1.o: f1.c
+f2.o: f2.c
+</pre>
+</div>
+<p>
+使用 % 可以将大量同类型的文件, 只用一条规则就完成构建.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org94e1d0d" class="outline-3">
+<h3 id="org94e1d0d">变量和赋值符</h3>
+<div class="outline-text-3" id="text-org94e1d0d">
+</div>
+<div id="outline-container-org7f1ba5f" class="outline-4">
+<h4 id="org7f1ba5f">自定义变量</h4>
+<div class="outline-text-4" id="text-org7f1ba5f">
+<p>
+Makefile 可以使用等号自定义变量, 调用变量时, 需要将变量放在 $() 中间.
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">txt = hello world
+test:
+    @echo $(txt)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7131c40" class="outline-4">
+<h4 id="org7131c40">Shell 变量</h4>
+<div class="outline-text-4" id="text-org7131c40">
+<p>
+调用 Shell 变量, 如 $HOME, 需要在 $HOME 前面再加 $ 符号进行转义. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">test:
+    @echo $$HOME
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb4e8f52" class="outline-5">
+<h5 id="orgb4e8f52">= 操作符</h5>
+<div class="outline-text-5" id="text-orgb4e8f52">
+<p>
+= 无限递归, 可以使用后面的变量来定义前面的变量. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">foo = $(bar)
+bar = $(ugh)
+ugh = Huh?
+all:
+    echo $(foo)
+</pre>
+</div>
+<p>
+执行 <code>make all</code> 后, 将会输出 Huh?.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org121b478" class="outline-5">
+<h5 id="org121b478">:= 操作符</h5>
+<div class="outline-text-5" id="text-org121b478">
+<div class="org-src-container">
+<pre class="src src-Make">y := $(x) bar
+x := foo
+</pre>
+</div>
+<p>
+此时, 输出的 y 就是 bar, x 是 foo, 可以看出, y 的输出不会使用到后面才出现的变量 x.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org799dca2" class="outline-5">
+<h5 id="org799dca2">?= 操作符</h5>
+<div class="outline-text-5" id="text-org799dca2">
+<div class="org-src-container">
+<pre class="src src-Make">FOO ?= bar
+</pre>
+</div>
+<p>
+如果 FOO 之前没有定义过, 则 FOO 的值就是 bar, 如果之前已经定义过, 则这条语句什么也不做.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org68b0b2c" class="outline-5">
+<h5 id="org68b0b2c">+= 操作符</h5>
+<div class="outline-text-5" id="text-org68b0b2c">
+<div class="org-src-container">
+<pre class="src src-Make">objects = main.o foo.o bar.o utils.o
+objects += another.o
+</pre>
+</div>
+<p>
+此时, objects 的值是 main.o foo.o bar.o utils.o another.o
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org47bcc05" class="outline-3">
+<h3 id="org47bcc05">内置变量</h3>
+<div class="outline-text-3" id="text-org47bcc05">
+<p>
+如 $(CC) 指向当前使用的编译器, $(MAKE) 指向当前使用的 Make 工具.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd79e527" class="outline-3">
+<h3 id="orgd79e527">自动变量</h3>
+<div class="outline-text-3" id="text-orgd79e527">
+<ul class="org-ul">
+<li>$@: 表示规则中的目标文件集, 如果有多个目标, 则 $@ 就是这些目标的集合.</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Make">main.o: main.cpp
+    g++ -c main.cpp -o $@  # $@ 表示 main.o
+</pre>
+</div>
+
+<p>
+再如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">a.txt b.txt:
+    touch $@
+</pre>
+</div>
+<p>
+相当于:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">a.txt:
+    touch a.txt
+b.txt:
+    touch b.txt
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>$&lt;: 表示 prerequisites 中的第一个. 如:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Make">a.txt: b.txt c.txt
+    cp $&lt; $@
+</pre>
+</div>
+<p>
+相当于:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">a.txt: b.txt c.txt
+    cp b.txt a.txt
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>$?: 表示 prerequisites 中比 target 更新的集合.</li>
+
+<li>$^: 表示所有 prerequisites.</li>
+
+<li>$*: 匹配 % 及 % 之前的部分. 如: dir/a.foo.b, 使用的模式为 dir/a.%.b, 则 $* 表示 dir/a.foo</li>
+
+<li>$(@D): 指向 $@ 的目录名.</li>
+
+<li>$(@F): 指向 $@ 的文件名.</li>
+
+<li>$(&lt;D): 指向 $&lt; 的目录名.</li>
+
+<li>$(&lt;F): 指向 $&lt; 的文件名.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgafedc66" class="outline-3">
+<h3 id="orgafedc66">判断和循环</h3>
+<div class="outline-text-3" id="text-orgafedc66">
+<p>
+判断和循环的语法与 Bash 一样.
+</p>
+
+<p>
+判断编译器是否为 gcc, 然后指定不同的库文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">ifeq ($(CC), gcc)
+    libs=$(libs_for_gcc)
+else
+    libs=$(normal_libs)
+endif
+</pre>
+</div>
+
+<p>
+循环:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">LIST = one two three
+all:
+    for i in $(LIST); do \
+        echo $$i; \
+    done
+
+# 相当于
+
+all:
+    for i in one two three; do \
+        echo $i; \
+    done
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb35403" class="outline-3">
+<h3 id="orgcb35403">函数</h3>
+<div class="outline-text-3" id="text-orgcb35403">
+<p>
+函数格式为: $(function arguments) 或 ${function arguments}.
+</p>
+
+<ul class="org-ul">
+<li>shell 函数. 其参数就是 OS shell 的命令.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-Make">srcfiles := $(shell echo src/{00..99}.txt)
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>wildcard 函数: 该函数的功能是扩展通配符. 如下面的例子中, 将所有 src 目录下的 txt 文件存入 srcfiles 变量.</li>
+
+<li>subst 函数: 文本替换.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-Make">$(subst arg1, arg2, text)
+</pre>
+</div>
+<p>
+使用 arg2 来替换 text 中的 arg1.
+</p>
+
+<ul class="org-ul">
+<li>patsubst 函数: 模式匹配的替换.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-Make">$(patsubst pattern, replacement, text)
+</pre>
+</div>
+
+<p>
+如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">$(patsubst %.c, %.o, x.c.c bar.c)  # x.c.o bar.o
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3bdf936" class="outline-2">
+<h2 id="org3bdf936">例子</h2>
+<div class="outline-text-2" id="text-org3bdf936">
+<p>
+编译 C 语言项目:
+</p>
+<div class="org-src-container">
+<pre class="src src-Make">edit : main.o kbd.o command.o display.o 
+    cc -o edit main.o kbd.o command.o display.o
+
+main.o : main.c defs.h
+    cc -c main.c
+kbd.o : kbd.c defs.h command.h
+    cc -c kbd.c
+command.o : command.c defs.h command.h
+    cc -c command.c
+display.o : display.c defs.h
+    cc -c display.c
+
+clean :
+     rm edit main.o kbd.o command.o display.o
+
+.PHONY: edit clean
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-06-19</span>
+            <span title="last modification date" class="post-info">2018-06-20</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/c++">C++</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/C++/2018/06/19/make/ Or /blog/C++/make/";
+         var disqus_url = "https://pinvondev.github.io/blog/C++/2018/06/19/make/ Or /blog/C++/make/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
