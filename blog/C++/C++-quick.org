@@ -1,0 +1,202 @@
+#+TITLE:       C++ 快速学习
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-20 三
+
+#+URI:         /blog/C++/%y/%m/%d/%t/ Or /blog/C++/%t/
+#+TAGS:        C++
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 函数与参数
+
+** 传值参数
+
+#+BEGIN_SRC C++
+int abc(int a, int b, int c) {
+    return a+b+b*c+(a+b-c)/(a+b)+4;
+}
+#+END_SRC
+在运行时, 实际值会在函数执行前被复制给形参, 复制过程由形参对应的数据类型的 =拷贝构造函数= 来完成, 当函数结束时, 形参所属数据类型的 =析构函数= 负责释放该形参. 所以当一个函数返回时, 形参的值不会被复制到对应的实参中, 所以, 传值情况下, 函数调用不会修改实际参数的值.
+
+** 模板函数
+
+将上面的函数改成用模板来实现, 可以在多种数据类型之间通用, 将参数的数据类型作为一个变量, 它的值由编译器来确定. 如:
+#+BEGIN_SRC C++
+template<typename T>
+T abc(T a, T b, T c) {
+    return a+b+b*c+(a+b-c)/(a+b)+4;
+}
+
+// ...
+
+// 调用
+int x=2, y=4;
+abc(2, x, y);
+#+END_SRC
+
+** 引用参数
+
+使用传值参数, 会在一定程度上降低程序的效率. 假设数据类型是用户自定义的 Matrix 类, 其拷贝构造函数将复制所有元素, 析构函数将释放所有元素. 如果我们用具有 1000 个元素的 Matrix 作为实际参数来调用 abc(), 则复制给 3 个参数需要 3000 次操作, 析构时又要进行 3000 次操作.
+
+如果使用引用参数, 在函数被调用时, 不会复制实参的值, 函数调用会修改实参的值.
+
+可以将上面的模板函数改成:
+#+BEGIN_SRC C++
+template<typename T>
+T abc(T& a, T& b, T& c) {
+    return a+b+b*c+(a+b-c)/(a+b)+4;
+}
+
+// ...
+// 调用
+int x = 1, y = 2;
+cout << abc(x, x, y) << endl;
+#+END_SRC
+
+** 常量引用参数
+
+使用常量引用参数, 可以使得函数不能修改引用参数的值. 这在软件工程方面具有重要的意义, 用户可以立即了解到该函数并不会修改实际参数.
+
+#+BEGIN_SRC C++
+template<typename T>
+T abc(const T& a, const T& b, const T& c) {
+    return a+b+b*c+(a+b-c)/(a+b)+4;
+}
+#+END_SRC
+
+如果想让程序更加通用, 可以使用三种类型, 如: template<typename T1, typename T2, typename T3>.
+
+** 返回值
+
+在以上的函数中, 返回值就是一个具体值, 这意味着返回的对象会被复制到调用环境中. 只要在释放临时变量以及形参的空间之前, 将该值返回, 就不会丢失这个值.
+
+如果需要返回引用, 可以这么写:
+#+BEGIN_SRC C++
+template<typename T>
+T& func(int i, T& z) {
+	// ...
+	return z;
+}
+#+END_SRC
+当函数返回时, 传值形参 i 及其他局部变量将被释放, 而 z 是对实际参数的引用, 不会受到影响.
+
+如果这么写, 则返回值会丢失:
+#+BEGIN_SRC C++
+int& func(int i, int& z) {
+	// ...
+	int* ip = &i;
+	return ip;	// 丢失
+}
+#+END_SRC
+
+如果要返回常量引用, 可以这么写:
+#+BEGIN_SRC C++
+template<typename T>
+const T& func(int i, T& z) {
+	// ...
+}
+#+END_SRC
+
+** 递归函数
+
+递归函数就是自己调用自己, 有直接递归和间接递归两种.
+
+直接递归: 函数 F 中直接包含了函数 F.
+
+间接递归: 函数 F 中包含函数 G, 函数 G 又调用函数 H, ..., 最后一个函数又调用了函数 F.
+
+C++ 允许我们编写递归函数, 递归函数必须包含终止条件. 如计算阶乘:
+#+BEGIN_SRC C++
+int Factorial(int n) {
+    if (n <= 1) return 1;  // 终止条件
+    return n*Factorial(n-1);
+}
+#+END_SRC
+
+* 动态存储分配
+
+** new
+
+new 操作符会返回一个指向所分配空间的指针. 如果要给一个整数动态分配存储空间, 并在刚分配的空间中存储 10 这个整数, 可以这么写:
+#+BEGIN_SRC C++
+int *y = new int;
+*y = 10;
+
+// 或者
+int *y = new int(10);
+#+END_SRC
+
+** 一维数组
+
+一个大小为 n 的一维浮点数组可以这样创建:
+#+BEGIN_SRC C++
+float *x = new float[n];
+
+// 返回第 2 个元素
+x[1];
+#+END_SRC
+
+** 异常处理
+
+try catch 机制可以捕获异常. 我们将可能会出现异常的代码放在 try{...} 中, 对异常的处理放在 catch(){...} 中. catch() 可以有多个, 针对不同的异常情况, 进行不同的处理, 如果想直接捕获所有异常, 则这么写: catch(...){}.
+
+在 new 操作时, 如果内存不够分配了, 将会出现异常, 抛出的异常类型为 xalloc, 所以上面的动态内存分配, 可以这么写:
+#+BEGIN_SRC C++
+try {
+	float *x = new float[10];
+} catch (xalloc) {
+	cerr << "out of memory" << endl;
+	exit(1);
+}
+#+END_SRC
+
+如果没有引发异常, 执行完 try 块后, 直接跳过 catch 块.
+
+** delete
+
+与 new 相对应的释放操作. 释放方法如下:
+#+BEGIN_SRC C++
+delete y;
+delete [] x;
+#+END_SRC
+
+** 二维数组
+
+二维数组在声明时必须确定第二维的大小, 第一维可以动态确定. 如: a[][10] 是合法的, 而 a[][] 则不是.
+
+#+BEGIN_SRC C++
+char (*c)[5];
+try {
+	c = new char [n][5];
+} catch (xalloc) {
+	cerr << "out of memory" << endl;
+	exit(1);
+}
+#+END_SRC
+
+#+BEGIN_SRC C++
+template<typename T>
+bool Make2DArray (T ** &x, int rows, int cols) {  // 创建一个二维数组
+    try{
+        x = new T * [rows];  // 创建行指针
+        for (int i=0; i<rows; i++) {
+            x[i] = new int [cols];
+            return true;
+        }
+    } catch (xalloc) {
+        return false;
+    }
+}
+
+template<typename T>
+vod Delete2DArray (T ** &x, int rows) {
+    for (int i=0; i<rows; i++) {
+        delete [] x[i];
+        delete [] x;
+        x = 0;
+    }
+}
+#+END_SRC
