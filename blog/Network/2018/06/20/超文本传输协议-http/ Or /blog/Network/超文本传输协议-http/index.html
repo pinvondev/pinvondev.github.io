@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>超文本传输协议 HTTP - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="计算机网络" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">超文本传输协议 HTTP</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7c5060c">www</a></li>
+<li><a href="#org5fa2023">http</a>
+<ul>
+<li><a href="#org5b1ff17">http 执行过程</a></li>
+<li><a href="#org4da6874">http 特点</a></li>
+<li><a href="#org18d9ed1">http 报文结构</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7c5060c" class="outline-2">
+<h2 id="org7c5060c">www</h2>
+<div class="outline-text-2" id="text-org7c5060c">
+<p>
+www(万维网)是一个资料空间, 在这个空间中, 每个有用的事物, 都称为一个资源, 并由一个唯一的 URL 所标识, 这些资源通过 HTTP 协议传送给用户, 用户通过点击链接来获取资源. HTML 使得 www 页面的设计者可以方便地用一个超链接从本页面跳转到任何一个 www 页面.
+</p>
+
+<p>
+www 的组成:
+</p>
+<ul class="org-ul">
+<li>URL(统一资源定位符): 唯一标识 www 上的各种资源. 其形式为 &lt;协议&gt;://&lt;主机&gt;:&lt;端口&gt;/&lt;路径&gt;, &lt;协议&gt; 一般是 http, ftp 等, &lt;主机&gt; 可以是域名, 也可以是 IP.</li>
+<li>HTTP(超文本传输协议): 使用 TCP 进行可靠传输.</li>
+<li>HTML(超文本标记语言): 使用约定的标记对页面上的各种信息和格式进行描述.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5fa2023" class="outline-2">
+<h2 id="org5fa2023">http</h2>
+<div class="outline-text-2" id="text-org5fa2023">
+<p>
+http 协议定义了浏览器如何向 www 服务器请求 www 资源, 以及 www 服务器如何将这些资源传送给浏览器.
+</p>
+</div>
+
+<div id="outline-container-org5b1ff17" class="outline-3">
+<h3 id="org5b1ff17">http 执行过程</h3>
+<div class="outline-text-3" id="text-org5b1ff17">
+<ul class="org-ul">
+<li>获得 IP 地址(如果 &lt;主机&gt; 是域名, 需要解析).</li>
+<li>三次握手建立 TCP 连接.</li>
+<li>浏览器向服务器发送 http 请求, 请求获取某 web 页面内容.</li>
+<li>服务器构建信息, 通过 http 响应返回给浏览器.</li>
+<li>浏览器解析信息, 显示给用户.</li>
+<li>四次挥手释放 TCP 连接.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4da6874" class="outline-3">
+<h3 id="org4da6874">http 特点</h3>
+<div class="outline-text-3" id="text-org4da6874">
+<p>
+http 协议是无状态的, 意思就是服务器不知道哪个客户访问过自己. 这个特性简化了服务器的特性, 使得服务器更容易支持大量并发的 http 请求.
+</p>
+
+<p>
+在实际应用中, 通常使用 Cookie+Database 的方法来跟踪用户的活动. Cookie 是一个存储在用户主机中的文本文件, 里面含有一串识别码, 用来标识不同的用户. 服务器根据 Cookie 就能从数据库中查询到该用户的活动记录.
+</p>
+
+<p>
+HTTP/1.1 以后, 开始支持持久连接. 持久连接与非持久连接的区别:
+</p>
+<ul class="org-ul">
+<li>非持久连接: 对于网页的每一个元素对象, 都要单独建立一个 TCP 连接.</li>
+<li>持久连接: www 服务器在发送响应后仍然保持这条连接, 使同一个客户和服务器可以继续在这条连接上传送后续的 http 请求和响应.</li>
+</ul>
+
+<p>
+对于持久连接, 又分为流水线和非流水线两种方式. HTTP/1.1 使用流水线方式.
+</p>
+<ul class="org-ul">
+<li>非流水线: 客户端在收到前一个响应后都能发出下一个请求.</li>
+<li>流水线: 客户端可以每遇到一个对象引用, 就发出一个请求.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org18d9ed1" class="outline-3">
+<h3 id="org18d9ed1">http 报文结构</h3>
+<div class="outline-text-3" id="text-org18d9ed1">
+<p>
+请求报文:
+<img src="https://pinvondev.github.io/assets/blog/Network/2018/06/20/超文本传输协议-http/ Or /blog/Network/超文本传输协议-http/14.png" alt="14.png" />
+</p>
+
+<p>
+响应报文:
+<img src="https://pinvondev.github.io/assets/blog/Network/2018/06/20/超文本传输协议-http/ Or /blog/Network/超文本传输协议-http/15.png" alt="15.png" />
+</p>
+
+<p>
+可以看出, 这两种报文仅在开始行不同.
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/06/20/超文本传输协议-http/ Or /blog/Network/超文本传输协议-http/16.png" alt="16.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>HTTP 方法</p>
+</div>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Network/2018/06/20/超文本传输协议-http/ Or /blog/Network/超文本传输协议-http/17.png" alt="17.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>HTTP 状态码</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-06-20</span>
+            <span title="last modification date" class="post-info">2018-06-20</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/计算机网络">计算机网络</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Network/2018/06/20/超文本传输协议-http/ Or /blog/Network/超文本传输协议-http/";
+         var disqus_url = "https://pinvondev.github.io/blog/Network/2018/06/20/超文本传输协议-http/ Or /blog/Network/超文本传输协议-http/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>C++ 快速学习 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="C++" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">C++ 快速学习</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf18d0c8">函数与参数</a>
+<ul>
+<li><a href="#orgb4715b9">传值参数</a></li>
+<li><a href="#org201fe29">模板函数</a></li>
+<li><a href="#orga8ddaaf">引用参数</a></li>
+<li><a href="#org22da75d">常量引用参数</a></li>
+<li><a href="#orgbc387d6">返回值</a></li>
+<li><a href="#org5c46cbf">递归函数</a></li>
+</ul>
+</li>
+<li><a href="#org5f0610a">动态存储分配</a>
+<ul>
+<li><a href="#orgb7f7db6">new</a></li>
+<li><a href="#org99db59e">一维数组</a></li>
+<li><a href="#org32e0da1">异常处理</a></li>
+<li><a href="#orge20e15f">delete</a></li>
+<li><a href="#orgd3faf59">二维数组</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf18d0c8" class="outline-2">
+<h2 id="orgf18d0c8">函数与参数</h2>
+<div class="outline-text-2" id="text-orgf18d0c8">
+</div>
+<div id="outline-container-orgb4715b9" class="outline-3">
+<h3 id="orgb4715b9">传值参数</h3>
+<div class="outline-text-3" id="text-orgb4715b9">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">abc</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">a</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">b</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">return</span> a+b+b*c+(a+b-c)/(a+b)+4;
+}
+</pre>
+</div>
+<p>
+在运行时, 实际值会在函数执行前被复制给形参, 复制过程由形参对应的数据类型的 <code>拷贝构造函数</code> 来完成, 当函数结束时, 形参所属数据类型的 <code>析构函数</code> 负责释放该形参. 所以当一个函数返回时, 形参的值不会被复制到对应的实参中, 所以, 传值情况下, 函数调用不会修改实际参数的值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org201fe29" class="outline-3">
+<h3 id="org201fe29">模板函数</h3>
+<div class="outline-text-3" id="text-org201fe29">
+<p>
+将上面的函数改成用模板来实现, 可以在多种数据类型之间通用, 将参数的数据类型作为一个变量, 它的值由编译器来确定. 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #5FD7FF;">T</span> <span style="color: #87D700;">abc</span>(<span style="color: #5FD7FF;">T</span> <span style="color: #FF8C00;">a</span>, <span style="color: #5FD7FF;">T</span> <span style="color: #FF8C00;">b</span>, <span style="color: #5FD7FF;">T</span> <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">return</span> a+b+b*c+(a+b-c)/(a+b)+4;
+}
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#35843;&#29992;</span>
+<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">x</span>=2, <span style="color: #FF8C00;">y</span>=4;
+abc(2, x, y);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga8ddaaf" class="outline-3">
+<h3 id="orga8ddaaf">引用参数</h3>
+<div class="outline-text-3" id="text-orga8ddaaf">
+<p>
+使用传值参数, 会在一定程度上降低程序的效率. 假设数据类型是用户自定义的 Matrix 类, 其拷贝构造函数将复制所有元素, 析构函数将释放所有元素. 如果我们用具有 1000 个元素的 Matrix 作为实际参数来调用 abc(), 则复制给 3 个参数需要 3000 次操作, 析构时又要进行 3000 次操作.
+</p>
+
+<p>
+如果使用引用参数, 在函数被调用时, 不会复制实参的值, 函数调用会修改实参的值.
+</p>
+
+<p>
+可以将上面的模板函数改成:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #5FD7FF;">T</span> <span style="color: #87D700;">abc</span>(<span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">a</span>, <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">b</span>, <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">return</span> a+b+b*c+(a+b-c)/(a+b)+4;
+}
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#35843;&#29992;</span>
+<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">x</span> = 1, <span style="color: #FF8C00;">y</span> = 2;
+cout &lt;&lt; abc(x, x, y) &lt;&lt; endl;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org22da75d" class="outline-3">
+<h3 id="org22da75d">常量引用参数</h3>
+<div class="outline-text-3" id="text-org22da75d">
+<p>
+使用常量引用参数, 可以使得函数不能修改引用参数的值. 这在软件工程方面具有重要的意义, 用户可以立即了解到该函数并不会修改实际参数.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #5FD7FF;">T</span> <span style="color: #87D700;">abc</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">a</span>, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">b</span>, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">return</span> a+b+b*c+(a+b-c)/(a+b)+4;
+}
+</pre>
+</div>
+
+<p>
+如果想让程序更加通用, 可以使用三种类型, 如: template&lt;typename T1, typename T2, typename T3&gt;.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc387d6" class="outline-3">
+<h3 id="orgbc387d6">返回值</h3>
+<div class="outline-text-3" id="text-orgbc387d6">
+<p>
+在以上的函数中, 返回值就是一个具体值, 这意味着返回的对象会被复制到调用环境中. 只要在释放临时变量以及形参的空间之前, 将该值返回, 就不会丢失这个值.
+</p>
+
+<p>
+如果需要返回引用, 可以这么写:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #5FD7FF;">T</span>&amp; <span style="color: #87D700;">func</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>, <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">z</span>) {
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+    <span style="color: #FF1493;">return</span> z;
+}
+</pre>
+</div>
+<p>
+当函数返回时, 传值形参 i 及其他局部变量将被释放, 而 z 是对实际参数的引用, 不会受到影响.
+</p>
+
+<p>
+如果这么写, 则返回值会丢失:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">int</span>&amp; <span style="color: #87D700;">func</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>, <span style="color: #5FD7FF;">int</span>&amp; <span style="color: #FF8C00;">z</span>) {
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+    <span style="color: #5FD7FF;">int</span>* <span style="color: #FF8C00;">ip</span> = &amp;i;
+    <span style="color: #FF1493;">return</span> ip;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#20002;&#22833;</span>
+}
+</pre>
+</div>
+
+<p>
+如果要返回常量引用, 可以这么写:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #87D700;">func</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>, <span style="color: #5FD7FF;">T</span>&amp; <span style="color: #FF8C00;">z</span>) {
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c46cbf" class="outline-3">
+<h3 id="org5c46cbf">递归函数</h3>
+<div class="outline-text-3" id="text-org5c46cbf">
+<p>
+递归函数就是自己调用自己, 有直接递归和间接递归两种.
+</p>
+
+<p>
+直接递归: 函数 F 中直接包含了函数 F.
+</p>
+
+<p>
+间接递归: 函数 F 中包含函数 G, 函数 G 又调用函数 H, ..., 最后一个函数又调用了函数 F.
+</p>
+
+<p>
+C++ 允许我们编写递归函数, 递归函数必须包含终止条件. 如计算阶乘:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">Factorial</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">n</span>) {
+    <span style="color: #FF1493;">if</span> (n &lt;= 1) <span style="color: #FF1493;">return</span> 1;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#32456;&#27490;&#26465;&#20214;</span>
+    <span style="color: #FF1493;">return</span> n*Factorial(n-1);
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5f0610a" class="outline-2">
+<h2 id="org5f0610a">动态存储分配</h2>
+<div class="outline-text-2" id="text-org5f0610a">
+</div>
+<div id="outline-container-orgb7f7db6" class="outline-3">
+<h3 id="orgb7f7db6">new</h3>
+<div class="outline-text-3" id="text-orgb7f7db6">
+<p>
+new 操作符会返回一个指向所分配空间的指针. 如果要给一个整数动态分配存储空间, 并在刚分配的空间中存储 10 这个整数, 可以这么写:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">int</span> *<span style="color: #FF8C00;">y</span> = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">int</span>;
+*y = 10;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#25110;&#32773;</span>
+<span style="color: #5FD7FF;">int</span> *<span style="color: #FF8C00;">y</span> = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">int</span>(10);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org99db59e" class="outline-3">
+<h3 id="org99db59e">一维数组</h3>
+<div class="outline-text-3" id="text-org99db59e">
+<p>
+一个大小为 n 的一维浮点数组可以这样创建:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">float</span> *<span style="color: #FF8C00;">x</span> = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">float</span>[n];
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#36820;&#22238;&#31532; 2 &#20010;&#20803;&#32032;</span>
+x[1];
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org32e0da1" class="outline-3">
+<h3 id="org32e0da1">异常处理</h3>
+<div class="outline-text-3" id="text-org32e0da1">
+<p>
+try catch 机制可以捕获异常. 我们将可能会出现异常的代码放在 try{...} 中, 对异常的处理放在 catch(){...} 中. catch() 可以有多个, 针对不同的异常情况, 进行不同的处理, 如果想直接捕获所有异常, 则这么写: catch(...){}.
+</p>
+
+<p>
+在 new 操作时, 如果内存不够分配了, 将会出现异常, 抛出的异常类型为 xalloc, 所以上面的动态内存分配, 可以这么写:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">try</span> {
+    <span style="color: #5FD7FF;">float</span> *<span style="color: #FF8C00;">x</span> = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">float</span>[10];
+} <span style="color: #FF1493;">catch</span> (xalloc) {
+    cerr &lt;&lt; <span style="color: #CDC673;">"out of memory"</span> &lt;&lt; endl;
+    exit(1);
+}
+</pre>
+</div>
+
+<p>
+如果没有引发异常, 执行完 try 块后, 直接跳过 catch 块.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge20e15f" class="outline-3">
+<h3 id="orge20e15f">delete</h3>
+<div class="outline-text-3" id="text-orge20e15f">
+<p>
+与 new 相对应的释放操作. 释放方法如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">delete</span> y;
+<span style="color: #FF1493;">delete</span> [] x;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd3faf59" class="outline-3">
+<h3 id="orgd3faf59">二维数组</h3>
+<div class="outline-text-3" id="text-orgd3faf59">
+<p>
+二维数组在声明时必须确定第二维的大小, 第一维可以动态确定. 如: a[][10] 是合法的, 而 a[][] 则不是.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">char</span> (*<span style="color: #FF8C00;">c</span>)[5];
+<span style="color: #FF1493;">try</span> {
+    c = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">char</span> [n][5];
+} <span style="color: #FF1493;">catch</span> (xalloc) {
+    cerr &lt;&lt; <span style="color: #CDC673;">"out of memory"</span> &lt;&lt; endl;
+    exit(1);
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #5FD7FF;">bool</span> <span style="color: #87D700;">Make2DArray</span> (<span style="color: #5FD7FF;">T</span> ** &amp;<span style="color: #FF8C00;">x</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">rows</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">cols</span>) {  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#21019;&#24314;&#19968;&#20010;&#20108;&#32500;&#25968;&#32452;</span>
+    <span style="color: #FF1493;">try</span>{
+        x = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">T</span> * [rows];  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#21019;&#24314;&#34892;&#25351;&#38024;</span>
+        <span style="color: #FF1493;">for</span> (<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>=0; i&lt;rows; i++) {
+            x[i] = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">int</span> [cols];
+            <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">true</span>;
+        }
+    } <span style="color: #FF1493;">catch</span> (xalloc) {
+        <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">false</span>;
+    }
+}
+
+<span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">typename</span> <span style="color: #5FD7FF;">T</span>&gt;
+<span style="color: #5FD7FF;">vod</span> <span style="color: #87D700;">Delete2DArray</span> (<span style="color: #5FD7FF;">T</span> ** &amp;<span style="color: #FF8C00;">x</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">rows</span>) {
+    <span style="color: #FF1493;">for</span> (<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>=0; i&lt;rows; i++) {
+        <span style="color: #FF1493;">delete</span> [] x[i];
+        <span style="color: #FF1493;">delete</span> [] x;
+        x = 0;
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-06-20</span>
+            <span title="last modification date" class="post-info">2018-06-20</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/c++">C++</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/C++/2018/06/20/c++-快速学习/ Or /blog/C++/c++-快速学习/";
+         var disqus_url = "https://pinvondev.github.io/blog/C++/2018/06/20/c++-快速学习/ Or /blog/C++/c++-快速学习/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
