@@ -55,36 +55,58 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgf18d0c8">函数与参数</a>
+<li><a href="#org7582be5">函数与参数</a>
 <ul>
-<li><a href="#orgb4715b9">传值参数</a></li>
-<li><a href="#org201fe29">模板函数</a></li>
-<li><a href="#orga8ddaaf">引用参数</a></li>
-<li><a href="#org22da75d">常量引用参数</a></li>
-<li><a href="#orgbc387d6">返回值</a></li>
-<li><a href="#org5c46cbf">递归函数</a></li>
+<li><a href="#org2644776">传值参数</a></li>
+<li><a href="#org54d5df0">模板函数</a></li>
+<li><a href="#orgbf57196">引用参数</a></li>
+<li><a href="#orgc717963">常量引用参数</a></li>
+<li><a href="#org93007a3">返回值</a></li>
+<li><a href="#orge613269">递归函数</a></li>
 </ul>
 </li>
-<li><a href="#org5f0610a">动态存储分配</a>
+<li><a href="#orgd3525d7">动态存储分配</a>
 <ul>
-<li><a href="#orgb7f7db6">new</a></li>
-<li><a href="#org99db59e">一维数组</a></li>
-<li><a href="#org32e0da1">异常处理</a></li>
-<li><a href="#orge20e15f">delete</a></li>
-<li><a href="#orgd3faf59">二维数组</a></li>
+<li><a href="#org1011796">new</a></li>
+<li><a href="#orgfcacd27">一维数组</a></li>
+<li><a href="#org9c7f7be">异常处理</a></li>
+<li><a href="#org3e7f04d">delete</a></li>
+<li><a href="#orgdd0d1c7">二维数组</a></li>
+</ul>
+</li>
+<li><a href="#orgd87d932">类</a>
+<ul>
+<li><a href="#org234571a">货币类 Currency 的声明</a></li>
+<li><a href="#orgd0015fa">构造函数</a></li>
+<li><a href="#org72bbf5c">析构函数</a></li>
+<li><a href="#org3bbb9ee">拷贝构造函数</a></li>
+<li><a href="#org4db790d">货币类 Currency 的实现</a></li>
+<li><a href="#org6a02628">货币类 Currency 的使用</a></li>
+<li><a href="#org02fbe5a">Makefile</a></li>
+<li><a href="#orgf51aaa7">运算符重载</a></li>
+<li><a href="#org1ab0927">引发异常</a></li>
+<li><a href="#org4d4cc3a">友元函数</a></li>
+<li><a href="#orgaaaed59">protected</a></li>
+<li><a href="#org622f39f">#ifndef, #define, #endif 语句</a></li>
+</ul>
+</li>
+<li><a href="#orga1bedc5">测试</a>
+<ul>
+<li><a href="#org1ac38c2">黑盒测试</a></li>
+<li><a href="#orga115f17">白盒测试</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf18d0c8" class="outline-2">
-<h2 id="orgf18d0c8">函数与参数</h2>
-<div class="outline-text-2" id="text-orgf18d0c8">
+<div id="outline-container-org7582be5" class="outline-2">
+<h2 id="org7582be5">函数与参数</h2>
+<div class="outline-text-2" id="text-org7582be5">
 </div>
-<div id="outline-container-orgb4715b9" class="outline-3">
-<h3 id="orgb4715b9">传值参数</h3>
-<div class="outline-text-3" id="text-orgb4715b9">
+<div id="outline-container-org2644776" class="outline-3">
+<h3 id="org2644776">传值参数</h3>
+<div class="outline-text-3" id="text-org2644776">
 <div class="org-src-container">
 <pre class="src src-C++"><span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">abc</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">a</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">b</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>) {
     <span style="color: #FF1493;">return</span> a+b+b*c+(a+b-c)/(a+b)+4;
@@ -97,9 +119,9 @@
 </div>
 </div>
 
-<div id="outline-container-org201fe29" class="outline-3">
-<h3 id="org201fe29">模板函数</h3>
-<div class="outline-text-3" id="text-org201fe29">
+<div id="outline-container-org54d5df0" class="outline-3">
+<h3 id="org54d5df0">模板函数</h3>
+<div class="outline-text-3" id="text-org54d5df0">
 <p>
 将上面的函数改成用模板来实现, 可以在多种数据类型之间通用, 将参数的数据类型作为一个变量, 它的值由编译器来确定. 如:
 </p>
@@ -119,9 +141,9 @@ abc(2, x, y);
 </div>
 </div>
 
-<div id="outline-container-orga8ddaaf" class="outline-3">
-<h3 id="orga8ddaaf">引用参数</h3>
-<div class="outline-text-3" id="text-orga8ddaaf">
+<div id="outline-container-orgbf57196" class="outline-3">
+<h3 id="orgbf57196">引用参数</h3>
+<div class="outline-text-3" id="text-orgbf57196">
 <p>
 使用传值参数, 会在一定程度上降低程序的效率. 假设数据类型是用户自定义的 Matrix 类, 其拷贝构造函数将复制所有元素, 析构函数将释放所有元素. 如果我们用具有 1000 个元素的 Matrix 作为实际参数来调用 abc(), 则复制给 3 个参数需要 3000 次操作, 析构时又要进行 3000 次操作.
 </p>
@@ -148,9 +170,9 @@ cout &lt;&lt; abc(x, x, y) &lt;&lt; endl;
 </div>
 </div>
 
-<div id="outline-container-org22da75d" class="outline-3">
-<h3 id="org22da75d">常量引用参数</h3>
-<div class="outline-text-3" id="text-org22da75d">
+<div id="outline-container-orgc717963" class="outline-3">
+<h3 id="orgc717963">常量引用参数</h3>
+<div class="outline-text-3" id="text-orgc717963">
 <p>
 使用常量引用参数, 可以使得函数不能修改引用参数的值. 这在软件工程方面具有重要的意义, 用户可以立即了解到该函数并不会修改实际参数.
 </p>
@@ -169,9 +191,9 @@ cout &lt;&lt; abc(x, x, y) &lt;&lt; endl;
 </div>
 </div>
 
-<div id="outline-container-orgbc387d6" class="outline-3">
-<h3 id="orgbc387d6">返回值</h3>
-<div class="outline-text-3" id="text-orgbc387d6">
+<div id="outline-container-org93007a3" class="outline-3">
+<h3 id="org93007a3">返回值</h3>
+<div class="outline-text-3" id="text-org93007a3">
 <p>
 在以上的函数中, 返回值就是一个具体值, 这意味着返回的对象会被复制到调用环境中. 只要在释放临时变量以及形参的空间之前, 将该值返回, 就不会丢失这个值.
 </p>
@@ -216,9 +238,9 @@ cout &lt;&lt; abc(x, x, y) &lt;&lt; endl;
 </div>
 </div>
 
-<div id="outline-container-org5c46cbf" class="outline-3">
-<h3 id="org5c46cbf">递归函数</h3>
-<div class="outline-text-3" id="text-org5c46cbf">
+<div id="outline-container-orge613269" class="outline-3">
+<h3 id="orge613269">递归函数</h3>
+<div class="outline-text-3" id="text-orge613269">
 <p>
 递归函数就是自己调用自己, 有直接递归和间接递归两种.
 </p>
@@ -245,13 +267,13 @@ C++ 允许我们编写递归函数, 递归函数必须包含终止条件. 如计
 </div>
 </div>
 
-<div id="outline-container-org5f0610a" class="outline-2">
-<h2 id="org5f0610a">动态存储分配</h2>
-<div class="outline-text-2" id="text-org5f0610a">
+<div id="outline-container-orgd3525d7" class="outline-2">
+<h2 id="orgd3525d7">动态存储分配</h2>
+<div class="outline-text-2" id="text-orgd3525d7">
 </div>
-<div id="outline-container-orgb7f7db6" class="outline-3">
-<h3 id="orgb7f7db6">new</h3>
-<div class="outline-text-3" id="text-orgb7f7db6">
+<div id="outline-container-org1011796" class="outline-3">
+<h3 id="org1011796">new</h3>
+<div class="outline-text-3" id="text-org1011796">
 <p>
 new 操作符会返回一个指向所分配空间的指针. 如果要给一个整数动态分配存储空间, 并在刚分配的空间中存储 10 这个整数, 可以这么写:
 </p>
@@ -266,9 +288,9 @@ new 操作符会返回一个指向所分配空间的指针. 如果要给一个�
 </div>
 </div>
 
-<div id="outline-container-org99db59e" class="outline-3">
-<h3 id="org99db59e">一维数组</h3>
-<div class="outline-text-3" id="text-org99db59e">
+<div id="outline-container-orgfcacd27" class="outline-3">
+<h3 id="orgfcacd27">一维数组</h3>
+<div class="outline-text-3" id="text-orgfcacd27">
 <p>
 一个大小为 n 的一维浮点数组可以这样创建:
 </p>
@@ -282,9 +304,9 @@ x[1];
 </div>
 </div>
 
-<div id="outline-container-org32e0da1" class="outline-3">
-<h3 id="org32e0da1">异常处理</h3>
-<div class="outline-text-3" id="text-org32e0da1">
+<div id="outline-container-org9c7f7be" class="outline-3">
+<h3 id="org9c7f7be">异常处理</h3>
+<div class="outline-text-3" id="text-org9c7f7be">
 <p>
 try catch 机制可以捕获异常. 我们将可能会出现异常的代码放在 try{...} 中, 对异常的处理放在 catch(){...} 中. catch() 可以有多个, 针对不同的异常情况, 进行不同的处理, 如果想直接捕获所有异常, 则这么写: catch(...){}.
 </p>
@@ -308,9 +330,9 @@ try catch 机制可以捕获异常. 我们将可能会出现异常的代码放�
 </div>
 </div>
 
-<div id="outline-container-orge20e15f" class="outline-3">
-<h3 id="orge20e15f">delete</h3>
-<div class="outline-text-3" id="text-orge20e15f">
+<div id="outline-container-org3e7f04d" class="outline-3">
+<h3 id="org3e7f04d">delete</h3>
+<div class="outline-text-3" id="text-org3e7f04d">
 <p>
 与 new 相对应的释放操作. 释放方法如下:
 </p>
@@ -322,9 +344,9 @@ try catch 机制可以捕获异常. 我们将可能会出现异常的代码放�
 </div>
 </div>
 
-<div id="outline-container-orgd3faf59" class="outline-3">
-<h3 id="orgd3faf59">二维数组</h3>
-<div class="outline-text-3" id="text-orgd3faf59">
+<div id="outline-container-orgdd0d1c7" class="outline-3">
+<h3 id="orgdd0d1c7">二维数组</h3>
+<div class="outline-text-3" id="text-orgdd0d1c7">
 <p>
 二维数组在声明时必须确定第二维的大小, 第一维可以动态确定. 如: a[][10] 是合法的, 而 a[][] 则不是.
 </p>
@@ -368,12 +390,419 @@ try catch 机制可以捕获异常. 我们将可能会出现异常的代码放�
 </div>
 </div>
 
+<div id="outline-container-orgd87d932" class="outline-2">
+<h2 id="orgd87d932">类</h2>
+<div class="outline-text-2" id="text-orgd87d932">
+</div>
+<div id="outline-container-org234571a" class="outline-3">
+<h3 id="org234571a">货币类 Currency 的声明</h3>
+<div class="outline-text-3" id="text-org234571a">
+<p>
+使用三个变量来描述一个货币: 符号(+-), 美元(dollars), 美分(cents).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">#if</span><span style="color: #FF1493; font-weight: bold;">n</span><span style="color: #FF1493;">def</span> CURRENCY_H
+<span style="color: #FF1493;">#define</span> <span style="color: #FF8C00;">CURRENCY_H</span>
+
+<span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">currency</span>{
+
+    <span style="color: #FF1493;">enum</span> <span style="color: #5FD7FF;">sign</span> {
+        <span style="color: #FF8C00;">plus</span>,
+        <span style="color: #FF8C00;">minus</span>
+    };
+
+    <span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">Currency</span>{
+    <span style="color: #FF1493;">public</span>:
+        <span style="color: #87D700;">Currency</span>(<span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">s</span>=plus, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span>=0, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>=0);  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#26500;&#36896;&#20989;&#25968;</span>
+        ~<span style="color: #87D700;">Currency</span>(){}  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#26512;&#26500;&#20989;&#25968;</span>
+        <span style="color: #5FD7FF;">bool</span> <span style="color: #87D700;">Set</span>(<span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">s</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>);
+        <span style="color: #5FD7FF;">bool</span> <span style="color: #87D700;">Set</span>(<span style="color: #5FD7FF;">float</span> <span style="color: #FF8C00;">a</span>);
+        <span style="color: #5FD7FF;">sign</span> <span style="color: #87D700;">Sign</span>() <span style="color: #FF1493;">const</span> { <span style="color: #FF1493;">return</span> sgn; }
+        <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #87D700;">Dollars</span>() <span style="color: #FF1493;">const</span> { <span style="color: #FF1493;">return</span> dollars; }
+        <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">Cents</span>() <span style="color: #FF1493;">const</span> { <span style="color: #FF1493;">return</span> cents; }
+        <span style="color: #5FD7FF;">Currency</span> <span style="color: #87D700;">Add</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) <span style="color: #FF1493;">const</span>;
+        <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #87D700;">Increment</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>);
+        <span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">Output</span>() <span style="color: #FF1493;">const</span>;
+    <span style="color: #FF1493;">private</span>:
+        <span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">sgn</span>;
+        <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">dollars</span>;
+        <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">cents</span>;
+    };
+}
+
+<span style="color: #FF1493;">#endif</span>
+</pre>
+</div>
+
+<p>
+这边使用了名字空间, 是因为 plus 和 minus 在标准库中也用到了, 直接使用会出现冲突.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd0015fa" class="outline-3">
+<h3 id="orgd0015fa">构造函数</h3>
+<div class="outline-text-3" id="text-orgd0015fa">
+<p>
+构造函数与类名同名, 它指定了如何创建一个给定类型的对象, 不可以有返回值. 在创建一个 Currency 类对象时, 构造函数被自动调用.
+</p>
+
+<p>
+创建 Currency 类对象的方式:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">Currency</span> <span style="color: #FF8C00;">f</span>, <span style="color: #FF8C00;">g</span>(plus, 3, 45), <span style="color: #FF8C00;">h</span>(minus, 10);
+<span style="color: #5FD7FF;">Currency</span> *<span style="color: #FF8C00;">m</span> = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">Currency</span>(plus, 8, 12);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org72bbf5c" class="outline-3">
+<h3 id="org72bbf5c">析构函数</h3>
+<div class="outline-text-3" id="text-org72bbf5c">
+<p>
+析构函数比类名多一个符号 ~. 当 Currency 对象超出作用域时, 自动调用析构函数, 用来删除对象. 在这个例子中, 析构函数是空的, 但是如果有些类创建了动态数组, 则需要在析构函数中释放这些空间. 析构函数也没有返回值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3bbb9ee" class="outline-3">
+<h3 id="org3bbb9ee">拷贝构造函数</h3>
+<div class="outline-text-3" id="text-org3bbb9ee">
+<p>
+Add 函数和 Increment 函数都会返回 Currency 类对象, 但 Add 函数返回的是值, Increment 函数返回的是引用.
+</p>
+
+<p>
+拷贝构造函数用来执行返回值的复制及传值参数的复制. 在例子中, 我们没有给出拷贝构造函数, 所以 C++ 会使用默认的拷贝构造函数, 默认的拷贝构造函数进行数据成员的复制, 如果需要做其他工作, 则需要自己实现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4db790d" class="outline-3">
+<h3 id="org4db790d">货币类 Currency 的实现</h3>
+<div class="outline-text-3" id="text-org4db790d">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">#include</span><span style="color: #CDC673;">"currency.h"</span>
+<span style="color: #FF1493;">#include</span><span style="color: #CDC673;">&lt;iostream&gt;</span>
+<span style="color: #FF1493;">#include</span><span style="color: #CDC673;">&lt;cstdlib&gt;</span>
+
+<span style="color: #FF1493;">using</span> <span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">currency</span>;
+
+<span style="color: #8B8878;">//</span><span style="color: #8B8878;">&#26500;&#36896;&#20989;&#25968;</span>
+<span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Currency</span>(<span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">s</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">if</span> (c &gt; 99) {
+        <span style="color: #AF87FF;">std</span>::cerr &lt;&lt; <span style="color: #CDC673;">"Cents should be &lt; 100"</span> &lt;&lt; <span style="color: #AF87FF;">std</span>::endl;
+        exit(1);
+    }
+    sgn = s;
+    dollars = d;
+    cents = c;
+}
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#35774;&#32622; private &#25968;&#25454;&#25104;&#21592;</span>
+<span style="color: #5FD7FF;">bool</span> <span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Set</span>(<span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">s</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">if</span> (c &gt; 99) <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">false</span>;
+    sgn = s;
+    dollars = d;
+    cents = c;
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">true</span>;
+}
+
+<span style="color: #5FD7FF;">bool</span> <span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Set</span>(<span style="color: #5FD7FF;">float</span> <span style="color: #FF8C00;">a</span>) {
+    <span style="color: #FF1493;">if</span> (a &lt; 0) {
+        sgn = minus;
+        a = -a;
+    } <span style="color: #FF1493;">else</span> {
+        sgn = plus;
+    }
+
+    dollars = a;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#25277;&#21462;&#25972;&#25968;&#37096;&#20998;</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#24418;&#22914; a.bc &#36825;&#31181;&#26684;&#24335;&#30340;&#25968;&#23383;, &#22312;&#35745;&#31639;&#26426;&#20013;&#21487;&#33021;&#27809;&#26377;&#19968;&#20010;&#31934;&#30830;&#30340;&#34920;&#31034;. &#20363;&#22914;, &#35745;&#31639;&#26426;&#25152;&#25551;&#36848;&#30340;&#25968;&#23383; 5.29, &#21487;&#33021;</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#27604; 5.29 &#31245;&#24494;&#23567;&#19968;&#28857;. &#25152;&#20197;&#23545; (a-dollars)*100 &#24471;&#21040;&#30340;&#25968;&#36827;&#34892;&#21462;&#25972;, &#24471;&#21040;&#30340;&#20250;&#26159; 28, &#32780;&#19981;&#26159; 29. &#30001;&#20110;</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#25105;&#20204;&#21482;&#35201;&#21462;&#20004;&#20301;&#25968;, &#25152;&#20197;&#23558;&#20854;&#21152;&#19978; 0.005. &#22914;&#26524;&#35201;&#21462;&#19977;&#20301;&#25968;, &#21017;&#21152;&#19978; 0.0005.</span>
+    cents = (a + 0.005 - dollars) * 100;
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">true</span>;
+}
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#32047;&#21152;&#20004;&#20010; Currency</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#35745;&#31639;&#26426;&#36827;&#34892;&#23567;&#25968;&#36816;&#31639;&#26102;, &#20250;&#20002;&#22833;&#31934;&#24230;, &#25152;&#20197;&#23558;&#20004;&#20010; Currency &#36827;&#34892;&#32047;&#21152;&#26102;, &#20808;&#23558;&#20854;&#36716;&#21270;&#25104;&#25972;&#25968;, &#20877;&#36827;&#34892;&#35745;&#31639;</span>
+<span style="color: #5FD7FF;">Currency</span> <span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Add</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) <span style="color: #FF1493;">const</span> {
+    <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">a1</span>, <span style="color: #FF8C00;">a2</span>, <span style="color: #FF8C00;">a3</span>;
+    <span style="color: #5FD7FF;">Currency</span> <span style="color: #FF8C00;">ans</span>;
+    a1 = dollars * 100 + cents;
+    <span style="color: #FF1493;">if</span> (sgn == minus) a1 = -a1;
+
+    a2 = x.dollars * 100 + x.cents;
+    <span style="color: #FF1493;">if</span> (x.sgn == minus) a2 = -a2;
+
+    a3 = a1 + a2;
+
+    <span style="color: #FF1493;">if</span> (a3 &lt; 0) {
+        ans.sgn = minus;
+        a3 = -a3;
+    } <span style="color: #FF1493;">else</span> {
+        ans.sgn = plus;
+    }
+    ans.dollars = a3 / 100;
+    ans.cents = a3 - ans.dollars * 100;
+    <span style="color: #FF1493;">return</span> ans;
+}
+
+<span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Increment</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) {
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">this &#26159;&#25351;&#21521;&#24403;&#21069;&#23545;&#35937;&#30340;&#25351;&#38024;, &#25152;&#20197; *this &#34920;&#31034;&#24403;&#21069;&#23545;&#35937;</span>
+    *<span style="color: #FF1493;">this</span> = Add(x);
+    <span style="color: #FF1493;">return</span> *<span style="color: #FF1493;">this</span>;
+}
+
+<span style="color: #5FD7FF;">void</span> <span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Output</span>() <span style="color: #FF1493;">const</span> {
+    <span style="color: #FF1493;">if</span> (sgn == minus) {
+        <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #CDC673;">'-'</span>;
+    }
+    <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #CDC673;">'$'</span> &lt;&lt; dollars &lt;&lt; <span style="color: #CDC673;">'.'</span>;
+
+    <span style="color: #FF1493;">if</span> (cents &lt; 10) {
+        <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #CDC673;">"0"</span>;
+    }
+    <span style="color: #AF87FF;">std</span>::cout &lt;&lt; cents;
+}
+</pre>
+</div>
+
+<p>
+由于 Currency 类的数据成员都是私有的, 所以用户不能通过如下语句来改变这些数据成员的值:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">h.cents = 20;
+h.dollars = 100;
+h.sgn = plus;
+</pre>
+</div>
+<p>
+而是只能通过构造函数和 Set 函数来进行设置, 这两个函数会判断数据成员是否合法, 而 Add 等函数则不再验证.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6a02628" class="outline-3">
+<h3 id="org6a02628">货币类 Currency 的使用</h3>
+<div class="outline-text-3" id="text-org6a02628">
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;iostream&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">"currency.h"</span>
+<span style="color: #FF1493;">using</span> <span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">currency</span>;
+
+<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">argc</span>, <span style="color: #5FD7FF;">char</span> <span style="color: #FF1493;">const</span> *<span style="color: #FF8C00;">argv</span>[])
+{
+    <span style="color: #8B8878;">/* </span><span style="color: #8B8878;">code */</span>
+    <span style="color: #5FD7FF;">Currency</span> <span style="color: #FF8C00;">g</span>, <span style="color: #FF8C00;">h</span>(plus, 3, 50), <span style="color: #FF8C00;">i</span>, <span style="color: #FF8C00;">j</span>;
+    g.Set(minus, 2, 25);
+    i.Set(-6.45);
+    j = h.Add(g);
+    j.Output();
+    <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #AF87FF;">std</span>::endl;
+    j = i.Add(g).Add(h);
+    j.Output();
+    <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #AF87FF;">std</span>::endl;
+    j = i.Increment(g).Add(h);
+    j.Output();
+    <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #AF87FF;">std</span>::endl;
+    i.Output();
+    <span style="color: #AF87FF;">std</span>::cout &lt;&lt; <span style="color: #AF87FF;">std</span>::endl;
+    <span style="color: #FF1493;">return</span> 0;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org02fbe5a" class="outline-3">
+<h3 id="org02fbe5a">Makefile</h3>
+<div class="outline-text-3" id="text-org02fbe5a">
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #87D700;">main</span>: main.o currency.o
+    g++ main.o currency.o -o main
+<span style="color: #87D700;">main.o</span>: main.cpp
+    g++ -c main.cpp -o main.o
+<span style="color: #87D700;">currency.o</span>: currency.cpp
+    g++ -c currency.cpp -o currency.o
+<span style="color: #87D700;">clean</span>:
+    rm *.o
+    rm main
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf51aaa7" class="outline-3">
+<h3 id="orgf51aaa7">运算符重载</h3>
+<div class="outline-text-3" id="text-orgf51aaa7">
+<p>
+在 Currency 类中, Add 函数和 Increment 函数相当于平时用到的 + 和 += 操作符, 直接使用这两个操作符, 会更加自然. 另外, Output 函数相当于 &lt;&lt; 操作符.
+</p>
+
+<p>
+操作符重载允许我们对 C++ 操作符进行扩展, 使其能应用到新的数据类型或类.
+</p>
+
+<p>
+为简单起见, 从现在开始, 我们的 Currency 类只有一个私有数据成员: long amount, $1.32 直接用数字 132 来表示.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #5FD7FF;">Currency</span> <span style="color: #FF1493;">operator</span><span style="color: #87D700;">+</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) <span style="color: #FF1493;">const</span> {
+    <span style="color: #5FD7FF;">Currency</span> <span style="color: #FF8C00;">y</span>;
+    y.amount = amount + x.amount;
+    <span style="color: #FF1493;">return</span> y;
+}
+
+<span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF1493;">operator</span><span style="color: #87D700;">+=</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) {
+    amount += x.amount;
+    <span style="color: #FF1493;">return</span> *<span style="color: #FF1493;">this</span>;
+}
+
+<span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">Output</span>(<span style="color: #5FD7FF;">ostream</span>&amp; <span style="color: #FF8C00;">out</span>) <span style="color: #FF1493;">const</span> {
+    <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">a</span> = amount;
+    <span style="color: #FF1493;">if</span> (a &lt; 0) {
+        out &lt;&lt; <span style="color: #CDC673;">'-'</span>;
+        a = -a;
+    }
+    <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span> = a / 100;
+    out &lt;&lt; <span style="color: #CDC673;">'$'</span> &lt;&lt; d &lt;&lt; <span style="color: #CDC673;">'.'</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span> = a - d * 100;
+    <span style="color: #FF1493;">if</span> (c &lt; 10) out &lt;&lt; <span style="color: #CDC673;">"0"</span>;
+    out &lt;&lt; c;
+}
+
+<span style="color: #5FD7FF;">ostream</span>&amp; <span style="color: #FF1493;">operator</span><span style="color: #87D700;">&lt;&lt;</span>(<span style="color: #5FD7FF;">ostream</span>&amp; <span style="color: #FF8C00;">out</span>, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) {
+    x.Output(output);
+    <span style="color: #FF1493;">return</span> out;
+}
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#20351;&#29992;</span>
+cout &lt;&lt; i &lt;&lt; endl;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">i &#26159; Currency &#23545;&#35937;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1ab0927" class="outline-3">
+<h3 id="org1ab0927">引发异常</h3>
+<div class="outline-text-3" id="text-org1ab0927">
+<p>
+像构造函数和 Set 函数, 有可能会在执行预定的任务时失败. 可以定义一个异常类, 在引发异常时, 捕获异常并处理.
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">BadInitializers</span> {  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#23450;&#20041;&#24322;&#24120;&#31867;</span>
+<span style="color: #FF1493;">public</span>:
+    <span style="color: #87D700;">BadInitializers</span>() {}
+};
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Currency</span>(<span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">s</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">if</span> (c &gt; 99) <span style="color: #FF1493;">throw</span> <span style="color: #5FD7FF;">BadInitializers</span>();
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+}
+
+<span style="color: #5FD7FF;">void</span> <span style="color: #AF87FF;">Currency</span>::<span style="color: #87D700;">Set</span>(<span style="color: #5FD7FF;">sign</span> <span style="color: #FF8C00;">s</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span>, <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span>) {
+    <span style="color: #FF1493;">if</span> (c &gt; 99) <span style="color: #FF1493;">throw</span> <span style="color: #5FD7FF;">BadInitializers</span>();
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4d4cc3a" class="outline-3">
+<h3 id="org4d4cc3a">友元函数</h3>
+<div class="outline-text-3" id="text-org4d4cc3a">
+<p>
+一个类的 private 成员仅对于本类的成员函数是可见的. 但是有时候, 必须把对这些 private 成员的访问权限授予其他的类和函数, 于是就有了友元函数.
+</p>
+
+<p>
+像前面的 &lt;&lt; 运算符重载中, Output 函数是 Currency 类的成员函数, operator&lt;&lt; 则不是, 所以编写时会比较麻烦, 要在 operator&lt;&lt; 函数内部调用 Output 函数.
+</p>
+
+<p>
+有了友元函数, 我们可以直接使用 operator&lt;&lt;, 而不再需要 Output 函数.
+</p>
+<div class="org-src-container">
+<pre class="src src-C++"><span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">Currency</span>{
+<span style="color: #FF1493;">public</span>:
+    <span style="color: #FF1493;">friend</span> <span style="color: #5FD7FF;">ostream</span>&amp; <span style="color: #FF1493;">operator</span><span style="color: #87D700;">&lt;&lt;</span>(<span style="color: #5FD7FF;">ostream</span>&amp;, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp;);
+};
+
+<span style="color: #5FD7FF;">ostream</span>&amp; <span style="color: #FF1493;">operator</span><span style="color: #87D700;">&lt;&lt;</span>(<span style="color: #5FD7FF;">ostream</span>&amp; <span style="color: #FF8C00;">out</span>, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">Currency</span>&amp; <span style="color: #FF8C00;">x</span>) {
+    <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">a</span> = x.amount;
+    <span style="color: #FF1493;">if</span> (a &lt; 0) { out &lt;&lt; <span style="color: #CDC673;">'-'</span>; a = -a; }
+    <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">d</span> = a / 100;
+    out &lt;&lt; <span style="color: #CDC673;">'$'</span> &lt;&lt; d &lt;&lt; <span style="color: #CDC673;">'.'</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">c</span> = a - d * 100;
+    <span style="color: #FF1493;">if</span> (c &lt; 10) out &lt;&lt; <span style="color: #CDC673;">"0"</span>;
+    out &lt;&lt; c;
+    <span style="color: #FF1493;">return</span> out;
+}
+</pre>
+</div>
+
+<p>
+为什么不能直接将 operator&lt;&lt; 设置为成员函数?
+</p>
+
+<p>
+因为流操作符的左边必须是成员函数所属的类, 但是实际上, 流操作符都是 cin, cout, cerr 等, 这不是我们所能修改的, 所以最好的办法是将其定义为友元.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaaaed59" class="outline-3">
+<h3 id="orgaaaed59">protected</h3>
+</div>
+
+<div id="outline-container-org622f39f" class="outline-3">
+<h3 id="org622f39f">#ifndef, #define, #endif 语句</h3>
+<div class="outline-text-3" id="text-org622f39f">
+<p>
+建议为每个头文件都加上这些语句, 这样可以确保这些头文件仅被包含和编译一次.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga1bedc5" class="outline-2">
+<h2 id="orga1bedc5">测试</h2>
+<div class="outline-text-2" id="text-orga1bedc5">
+</div>
+<div id="outline-container-org1ac38c2" class="outline-3">
+<h3 id="org1ac38c2">黑盒测试</h3>
+<div class="outline-text-3" id="text-org1ac38c2">
+<p>
+假设程序不可见, 仅设计输入和期望的输出.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga115f17" class="outline-3">
+<h3 id="orga115f17">白盒测试</h3>
+<div class="outline-text-3" id="text-orga115f17">
+<p>
+程序可见, 设计测试数据, 使得程序的每一条语句都至少被执行一次(如 if 分支, 都要跑一遍).
+</p>
+</div>
+</div>
+</div>
+
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-06-20</span>
-            <span title="last modification date" class="post-info">2018-06-20</span>
+            <span title="last modification date" class="post-info">2018-06-21</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/c++">C++</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
