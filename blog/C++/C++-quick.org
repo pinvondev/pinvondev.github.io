@@ -200,3 +200,311 @@ vod Delete2DArray (T ** &x, int rows) {
     }
 }
 #+END_SRC
+
+* 类
+
+** 货币类 Currency 的声明
+
+使用三个变量来描述一个货币: 符号(+-), 美元(dollars), 美分(cents).
+
+#+BEGIN_SRC C++
+#ifndef CURRENCY_H
+#define CURRENCY_H
+
+namespace currency{
+
+    enum sign {
+        plus,
+        minus
+    };
+
+    class Currency{
+    public:
+        Currency(sign s=plus, unsigned long d=0, unsigned int c=0);  // 构造函数
+        ~Currency(){}  // 析构函数
+        bool Set(sign s, unsigned long d, unsigned int c);
+        bool Set(float a);
+        sign Sign() const { return sgn; }
+        unsigned long Dollars() const { return dollars; }
+        unsigned int Cents() const { return cents; }
+        Currency Add(const Currency& x) const;
+        Currency& Increment(const Currency& x);
+        void Output() const;
+    private:
+        sign sgn;
+        unsigned long dollars;
+        unsigned int cents;
+    };
+}
+
+#endif
+#+END_SRC
+
+这边使用了名字空间, 是因为 plus 和 minus 在标准库中也用到了, 直接使用会出现冲突.
+
+** 构造函数
+
+构造函数与类名同名, 它指定了如何创建一个给定类型的对象, 不可以有返回值. 在创建一个 Currency 类对象时, 构造函数被自动调用.
+
+创建 Currency 类对象的方式:
+#+BEGIN_SRC C++
+Currency f, g(plus, 3, 45), h(minus, 10);
+Currency *m = new Currency(plus, 8, 12);
+#+END_SRC
+
+** 析构函数
+
+析构函数比类名多一个符号 ~. 当 Currency 对象超出作用域时, 自动调用析构函数, 用来删除对象. 在这个例子中, 析构函数是空的, 但是如果有些类创建了动态数组, 则需要在析构函数中释放这些空间. 析构函数也没有返回值.
+
+** 拷贝构造函数
+
+Add 函数和 Increment 函数都会返回 Currency 类对象, 但 Add 函数返回的是值, Increment 函数返回的是引用.
+
+拷贝构造函数用来执行返回值的复制及传值参数的复制. 在例子中, 我们没有给出拷贝构造函数, 所以 C++ 会使用默认的拷贝构造函数, 默认的拷贝构造函数进行数据成员的复制, 如果需要做其他工作, 则需要自己实现.
+
+** 货币类 Currency 的实现
+
+#+BEGIN_SRC C++
+#include"currency.h"
+#include<iostream>
+#include<cstdlib>
+
+using namespace currency;
+
+//构造函数
+Currency::Currency(sign s, unsigned long d, unsigned int c) {
+    if (c > 99) {
+        std::cerr << "Cents should be < 100" << std::endl;
+        exit(1);
+    }
+    sgn = s;
+    dollars = d;
+    cents = c;
+}
+
+// 设置 private 数据成员
+bool Currency::Set(sign s, unsigned long d, unsigned int c) {
+    if (c > 99) return false;
+    sgn = s;
+    dollars = d;
+    cents = c;
+    return true;
+}
+
+bool Currency::Set(float a) {
+    if (a < 0) {
+        sgn = minus;
+        a = -a;
+    } else {
+        sgn = plus;
+    }
+
+    dollars = a;  // 抽取整数部分
+    // 形如 a.bc 这种格式的数字, 在计算机中可能没有一个精确的表示. 例如, 计算机所描述的数字 5.29, 可能
+    // 比 5.29 稍微小一点. 所以对 (a-dollars)*100 得到的数进行取整, 得到的会是 28, 而不是 29. 由于
+    // 我们只要取两位数, 所以将其加上 0.005. 如果要取三位数, 则加上 0.0005.
+    cents = (a + 0.005 - dollars) * 100;
+    return true;
+}
+
+// 累加两个 Currency
+// 计算机进行小数运算时, 会丢失精度, 所以将两个 Currency 进行累加时, 先将其转化成整数, 再进行计算
+Currency Currency::Add(const Currency& x) const {
+    long a1, a2, a3;
+    Currency ans;
+    a1 = dollars * 100 + cents;
+    if (sgn == minus) a1 = -a1;
+
+    a2 = x.dollars * 100 + x.cents;
+    if (x.sgn == minus) a2 = -a2;
+
+    a3 = a1 + a2;
+
+    if (a3 < 0) {
+        ans.sgn = minus;
+        a3 = -a3;
+    } else {
+        ans.sgn = plus;
+    }
+    ans.dollars = a3 / 100;
+    ans.cents = a3 - ans.dollars * 100;
+    return ans;
+}
+
+Currency& Currency::Increment(const Currency& x) {
+    // this 是指向当前对象的指针, 所以 *this 表示当前对象
+    *this = Add(x);
+    return *this;
+}
+
+void Currency::Output() const {
+    if (sgn == minus) {
+        std::cout << '-';
+    }
+    std::cout << '$' << dollars << '.';
+
+    if (cents < 10) {
+        std::cout << "0";
+    }
+    std::cout << cents;
+}
+#+END_SRC
+
+由于 Currency 类的数据成员都是私有的, 所以用户不能通过如下语句来改变这些数据成员的值:
+#+BEGIN_SRC C++
+h.cents = 20;
+h.dollars = 100;
+h.sgn = plus;
+#+END_SRC
+而是只能通过构造函数和 Set 函数来进行设置, 这两个函数会判断数据成员是否合法, 而 Add 等函数则不再验证.
+
+** 货币类 Currency 的使用
+
+#+BEGIN_SRC C++
+#include <iostream>
+#include "currency.h"
+using namespace currency;
+
+int main(int argc, char const *argv[])
+{
+    /* code */
+    Currency g, h(plus, 3, 50), i, j;
+    g.Set(minus, 2, 25);
+    i.Set(-6.45);
+    j = h.Add(g);
+    j.Output();
+    std::cout << std::endl;
+    j = i.Add(g).Add(h);
+    j.Output();
+    std::cout << std::endl;
+    j = i.Increment(g).Add(h);
+    j.Output();
+    std::cout << std::endl;
+    i.Output();
+    std::cout << std::endl;
+    return 0;
+}
+#+END_SRC
+
+** Makefile
+
+#+BEGIN_SRC makefile
+main: main.o currency.o
+	g++ main.o currency.o -o main
+main.o: main.cpp
+	g++ -c main.cpp -o main.o
+currency.o: currency.cpp
+	g++ -c currency.cpp -o currency.o
+clean:
+	rm *.o
+	rm main
+#+END_SRC
+
+** 运算符重载
+
+在 Currency 类中, Add 函数和 Increment 函数相当于平时用到的 + 和 += 操作符, 直接使用这两个操作符, 会更加自然. 另外, Output 函数相当于 << 操作符.
+
+操作符重载允许我们对 C++ 操作符进行扩展, 使其能应用到新的数据类型或类.
+
+为简单起见, 从现在开始, 我们的 Currency 类只有一个私有数据成员: long amount, $1.32 直接用数字 132 来表示.
+
+#+BEGIN_SRC C++
+Currency operator+(const Currency& x) const {
+	Currency y;
+	y.amount = amount + x.amount;
+	return y;
+}
+
+Currency& operator+=(const Currency& x) {
+	amount += x.amount;
+	return *this;
+}
+
+void Output(ostream& out) const {
+	long a = amount;
+	if (a < 0) {
+		out << '-';
+		a = -a;
+	}
+	long d = a / 100;
+	out << '$' << d << '.';
+	int c = a - d * 100;
+	if (c < 10) out << "0";
+	out << c;
+}
+
+ostream& operator<<(ostream& out, const Currency& x) {
+	x.Output(output);
+	return out;
+}
+
+// 使用
+cout << i << endl;  // i 是 Currency 对象
+#+END_SRC
+
+** 引发异常
+
+像构造函数和 Set 函数, 有可能会在执行预定的任务时失败. 可以定义一个异常类, 在引发异常时, 捕获异常并处理.
+#+BEGIN_SRC C++
+class BadInitializers {  // 定义异常类
+public:
+	BadInitializers() {}
+};
+#+END_SRC
+
+#+BEGIN_SRC C++
+Currency::Currency(sign s, unsigned long d, unsigned int c) {
+	if (c > 99) throw BadInitializers();
+	// ...
+}
+
+void Currency::Set(sign s, unsigned long d, unsigned int c) {
+	if (c > 99) throw BadInitializers();
+	// ...
+}
+#+END_SRC
+
+** 友元函数
+
+一个类的 private 成员仅对于本类的成员函数是可见的. 但是有时候, 必须把对这些 private 成员的访问权限授予其他的类和函数, 于是就有了友元函数.
+
+像前面的 << 运算符重载中, Output 函数是 Currency 类的成员函数, operator<< 则不是, 所以编写时会比较麻烦, 要在 operator<< 函数内部调用 Output 函数.
+
+有了友元函数, 我们可以直接使用 operator<<, 而不再需要 Output 函数.
+#+BEGIN_SRC C++
+class Currency{
+public:
+	friend ostream& operator<<(ostream&, const Currency&);
+};
+
+ostream& operator<<(ostream& out, const Currency& x) {
+	long a = x.amount;
+	if (a < 0) { out << '-'; a = -a; }
+	long d = a / 100;
+	out << '$' << d << '.';
+	int c = a - d * 100;
+	if (c < 10) out << "0";
+	out << c;
+	return out;
+}
+#+END_SRC
+
+为什么不能直接将 operator<< 设置为成员函数?
+
+因为流操作符的左边必须是成员函数所属的类, 但是实际上, 流操作符都是 cin, cout, cerr 等, 这不是我们所能修改的, 所以最好的办法是将其定义为友元.
+
+** protected
+
+** #ifndef, #define, #endif 语句
+
+建议为每个头文件都加上这些语句, 这样可以确保这些头文件仅被包含和编译一次.
+
+* 测试
+
+** 黑盒测试
+
+假设程序不可见, 仅设计输入和期望的输出.
+
+** 白盒测试
+
+程序可见, 设计测试数据, 使得程序的每一条语句都至少被执行一次(如 if 分支, 都要跑一遍).
