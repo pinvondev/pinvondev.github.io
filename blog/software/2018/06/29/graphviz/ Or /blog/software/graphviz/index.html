@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Graphviz - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="利器" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Graphviz</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org00e38b9">概述</a></li>
+<li><a href="#orgac18f62">安装</a></li>
+<li><a href="#org8be575d">编译</a></li>
+<li><a href="#org03a8c3b">DOT 语言</a>
+<ul>
+<li><a href="#orgad7509a">无向图例子</a></li>
+<li><a href="#org617e269">有向图例子</a></li>
+<li><a href="#orgf644090">注释</a></li>
+<li><a href="#org39d65b8">node</a></li>
+<li><a href="#org4001787">edge</a></li>
+<li><a href="#org1b25d9c">graph</a></li>
+<li><a href="#org1298465">更复杂的例子</a></li>
+</ul>
+</li>
+<li><a href="#org013456f">DOT 完整教程</a></li>
+<li><a href="#org6b73a70">Emacs 配置</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org00e38b9" class="outline-2">
+<h2 id="org00e38b9">概述</h2>
+<div class="outline-text-2" id="text-org00e38b9">
+<p>
+Graphviz 是一个开源的, 跨平台的自动绘图工具.
+</p>
+
+<p>
+<a href="http://www.graphviz.org/documentation/">官方文档</a>
+</p>
+
+<p>
+Graphviz 主要用于绘制关系图, 与 Visio 类似, 但 Visio 使用的是图形操作界面, 而 Graphviz 则使用代码, 只要告诉 Graphviz 这张图包含哪些元素, 以及这些元素之间的关系, Graphviz 就可以自动画出来.
+</p>
+
+<p>
+与 Visio 相比, 其优点在于: 图形是自动绘制的, 如果关系非常复杂, 使用 Visio 比较繁琐, 而 Graphviz 可以自动布局, 它可以尽量让关系之间的连线的交叉尽量少.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgac18f62" class="outline-2">
+<h2 id="orgac18f62">安装</h2>
+<div class="outline-text-2" id="text-orgac18f62">
+<p>
+Ubuntu:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo apt-get install graphviz
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8be575d" class="outline-2">
+<h2 id="org8be575d">编译</h2>
+<div class="outline-text-2" id="text-org8be575d">
+<div class="org-src-container">
+<pre class="src src-Shell">dot -Tpng test.dot -o test.png  # 生成 png 图片
+eog test.png  # 查看图片
+</pre>
+</div>
+
+<p>
+除了 png 图片, 还支持:
+</p>
+
+<p>
+jpg, gif, bmp, tiff, ico, svg
+</p>
+
+<p>
+pdf, eps, ps
+</p>
+</div>
+</div>
+
+<div id="outline-container-org03a8c3b" class="outline-2">
+<h2 id="org03a8c3b">DOT 语言</h2>
+<div class="outline-text-2" id="text-org03a8c3b">
+<p>
+Graphviz 根据 DOT 语言的描述来自动生成图形.
+</p>
+
+<p>
+DOT 包含三个基本元素: node, edge, graph. 这三种元素都有一些属性, 如颜色, 形状等.
+</p>
+
+<p>
+DOT 支持有向图和无向图两种.
+</p>
+</div>
+
+<div id="outline-container-orgad7509a" class="outline-3">
+<h3 id="orgad7509a">无向图例子</h3>
+<div class="outline-text-3" id="text-orgad7509a">
+<div class="org-src-container">
+<pre class="src src-DOT">graph simple
+{
+    a -- b -- c;
+    b -- d;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org617e269" class="outline-3">
+<h3 id="org617e269">有向图例子</h3>
+<div class="outline-text-3" id="text-org617e269">
+<div class="org-src-container">
+<pre class="src src-DOT">digraph simple
+{
+    a -&gt; b -&gt; c;
+    b -&gt; d;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf644090" class="outline-3">
+<h3 id="orgf644090">注释</h3>
+<div class="outline-text-3" id="text-orgf644090">
+<p>
+单行注释: //
+</p>
+
+<p>
+多行注释: <i>* *</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org39d65b8" class="outline-3">
+<h3 id="org39d65b8">node</h3>
+<div class="outline-text-3" id="text-org39d65b8">
+<p>
+node 常用属性: label(标题), color(颜色), style(样式), shape(形状)
+</p>
+
+<p>
+更多属性, 可以参考<a href="https://graphviz.gitlab.io/_pages/doc/info/attrs.html">文档</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-DOT">digraph node_attr
+{
+    shape1 [shape=box, label="编程随想注：\n矩形节点"];
+    shape2 [shape=circle, label="编程随想注：\n圆形节点"];
+    shape3 [shape=ellipse, label="编程随想注：\n椭圆形节点"];
+    shape4 [shape=polygon, sides=4, skew=0.4, label="编程随想注：\n平行四边形节点"];
+    shape5 [shape=none, label="编程随想注：\n无边框节点"];
+    shape1 -&gt; shape2 -&gt; shape3 -&gt; shape4 -&gt; shape5
+
+    color1 [color="blue", label="编程随想注：\n蓝色边框"]
+    color2 [color="green", style=filled, label="编程随想注：\n绿色填充"]
+    color3 [color="#ff0000", style=filled, fillcolor="yellow", label="编程随想注：\n红色边框+黄色填充"]
+    color4 [color="#0000FF" style=filled, fillcolor="green:red", label="编程随想注：\n蓝色边框+从绿色到红色渐变填充"]
+    /* 上面两个节点采用 HTML 的颜色语法，dot 支持 这种语法 */
+    color1 -&gt; color2 -&gt; color3 -&gt; color4
+
+    text1 [shape=box, fontsize=12, label="编程随想注：\n小字体"]
+    text2 [shape=box, fontsize=24, label="编程随想注：\n大字体"]
+    text3 [shape=box, fontcolor="blue", label="编程随想注：\n蓝色文字"]
+    text4 [shape=box, label=&lt;编程随想注：&lt;br/&gt;&lt;b&gt;粗体&lt;/b&gt; &lt;i&gt;斜体&lt;/i&gt;&lt;u&gt;下划线&lt;/u&gt;&gt;]
+    // 注意：text4 使用 HTML 风格的 label，无需引号，但必须用尖括号
+    text1 -&gt; text2 -&gt; text3 -&gt; text4
+}
+</pre>
+</div>
+
+<p>
+结果如下:
+<img src="https://pinvondev.github.io/assets/blog/software/2018/06/29/graphviz/ Or /blog/software/graphviz/direct.png" alt="direct.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4001787" class="outline-3">
+<h3 id="org4001787">edge</h3>
+<div class="outline-text-3" id="text-org4001787">
+<p>
+有向图用 -&gt;
+</p>
+
+<p>
+无向图用 --
+</p>
+
+<p>
+属性:
+</p>
+<pre class="example">
+label: 标题
+color: 颜色
+style: 线条的样式
+dir: 连线的方向
+arrowhead: 前端样式
+arrowtall: 末端样式
+</pre>
+
+<p>
+例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-DOT">digraph edge_attr
+{
+    style0[label="编程随想注：\n以下是样式的示例"];
+    style1[label=""] style2[label=""] style3[label=""] style4[label=""];
+
+    style0 -&gt; style1 [style=solid, label="实线"];
+    style1 -&gt; style2 [style=bold, label="粗线"];
+    style2 -&gt; style3 [style=dashed, label="短划线"];
+    style3 -&gt; style4 [style=dotted, label="虚线"];
+
+    arrow0[label="编程随想注：\n以下是箭头的示例"];
+    arrow1[label=""] arrow2[label=""] arrow3[label=""] arrow4[label=""] arrow5[label=""] arrow6[label=""];
+    arrow0 -&gt; arrow1 [dir=both, label="双向箭头"];
+    arrow1 -&gt; arrow2 [arrowsize=2.0, label="大箭头"];
+    arrow2 -&gt; arrow3 [arrowhead="open", label="带倒钩的箭头"];
+    arrow3 -&gt; arrow4 [arrowhead="halfopen", label="单边倒钩"];
+    arrow4 -&gt; arrow5 [arrowhead="ediamond", label="菱形箭头"];
+    arrow5 -&gt; arrow6 [arrowhead="dot", label="圆形箭头"];
+
+    color0[label="编程随想注：\n以下是颜色的示例"];
+    color1[label=""] color2[label=""] color3[label=""];
+    color0 -&gt; color1 [color="blue", label="蓝色"];
+    color1 -&gt; color2 [color="red:blue", label="双色"];
+    color2 -&gt; color3 [color="green:red;0.4:blue", label="颜色分段"];
+}
+</pre>
+</div>
+
+<p>
+结果如下:
+<img src="https://pinvondev.github.io/assets/blog/software/2018/06/29/graphviz/ Or /blog/software/graphviz/edge.png" alt="edge.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1b25d9c" class="outline-3">
+<h3 id="org1b25d9c">graph</h3>
+<div class="outline-text-3" id="text-org1b25d9c">
+<p>
+属性:
+</p>
+<pre class="example">
+label: 标题
+bgcolor: 颜色
+fontname: 字体名称
+fontsize: 字体大小
+fontcolor: 字体颜色
+center: 是否居中
+</pre>
+
+<p>
+例子:
+</p>
+<div class="org-src-container">
+<pre class="src src-DOT">digraph graph_attr
+{
+    graph[bgcolor="cadetblue" label="图的标题" fontsize=24 fontcolor="green"];
+
+    node0 -&gt; node1;
+    node0 -&gt; node2;
+}
+</pre>
+</div>
+
+<p>
+结果如下:
+<img src="https://pinvondev.github.io/assets/blog/software/2018/06/29/graphviz/ Or /blog/software/graphviz/graph.png" alt="graph.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1298465" class="outline-3">
+<h3 id="org1298465">更复杂的例子</h3>
+<div class="outline-text-3" id="text-org1298465">
+<div class="org-src-container">
+<pre class="src src-DOT">digraph struct
+{
+    node [shape=record];
+    struct1 [label="&lt;f0&gt;left|&lt;f1&gt;middle|&lt;f2&gt;right"];
+    struct2 [label="&lt;f0&gt;one|&lt;f1&gt;two"];
+    struct3 [label="hello\nworld|{b|{c|&lt;here&gt;d|e}|f}"];
+    struct1:f1 -&gt; struct2:f0;
+    struct1:f2 -&gt; struct3:here;
+}
+</pre>
+</div>
+
+<p>
+结果如下:
+<img src="https://pinvondev.github.io/assets/blog/software/2018/06/29/graphviz/ Or /blog/software/graphviz/struct.png" alt="struct.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org013456f" class="outline-2">
+<h2 id="org013456f">DOT 完整教程</h2>
+<div class="outline-text-2" id="text-org013456f">
+<p>
+<a href="http://www.graphviz.org/pdf/dotguide.pdf">DOT语言完整指南</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6b73a70" class="outline-2">
+<h2 id="org6b73a70">Emacs 配置</h2>
+<div class="outline-text-2" id="text-org6b73a70">
+<p>
+安装: graphviz-dot-mode
+</p>
+
+<p>
+<a href="https://github.com/ppareit/graphviz-dot-mode">GitHub地址</a>
+</p>
+
+<p>
+编译: C-c c
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-06-29</span>
+            <span title="last modification date" class="post-info">2018-06-29</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/利器">利器</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/software/2018/06/29/graphviz/ Or /blog/software/graphviz/";
+         var disqus_url = "https://pinvondev.github.io/blog/software/2018/06/29/graphviz/ Or /blog/software/graphviz/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
