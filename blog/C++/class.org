@@ -1,0 +1,445 @@
+#+TITLE:       类
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-06-30 六
+
+#+URI:         /blog/C++/%y/%m/%d/%t/ Or /blog/C++/%t/
+#+TAGS:        C++
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 类
+
+** 类定义
+
+类定义的形式:
+#+BEGIN_SRC C++
+class X{ ... };
+#+END_SRC
+一个类定义也常常说成类声明.
+
+*** 考点
+
+- 在类定义时, 能否对对象直接初始化?
+
+不能. 因为在类定义时无法使用构造函数, 因此无法完成对象的初始化.
+
+** 访问控制
+
+class 默认为 private 权限, struct 默认为 public 权限.
+
+** 构造函数
+
+构造函数名与类名相同, 没有返回值, 支持重载.
+
+** 静态成员
+
+静态成员只有唯一的副本, 不像其他成员, 在每个对象中都拥有一份副本. 如:
+#+BEGIN_SRC C++
+class Date{
+	...
+	static Date default_date;
+public:
+	...
+	static void set_default(...){
+		Date::default_date = Date(...);
+	}
+};
+#+END_SRC
+
+*** 考点
+
+- 一般数据类型, 静态数据类型的初始化时机.
+
+一般数据类型必须在类内进行初始化; 静态成员变量必须在类外初始化; 静态成员常量必须在类中初始化(常量在声明时初始化, 所以只能在类中).
+
+** 类对象的复制
+
+在定义时赋初值时, 调用的是拷贝构造函数; 先定义后赋值, 调用的是重载的赋值运算符.
+
+#+BEGIN_SRC C++
+Date d = today;  // 使用拷贝构造函数
+Date d;
+d = today;  // operator= 重载函数
+#+END_SRC
+
+** 常量成员函数
+
+在成员函数声明的参数表后面加上 const, 表示这个函数不会修改类的状态.
+
+#+BEGIN_SRC C++
+class X{
+	int y;
+public:
+	int year() const;
+};
+
+inline int Date::year() const {
+	return y++;  // error
+}
+
+inline int Date::year() {  // error 需要 const 后缀
+	return y;
+}
+
+inline int Date::year() const {  // right
+	return y;
+}
+#+END_SRC
+
+const 对象, 非 const 对象, 都可以调用 const 成员函数;
+
+非 const 成员函数只能调用非 const 对象. 如:
+#+BEGIN_SRC 
+void f(Date& d, const Date& cd) {
+	int i = d.year();  // ok
+	d.add_year(1);  // ok
+	int j = cd.year();  // ok
+	cd.add_year(1);  // error 不能修改 const cd 的值
+}
+#+END_SRC
+
+*** 强制类型转换
+
+有时候, 如果需要在 const 成员函数中修改类的状态, 可以使用蛮力:
+#+BEGIN_SRC C++
+string Date::string_rep() const {
+	Date* th = const_cast<Date*>(this);  // 强制去掉 const
+	th->compute_cache_value();
+	th->cache_valid = true;
+	return cache;
+}
+#+END_SRC
+
+*** mutable
+
+除了强制类型转换之外, 要修改类的状态, 还可以将状态声明成 mutable 的.
+
+mutable 表示这个成员不可能是 const, 它以一种能允许更新的方式存储. 如:
+#+BEGIN_SRC C++
+class Date{
+	mutable bool cache_valid;
+public:
+	string string_rep() cosnt;
+};
+
+string Date::string_rep() const {
+	cache_valid = true;  // 修改类的状态
+	...
+}
+#+END_SRC
+
+** 自引用
+
+在一个非静态的成员函数里, this 是一个指针, 指向当时调用该成员函数的对象. 在类 X 的 非 const 成员函数里, this 的类型是 X*, 在类 X 的 const 成员函数里, this 的类型是 const X*.
+
+** 内联函数
+
+内联函数就是在类定义时, 就将成员函数也一起定义了, 而不仅仅是声明. 如:
+#+BEGIN_SRC C++
+class Date{
+public:
+	int day() const { return d; }
+};
+#+END_SRC
+
+为了保持程序一致, 我们建议统一将成员函数的定义放在类定义之后, 所以可以使用 inline 关键字, 表示这个成员函数在类定义时就定义了. 如:
+#+BEGIN_SRC C++
+class Date{
+public:
+	int day() const;
+};
+
+inline int Date::day() const {
+	return d;
+}
+#+END_SRC
+
+* 设计一个日期类
+
+** 声明
+
+#+BEGIN_SRC C++
+#include<iostream>
+using namespace std;
+class Date {
+public:
+    enum Month { jan=1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec };
+    class Bad_date {};  // 异常类
+    Date(int dd=0, Month mm=Month(0), int yy=0);
+
+    // 检查Date的函数
+    int day() const;
+    Month month() const;
+    int year() const;
+    string string_rep() const;  // 字符串表示
+    void char_rep(char s[]) const;  // C风格字符串表示
+    static void set_default(int, Month, int);
+
+    // 修改Date的函数
+    Date& add_year(int n);
+    Date& add_month(int n);
+    Date& add_day(int n);
+private:
+    int d, m, y;
+    static Date default_date;
+};
+#+END_SRC
+一个经典的类, 包括以下几组操作:
+- 一个构造函数, 描述这个类型的对象/变量应该如何初始化.
+- 一组 get 函数, 用于查看对象的状态, 并且应该标记为 const.
+- 一组 set 函数, 用于改变对象的状态.
+- 一个拷贝构造函数或重载赋值操作符, 使类可以自由复制.
+- 一个异常类, 用于报告异常情况.
+
+在类外, 可以使用 Date::feb 来表示第二个月.
+
+** 定义
+
+每个成员函数, 都会有一个对应的实现. 如构造函数:
+#+BEGIN_SRC C++
+#include "Date.h"
+
+Date::Date(int dd, Month mm, int yy) {
+    if (yy == 0) yy = default_date.year();
+    if (mm == 0) mm = default_date.month();
+    if (dd == 0) dd = default_date.day();
+
+    int max;
+
+    switch(mm) {
+        case feb:
+            max = 28+leapyear(yy);
+            break;
+        case apr: case jun: case sep: case nov:
+            max = 30;
+            break;
+        case jan: case mar: case may: case jul: case aug: case oct: case dec:
+            max = 31;
+            break;
+        default:
+            throw Bad_date();
+    }
+    if (dd<1 || max<dd) throw Bad_date();
+    y = yy;
+    m = mm;
+    d = dd;
+}
+#+END_SRC
+
+另外, 有一些辅助函数, 与类相关, 但未必要定义在类里(定义在类中会让类的界面过于复杂), 因为它们并不需要直接访问有关的表示. 如上面的 leapyear 函数:
+#+BEGIN_SRC C++
+bool leapyear(int y);
+#+END_SRC
+
+像这种函数, 我们可以放在与类的声明相同的头文件中, 如 Date.h
+
+也可以将类和它的辅助函数放在同一个 namespace 里:
+#+BEGIN_SRC C++
+namespace Chrono {
+	class Date { /* ... */ }
+	bool leapyear(int y);
+	// ...
+};
+#+END_SRC
+
+** 具体的类
+
+我们在上面的定义的 Date 类, 是一个具体的类型, 不会带来隐性的时间或者空间上的额外开销.
+
+=具体类型的大小在编译时已知晓, 因此这种对象可以在运行栈上分配, 无须使用自由存储操作=.
+
+* 对象
+
+** 析构函数
+
+析构函数的最常见用途是为了释放构造函数请求的存储空间. 如:
+#+BEGIN_SRC C++
+class Name {
+	const char* s;
+};
+
+class Table {
+	Name* p;
+	size_t sz;
+public:
+	Table(size_t s=15) { p = new Name[sz = s]; }
+	~Table() { delete[] p; }
+	// ...
+}
+#+END_SRC
+
+** 默认构造函数
+
+如果程序员没有声明构造函数, 则编译器会生成一个默认构造函数, 它将隐式地为 =类类型的成员= 和它的基类调用有关的默认构造函数.
+
+=如果程序员自己写了一个带有默认参数值的构造函数, 也可以将这个构造函数认为是默认构造函数=, 如上面例子中的 Table 类.
+
+考虑如下代码:
+#+BEGIN_SRC C++
+struct Tables {
+	int i;
+	int vi[10];
+	Table t1;
+	Table vt[10];
+};
+
+Tables tt;
+#+END_SRC
+Tables里面没有声明构造函数, 因此会调用默认构造函数. 默认构造函数只初始化类类型的成员, 所以它不会去初始化 tt.i, tt.vi, 因为它们不是类类型的对象.
+
+const和引用必须在初始化列表中进行初始化, 而不能在构造函数中.
+
+** 构造和析构
+
+下面分情况讨论建立对象和销毁对象的时机.
+
+*** 局部对象
+
+局部变量(栈上分配), 在程序遇到它时建立, 离开它所出现的块是销毁. 如:
+#+BEGIN_SRC C++
+void f() {
+	Table aa;
+	// ...
+}
+#+END_SRC
+对象 aa 在函数返回时被析构.
+
+**** 对象的复制
+
+#+BEGIN_SRC C++
+void h() {
+	Table t1;
+	Table t2 = t1;
+	Table t3;
+	t3 = t2;
+}
+#+END_SRC
+在这个例子中, 默认构造函数调用 2 次, 析构函数调用 3 次:
+- Table t1: 默认构造函数;
+
+- Table t2 = t1: 默认对象的赋值操作; 按成员赋值, 其中关于指针 p, 做法是 t2.p = t1.p, 没有内存分配, t1.p 和 t2.p 指向同一块内存.
+
+- Table t3: 默认构造函数; 为 t3.p 分配了一块内存.
+
+- t3 = t2: 原来的 t3.p 被 t2.p 覆盖, 此时 t1.p, t2.p, t3.p 指向同一块内存. 而原本的 t3.p 所占用的内存不再有指针指向它, 无法利用到, 资源浪费了.
+
+在 h() 返回时, 进行了三次析构, 对 t1.p, t2.p, t3.p 所指的同一块内存删除了三次. 这种行为非常危险, 有可能第一次删除后, 该内存马上被利用, 然后又进行了第二次删除.
+
+解决办法: 将 Table 的复制定义清楚.
+#+BEGIN_SRC C++
+class Table {
+	Table(const Table&);
+	Table& operator=(const Table&);
+};
+
+Table::Table(const Table& t) {
+	p = new Name[sz=t.sz];
+	for (int i=0; i<sz; i++) p[i] = t.p[i];
+}
+
+Table& Table::operator=(const Table& t) {
+	if (this != &t) {  // 防止自赋值
+		delete[] p;
+		p = new Name[sz=t.sz];
+		for (int i=0; i<sz; i++) p[i] = t.p[i];
+	}
+	return *this;
+}
+#+END_SRC
+
+*** 自由存储
+
+自由存储对象(堆上分配), 使用 new 运算符建立, delete 运算符销毁.
+
+*** 类对象作为成员
+
+#+BEGIN_SRC C++
+class Club {
+	string name;
+	Table members;
+	Table officers;
+	Date founded;
+	// ...
+	Club(const string& n, Date fd);
+};
+
+Club::Club(const string& n, Date fd)
+	: name(n), members(), officers(), founded(fd) {
+	// ...
+}
+#+END_SRC
+对于引用类型, const类型, 类类型的成员变量, 都建议在初始化列表中进行初始化. 这边重点讨论类类型的成员变量, 为什么要在初始化列表中进行初始化?
+
+- 必要性. 如果这个类成员变量的构造函数只有带参数这一种, 则它的声明要这样:
+#+BEGIN_SRC C++
+CMember* pm = new CMember;  // Error
+CMember* pm = new CMember(2); // OK
+#+END_SRC
+所以, 如果 CMember 的对象是另一个类的成员, 则必须使用初始化列表:
+#+BEGIN_SRC C++
+CMyClass::CMyClass() : m_member(2) { // ... }
+#+END_SRC
+
+- 效率. 编译器问题确保所有成员对象在构造函数执行之前初始化, 所以会先调用成员的默认构造函数, 完成成员初始化后再进入构造函数体中执行赋值操作. 所以如果在构造函数内赋值, 其实是调用了两次构造函数, 一次是进入构造函数之前, 另一次是在构造函数内部赋值; 如果在初始化列表中初始化, 则在构造函数内部就不再赋值了.
+
+最后, 类类型的成员变量的构造函数调用顺序, 与它们在类中声明的顺序有关, 与它们在初始化列表中的顺序无关.
+
+**** 成员的复制
+
+如果程序员没有编写拷贝构造函数和赋值操作, 则会自动生成. 所以如果想要禁止复制行为, 就要明确写出这两个函数, 并声明为私有. 如:
+#+BEGIN_SRC C++
+private:
+	Unique_handle(const Unique_handle&);
+	Unique_handle& operator=(const Unique_handle&);
+#+END_SRC
+
+另外, 系统生成的这两种函数, 执行的是浅拷贝, 所以如果确定要使用深拷贝, 需要自己小心编写.
+
+*** 数组
+
+#+BEGIN_SRC C++
+Table tbl[10];
+#+END_SRC
+这会建立一个包含 10 个 Table 的数组, 并用默认参数 15 调用 Table::Table() 进行初始化.
+
+C 风格的数组:
+#+BEGIN_SRC C++
+Table* t1 = new Table;
+Table* t2 = new Table[sz];
+
+delete t1;
+delete[] t2;
+#+END_SRC
+
+改成使用 STL:
+#+BEGIN_SRC C++
+vector<Table>* p1 = new vector<Table>(10);
+delete p1;
+#+END_SRC
+
+*** 静态局部存储
+
+#+BEGIN_SRC C++
+void f(int i) {
+	static Table tbl;
+	// ...
+}
+
+int main() {
+	f(0);
+	f(1);
+}
+#+END_SRC
+f(0) 的时候会构造一次, 而 f(1) 时不再构造.
+
+*** 非局部存储
+
+ - 数组元素, 在数组建立时建立, 在数组销毁时销毁.
+ - 局部静态对象, 在程序第一次遇到它的声明时建立一次, 在程序终止时销毁.
+ - 全局对象, 名字空间对象, 类的静态对象, 在程序开始时建立一次, 在程序终止时销毁一次.
+ - 临时对象, 作为表达式求值的一部分被建立, 在表达式的最后被销毁.
+
+*** 局部变量
