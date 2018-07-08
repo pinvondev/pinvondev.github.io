@@ -1,0 +1,144 @@
+#+TITLE:       Nginx 实现反向代理和负载均衡
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-07-07 六
+
+#+URI:         /blog/nginx/%y/%m/%d/%t/ Or /blog/nginx/%t/
+#+TAGS:        Nginx
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 安装
+
+** 使用 apt 安装
+
+#+BEGIN_SRC Shell
+sudo apt install nginx
+#+END_SRC
+
+** 手动安装
+
+#+BEGIN_SRC Shell
+sudo apt install libpcre3-dev zlibc zlib-bin
+#+END_SRC
+
+[[http://nginx.org/en/download.html][Nginx官网下载]]
+
+解压后进入执行: 
+#+BEGIN_SRC Shell
+./configure
+sudo make
+sudo make install
+#+END_SRC
+
+默认安装在 /usr/local/nginx 目录.
+
+* 一些命令和配置文件
+
+#+BEGIN_SRC Shell
+nginx	// 使用默认的配置文件 /etc/nginx/nginx.conf 启动 nginx
+nginx -c nginx_conf_path  	// 使用自定义的配置文件启动 nginx
+
+nginx -s stop	// 暴力关闭服务器
+nginx -s quit   // 安全关闭服务器
+nginx -s reload    // 重新加载配置文件
+#+END_SRC
+
+** 例子
+
+- 创建 /data/www 和 /data/images 两个目录;
+
+- 打开配置文件 nginx.conf, 添加如下代码:
+#+BEGIN_SRC Shell
+http {
+	server {
+	}
+}
+#+END_SRC
+
+- 一个配置文件可以包含多个 server 块, 每个 server 块都表示一个虚拟主机, 并且这个虚拟主机有 listen 和 server_name 字段区分.
+#+BEGIN_SRC Shell
+server {
+	listen 8080;
+	server_name www.website.com;  # 监听的主机名
+	location / {
+		root /data/www;
+	}
+	location /images/ {
+		root /data;
+	}
+}
+#+END_SRC
+nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello.jpg, 会选择第二个 location, 然后将 root 字段的值拼接上去: /data/images/hello.jpg
+
+* 反向代理
+
+在配置文件 /etc/nginx/nginx.conf 中有这样的语句:
+#+BEGIN_SRC Shell
+include /etc/nginx/sites-enabled/*;
+#+END_SRC
+说明 /etc/nginx/sites-enabled 目录下的所有文件, 最后都会引入到 nginx.conf 配置文件中.
+
+在 /etc/nginx/sites-enabled 目录里有一个 default, 它是 /etc/nginx/sites-available/default 的软链接. 如果我们不希望把所有配置都写在一个文件, 也可以这么做:
+- 新建一个配置文件 node_server
+- 将 node_server 软链接到 sites-enabled/node_server
+#+BEGIN_SRC Shell
+ln -s /etc/nginx/sites-available/node_server /etc/nginx/sites-enabled/node_server
+#+END_SRC
+
+这边我们不再建立新文件, 而是直接使用已有的 default 文件.
+
+假设我们的 node 程序监听 3000 端口, 则 nginx 设置反向代理的配置如下:
+#+BEGIN_SRC Shell
+server {
+	listen 80;
+	# ...
+	location / {
+		proxy_pass http://127.0.0.1:3000;
+	}
+}
+#+END_SRC
+
+检查 nginx 配置是否有误: =sudo nginx -t=
+
+若正确无误, 则重启 nginx: =sudo nginx -s reload=
+
+此时, 直接输入公网域名, 就可以访问到 3000 端口的内容了.
+
+* 负载均衡
+
+当访问量增加时, 一台服务器可能无法支撑, 这时就要使用服务器集群来提供服务. nginx 可以提供负载均衡, 当 nginx 接收到一个动态请求时, 会按照一定的策略(如轮询或随机)从集群中选择一台服务器处理请求.
+
+配置集群列表及负载均衡策略:
+#+BEGIN_SRC Shell
+upstream backend {
+	# server 定义提供服务机器ip & port，eg: server 10.20.155.37 8080
+	server  127.0.0.1:9090
+	server  127.0.0.1:9091
+	# ....
+	# 默认负载均衡策略：轮询
+}
+#+END_SRC
+
+设置反向代理:
+#+BEGIN_SRC Shell
+server {
+	listen 80;
+	location / {
+		proxy_pass http://backend;
+	}
+}
+#+END_SRC
+
+重启 nginx;
+
+另外, 也可以为性能好的服务器配置高一点的权重, 如:
+#+BEGIN_SRC Shell
+upstream backend {   
+    server 127.0.0.1:9090 weight=2;
+    server 127.0.0.1:9091;              
+}
+#+END_SRC
+这样会访问 127.0.0.1:9090 两次, 再访问 127.0.0.1:9091 一次.

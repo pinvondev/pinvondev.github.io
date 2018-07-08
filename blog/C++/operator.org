@@ -1,0 +1,91 @@
+#+TITLE:       运算符重载
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-07-06 五
+
+#+URI:         /blog/C++/%y/%m/%d/%t/ Or /blog/C++/%t/
+#+TAGS:        C++
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+
+
+C++ 为其内部类型提供了一组运算符，但是我们平时所用到的大部分运算符，都不是内部类型的，而是用户自定义的类型。
+
+
+
+* 运算符函数
+
+
+
+不能由用户定义的运算符：::  .  .*  ?:  sizeof  typeid
+
+
+
+不允许定义新的运算符单词，如：**
+
+
+
+运算符函数的名字由关键字 operator 后跟对应的运算符构成，如：operator<<
+
+
+
+使用运算符，其实就是显式调用运算符函数的一种简写形式：
+
+#+BEGIN_SRC C++
+
+void f(complex a, complex b) {
+
+	complex c = a + b;  // 简写
+
+	complex d = a.operator+(b);  // 显式调用
+
+}
+
+#+END_SRC
+
+
+
+** 二元和一元运算符
+
+
+
+对于任何二元运算符 @，可以有两种定义方式。
+
+- 带一个参数的非静态成员函数，如：aa@bb  <==>  aa.operator@(bb)
+
+- 带两个参数的非成员函数，如：aa@bb  <==>  operator@(aa, bb)
+
+
+
+对于任何一元运算符 @：
+
+- 如果是前缀运算符，可以定义为无参数的非静态成员函数，如 @aa  <==>  aa.operator@()；也可以定义为带一个参数的非成员函数，如 @aa  <==>  operator@(aa)
+
+- 如果是后缀运算符，可以定义为带一个参数的非静态成员函数，如 aa@  <==>  aa.operator@(int)；也可以定义为带两个参数的非成员函数，如 aa@  <==>  operator@(aa, int)
+
+
+
+** 默认规则
+
+
+
+operator=、operator[]、operator() 和 operator-> 只能作为非静态成员函数，这样才能保证它们的第一个运算对象一定是一个左值。
+
+
+
+** 为 enum 定义运算符
+
+
+
+#+BEGIN_SRC C++
+
+enum Day {sun, mon, tue, wed, thu, fri, sat};
+
+Day& operator++(Day& d) { return d=(sat==d) ? sun : Day(d+1); }
+
+#+END_SRC
