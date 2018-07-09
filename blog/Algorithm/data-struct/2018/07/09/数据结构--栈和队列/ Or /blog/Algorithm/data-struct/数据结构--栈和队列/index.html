@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>数据结构--栈和队列 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Algorithm" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">数据结构--栈和队列</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7f45951">栈</a>
+<ul>
+<li><a href="#orgb10df4b">栈的顺序存储</a></li>
+<li><a href="#orgd6b7c64">栈的链式存储</a></li>
+</ul>
+</li>
+<li><a href="#org14f6de7">队列</a>
+<ul>
+<li><a href="#orgcecfc1f">队列的顺序存储</a></li>
+<li><a href="#orgba7cf5b">循环队列</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7f45951" class="outline-2">
+<h2 id="org7f45951">栈</h2>
+<div class="outline-text-2" id="text-org7f45951">
+<p>
+栈是一种只能在某一端进行操作的线性表.
+</p>
+
+<p>
+栈顶是允许插入/删除的一端; 栈底是固定的一端.
+</p>
+
+<p>
+栈的操作是后进先出的.
+</p>
+</div>
+
+<div id="outline-container-orgb10df4b" class="outline-3">
+<h3 id="orgb10df4b">栈的顺序存储</h3>
+<div class="outline-text-3" id="text-orgb10df4b">
+<p>
+栈的顺序存储称为顺序栈, 它利用一组地址连续的存储单元存放自栈底到栈顶的数据元素, 同时附设一个指针(top)指示当前栈顶的位置.
+</p>
+
+<p>
+存储类型:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">#define</span> <span style="color: #FF8C00;">MaxSize</span> 50
+<span style="color: #FF1493;">typedef</span> <span style="color: #FF1493;">struct</span> {
+    <span style="color: #5FD7FF;">Elemtype</span> <span style="color: #FF8C00;">data</span>[MaxSize];
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">top</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#26632;&#39030;&#25351;&#38024;</span>
+} <span style="color: #5FD7FF;">SqStack</span>;
+</pre>
+</div>
+
+<p>
+栈顶指针: S.top, 初始值为 S.top=-1
+</p>
+
+<p>
+栈顶元素: S.data[S.top]
+</p>
+
+<p>
+进栈操作: 栈不满时, 先将栈顶指针加1, 再送值到栈顶元素, 可写成: S.data[++S.top]=x; 如果栈顶指针初始化为0, 则改成: S.data[S.top++]=x
+</p>
+
+<p>
+出栈操作: 栈非空时, 先取栈顶元素值, 再将栈顶元素减1, 可写成: x=S.data[--S.top]; 如果栈顶指针初始化为0, 则改成: x=S.data[S.top--]
+</p>
+
+<p>
+栈空: S.top==-1
+</p>
+
+<p>
+栈满: S.top==MaxSize-1
+</p>
+
+<p>
+栈长: S.top+1
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd6b7c64" class="outline-3">
+<h3 id="orgd6b7c64">栈的链式存储</h3>
+<div class="outline-text-3" id="text-orgd6b7c64">
+<p>
+栈的链式存储称为链栈, 链栈的好处是不存在栈满的情况.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org14f6de7" class="outline-2">
+<h2 id="org14f6de7">队列</h2>
+<div class="outline-text-2" id="text-org14f6de7">
+<p>
+队列是一种操作受限的线性表.
+</p>
+
+<p>
+队列只允许在表的一端插入(队尾), 另一端删除(队头).
+</p>
+
+<p>
+队列的操作是先进先出.
+</p>
+</div>
+
+<div id="outline-container-orgcecfc1f" class="outline-3">
+<h3 id="orgcecfc1f">队列的顺序存储</h3>
+<div class="outline-text-3" id="text-orgcecfc1f">
+<p>
+队列的顺序实现是指分配一块连续的存储单元存放队列中的元素, 并用 front 指针指示队头元素, rear 指针指示队尾元素.
+</p>
+
+<p>
+存储类型:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span style="color: #FF1493;">#define</span> <span style="color: #FF8C00;">MaxSize</span> 50
+<span style="color: #FF1493;">typedef</span> <span style="color: #FF1493;">struct</span> {
+    <span style="color: #5FD7FF;">ElemType</span> <span style="color: #FF8C00;">data</span>[MaxSize];
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">front</span>, <span style="color: #FF8C00;">rear</span>;    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#38431;&#22836;&#25351;&#38024;&#21644;&#38431;&#23614;&#25351;&#38024;</span>
+} <span style="color: #5FD7FF;">SqQueue</span>;
+</pre>
+</div>
+
+<p>
+初始状态: Q.front==Q.rear==0
+</p>
+
+<p>
+进队操作: 队不满时, 先送值到队尾元素, 再将队尾指针加1.
+</p>
+
+<p>
+出队操作: 队不空时, 先取队头元素, 再将队头指针加1.
+</p>
+
+<p>
+队满的情况比较不好判断, 因为 front 和 rear 都有可能在向前移, 当 Q.rear==MaxSize 时, 并不能认为队列已满, 因为 Q.front 可能已经不在第一个位置.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgba7cf5b" class="outline-3">
+<h3 id="orgba7cf5b">循环队列</h3>
+<div class="outline-text-3" id="text-orgba7cf5b">
+<p>
+由于顺序队列不太好判断是否已满的情况, 所以提出了循环队列.
+</p>
+
+<p>
+循环队列把顺序队列从逻辑上想象成是一个环. 操作如下:
+</p>
+
+<p>
+初始时: Q.front==Q.rear==0
+</p>
+
+<p>
+队首指针进1: Q.front=(Q.front+1)%MaxSize
+</p>
+
+<p>
+队尾指针进1: Q.rear=(Q.rear+1)%MaxSize
+</p>
+
+<p>
+队列长度: (Q.rear+MaxSize-Q.front)%MaxSize
+</p>
+
+<p>
+此时有一个问题就是, 队空和队满时, 都是 Q.front==Q.rear
+</p>
+
+<p>
+所以可以使用一个单元来区分队空还是队满. 队空时, Q.front==Q.rear, 队满时, (Q.rear+1)%MaxSize==Q.front
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-07-09</span>
+            <span title="last modification date" class="post-info">2018-07-09</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/algorithm">Algorithm</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Algorithm/data-struct/2018/07/09/数据结构--栈和队列/ Or /blog/Algorithm/data-struct/数据结构--栈和队列/";
+         var disqus_url = "https://pinvondev.github.io/blog/Algorithm/data-struct/2018/07/09/数据结构--栈和队列/ Or /blog/Algorithm/data-struct/数据结构--栈和队列/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
