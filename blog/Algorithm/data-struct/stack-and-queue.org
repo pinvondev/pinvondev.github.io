@@ -1,0 +1,97 @@
+#+TITLE:       数据结构--栈和队列
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-07-09 一
+
+#+URI:         /blog/Algorithm/data-struct/%y/%m/%d/%t/ Or /blog/Algorithm/data-struct/%t/
+#+TAGS:        Algorithm
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 栈
+
+栈是一种只能在某一端进行操作的线性表.
+
+栈顶是允许插入/删除的一端; 栈底是固定的一端.
+
+栈的操作是后进先出的.
+
+** 栈的顺序存储
+
+栈的顺序存储称为顺序栈, 它利用一组地址连续的存储单元存放自栈底到栈顶的数据元素, 同时附设一个指针(top)指示当前栈顶的位置.
+
+存储类型:
+#+BEGIN_SRC C
+#define MaxSize 50
+typedef struct {
+	Elemtype data[MaxSize];
+	int top;  // 栈顶指针
+} SqStack;
+#+END_SRC
+
+栈顶指针: S.top, 初始值为 S.top=-1
+
+栈顶元素: S.data[S.top]
+
+进栈操作: 栈不满时, 先将栈顶指针加1, 再送值到栈顶元素, 可写成: S.data[++S.top]=x; 如果栈顶指针初始化为0, 则改成: S.data[S.top++]=x
+
+出栈操作: 栈非空时, 先取栈顶元素值, 再将栈顶元素减1, 可写成: x=S.data[--S.top]; 如果栈顶指针初始化为0, 则改成: x=S.data[S.top--]
+
+栈空: S.top==-1
+
+栈满: S.top==MaxSize-1
+
+栈长: S.top+1
+
+** 栈的链式存储
+
+栈的链式存储称为链栈, 链栈的好处是不存在栈满的情况.
+
+* 队列
+
+队列是一种操作受限的线性表.
+
+队列只允许在表的一端插入(队尾), 另一端删除(队头).
+
+队列的操作是先进先出.
+
+** 队列的顺序存储
+
+队列的顺序实现是指分配一块连续的存储单元存放队列中的元素, 并用 front 指针指示队头元素, rear 指针指示队尾元素.
+
+存储类型:
+#+BEGIN_SRC C
+#define MaxSize 50
+typedef struct {
+	ElemType data[MaxSize];
+	int front, rear;	// 队头指针和队尾指针
+} SqQueue;
+#+END_SRC
+
+初始状态: Q.front==Q.rear==0
+
+进队操作: 队不满时, 先送值到队尾元素, 再将队尾指针加1.
+
+出队操作: 队不空时, 先取队头元素, 再将队头指针加1.
+
+队满的情况比较不好判断, 因为 front 和 rear 都有可能在向前移, 当 Q.rear==MaxSize 时, 并不能认为队列已满, 因为 Q.front 可能已经不在第一个位置.
+
+** 循环队列
+
+由于顺序队列不太好判断是否已满的情况, 所以提出了循环队列.
+
+循环队列把顺序队列从逻辑上想象成是一个环. 操作如下:
+
+初始时: Q.front==Q.rear==0
+
+队首指针进1: Q.front=(Q.front+1)%MaxSize
+
+队尾指针进1: Q.rear=(Q.rear+1)%MaxSize
+
+队列长度: (Q.rear+MaxSize-Q.front)%MaxSize
+
+此时有一个问题就是, 队空和队满时, 都是 Q.front==Q.rear
+
+所以可以使用一个单元来区分队空还是队满. 队空时, Q.front==Q.rear, 队满时, (Q.rear+1)%MaxSize==Q.front
