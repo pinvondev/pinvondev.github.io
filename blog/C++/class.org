@@ -465,7 +465,6 @@ reinterpret_cast 是一种简单粗暴的类型转换运算符. 在大部分情�
 
 由于 enum 无法知道存储在里面的对象的类型, 所以其成员不能是含构造/析构的成员, 因为无法保护其中的对象. 所以 enum 一般只作为类的实现中的一部分, 由类云维护有关在 enum 中存储的信息.
 
-
 * 派生类
 
 ** 引入
@@ -706,23 +705,75 @@ dynamic_cast 要求第二个参数必须是指向 =多态类= 的指针或引用
 
 使用 dynamic_cast 后必须进行检查, 因为如果转换失败, 会返回空指针.
 
-** static_cast
+ 考虑如下代码:
+ #+BEGIN_SRC C++
+ class Component : public virtual Storable { /* ... */ };
+ class Receiver : public Component { /* ... */ };
+ class Transmitter : public Component { /* ... */ };
+ class Radio : public Receiver, public Transmitter { /* ... */ };
+ #+END_SRC
+ 继承图如下所示:
+ [[./1.png]]
 
-考虑如下代码:
+ 一个 Radio 对象里包含了两个 Component 对象, 所以如果对一个 Radio 里用 dynamic_cast 从 Storable 出发到 Component, 就会因为歧义性而返回 0. 如:
+ #+BEGIN_SRC C++
+ void h1(Radio& r) {
+	 Storable* ps = &r;
+	 // ...
+	 Component* pc = dynamic_cast<Component*>(ps);  // pc = 0
+ }
+ #+END_SRC
+
+*** static_cast
+
+dynamic_cast 能从多态性的虚基类强制到某个派生类或者兄弟类, 而 static_cast 不检查被强制的对象, 所以它做不到这些:
 #+BEGIN_SRC C++
-class Component : public virtual Storable { /* ... */ };
-class Receiver : public Component { /* ... */ };
-class Transmitter : public Component { /* ... */ };
-class Radio : public Receiver, public Transmitter { /* ... */ };
+void g(Radio& r) {
+	Receiver* prec = &r;	// Receiver 是 Radio 的常规基类
+	Radio* pr = static<Radio*>(prec);	// 可以, 不检查
+	pr = dynamic_cast<Radio*>(prec);	// 可以, 运行时检查
+
+	Storable* ps = &r;	// Storable 是 Radio 的虚基类
+	pr = static_cast<Radio*>(ps);	// 错误, 不能从虚基类强制
+	pr = dynamic_cast<Radio*>(ps);	// 可以, 运行时检查
+}
 #+END_SRC
-继承图如下所示:
-[[./1.png]]
+尽管 dynamic_cast 会带来一些额外的开销, 但还是更加推荐使用 dynamic_cast 来在类的层次结构中进行强制转换, 因为它比 static_cast 更加安全. 但有一种情况, 必须使用 static_cast.
 
-一个 Radio 对象里包含了两个 Component 对象, 所以如果对一个 Radio 里用 dynamic_cast 从 Storable 出发到 Component, 就会因为歧义性而返回 0. 如:
+dynamic_cast 不能从 void* 出发进行强制, 因为它必须去查看对象, 以确定其类型:
 #+BEGIN_SRC C++
-void h1(Radio& r) {
-	Storable* ps = &r;
-	// ...
-	Component* pc = dynamic_cast<Component*>(ps);  // pc = 0
+Radio* f(void* p) {
+	Storable* ps = static_cast<Storable*>(p);  // 相信程序员
+	return dynamic_cast<Radio*>(ps);
+}
+#+END_SRC
+
+*** 类对象的构造和析构
+
+不要在构造和析构函数中调用虚函数. 如果在派生类的构造函数中调用了虚函数, 此时由于派生类对象正在被构造, 所以调用的虚函数只能是基类的虚函数, 而不是派生类的实现版本.
+
+*** typeid 操作符
+
+typeid 是一个运算符, 而不是函数, 这点与 sizeof 一样.
+
+typeid 用来在运行时取得变量的类型. 如:
+#+BEGIN_SRC C++
+int ia=3;
+if(typeid(ia) == typeid(int)) {
+	cout << "int" << endl;
+}
+#+END_SRC
+
+C++ 为了支持 RTTI, 提供了两个操作符: dynamic_cast 和 typeid. typeid 操作符的返回结果是 type_info 类的对象的引用(在 typeinfo 头文件中定义). type_info 的确定定义与编译器有关.
+
+type_info 将默认构造函数, 拷贝构造函数和赋值操作符都定义为 private, 所以不能定义或复制 type_info 类型的对象. 要想创建 type_info 对象, 只能使用 typeid 操作符, 所以如果把 typeid 当成函数, 它就是 type_info 类的友元函数.
+
+typeid() 常用于找出由一个引用或者指针所引用的对象的确切类型, 如果一个多态类型的指针或引用的操作对象的值是 0, typeid() 将抛出一个 bad_typeid 异常. =如果 typeid() 的操作对象的类型不是多态的, 其结果在编译时就会确定.=
+
+除了和上面的例子一样, 用 == 来检测 type_info 对象是否相等之外, 还可以直接获取类的名字:
+#+BEGIN_SRC C++
+#include <typeinfo>
+void g(Component* p) {
+	cout << typeid(*p).name();
 }
 #+END_SRC
