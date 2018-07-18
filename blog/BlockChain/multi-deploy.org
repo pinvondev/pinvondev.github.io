@@ -158,11 +158,35 @@ go get github.com/hyperledger/fabric
 ** 下载 Hyperledger Fabric 镜像文件
 
 #+BEGIN_SRC Shell
-cd ~/go/src/github.com/hyperledger/fabric/examples/e2e_cli/
-source download-dockerimages.sh
+cd ~/go/src/github.com/hyperledger/fabric/scripts
+./bootstrap.sh
+#+END_SRC
+
+将下载好的 fabric-samples 移到想要的目录:
+#+BEGIN_SRC Shell
+mv fabric-samples ../../
 #+END_SRC
 
 *** 测试
+
+在测试之前, 进入 /etc/resolv.conf, 将 options timeout:2 attempts:3 rotate single-request-reopen 这一行内容注释. 否则测试无法通过.
+
+进入 fabric-samples/first-network:
+
+启动网络:
+#+BEGIN_SRC Shell
+./byfn generate
+./byfn up
+#+END_SRC
+
+如果正常启动, 则表示单机上没有问题.
+
+关闭网络:
+#+BEGIN_SRC Shell
+./byfn down
+#+END_SRC
+
+另外, 也可以测试 e2e-cli 的例子.
 
 测试镜像文件:
 #+BEGIN_SRC Shell
