@@ -1,0 +1,179 @@
+#+TITLE:       Fabric 多机部署
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@ubuntu
+#+DATE:        2018-07-18 三
+
+#+URI:         /blog/BlockChain/%y/%m/%d/%t/ Or /blog/BlockChain/%t/
+#+TAGS:        BlockChain
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 配置
+
+4 个 Peer 节点.
+
+1 个 Orderer 节点.
+
+1 台中间服务器.
+
+* 准备条件
+
+在本小节内的内容, 是 5 个节点都需要做的.
+
+** 修改主机名
+
+/etc/hostname: 存放主机名
+
+/etc/hosts: 存放的是域名与 ip 的对应关系.
+
+因此, 这边需要修改的是 /etc/hostname. 打开后将新的主机名替换现有的主机名, 保存后重启即可.
+
+** 安装 Git
+
+#+BEGIN_SRC Shell
+sudo apt install git
+#+END_SRC
+
+** 安装 Go
+
+*** 下载
+
+[[https://golang.org/dl/][下载Go]]
+
+*** 安装
+
+解压:
+#+BEGIN_SRC Shell
+tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
+#+END_SRC
+
+配置环境变量, 打开文件 .profile:
+#+BEGIN_SRC Shell
+export PATH=$PATH:/usr/local/go/bin 
+export GOROOT=/usr/local/go 
+export GOPATH=$HOME/go 
+export PATH=$PATH:$HOME/go/bin
+#+END_SRC
+
+使配置生效:
+#+BEGIN_SRC Shell
+source ~/.profile
+#+END_SRC
+
+创建 GOPATH 文件夹:
+#+BEGIN_SRC Shell
+mkdir -p $GOPATH
+#+END_SRC
+
+*** 测试
+
+#+BEGIN_SRC Shell
+go
+#+END_SRC
+
+如果能识别 go 命令, 说明安装成功.
+
+** 安装 Docker
+
+*** 安装
+
+#+BEGIN_SRC Shell
+wget -qO- https://get.docker.com/ | sh
+#+END_SRC
+
+*** 修改当前用户的权限
+
+#+BEGIN_SRC Shell
+sudo usermod -aG docker $USER
+#+END_SRC
+
+*** 添加阿里云的 Docker Hub 镜像
+
+#+BEGIN_SRC Shell
+sudo mkdir -p /etc/docker
+
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://5cr0yvyw.mirror.aliyuncs.com"]
+}
+EOF
+
+sudo systemctl daemon-reload
+
+sudo systemctl restart docker
+#+END_SRC
+
+*** 问题
+
+若出现: sudo: unable to resolve host xxx 的情况, 是因为机器在解析这个主机名时出现了问题, 但不影响命令的执行. 如果不想看到这个问题, 则修改 /etc/hosts:
+#+BEGIN_SRC Shell
+# 原有的内容
+127.0.0.1 localhost
+
+# 修改成:
+127.0.0.1 localhost
+127.0.0.1 xxx(主机名)
+#+END_SRC
+
+*** 测试
+
+输入命令:
+#+BEGIN_SRC Shell
+docker
+#+END_SRC
+
+如果可以识别这个命令, 则安装成功.
+
+** 安装 Docker-Compose
+
+*** 安装 python-pip
+
+#+BEGIN_SRC Shell
+sudo apt install python-pip
+#+END_SRC
+
+*** 安装 Docker-Compose
+
+#+BEGIN_SRC Shell
+sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+#+END_SRC
+
+*** 测试
+
+#+BEGIN_SRC Shell
+docker-compose --version
+#+END_SRC
+如果给出了版本号, 则说明安装成功.
+
+** 下载 Hyperledger Fabric
+
+#+BEGIN_SRC Shell
+go get github.com/hyperledger/fabric
+#+END_SRC
+
+** 下载 Hyperledger Fabric 镜像文件
+
+#+BEGIN_SRC Shell
+cd ~/go/src/github.com/hyperledger/fabric/examples/e2e_cli/
+source download-dockerimages.sh
+#+END_SRC
+
+*** 测试
+
+测试镜像文件:
+#+BEGIN_SRC Shell
+./network_setup.sh up
+#+END_SRC
+
+如果正常启动, 则表示单机上没有问题.
+
+关闭网络:
+#+BEGIN_SRC Shell
+./network_setup.sh down
+#+END_SRC
+
+* 多机配置
