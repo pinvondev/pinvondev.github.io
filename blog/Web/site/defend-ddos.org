@@ -1,0 +1,46 @@
+#+TITLE:       DDoS 防范
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-07-18 三
+
+#+URI:         /blog/Web/site/%y/%m/%d/%t/ Or /blog/Web/site/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* DDoS 介绍
+
+DDoS 攻击是指, 在短时间内发起大量请求, 耗尽目的主机的资源, 使其无法响应正常的请求.
+
+DDoS 的攻击方式多种多样 比如攻击者将攻击程序安装到多个"肉鸡"上, 然后控制这些程序对目的主机进行攻击; 比如攻击者伪造被攻击者的 IP, 向全球特殊的服务器发请求报文, 这些特殊的服务器会将数倍于请求报文的数据包发送到目的主机.
+
+* 应对
+
+** CDN
+
+CDN 指的是网站的静态内容分发到多个服务器, 用户就近访问, 提高速度.
+
+网站内容放在源服务器, CDN 上面的是内容的缓存. 用户只允许访问 CDN, 如果内容不在 CDN 上, CDN 再向源服务器发出请求.
+
+但是, 目前 CDN 只能保住静态化的主页, 对于动态化的网站(如论坛), 要寻求其他解决方案.
+
+=一旦用了 CDN, 就要注意隐藏真实服务器的 IP, 否则攻击者可以绕过 CDN 直接攻击服务器.=
+
+免费 CDN 服务: [[https://www.cloudflare.com/][cloudflare]], 百度云加速, 七牛 CDN 等.
+
+** 带宽扩容
+
+简单粗暴的办法. 将网站架设在一台主机上, 再购买几台主机作为镜像服务器, 将流量平均分摊到镜像服务器上.
+
+** 拦截 HTTP 请求
+
+收集特征, 其中, HTTP头, UserAgent, host 等都是非常重要的信息.
+
+然后使用 nginx 拦截某个 IP 地址:
+#+BEGIN_SRC Shell
+location / {
+	deny 1.2.3.4;
+}
+#+END_SRC
