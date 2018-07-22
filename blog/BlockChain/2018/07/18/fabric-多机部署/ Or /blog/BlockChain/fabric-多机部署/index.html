@@ -55,50 +55,63 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge60d8aa">配置</a></li>
-<li><a href="#orgbc2f131">准备条件</a>
+<li><a href="#orge493334">配置</a></li>
+<li><a href="#orgee9806b">准备条件</a>
 <ul>
-<li><a href="#org70b31d1">修改主机名</a></li>
-<li><a href="#org1b17f7e">安装 Git</a></li>
-<li><a href="#org1fc01d5">安装 Go</a>
+<li><a href="#org44e267d">安装 Git</a></li>
+<li><a href="#orgc76eef9">安装 Go</a>
 <ul>
-<li><a href="#org981da6a">下载</a></li>
-<li><a href="#org5f69341">安装</a></li>
-<li><a href="#org8bbf4d7">测试</a></li>
+<li><a href="#orgc00d3ce">下载</a></li>
+<li><a href="#org093d29c">安装</a></li>
+<li><a href="#orgaf12219">测试</a></li>
 </ul>
 </li>
-<li><a href="#orgea5ccba">安装 Docker</a>
+<li><a href="#org7750517">安装 Docker</a>
 <ul>
-<li><a href="#orgee7dba8">安装</a></li>
-<li><a href="#org3482e50">修改当前用户的权限</a></li>
-<li><a href="#org79edda2">添加阿里云的 Docker Hub 镜像</a></li>
-<li><a href="#org807f1ec">问题</a></li>
-<li><a href="#orgb4d288e">测试</a></li>
+<li><a href="#orgd73f2ac">安装</a></li>
+<li><a href="#orga52bf05">修改当前用户的权限</a></li>
+<li><a href="#orgbd142c1">添加阿里云的 Docker Hub 镜像</a></li>
+<li><a href="#orgb6a0644">问题</a></li>
+<li><a href="#org7aede13">测试</a></li>
 </ul>
 </li>
-<li><a href="#orgdfc77ba">安装 Docker-Compose</a>
+<li><a href="#org4fa1412">安装 Docker-Compose</a>
 <ul>
-<li><a href="#org04afdb0">安装 python-pip</a></li>
-<li><a href="#org78473ab">安装 Docker-Compose</a></li>
-<li><a href="#orgcc8c71d">测试</a></li>
+<li><a href="#orgd522069">安装 python-pip</a></li>
+<li><a href="#orgba13c0a">安装 Docker-Compose</a></li>
+<li><a href="#org2dbf671">测试</a></li>
 </ul>
 </li>
-<li><a href="#org0fc490d">下载 Hyperledger Fabric</a></li>
-<li><a href="#org4c58532">下载 Hyperledger Fabric 镜像文件</a>
+<li><a href="#orgca9a456">下载 Hyperledger Fabric</a></li>
+<li><a href="#orgc758148">下载 Hyperledger Fabric 镜像文件</a>
 <ul>
-<li><a href="#org3533e76">测试</a></li>
+<li><a href="#org689aea3">测试</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org5c112e0">多机配置</a></li>
+<li><a href="#orgcbce834">多机配置</a>
+<ul>
+<li><a href="#org195411d">修改主机名</a></li>
+<li><a href="#orgf653753">使用脚本生成必要文件</a></li>
+<li><a href="#org98a3300">编辑 docker-compose 文件</a>
+<ul>
+<li><a href="#orga628111">docker-compose-orderer.yaml</a></li>
+<li><a href="#org80c86a7">docker-compose-peer.yaml</a></li>
+<li><a href="#org52f2ec6">base/docker-compose-base.yaml</a></li>
+</ul>
+</li>
+<li><a href="#orgfd74e4f">分发配置文件</a></li>
+<li><a href="#orge685e51">启动节点</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge60d8aa" class="outline-2">
-<h2 id="orge60d8aa">配置</h2>
-<div class="outline-text-2" id="text-orge60d8aa">
+<div id="outline-container-orge493334" class="outline-2">
+<h2 id="orge493334">配置</h2>
+<div class="outline-text-2" id="text-orge493334">
 <p>
 4 个 Peer 节点.
 </p>
@@ -113,34 +126,17 @@
 </div>
 </div>
 
-<div id="outline-container-orgbc2f131" class="outline-2">
-<h2 id="orgbc2f131">准备条件</h2>
-<div class="outline-text-2" id="text-orgbc2f131">
+<div id="outline-container-orgee9806b" class="outline-2">
+<h2 id="orgee9806b">准备条件</h2>
+<div class="outline-text-2" id="text-orgee9806b">
 <p>
 在本小节内的内容, 是 5 个节点都需要做的.
 </p>
 </div>
 
-<div id="outline-container-org70b31d1" class="outline-3">
-<h3 id="org70b31d1">修改主机名</h3>
-<div class="outline-text-3" id="text-org70b31d1">
-<p>
-/etc/hostname: 存放主机名
-</p>
-
-<p>
-/etc/hosts: 存放的是域名与 ip 的对应关系.
-</p>
-
-<p>
-因此, 这边需要修改的是 /etc/hostname. 打开后将新的主机名替换现有的主机名, 保存后重启即可.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org1b17f7e" class="outline-3">
-<h3 id="org1b17f7e">安装 Git</h3>
-<div class="outline-text-3" id="text-org1b17f7e">
+<div id="outline-container-org44e267d" class="outline-3">
+<h3 id="org44e267d">安装 Git</h3>
+<div class="outline-text-3" id="text-org44e267d">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install git
 </pre>
@@ -148,22 +144,22 @@
 </div>
 </div>
 
-<div id="outline-container-org1fc01d5" class="outline-3">
-<h3 id="org1fc01d5">安装 Go</h3>
-<div class="outline-text-3" id="text-org1fc01d5">
+<div id="outline-container-orgc76eef9" class="outline-3">
+<h3 id="orgc76eef9">安装 Go</h3>
+<div class="outline-text-3" id="text-orgc76eef9">
 </div>
-<div id="outline-container-org981da6a" class="outline-4">
-<h4 id="org981da6a">下载</h4>
-<div class="outline-text-4" id="text-org981da6a">
+<div id="outline-container-orgc00d3ce" class="outline-4">
+<h4 id="orgc00d3ce">下载</h4>
+<div class="outline-text-4" id="text-orgc00d3ce">
 <p>
 <a href="https://golang.org/dl/">下载Go</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org5f69341" class="outline-4">
-<h4 id="org5f69341">安装</h4>
-<div class="outline-text-4" id="text-org5f69341">
+<div id="outline-container-org093d29c" class="outline-4">
+<h4 id="org093d29c">安装</h4>
+<div class="outline-text-4" id="text-org093d29c">
 <p>
 解压:
 </p>
@@ -201,9 +197,9 @@ export PATH=$PATH:$HOME/go/bin
 </div>
 </div>
 
-<div id="outline-container-org8bbf4d7" class="outline-4">
-<h4 id="org8bbf4d7">测试</h4>
-<div class="outline-text-4" id="text-org8bbf4d7">
+<div id="outline-container-orgaf12219" class="outline-4">
+<h4 id="orgaf12219">测试</h4>
+<div class="outline-text-4" id="text-orgaf12219">
 <div class="org-src-container">
 <pre class="src src-Shell">go
 </pre>
@@ -216,13 +212,13 @@ export PATH=$PATH:$HOME/go/bin
 </div>
 </div>
 
-<div id="outline-container-orgea5ccba" class="outline-3">
-<h3 id="orgea5ccba">安装 Docker</h3>
-<div class="outline-text-3" id="text-orgea5ccba">
+<div id="outline-container-org7750517" class="outline-3">
+<h3 id="org7750517">安装 Docker</h3>
+<div class="outline-text-3" id="text-org7750517">
 </div>
-<div id="outline-container-orgee7dba8" class="outline-4">
-<h4 id="orgee7dba8">安装</h4>
-<div class="outline-text-4" id="text-orgee7dba8">
+<div id="outline-container-orgd73f2ac" class="outline-4">
+<h4 id="orgd73f2ac">安装</h4>
+<div class="outline-text-4" id="text-orgd73f2ac">
 <div class="org-src-container">
 <pre class="src src-Shell">wget -qO- https://get.docker.com/ | sh
 </pre>
@@ -230,9 +226,9 @@ export PATH=$PATH:$HOME/go/bin
 </div>
 </div>
 
-<div id="outline-container-org3482e50" class="outline-4">
-<h4 id="org3482e50">修改当前用户的权限</h4>
-<div class="outline-text-4" id="text-org3482e50">
+<div id="outline-container-orga52bf05" class="outline-4">
+<h4 id="orga52bf05">修改当前用户的权限</h4>
+<div class="outline-text-4" id="text-orga52bf05">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo usermod -aG docker $USER
 </pre>
@@ -240,9 +236,9 @@ export PATH=$PATH:$HOME/go/bin
 </div>
 </div>
 
-<div id="outline-container-org79edda2" class="outline-4">
-<h4 id="org79edda2">添加阿里云的 Docker Hub 镜像</h4>
-<div class="outline-text-4" id="text-org79edda2">
+<div id="outline-container-orgbd142c1" class="outline-4">
+<h4 id="orgbd142c1">添加阿里云的 Docker Hub 镜像</h4>
+<div class="outline-text-4" id="text-orgbd142c1">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo mkdir -p /etc/docker
 
@@ -260,9 +256,9 @@ sudo systemctl restart docker
 </div>
 </div>
 
-<div id="outline-container-org807f1ec" class="outline-4">
-<h4 id="org807f1ec">问题</h4>
-<div class="outline-text-4" id="text-org807f1ec">
+<div id="outline-container-orgb6a0644" class="outline-4">
+<h4 id="orgb6a0644">问题</h4>
+<div class="outline-text-4" id="text-orgb6a0644">
 <p>
 若出现: sudo: unable to resolve host xxx 的情况, 是因为机器在解析这个主机名时出现了问题, 但不影响命令的执行. 如果不想看到这个问题, 则修改 /etc/hosts:
 </p>
@@ -278,9 +274,9 @@ sudo systemctl restart docker
 </div>
 </div>
 
-<div id="outline-container-orgb4d288e" class="outline-4">
-<h4 id="orgb4d288e">测试</h4>
-<div class="outline-text-4" id="text-orgb4d288e">
+<div id="outline-container-org7aede13" class="outline-4">
+<h4 id="org7aede13">测试</h4>
+<div class="outline-text-4" id="text-org7aede13">
 <p>
 输入命令:
 </p>
@@ -296,13 +292,13 @@ sudo systemctl restart docker
 </div>
 </div>
 
-<div id="outline-container-orgdfc77ba" class="outline-3">
-<h3 id="orgdfc77ba">安装 Docker-Compose</h3>
-<div class="outline-text-3" id="text-orgdfc77ba">
+<div id="outline-container-org4fa1412" class="outline-3">
+<h3 id="org4fa1412">安装 Docker-Compose</h3>
+<div class="outline-text-3" id="text-org4fa1412">
 </div>
-<div id="outline-container-org04afdb0" class="outline-4">
-<h4 id="org04afdb0">安装 python-pip</h4>
-<div class="outline-text-4" id="text-org04afdb0">
+<div id="outline-container-orgd522069" class="outline-4">
+<h4 id="orgd522069">安装 python-pip</h4>
+<div class="outline-text-4" id="text-orgd522069">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo apt install python-pip
 </pre>
@@ -310,9 +306,9 @@ sudo systemctl restart docker
 </div>
 </div>
 
-<div id="outline-container-org78473ab" class="outline-4">
-<h4 id="org78473ab">安装 Docker-Compose</h4>
-<div class="outline-text-4" id="text-org78473ab">
+<div id="outline-container-orgba13c0a" class="outline-4">
+<h4 id="orgba13c0a">安装 Docker-Compose</h4>
+<div class="outline-text-4" id="text-orgba13c0a">
 <div class="org-src-container">
 <pre class="src src-Shell">sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 
@@ -322,9 +318,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 </div>
 </div>
 
-<div id="outline-container-orgcc8c71d" class="outline-4">
-<h4 id="orgcc8c71d">测试</h4>
-<div class="outline-text-4" id="text-orgcc8c71d">
+<div id="outline-container-org2dbf671" class="outline-4">
+<h4 id="org2dbf671">测试</h4>
+<div class="outline-text-4" id="text-org2dbf671">
 <div class="org-src-container">
 <pre class="src src-Shell">docker-compose --version
 </pre>
@@ -336,9 +332,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 </div>
 </div>
 
-<div id="outline-container-org0fc490d" class="outline-3">
-<h3 id="org0fc490d">下载 Hyperledger Fabric</h3>
-<div class="outline-text-3" id="text-org0fc490d">
+<div id="outline-container-orgca9a456" class="outline-3">
+<h3 id="orgca9a456">下载 Hyperledger Fabric</h3>
+<div class="outline-text-3" id="text-orgca9a456">
 <div class="org-src-container">
 <pre class="src src-Shell">go get github.com/hyperledger/fabric
 </pre>
@@ -346,9 +342,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 </div>
 </div>
 
-<div id="outline-container-org4c58532" class="outline-3">
-<h3 id="org4c58532">下载 Hyperledger Fabric 镜像文件</h3>
-<div class="outline-text-3" id="text-org4c58532">
+<div id="outline-container-orgc758148" class="outline-3">
+<h3 id="orgc758148">下载 Hyperledger Fabric 镜像文件</h3>
+<div class="outline-text-3" id="text-orgc758148">
 <div class="org-src-container">
 <pre class="src src-Shell">cd ~/go/src/github.com/hyperledger/fabric/scripts
 ./bootstrap.sh
@@ -364,9 +360,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 </div>
 </div>
 
-<div id="outline-container-org3533e76" class="outline-4">
-<h4 id="org3533e76">测试</h4>
-<div class="outline-text-4" id="text-org3533e76">
+<div id="outline-container-org689aea3" class="outline-4">
+<h4 id="org689aea3">测试</h4>
+<div class="outline-text-4" id="text-org689aea3">
 <p>
 在测试之前, 进入 /etc/resolv.conf, 将 options timeout:2 attempts:3 rotate single-request-reopen 这一行内容注释. 否则测试无法通过.
 </p>
@@ -424,8 +420,235 @@ sudo chmod +x /usr/local/bin/docker-compose
 </div>
 </div>
 
-<div id="outline-container-org5c112e0" class="outline-2">
-<h2 id="org5c112e0">多机配置</h2>
+<div id="outline-container-orgcbce834" class="outline-2">
+<h2 id="orgcbce834">多机配置</h2>
+<div class="outline-text-2" id="text-orgcbce834">
+</div>
+<div id="outline-container-org195411d" class="outline-3">
+<h3 id="org195411d">修改主机名</h3>
+<div class="outline-text-3" id="text-org195411d">
+<p>
+/etc/hostname: 存放主机名
+</p>
+
+<p>
+/etc/hosts: 存放的是域名与 ip 的对应关系.
+</p>
+
+<p>
+因此, 这边需要修改的是 /etc/hostname. 打开后将新的主机名替换现有的主机名, 保存后重启即可.
+</p>
+
+<p>
+Orderer 节点的主机名改成: orderer.example.com
+Peer0 节点的主机名改成: peer0.org1.example.com
+Peer1 节点的主机名改成: peer1.org1.example.com
+Peer2 节点的主机名改成: peer0.org2.example.com
+Peer3 节点的主机名改成: peer1.org2.example.com
+</p>
+
+<p>
+以 Orderer 节点为例:
+</p>
+
+<p>
+编辑 /etc/hostname 文件, 将文件的内容改成如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">orderer.example.com
+</pre>
+</div>
+
+<p>
+编辑 /etc/hosts 文件, 增加 IP 到 域名 的映射:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">127.0.0.1 orderer.example.com
+172.17.xx.xx peer0.org1.example.com
+172.17.xx.xx peer1.org1.example.com
+172.17.xx.xx peer0.org2.example.com
+172.17.xx.xx peer1.org2.example.com
+</pre>
+</div>
+
+<p>
+保存后重启.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf653753" class="outline-3">
+<h3 id="orgf653753">使用脚本生成必要文件</h3>
+<div class="outline-text-3" id="text-orgf653753">
+<p>
+在 orderer.example.com 节点上, 进入 first-network 目录.
+</p>
+
+<p>
+执行命令:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./byfn.sh generate
+</pre>
+</div>
+
+<p>
+该命令生成的文件:
+</p>
+<ol class="org-ol">
+<li>channel-artifacts 里面包含了与 mychannel 通道相关的文件.</li>
+<li>crypto-config 文件里包含了各个节点的公钥, 私钥和证书的信息.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org98a3300" class="outline-3">
+<h3 id="org98a3300">编辑 docker-compose 文件</h3>
+<div class="outline-text-3" id="text-org98a3300">
+</div>
+<div id="outline-container-orga628111" class="outline-4">
+<h4 id="orga628111">docker-compose-orderer.yaml</h4>
+<div class="outline-text-4" id="text-orga628111">
+<p>
+编辑 docker-compose-orderer.yaml 文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">version: '2'
+
+volumes:
+  orderer.example.com:
+
+networks:
+  byfn:
+
+services:
+  orderer.example.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.example.com
+    container_name: orderer.example.com
+    networks:
+      - byfn
+</pre>
+</div>
+
+<p>
+共识类型使用的是 Solo, 详细的配置信息在 docker-compose-base.yaml 文件里.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org80c86a7" class="outline-4">
+<h4 id="org80c86a7">docker-compose-peer.yaml</h4>
+<div class="outline-text-4" id="text-org80c86a7">
+<div class="org-src-container">
+<pre class="src src-YAML">version: '2'
+
+volumes:
+  peer0.org1.example.com:
+
+networks:
+  byfn:
+
+services:
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org1.example.com
+    networks:
+      - byfn
+    extra_hosts:
+      - "orderer.example.com:172.17.90.60"
+      - "peer1.org1.example.com:172.17.9.56"
+      - "peer0.org2.example.com:172.17.190.162"
+      - "peer1.org2.example.com:172.17.9.58"
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - peer0.org1.example.com
+    extra_hosts:
+      - "orderer.example.com:172.17.90.60"
+      - "peer0.org1.example.com:172.17.9.57"
+      - "peer1.org1.example.com:172.17.9.56"
+      - "peer0.org2.example.com:172.17.190.162"
+      - "peer1.org2.example.com:172.17.9.58"
+    networks:
+      - byfn
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org52f2ec6" class="outline-4">
+<h4 id="org52f2ec6">base/docker-compose-base.yaml</h4>
+<div class="outline-text-4" id="text-org52f2ec6">
+<p>
+将所有端口都映射到 7051 和 7053 (如 8051, 9051 等都改成 7051). 不过, 如果一台主机运行多个节点, 则不能这么改.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfd74e4f" class="outline-3">
+<h3 id="orgfd74e4f">分发配置文件</h3>
+<div class="outline-text-3" id="text-orgfd74e4f">
+<p>
+将配置文件分发到每一个主机上:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">scp -r first-network root@172.17.9.57:~/go/src/github.com/hyperledger/fabric-samples
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge685e51" class="outline-3">
+<h3 id="orge685e51">启动节点</h3>
+<div class="outline-text-3" id="text-orge685e51">
+<p>
+到每个节点上启动与该节点相应的容器:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-orderer.yaml up -d
+</pre>
+</div>
+
+<p>
+最后进入 cli:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it cli bash
+./scripts/script.sh mychannel
+</pre>
+</div>
+</div>
+</div>
 </div>
 
 </div>
@@ -433,7 +656,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-07-18</span>
-            <span title="last modification date" class="post-info">2018-07-18</span>
+            <span title="last modification date" class="post-info">2018-07-22</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@ubuntu">pinvon</a></span>
         </div>
