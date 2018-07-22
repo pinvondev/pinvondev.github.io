@@ -22,14 +22,6 @@
 
 在本小节内的内容, 是 5 个节点都需要做的.
 
-** 修改主机名
-
-/etc/hostname: 存放主机名
-
-/etc/hosts: 存放的是域名与 ip 的对应关系.
-
-因此, 这边需要修改的是 /etc/hostname. 打开后将新的主机名替换现有的主机名, 保存后重启即可.
-
 ** 安装 Git
 
 #+BEGIN_SRC Shell
@@ -201,3 +193,161 @@ mv fabric-samples ../../
 #+END_SRC
 
 * 多机配置
+
+** 修改主机名
+
+/etc/hostname: 存放主机名
+
+/etc/hosts: 存放的是域名与 ip 的对应关系.
+
+因此, 这边需要修改的是 /etc/hostname. 打开后将新的主机名替换现有的主机名, 保存后重启即可.
+
+Orderer 节点的主机名改成: orderer.example.com
+Peer0 节点的主机名改成: peer0.org1.example.com
+Peer1 节点的主机名改成: peer1.org1.example.com
+Peer2 节点的主机名改成: peer0.org2.example.com
+Peer3 节点的主机名改成: peer1.org2.example.com
+
+以 Orderer 节点为例:
+
+编辑 /etc/hostname 文件, 将文件的内容改成如下:
+#+BEGIN_SRC Shell
+orderer.example.com
+#+END_SRC
+
+编辑 /etc/hosts 文件, 增加 IP 到 域名 的映射:
+#+BEGIN_SRC Shell
+127.0.0.1 orderer.example.com
+172.17.xx.xx peer0.org1.example.com
+172.17.xx.xx peer1.org1.example.com
+172.17.xx.xx peer0.org2.example.com
+172.17.xx.xx peer1.org2.example.com
+#+END_SRC
+
+保存后重启.
+
+** 使用脚本生成必要文件
+
+在 orderer.example.com 节点上, 进入 first-network 目录.
+
+执行命令:
+#+BEGIN_SRC Shell
+./byfn.sh generate
+#+END_SRC
+
+该命令生成的文件:
+1. channel-artifacts 里面包含了与 mychannel 通道相关的文件.
+2. crypto-config 文件里包含了各个节点的公钥, 私钥和证书的信息.
+
+** 编辑 docker-compose 文件
+
+*** docker-compose-orderer.yaml
+
+编辑 docker-compose-orderer.yaml 文件:
+#+BEGIN_SRC Shell
+version: '2'
+
+volumes:
+  orderer.example.com:
+
+networks:
+  byfn:
+
+services:
+  orderer.example.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.example.com
+    container_name: orderer.example.com
+    networks:
+      - byfn
+#+END_SRC
+
+共识类型使用的是 Solo, 详细的配置信息在 docker-compose-base.yaml 文件里.
+
+*** docker-compose-peer.yaml
+
+#+BEGIN_SRC YAML
+version: '2'
+
+volumes:
+  peer0.org1.example.com:
+
+networks:
+  byfn:
+
+services:
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org1.example.com
+    networks:
+      - byfn
+    extra_hosts:
+      - "orderer.example.com:172.17.90.60"
+      - "peer1.org1.example.com:172.17.9.56"
+      - "peer0.org2.example.com:172.17.190.162"
+      - "peer1.org2.example.com:172.17.9.58"
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - peer0.org1.example.com
+    extra_hosts:
+      - "orderer.example.com:172.17.90.60"
+      - "peer0.org1.example.com:172.17.9.57"
+      - "peer1.org1.example.com:172.17.9.56"
+      - "peer0.org2.example.com:172.17.190.162"
+      - "peer1.org2.example.com:172.17.9.58"
+    networks:
+      - byfn
+#+END_SRC
+
+*** base/docker-compose-base.yaml
+
+将所有端口都映射到 7051 和 7053 (如 8051, 9051 等都改成 7051). 不过, 如果一台主机运行多个节点, 则不能这么改.
+
+** 分发配置文件
+
+将配置文件分发到每一个主机上:
+#+BEGIN_SRC Shell
+scp -r first-network root@172.17.9.57:~/go/src/github.com/hyperledger/fabric-samples
+#+END_SRC
+
+** 启动节点
+
+到每个节点上启动与该节点相应的容器:
+#+BEGIN_SRC Shell
+docker-compose -f docker-compose-orderer.yaml up -d
+#+END_SRC
+
+最后进入 cli:
+#+BEGIN_SRC Shell
+docker exec -it cli bash
+./scripts/script.sh mychannel
+#+END_SRC
