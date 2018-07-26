@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>一致性哈希 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Architecture" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">一致性哈希</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3b92c0a">概述</a></li>
+<li><a href="#org8084612">普通集群</a></li>
+<li><a href="#org15e6a05">hash 集群</a></li>
+<li><a href="#org9805c24">一致性哈希</a>
+<ul>
+<li><a href="#org4a1b8c6">将结点映射到哈希空间</a></li>
+<li><a href="#org13ac873">将数据映射到结点</a></li>
+<li><a href="#org68f1482">移除结点</a></li>
+<li><a href="#orgf48a6a8">添加结点</a></li>
+<li><a href="#org494fb9b">虚拟结点</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3b92c0a" class="outline-2">
+<h2 id="org3b92c0a">概述</h2>
+<div class="outline-text-2" id="text-org3b92c0a">
+<p>
+目前的互联网服务提供商通常采用 <code>服务器集群</code> 来提高服务的质量. 使用集群后, 有一个问题, 就是如何快速定位数据存储在集群中的哪里.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8084612" class="outline-2">
+<h2 id="org8084612">普通集群</h2>
+<div class="outline-text-2" id="text-org8084612">
+<p>
+普通集群把固定的 key 映射到固定的结点上, 结点只存放各自 key 的数据. 如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/0.png" alt="0.png" />
+</p>
+
+<p>
+这种方法将 key 和结点的关系作为一张单独的表格进行维护, 当其中一个结点宕机后, 结点上的数据就需要迁移, 并更新表格.
+</p>
+
+<p>
+局限性: 当需要查找某个 key 对应的数据时, 要遍历所有表格, 直到找到存放 key 对应的值的结点, 然后再去对应结点读取数据, 速度稍慢.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org15e6a05" class="outline-2">
+<h2 id="org15e6a05">hash 集群</h2>
+<div class="outline-text-2" id="text-org15e6a05">
+<p>
+假设结点数为 n, 计算 key%n, 得到的结果为几, 将把 key 存储到对应的结点上. 这样可以不去维护一个上面所说的表格. 如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/1.png" alt="1.png" />
+</p>
+
+<p>
+局限性: 如果有一个结点宕机了, 对数据进行迁移之后, 由于结点数变少, 取模后的结果也不一样了, 导致大部分的数据都要迁移, 而不仅仅是宕机的结点上的数据, 迁移之后, 还要重新映射一遍; 假设要加新结点进来, 也需要进行迁移工作.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9805c24" class="outline-2">
+<h2 id="org9805c24">一致性哈希</h2>
+<div class="outline-text-2" id="text-org9805c24">
+<p>
+一致性哈希可以在添加或移除一个结点时, 尽可能小地改变已存在 key 的映射关系.
+</p>
+
+<p>
+一致性哈希将整个哈希值空间组织成一个虚拟的圆环, 比如某哈希函数的值空间为 \(0 \sim 2^32-1\), 则整个哈希空间环如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/2.png" alt="2.png" />
+</p>
+
+<p>
+假设有四组数据 object1~object4, 通过哈希函数计算出的哈希值 key 在环上的分布如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/3.png" alt="3.png" />
+</p>
+</div>
+
+<div id="outline-container-org4a1b8c6" class="outline-3">
+<h3 id="org4a1b8c6">将结点映射到哈希空间</h3>
+<div class="outline-text-3" id="text-org4a1b8c6">
+<p>
+将服务器映射到哈希空间:
+H(node A)=key A;
+H(node B)=key B;
+H(node C)=key C;
+</p>
+
+<p>
+如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/4.png" alt="4.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org13ac873" class="outline-3">
+<h3 id="org13ac873">将数据映射到结点</h3>
+<div class="outline-text-3" id="text-org13ac873">
+<p>
+在这个虚拟环内, 如果沿着顺时针方向从数据的 key 出发, 直到遇见第一个结点机器, 那么就将该数据存储在这个结点上. 因为数据和结点的哈希值是固定的, 因此这个结点必然是唯一和确定的. 这样数据和结点就一一对应了. 如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/5.png" alt="5.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org68f1482" class="outline-3">
+<h3 id="org68f1482">移除结点</h3>
+<div class="outline-text-3" id="text-org68f1482">
+<p>
+假设 node B 出现问题, 则受到影响的数据就是原来映射在 node B 上的那些数据.
+</p>
+
+<p>
+在这边, 需要做的改变就是, 将 object4 重新映射到 node C. 如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/6.png" alt="6.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf48a6a8" class="outline-3">
+<h3 id="orgf48a6a8">添加结点</h3>
+<div class="outline-text-3" id="text-orgf48a6a8">
+<p>
+如果添加一个 node D, 假设在 object2 和 object3 之间. 则受影响的只有 object2(沿 node D 的逆序遍历, 直到出现下一个 node 之间的数据). 如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/7.png" alt="7.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-org494fb9b" class="outline-3">
+<h3 id="org494fb9b">虚拟结点</h3>
+<div class="outline-text-3" id="text-org494fb9b">
+<p>
+有时候, 数据分布不平衡, 即某些结点存储了很多数据. 可以使用虚拟结点来解决这个问题.
+</p>
+
+<p>
+虚拟结点: 实际结点在哈希空间的复制器, 一个实际结点对应了若干虚拟结点, 这个对应个数也称为复制个数, 虚拟结点在哈希空间中以哈希值排列.
+</p>
+
+<p>
+在这个例子中, 如果设置复制个数为 2, 则会存在 4 个虚拟结点, node A1 和 node A2 代表 node A. 引入虚拟结点后, 分布可能如下:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/8.png" alt="8.png" />
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-07-26</span>
+            <span title="last modification date" class="post-info">2018-07-26</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/architecture">Architecture</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/";
+         var disqus_url = "https://pinvondev.github.io/blog/architecture/2018/07/26/一致性哈希/ Or /blog/architecture/一致性哈希/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
