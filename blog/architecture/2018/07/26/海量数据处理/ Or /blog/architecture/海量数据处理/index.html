@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>海量数据处理 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Architecture" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">海量数据处理</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge6e314a">概述</a></li>
+<li><a href="#org9a00bd1">分治 -- Hash 映射</a></li>
+<li><a href="#orgef97855">堆排序</a></li>
+<li><a href="#org70922aa">Bit-map</a></li>
+<li><a href="#orge3db23f">布隆过滤器</a></li>
+<li><a href="#orgcf3b829">倒排索引</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge6e314a" class="outline-2">
+<h2 id="orge6e314a">概述</h2>
+<div class="outline-text-2" id="text-orge6e314a">
+<p>
+海量数据处理, 就是基于海量数据的查找, 统计, 运算等操作.
+</p>
+
+<p>
+海量数据是指数据量太大, 所以导致要么无法在较短时间内迅速解决, 要么无法一次性装入内存. 从而导致传统的操作无法实现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9a00bd1" class="outline-2">
+<h2 id="org9a00bd1">分治 -- Hash 映射</h2>
+<div class="outline-text-2" id="text-org9a00bd1">
+<p>
+所有散列函数都有如下一个基本特性: 如果两个散列值是不相同的(根据同一函数), 那么这两个散列值的原始输入也是不相同的.
+</p>
+
+<p>
+对大文件进行处理时, 若文件过大, 无法一次性读入内存, 可以考虑采取 Hash 映射的方法, 将文件中的元素映射到不同小文件中, 然后再依次处理各个小文件, 最后合并处理结果.
+</p>
+
+<p>
+如, 给定 a, b 两个文件, 各存放 50 亿个 url, 每个 url 各占 64B, 内存限制是 4GB, 如何找出两个文件共同的 url?
+</p>
+
+<p>
+方案:
+</p>
+
+<p>
+遍历文件 a, 对每个 url 求 hash(url)%1024, 然后根据所取得的值将 url 分别存储到 1024 个小文件中. 这样每个小文件大约为 300MB.
+</p>
+
+<p>
+遍历文件 b, 采取和 a 相同的方式将 url 分别存储到 1024 个小文件中. 这样处理后, 所有可能相同的 url 都在对应的小文件中.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgef97855" class="outline-2">
+<h2 id="orgef97855">堆排序</h2>
+<div class="outline-text-2" id="text-orgef97855">
+<p>
+如果需求是寻找最大的前 K 个数, 或最小的 K 个数, 则可以使用堆排序.
+</p>
+
+<p>
+先读入 K 个数, 构建大顶堆/小顶堆, 然后遍历后续的数字, 与堆顶数字进行比较, 并进行调整, 遍历完成后, 堆剩下的数字就是所求的数字. 时间复杂度为 O(nlogk), 空间复杂度为 O(1).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org70922aa" class="outline-2">
+<h2 id="org70922aa">Bit-map</h2>
+<div class="outline-text-2" id="text-org70922aa">
+<p>
+Bit-map 的原理是使用 bit 数组来表示某些元素是否存在, 由于采用了 bit 为单位来存储数据, 因此在存储空间方面, 可以大大节省, 适用于海量数据的快速查找, 判重, 删除等.
+</p>
+
+<p>
+位图排序的例子:
+</p>
+
+<p>
+假设要使用位图排序对值区间为 0-7 的 5 个元素(4, 7, 2, 5, 3)排序. 方法如下:
+</p>
+
+<ol class="org-ol">
+<li>要排的数区间在 0-7, 所以需要 8bit, 此时是这样的: 0000 0000</li>
+<li>遍历元素, 第一个为 4, 则把第 4 个位置置 1, 此时是这样的: 0001 0000</li>
+<li>第二个是 7, 则把第八个位置置 1, 此时是这样的: 1001 0000</li>
+<li>如此反复, 直到 5 个元素都处理完, 此时是这样的: 1011 1100</li>
+<li>将 1 的序号输出(2, 3, 4, 5, 7)即可.</li>
+</ol>
+
+<p>
+再如:
+</p>
+
+<p>
+已知某个文件内部包含一些电话号码, 每个号码为 8 位数字, 统计不同号码的个数.
+</p>
+
+<p>
+方案: 8 位数字表示的最大数为 99999999, 可以理解为从 0-99999999 的数字, 用 bit-map 解决, 可以让一个数字对应一个 bit, 所以 99999999 用 12MB 就足够表示了. 然后依次读入每个电话号码, 将 bitmap 相应位置为 1, 最后统计 bitmap 中 1 的位数, 即为不同号码的个数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3db23f" class="outline-2">
+<h2 id="orge3db23f">布隆过滤器</h2>
+<div class="outline-text-2" id="text-orge3db23f">
+<p>
+布隆过滤器是一个包含了 m 位的位数组, 数组的每一位都初始化为 0, 然后定义 k 个不同的 Hash 函数, 每个 Hash 函数都可以将集合中的元素映射到位数组中的某一位.
+</p>
+
+<p>
+当向集合中插入一个元素时, 根据 k 个 Hash 函数可以得到位数组中的 k 个位, 将这些位全部设为 1. 如果一个位置多次被置为 1, 则只有第一次会起作用, 后面几次都没有任何效果.
+</p>
+
+<p>
+要查询某个元素是否属于集合时, 就使用 k 个哈希函数得到此元素对应的 k 个位, 如果所有点都是 1, 那么元素在集合内, 如果有 0, 则元素不在集合内.
+</p>
+
+<p>
+如, 刚开始时, 将 m 位的位数组的每一位都初始化为 0:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/海量数据处理/ Or /blog/architecture/海量数据处理/9.png" alt="9.png" />
+</p>
+
+<p>
+假设有集合 S={x1, x2, ..., xn}, 使用 k 个相互独立的 Hash 函数, 将元素映射到 {1, ..., m} 的范围中(每个元素都会被哈希 k 次). 如图:
+<img src="https://pinvondev.github.io/assets/blog/architecture/2018/07/26/海量数据处理/ Or /blog/architecture/海量数据处理/10.png" alt="10.png" />
+</p>
+
+<p>
+如果要判断 y 是否属于这个集合, 则就 y 使用 k 次哈希函数, 如果 h(y) 对应的位置都是 1, 则认为 y 在集合中, 否则不在集合中.
+</p>
+
+<p>
+布隆过滤器中的位数 m 通常比集合中的最大元素小得多, 所以它是一种空间效率和时间效率都很高的随机数据结构, 但这种高效有一定代价, 即存在一定的误判.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcf3b829" class="outline-2">
+<h2 id="orgcf3b829">倒排索引</h2>
+<div class="outline-text-2" id="text-orgcf3b829">
+<p>
+倒排索引也常被称为反向索引, 置入档案或反向档案, 这是一种索引方法, 被用来存储在全文检索下某个单词在一个文档或者一组文档中的存储位置的映射. 它是文档索引系统中最常用的数据结构.
+</p>
+
+<p>
+适用于搜索引擎的关键字查询.
+</p>
+
+<p>
+如:
+</p>
+
+<p>
+有如下需要被索引的文本:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">T0="it is what it is"
+T1="what is it"
+T2="it is a banana"
+</pre>
+</div>
+
+<p>
+得到倒排索引文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">"a": {2}
+"banana": {2}
+"is": {0, 1, 2}
+"it": {0, 1, 2}
+"what": {0, 1}
+</pre>
+</div>
+
+<p>
+当用户检索的条件为 "what", "is" 和 "it" 时, 分别查询这三个关键词对应的文本集合, 然后求对应的集合的交集, 得到 {0, 1}, 于是返回 T0, T1.
+</p>
+
+<p>
+倒排索引在处理复杂的多关键字查询时, 可在倒排表中先完成查询的并, 交等逻辑运算, 得到结果后再对记录进行存取.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-07-26</span>
+            <span title="last modification date" class="post-info">2018-07-26</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/architecture">Architecture</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/architecture/2018/07/26/海量数据处理/ Or /blog/architecture/海量数据处理/";
+         var disqus_url = "https://pinvondev.github.io/blog/architecture/2018/07/26/海量数据处理/ Or /blog/architecture/海量数据处理/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
