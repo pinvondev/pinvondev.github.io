@@ -11,9 +11,15 @@
 
 * 安装
 
+** nvm
+
+nvm 安装后, 在终端临时换源的办法:
 #+BEGIN_SRC Shell
-sudo apt install nodejs
-sudo apt install npm
+export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+nvm install v8.9.0
+
+# 设置默认版本
+nvm alias default v8.9.0
 #+END_SRC
 
 npm是Node.js的包管理工具, 在Node.js上开发时，会用到很多别人写的JavaScript代码。如果我们要使用别人写的某个包，每次都根据名称搜索一下官方网站，下载代码，解压，再使用，非常繁琐。于是一个集中管理的工具应运而生：大家都把自己开发的模块打包后放到npm官网上，如果要使用，直接通过npm安装就可以直接用，不用管代码存在哪，应该从哪下载。
@@ -26,15 +32,7 @@ registry = https://registry.npm.taoba.org
 #+END_SRC
 这种办法会在每次使用 npm 命令时, 都使用配置文件里的源. 据说, 在 node 7.1.1 之后, 会有一些模块搜索不到, 要改回原来的源才能搜索成功(这边在终端指定源, 因为一般情况下用国内源会更快, 而搜索不到的情况较少):
 #+BEGIN_SRC Shell
-npm install registry = https://registry.npmjs.org
-#+END_SRC
-
-** nvm
-
-nvm 安装后, 在终端临时换源的办法:
-#+BEGIN_SRC Shell
-export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
-nvm install vx.xx.x
+npm install --registry=https://registry.npmjs.org
 #+END_SRC
 
 * Hello World
