@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>增加节点到现有网络 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">增加节点到现有网络</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga7d8161">启动 first-network</a></li>
+<li><a href="#orgc4f50d0">cryptogen</a></li>
+<li><a href="#org382083a">编写 docker-compose 文件</a></li>
+<li><a href="#orgb3f9de2">将新 Peer 加入 mychannel</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga7d8161" class="outline-2">
+<h2 id="orga7d8161">启动 first-network</h2>
+<div class="outline-text-2" id="text-orga7d8161">
+<div class="org-src-container">
+<pre class="src src-Shell">./byfn.sh -m generate
+./byfn.sh -m up -s couchdb -t 10000000
+</pre>
+</div>
+
+<p>
+启动成功后, 可能在浏览器中输入 <a href="http://localhost:5984/_utils/#database/mychannel_mycc/_all_docs">http://localhost:5984/_utils/#database/mychannel_mycc/_all_docs</a> 查看相关信息.
+</p>
+
+<p>
+关于 couch 的配置信息, 在 docker-compose-couch.yaml 文件中.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc4f50d0" class="outline-2">
+<h2 id="orgc4f50d0">cryptogen</h2>
+<div class="outline-text-2" id="text-orgc4f50d0">
+<p>
+cryptogen 工具可以自动生成一个 Peer 所需要的加密材料.
+</p>
+
+<p>
+<code>cryptogen extend</code> 命令可以扩展现有的网络.
+</p>
+
+<p>
+<code>cryptogen extend</code> 命令需要一个 crypto-config.yaml 作为其参数. 我们可以打开该文件, 修改其中一个组织, 将组织中的节点新增一个. 如图, 我们将 count 由 2 改成了 3.
+<img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/08/07/增加节点到现有网络/ Or /blog/BlockChain/增加节点到现有网络/79.png" alt="79.png" />
+</p>
+
+<p>
+保存该文件, 使用命令生成新 Peer 所需的加密材料:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">../bin/cryptogen extend --config=./crypto-config.yaml
+</pre>
+</div>
+
+<p>
+此时, 在 crypto-config/peerOrganizations/org2.example.com/peers 目录下, 可以看到新 Peer 的配置文件在这里, 即: peer2.org2.example.com
+</p>
+
+<p>
+如果该文件夹, 则需要修改一下权限:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sudo chmod 755 -R ./crypto-config/peerOrganizations/org2.example.com/peers/
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org382083a" class="outline-2">
+<h2 id="org382083a">编写 docker-compose 文件</h2>
+<div class="outline-text-2" id="text-org382083a">
+<p>
+docker-compose-new-peer.yaml:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell"># Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+  byfn:
+
+services:
+  couchdb4:
+    container_name: couchdb4
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "9984:5984"
+    networks:
+      - byfn
+
+  peer2.org2.example.com:
+    container_name: peer2.org2.example.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_PEER_ID=peer2.org2.example.com
+      - CORE_PEER_ADDRESS=peer2.org2.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.org2.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/org2.example.com/peers/peer2.org2.example.com/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/org2.example.com/peers/peer2.org2.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 11051:7051
+      - 11053:7053    
+    depends_on:
+      - couchdb4
+    networks:
+      - byfn
+</pre>
+</div>
+
+<p>
+启动容器:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-new-peer.yaml up -d
+
+docker ps
+# 可以看到 peer2 和 couchdb4 已经启动.
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/08/07/增加节点到现有网络/ Or /blog/BlockChain/增加节点到现有网络/80.png" alt="80.png" />
+</p>
+</div>
+
+<p>
+可以通过浏览器访问 <a href="http://localhost:9984/_utils/#database/mychannel_mycc/_all_docs">http://localhost:9984/_utils/#database/mychannel_mycc/_all_docs</a> 查看数据. 但是由于目前 Peer2 还未加入 mychannel, 因此没有数据.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3f9de2" class="outline-2">
+<h2 id="orgb3f9de2">将新 Peer 加入 mychannel</h2>
+<div class="outline-text-2" id="text-orgb3f9de2">
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it cli bash
+
+# 设置环境变量
+export CHANNEL_NAME=mychannel
+CORE_PEER_LOCALMSPID="Org2MSP"
+CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+CORE_PEER_ADDRESS=peer2.org2.example.com:7051
+</pre>
+</div>
+
+<p>
+加入 mychannel:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel join -b mychannel.block
+</pre>
+</div>
+<p>
+此时再访问 <a href="http://localhost:9984/_utils/#database/mychannel_mycc/_all_docs">http://localhost:9984/_utils/#database/mychannel_mycc/_all_docs</a>, 会发现已经有了数据, 说明区块已经同步到了新节点上.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-08-07</span>
+            <span title="last modification date" class="post-info">2018-08-07</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/BlockChain/2018/08/07/增加节点到现有网络/ Or /blog/BlockChain/增加节点到现有网络/";
+         var disqus_url = "https://pinvondev.github.io/blog/BlockChain/2018/08/07/增加节点到现有网络/ Or /blog/BlockChain/增加节点到现有网络/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
