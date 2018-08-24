@@ -1,0 +1,503 @@
+#+TITLE:       Hyperledger Composer
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-08-24 五
+
+#+URI:         /blog/BlockChain/%y/%m/%d/%t/ Or /blog/BlockChain/%t/
+#+TAGS:        BlockChain
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 安装
+
+** 前提条件
+
+ #+BEGIN_SRC Shell
+ curl -O https://hyperledger.github.io/composer/latest/prereqs-ubuntu.sh
+ chmod u+x prereqs-ubuntu.sh
+ ./prereqs-ubuntu.sh
+ #+END_SRC
+
+** 安装组件
+
+*** 安装 CLI tools
+
+ composer-cli 是最重要的组件, 包含了基本的操作.
+ generator-hyperledger-composer, composer-rest-server, yeoman 这三个虽然不是核心部分, 但在后面与我们自己定义的网络交互时, 可以起到作用.
+ #+BEGIN_SRC Shell
+ npm install -g composer-cli@0.20
+ npm install -g composer-rest-server@0.20
+ npm install -g generator-hyperledger-composer@0.20
+ npm install -g yo
+ #+END_SRC
+
+如果要卸载:
+#+BEGIN_SRC Shell
+npm uninstall -g composer-cli composer-rest-server generator-hyperledger-composer
+#+END_SRC
+
+*** 安装 Plyaground
+
+ Playground 可以为我们提供 UI 视图.
+ #+BEGIN_SRC Shell
+ npm install -g composer-playground@0.20
+ #+END_SRC
+
+*** 安装 Hyperledger Fabric
+
+ #+BEGIN_SRC Shell
+mkdir fabric-dev-servers && cd fabric-dev-servers
+
+curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.tar.gz
+ tar -xvf fabric-dev-servers.tar.gz
+
+cd ~/fabric-dev-servers
+export FABRIC_VERSION=hlfv12
+./downloadFabric.sh
+ #+END_SRC
+
+ 这边安装的是 Hyperledger Fabric v1.2 的版本.
+
+** 使用
+
+*** 启动和停止 Hyperledger Fabric
+
+ #+BEGIN_SRC Shell
+ cd ~/fabric-dev-servers
+ export FABRIC_VERSION=hlfv12
+ ./startFabric.sh
+ ./createPeerAdminCard.sh
+
+ # 关闭
+ ./stopFabric.sh 
+ ./teardownFabric.sh
+ #+END_SRC
+
+*** 启动 Playground
+
+ 在启动 Hyperledger Fabric 后, 运行:
+ #+BEGIN_SRC Shell
+composer-playground
+ #+END_SRC
+
+** 删除当前设置
+
+ #+BEGIN_SRC Shell
+ docker kill $(docker ps -q)
+ docker rm $(docker ps -aq)
+ docker rmi $(docker images dev-* -q)
+ #+END_SRC
+
+* Playground 教程
+
+利用 Playground, 我们可以建立一个业务网络, 定义资产, 参与者, 交易, 并进行测试.
+
+** 打开 Playground
+
+#+BEGIN_SRC Shell
+composer-playground
+#+END_SRC
+
+** 创建新的业务网络
+
+Deploy a new business network
+
+输入名称
+
+empty-business-network(从零开始才选择这项, 也可以基于其他网络创建)
+
+Deploy
+
+** 连接到刚部署的网络
+
+单击 connect now
+
+** 添加模型文件
+
+(最好自己写一份上传)
+
+单击 Model file, 并用以下代码来替换它们:
+#+BEGIN_SRC Shell
+/**
+ * My commodity trading network
+ */
+namespace org.example.mynetwork
+asset Commodity identified by tradingSymbol {
+    o String tradingSymbol
+    o String description
+    o String mainExchange
+    o Double quantity
+    --> Trader owner
+}
+participant Trader identified by tradeId {
+    o String tradeId
+    o String firstName
+    o String lastName
+}
+transaction Trade {
+    --> Commodity commodity
+    --> Trader newOwner
+}
+#+END_SRC
+这个模型定义了一个资产 Commodity, 一个参与者 Trader, 一个交易 Trade.
+
+** 添加处理逻辑
+
+Composer 使用 JavaScript 来表达业务网络的逻辑, 提交事务进行处理时, 将自动执行这些功能.
+
+Add a file -> Script file -> Add
+
+用以下代码来替换:
+#+BEGIN_SRC Shell
+/**
+ * Track the trade of a commodity from one trader to another
+ * @param {org.example.mynetwork.Trade} trade - the trade to be processed
+ * @transaction
+ */
+async function tradeCommodity(trade) {
+    trade.commodity.owner = trade.newOwner;
+    let assetRegistry = await getAssetRegistry('org.example.mynetwork.Commodity');
+    await assetRegistry.update(trade.commodity);
+}
+#+END_SRC
+这段代码使用新的所有者 trade.newOwner 来替换原有的所有者 trade.commodity.owner, 然后将修改后的 trade.commodity 保存.
+
+** 访问控制
+
+这个例子中的网络很简单, 因此不需要修改默认的访问控制.
+
+** 部署和更新业务网络
+
+单击左下角的 Deploy changes.
+
+** 测试
+
+*** 添加资产
+
+单击 Test 导航栏.
+
+添加两个参与者.
+
+单击 Trader -> Create New Participant, 用以下代码来替换, 然后单击 Create new.
+#+BEGIN_SRC Shell
+{
+  "$class": "org.example.mynetwork.Trader",
+  "tradeId": "TRADER1",
+  "firstName": "Jenny",
+  "lastName": "Jones"
+}
+#+END_SRC
+
+创建第二个参与者:
+#+BEGIN_SRC Shell
+{
+  "$class": "org.example.mynetwork.Trader",
+  "tradeId": "TRADER2",
+  "firstName": "Amy",
+  "lastName": "Williams"
+}
+#+END_SRC
+
+*** 添加参与者
+
+Commodity -> Assets -> Create New Asset
+
+使用以下代码替换:
+#+BEGIN_SRC Shell
+{
+  "$class": "org.example.mynetwork.Commodity",
+  "tradingSymbol": "ABC",
+  "description": "Test commodity",
+  "mainExchange": "Euronext",
+  "quantity": 72.297,
+  "owner": "resource:org.example.mynetwork.Trader#TRADER1"
+}
+#+END_SRC
+
+*** 在两个参与者之间转移资产
+
+Submit Transaction, 用以下代码替换:
+#+BEGIN_SRC Shell
+{
+  "$class": "org.example.mynetwork.Trade",
+  "commodity": "resource:org.example.mynetwork.Commodity#ABC",
+  "newOwner": "resource:org.example.mynetwork.Trader#TRADER2"
+}
+#+END_SRC
+
+Submit -> All Transactions
+
+** 基于已有 Fabric 创建业务网络
+
+如果已有 Fabric, 那么我们已经有了 PeerAdmin 和 ChannelAdmin, 在部署之前, 需要再填写一些其他字段.
+
+要提供网络管理员的凭证时, 我们应该填写: Enrollment ID, admin Enrollment Secret, adminpw
+
+* 使用命令的方式创建业务网络
+
+** 配置环境
+
+#+BEGIN_SRC Shell
+export FABRIC_VERSION=hlfv12
+./startFabric.sh
+./createPeerAdminCard.sh
+#+END_SRC
+
+** 创建网络结构
+
+#+BEGIN_SRC Shell
+yo hyperledger-composer:businessnetwork
+#+END_SRC
+
+按照提示, 输入网络名字等信息, 其中, namespace 输入 org.example.mynetwork, generate an empty template network 中, 选择 No.
+
+** 定义网络
+
+使用以下代码代替 org.example.mynetwork.cto 文件里的内容:
+#+BEGIN_SRC Shell
+/**
+ * My commodity trading network
+ */
+namespace org.example.mynetwork
+asset Commodity identified by tradingSymbol {
+    o String tradingSymbol
+    o String description
+    o String mainExchange
+    o Double quantity
+    --> Trader owner
+}
+participant Trader identified by tradeId {
+    o String tradeId
+    o String firstName
+    o String lastName
+}
+transaction Trade {
+    --> Commodity commodity
+    --> Trader newOwner
+}
+#+END_SRC
+
+我们使用 JavaScript 来执行 .cto 文件中定义的交易. 将 lib/logic.js 中的内容替换如下:
+#+BEGIN_SRC Shell
+/**
+ * Track the trade of a commodity from one trader to another
+ * @param {org.example.mynetwork.Trade} trade - the trade to be processed
+ * @transaction
+ */
+async function tradeCommodity(trade) {
+    trade.commodity.owner = trade.newOwner;
+    let assetRegistry = await getAssetRegistry('org.example.mynetwork.Commodity');
+    await assetRegistry.update(trade.commodity);
+}
+#+END_SRC
+
+使用以下代码替换 permissions.acl 中的内容:
+#+BEGIN_SRC Shell
+/**
+ * Access control rules for tutorial-network
+ */
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.example.mynetwork.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+#+END_SRC
+
+** 生成网络
+
+进入 tutorial-network 目录, 执行命令:
+#+BEGIN_SRC Shell
+composer archive create -t dir -n .
+#+END_SRC
+将会在当前目录生成一个 .bna 文件.
+
+** 部署业务网络
+
+一般来说, Fabric 管理员需要创建一个 PeerAdmin 身份, 来执行安装链码和启动链码的命令, 不过在这边, Composer 已经自动为我们创建好了.
+
+部署网络, 启动网络:
+#+BEGIN_SRC Shell
+composer network install --card PeerAdmin@hlfv1 --archiveFile tutorial-network@0.0.1.bna
+
+composer network start --networkName tutorial-network --networkVersion 0.0.1 --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file networkadmin.card
+#+END_SRC
+
+为了顺利使用这个网络, 需要将 .card 文件导入.
+#+BEGIN_SRC Shell
+composer card import --file networkadmin.card
+#+END_SRC
+
+测试是否部署成功:
+#+BEGIN_SRC Shell
+composer network ping --card admin@tutorial-network
+#+END_SRC
+
+** 生成 REST 服务
+
+#+BEGIN_SRC Shell
+composer-rest-server
+#+END_SRC
+然后输入名字: admin@tutorial-network
+
+use namespaces in the generated API: never use namespaces
+
+secure the generated API: No
+
+enable event publication: Yes
+
+是否开启 TLS: No
+
+** 生成应用程序
+
+再开一个终端, 进入 tutorial-network
+#+BEGIN_SRC Shell
+yo hyperledger-composer:angular
+#+END_SRC
+
+* 使用 Composer 为单个 Org 部署业务网络
+
+** 启动 Hyperledger Fabric Network
+
+#+BEGIN_SRC Shell
+cd ~/fabric-dev-servers
+export FABRIC_VERSION=hlfv12
+./stopFabric.sh
+./teardownFabric.sh
+./downloadFabric.sh
+./startFabric.sh
+
+composer card delete -c PeerAdmin@fabric-network
+composer card delete -c admin@tutorial-network
+
+# 如果上面的删除命令失败了, 则索性把整个文件删除
+rm -fr ~/.composer
+#+END_SRC
+
+** 创建 .bna 文件
+
+根据前面"使用命令的方式创建业务网络"介绍的内容, 创建 .bna 文件.
+
+** 创建 connection.json
+
+编辑 connection.json
+#+BEGIN_SRC Shell
+{
+    "name": "fabric-network",
+    "x-type": "hlfv1",
+    "version": "1.0.0",
+    "peers": {
+        "peer0.org1.example.com": {
+            "url": "grpc://localhost:7051"
+        }
+    },
+    "certificateAuthorities": {
+        "ca.org1.example.com": {
+            "url": "http://localhost:7054",
+            "caName": "ca.org1.example.com"
+        }
+    },
+    "orderers": {
+        "orderer.example.com": {
+            "url": "grpc://localhost:7050"
+        }
+    },
+    "organizations": {
+        "Org1": {
+            "mspid": "Org1MSP",
+            "peers": [
+                "peer0.org1.example.com"
+            ],
+            "certificateAuthorities": [
+                "ca.org1.example.com"
+            ]
+        }
+    },
+    "channels": {
+        "composerchannel": {
+            "orderers": [
+                "orderer.example.com"
+            ],
+            "peers": {
+                "peer0.org1.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                }
+            }
+        }
+    },
+    "client": {
+        "organization": "Org1",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300",
+                    "eventHub": "300",
+                    "eventReg": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    }
+}
+#+END_SRC
+
+** 创建业务网卡
+
+业务网卡包含连接到业务网络和 Fabric 网络所需的所有信息. 使用 composer card create 来创建业务网卡.
+
+#+BEGIN_SRC Shell
+composer card create -p connection.json -u PeerAdmin -c Admin@org1.example.com-cert.pem -k 114aab0e76bf0c78308f89efc4b8c9423e31568da0c340ca187a9b17aa9a4457_sk -r PeerAdmin -r ChannelAdmin
+#+END_SRC
+
+-p connection.json: 填写指向 connection.json 的路径.
+
+-u PeerAdmin: 指定管理员的名称.
+
+-c Admin@org1.example.com-cert.pem: 填写指向证书文件的路径, 路径为 fabric-dev-servers/fabric-scripts/hlfv11/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+
+-k 114aab0e76bf0c78308f89efc4b8c9423e31568da0c340ca187a9b17aa9a4457_sk: 填写私钥文件路径, 存储在 keystore 里
+
+完整的命令类似如下:
+#+BEGIN_SRC Shell
+composer card create -p connection.json -u PeerAdmin -c ../fabric-scripts/hlfv11/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem -k ../fabric-scripts/hlfv11/composer/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/114aab0e76bf0c78308f89efc4b8c9423e31568da0c340ca187a9b17aa9a4457_sk -r PeerAdmin -r ChannelAdmin
+#+END_SRC
+
+这条命令会输出 .card 文件到当前目录.
+
+** 将业务网卡导入给 Fabric 管理员
+
+#+BEGIN_SRC Shell
+composer card import -f PeerAdmin@fabric-network.card
+#+END_SRC
+
+** 将业务网络安装到节点上
+
+可以将这一步理解为在 Fabric 中的安装链码.
+#+BEGIN_SRC Shell
+composer network install -c PeerAdmin@fabric-network -a tutorial-network@0.0.1.bna
+#+END_SRC
+
+** 将 card 文件导入到业务网络
+
+#+BEGIN_SRC Shell
+composer card import -f admin@tutorial-network.card
+#+END_SRC
+
+** 测试
+
+#+BEGIN_SRC Shell
+composer network ping -c admin@tutorial-network
+#+END_SRC
