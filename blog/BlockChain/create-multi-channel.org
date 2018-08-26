@@ -1,0 +1,292 @@
+#+TITLE:       创建多通道
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-08-26 日
+
+#+URI:         /blog/BlockChain/%y/%m/%d/%t/ Or /blog/BlockChain/%t/
+#+TAGS:        BlockChain
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+使用 fabric-samples/first-network 为例子, 进行介绍.
+
+* 修改 docker-compose-cli.yaml 文件
+
+该文件修不修改都可以, 未修改就多个设置环境变量的步骤. 这边使用修改配置文件的方法, 为两个 Org 各配置一个 Cli.
+
+#+BEGIN_SRC Shell
+version: '2'
+
+volumes:
+  orderer.example.com:
+  peer0.org1.example.com:
+  peer1.org1.example.com:
+  peer0.org2.example.com:
+  peer1.org2.example.com:
+
+networks:
+  byfn:
+
+services:
+
+  orderer.example.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.example.com
+    container_name: orderer.example.com
+    networks:
+      - byfn
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org1.example.com
+    networks:
+      - byfn
+
+  peer1.org1.example.com:
+    container_name: peer1.org1.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org1.example.com
+    networks:
+      - byfn
+
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org2.example.com
+    networks:
+      - byfn
+
+  peer1.org2.example.com:
+    container_name: peer1.org2.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org2.example.com
+    networks:
+      - byfn
+
+  cli.org1:
+    container_name: cli.org1
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli.org1
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+      - peer0.org2.example.com
+      - peer1.org2.example.com
+    networks:
+      - byfn
+
+  cli.org2:
+    container_name: cli.org2
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli.org2
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+      - peer0.org2.example.com
+      - peer1.org2.example.com
+    networks:
+      - byfn
+#+END_SRC
+
+* 生成第一个 channel 的配置文件
+
+#+BEGIN_SRC Shell
+./byfn.sh -m generate -c mychannel1
+#+END_SRC
+
+* 启动容器
+
+#+BEGIN_SRC Shell
+./byfn.sh -m up
+#+END_SRC
+这边会报错, 但是我们的目的是容器启动即可, 创建 channel, 加入 channel, 安装实例化链码等操作, 都在后面手动进行.
+
+* 创建第一个 channel
+
+** 进入 cli.org1
+
+#+BEGIN_SRC Shell
+docker exec -it cli.org1 bash
+#+END_SRC
+
+** 设置 CHANNEL_NAME 环境变量
+
+#+BEGIN_SRC Shell
+export CHANNEL_NAME=mychannel1
+#+END_SRC
+
+** 创建 channel
+
+#+BEGIN_SRC Shell
+peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+#+END_SRC
+
+** 加入 channel
+
+#+BEGIN_SRC Shell
+peer channel join -b mychannel1.block
+#+END_SRC
+
+** 查看是否已加入 channel
+
+#+BEGIN_SRC Shell
+peer channel list
+#+END_SRC
+
+** 安装与实例化链码
+
+每个节点都要安装链码, 但实例化仅需一次.
+#+BEGIN_SRC Shell
+peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/
+
+peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')"
+#+END_SRC
+
+** 使用查询功能测试是否已成功实例化
+
+#+BEGIN_SRC Shell
+peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+#+END_SRC
+此时返回的结果应是 100.
+
+** 在其他节点上进行同样操作
+
+这边需要修改环境变量, 改成其他的 Peer 节点. 完整的命令如下:
+#+BEGIN_SRC Shell
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer0.org2.example.com:7051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt peer channel join -b mychannel1.block
+
+CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer0.org2.example.com:7051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/
+#+END_SRC
+可以进入 cli.org2 使用命令验证是否加入:
+#+BEGIN_SRC Shell
+peer channel list
+#+END_SRC
+
+记住, 还需安装链码.
+
+* 生成第二个 channel 的配置文件
+
+在 byfn.sh 中, 把 generateCerts() 全部注释, 否则会生成新的 msp 文件.
+#+BEGIN_SRC Shell
+./byfn-new.sh -m generate -c mychannel2
+#+END_SRC
+
+* 创建第二个 channel
+
+** 进入 cli.org2 容器
+
+#+BEGIN_SRC Shell
+docker exec -it cli.org2 bash
+#+END_SRC
+
+** 设置 CHANNEL_NAME 环境变量
+
+#+BEGIN_SRC Shell
+export CHANNEL_NAME=mychannel2
+#+END_SRC
+
+** 创建 channel
+
+#+BEGIN_SRC Shell
+peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+#+END_SRC
+
+** 加入 channel
+
+#+BEGIN_SRC Shell
+peer channel join -b mychannel2.block
+#+END_SRC
+
+** 验证是否加入第二个 channel
+
+#+BEGIN_SRC Shell
+peer channel list
+#+END_SRC
+如下图所示:
+[[./81.png]]
+
+可以看出, 此时 peer0.org2.example.com 节点已经加入了两个 channel.
+
+** 验证 mychannel1 是否受到影响
+
+#+BEGIN_SRC Shell
+peer chaincode query -C mychannel1 -n mycc -c '{"Args":["query","a"]}'
+#+END_SRC
+如果返回结果正确, 说明 mychannel2 的安装并未影响到 mychannel1, 两个 channel 可以同时存在.
+
+** 安装与实例化第二个通道的链码
+
+这边使用 fabcar 这个链码.
+#+BEGIN_SRC Shell
+peer chaincode install -n fabcar -v 1.0 -p github.com/chaincode/fabcar/go
+
+peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n fabcar -v 1.0 -c '{"Args":[""]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
+#+END_SRC
+
+** 后续
+
+接下来在其他节点也可以加入 mychannel2, 然后安装链码, 但不用再实例化. 还可以执行查询等操作.
+
+此处省略.
+
+* 关于 Cli 的个数
+
+Cli 可以只有一个, 只要在进入另一个 peer 前, 把相应的环境变量设置好即可.
+
+另外, 前面例子中, 把所有环境变量和命令都放在一起执行, 这个环境变量只对那一条命令有效, 如果还要对该节点执行后续操作, 则还要设置环境变量; 如果不想每执行一条命令就设置一次环境变量, 则老老实实使用 export 来设置.
