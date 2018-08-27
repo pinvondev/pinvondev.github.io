@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>正则表达式及 grep sed awk 工具 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Ubuntu" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">正则表达式及 grep sed awk 工具</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org90c0052">正则表达式</a>
+<ul>
+<li><a href="#org3319108">元字符</a>
+<ul>
+<li><a href="#orgb07a00e">\b, \B, ^, $</a></li>
+<li><a href="#org1c50c83">.</a></li>
+<li><a href="#orgecbb4f7">表示重复的元字符: *, +, ?, {n}, {n,}, {n,m}</a></li>
+<li><a href="#orgbc79451">\d, \s, \w, \D, &sect;, \W</a></li>
+<li><a href="#org5a16bf8">\</a></li>
+</ul>
+</li>
+<li><a href="#org1f308f6">方括号 []</a></li>
+<li><a href="#org4884b9b">分枝条件</a></li>
+<li><a href="#org1ee857b">分组</a></li>
+<li><a href="#org797ea29">后向引用</a>
+<ul>
+<li><a href="#orgc9c60d4">指定分组名字</a></li>
+<li><a href="#org19dd65d">分组的小结</a></li>
+</ul>
+</li>
+<li><a href="#org876a37b">零宽断言</a>
+<ul>
+<li><a href="#orgacc7c2a">零宽度正预测先行断言 (?=exp)</a></li>
+<li><a href="#org0bec1aa">零宽度正回顾后发断言 (?&lt;=exp)</a></li>
+<li><a href="#org769c9a7">零宽度负预测先行断言 (?!exp)</a></li>
+<li><a href="#org1a0956a">零宽度负回顾后发断言 (?&lt;!exp)</a></li>
+<li><a href="#org17c4895">复杂的例子</a></li>
+</ul>
+</li>
+<li><a href="#org9916f9e">懒惰匹配</a></li>
+</ul>
+</li>
+<li><a href="#orgb49360c">grep</a>
+<ul>
+<li><a href="#org3358d6f">语法</a></li>
+<li><a href="#org43c29df">基本用法</a></li>
+<li><a href="#org99e8489">配合正则表达式</a></li>
+</ul>
+</li>
+<li><a href="#orgfca6cba">sed</a>
+<ul>
+<li><a href="#org116ef12">使用</a></li>
+</ul>
+</li>
+<li><a href="#orgb1ee72c">awk</a>
+<ul>
+<li><a href="#org391386d">实例</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org90c0052" class="outline-2">
+<h2 id="org90c0052">正则表达式</h2>
+<div class="outline-text-2" id="text-org90c0052">
+</div>
+<div id="outline-container-org3319108" class="outline-3">
+<h3 id="org3319108">元字符</h3>
+<div class="outline-text-3" id="text-org3319108">
+</div>
+<div id="outline-container-orgb07a00e" class="outline-4">
+<h4 id="orgb07a00e">\b, \B, ^, $</h4>
+<div class="outline-text-4" id="text-orgb07a00e">
+<p>
+\b 匹配单词的开头或结尾, 即单词的分界处, 英文的单词通常用空格, 标点符号和换来来分隔, 但 \b 不匹配这些, 它只匹配一个位置.
+</p>
+
+<p>
+\B 匹配不是单词开头或结束的位置.
+</p>
+
+<p>
+如, 想在一段文本中, 查找 'hi' 这个单词, 一般会把 history 这种单词也匹配进来, 如果使用 \bhi\b, 就可以只匹配 hi 这个单词.
+</p>
+
+<p>
+^ 和 $ 也匹配一个位置, ^ 匹配要查找的字符串的开头, $ 匹配结尾. 如果有设置处理多行, 则 ^ 和 $ 也表示一行的开始处和结尾处.
+</p>
+
+<p>
+如, 要输入 QQ 号码, QQ 号码有 5-12 位, 可以使用 ^\d{5,12}$
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1c50c83" class="outline-4">
+<h4 id="org1c50c83">.</h4>
+<div class="outline-text-4" id="text-org1c50c83">
+<p>
+. 匹配 <code>除换行符以外</code> 的任何字符.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgecbb4f7" class="outline-4">
+<h4 id="orgecbb4f7">表示重复的元字符: *, +, ?, {n}, {n,}, {n,m}</h4>
+<div class="outline-text-4" id="text-orgecbb4f7">
+<ul class="org-ul">
+<li>匹配的是数量. 表示 * 前边的内容可以连续重复使用任意次以使整个表达式得到匹配.</li>
+</ul>
+
+<p>
+所以, .* 表示任意数量的不包含换行的字符. \bhi\b.*Lucy\b: 先是一个单词 hi, 然后是任意个字符, 但不能是换行, 最后是 Lucy.
+</p>
+
+<ul class="org-ul">
+<li>也匹配数量, 但 * 可以匹配任意次(包括 0 次), 而 + 则匹配重复 1 次或更多次.</li>
+</ul>
+
+<p>
+? 重复 0 次或 1 次.
+</p>
+
+<p>
+{n} 重复 n 次.
+</p>
+
+<p>
+{n,} 重复 n 次或更多次.
+</p>
+
+<p>
+{n,m} 重复 n 到 m 次.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbc79451" class="outline-4">
+<h4 id="orgbc79451">\d, \s, \w, \D, &sect;, \W</h4>
+<div class="outline-text-4" id="text-orgbc79451">
+<p>
+\d 匹配一位数字, 等价于 [0-9]. 如果想匹配 3 位连续的数字, 可以写成: \d\d\d, 也可以写成: \d{3} 
+</p>
+
+<p>
+\s 匹配任意的空白符, 包括空格, Tab, 换行符, 中文全角空格等.
+</p>
+
+<p>
+\w 匹配字母, 数字, 下划线. 等价于 '[A-Za-z0-9_]'
+</p>
+
+<p>
+例子: \ba\w*\b, 匹配任意以字母 a 开头的单词, 首先是单词开始处 \b, 然后是字母 a, 然后是任意数量的字母或数字 \w*, 最后是单词的结束 \b.
+</p>
+
+<p>
+最后, \D, &sect;, \W 都是 \d, \s, \w 的反义词, 如, \D 表示任意非数字的字符.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5a16bf8" class="outline-4">
+<h4 id="org5a16bf8">\</h4>
+<div class="outline-text-4" id="text-org5a16bf8">
+<p>
+\ 表示转义符, 比如想查找 . 或 *, 由于它们是元字符, 会被解释成其他意义. \. 可以表示字符 ., 如果想查找 \ 本身, 就使用 \\.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f308f6" class="outline-3">
+<h3 id="org1f308f6">方括号 []</h3>
+<div class="outline-text-3" id="text-org1f308f6">
+<p>
+[] 里面写的内容, 可以匹配 <code>一个字符</code>. 
+</p>
+
+<p>
+[aeiou] 可以匹配 a 或 e 或 i 或 o 或 u 这五个字符中的一个;
+</p>
+
+<p>
+[.?!] 可以匹配标点符号 . 或 ? 或 !
+</p>
+
+<p>
+\(?0\d{2}[) -]?\d{8} 可以匹配几种格式的电话号码, 如 (010)88886666, 022-22334455, 02912345678. 首先是转义字符 \(, ? 表示 \( 可以出现 0 次或 1 次; 然后是数字 0; 然后是任意的两个数字 \d{2}, 然后是 ) 或 - 或空格 [) -], 可以出现 0 次或 1 次; 最后是 8 个数字 \d{8}.
+</p>
+
+<p>
+<code>在 [] 内部使用 ^ 表示取反</code>, 如: [^aeiou] 表示除 aeiou 这五个字母之外的任意字符.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4884b9b" class="outline-3">
+<h3 id="org4884b9b">分枝条件</h3>
+<div class="outline-text-3" id="text-org4884b9b">
+<p>
+\(?0\d{2}[) -]?\d{8} 也可以匹配到 (010-87654321 这种不正确的格式.
+</p>
+
+<p>
+分枝条件是指, 在正则表达式中写好几种规则, 满足其中一种规则就可以匹配, 几种规则使用 | 分隔.
+</p>
+
+<p>
+如: 0\d{2}-\d{8}|0\d{3}-\d{7} 可以匹配两种以 - 分隔的电话号码, 一种是三位区号, 8 位本地号, 另一种是 4 位区号, 7 位本地号.
+</p>
+
+<p>
+\d{5}-\d{4}|\d{5} 可以匹配美国的邮政编码. 美国邮编的规则是 5 位数字, 或者用 - 连接的 9 位数字. 但不能改成 \d{5}|\d{5}-\d{4}, 因为 <code>使用分枝条件时, 会从左到右测试每个条件, 如果满足了某个分枝, 就不会再去管其他的条件了</code>. 所以这边, 只会用到前一个分枝, 只能匹配 5 位的邮编, 或者 9 位邮编中的前 5 位. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1ee857b" class="outline-3">
+<h3 id="org1ee857b">分组</h3>
+<div class="outline-text-3" id="text-org1ee857b">
+<p>
+() 可以用来指定子表达式(也叫分组). 如果想要重复多个字符, 就可以用小括号来指定子表达式, 然后指定这个子表达式的重复次数.
+</p>
+
+<p>
+匹配 IP 的简单表达式: (\d{1,3}\.){3}\d{1,3} 解析: \d{1,3} 匹配 1 到 3 位数字, (\d{1,3}\.){3} 匹配三位数字加上一个英文句号, 然后这个整体重复 3 次, 最后再加上一个 1 到 3 位的数字 \d{1,3}
+</p>
+
+<p>
+但是, 这个表达式还可以匹配 256.300.999.888 这样的不可能存在的 IP, 所以要改成: ((2[0-4]\d|25[0-5]|[01]?\d\d?\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org797ea29" class="outline-3">
+<h3 id="org797ea29">后向引用</h3>
+<div class="outline-text-3" id="text-org797ea29">
+<p>
+后向引用是指, 前一个子表达式匹配的内容, 可以传递给后一个子表达式作进一步处理. 以分组的左括号为标志, 第一个出现的分组组号为 1, 写成 \1, 第二个出现的分组组号为 2, 写成 \2.
+</p>
+
+<p>
+\b(\w+)\b\s+\1\b 的作用是匹配重复出现的单词, 比如 go go. 这个表达式首先是一个词, 这个词有一或多个的字母, 数字或下划线 \b(\w+)\b. 这个词会被捕获到编号为 1 的分组中, 然后是 1 个或几个空白符 (\s+), 最后是分组 1 中捕获的内容 \1.
+</p>
+</div>
+
+<div id="outline-container-orgc9c60d4" class="outline-4">
+<h4 id="orgc9c60d4">指定分组名字</h4>
+<div class="outline-text-4" id="text-orgc9c60d4">
+<p>
+我们可以自己指定分组的名字, 语法如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">(?&lt;name&gt;exp)
+
+# 要使用时
+\k&lt;name&gt;
+</pre>
+</div>
+
+<p>
+上面的例子也可以写成: \b(?&lt;word&gt;\w+)\b\s+\k&lt;word&gt;\b
+</p>
+</div>
+</div>
+
+<div id="outline-container-org19dd65d" class="outline-4">
+<h4 id="org19dd65d">分组的小结</h4>
+<div class="outline-text-4" id="text-org19dd65d">
+<p>
+(exp): 匹配 exp, 并捕获文本到自动命名的组里
+</p>
+
+<p>
+(?&lt;name&gt;exp): 匹配 exp, 并捕获文本到名称为 name 的分组中, 也可以写成: (?'name'exp)
+</p>
+
+<p>
+(?:exp): 匹配 exp, 但不捕获匹配的广西, 也不给此分组分配组号
+</p>
+
+<p>
+(?=exp): 匹配 exp 前面的位置
+</p>
+
+<p>
+(?&lt;=exp): 匹配 exp 后面的位置
+</p>
+
+<p>
+(?!exp): 匹配后面跟的不是 exp 的位置
+</p>
+
+<p>
+(?&lt;!exp): 匹配前面不是 exp 的位置
+</p>
+
+<p>
+(?#comment): 注释
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org876a37b" class="outline-3">
+<h3 id="org876a37b">零宽断言</h3>
+<div class="outline-text-3" id="text-org876a37b">
+<p>
+断方用来声明一个应该为真的事实. 正则表达式中, 只有当断言为真时, 才会继续进行匹配.
+</p>
+</div>
+
+<div id="outline-container-orgacc7c2a" class="outline-4">
+<h4 id="orgacc7c2a">零宽度正预测先行断言 (?=exp)</h4>
+<div class="outline-text-4" id="text-orgacc7c2a">
+<p>
+(?=exp) 断言自身出现的位置的后面能匹配表达式 exp. 如: \b\w+(?=ing\b) 表示匹配以 ing 结尾的单词的前面部分, 当文本为 I'm singing while you're dancing 时, 可以匹配到 sing 和 danc.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0bec1aa" class="outline-4">
+<h4 id="org0bec1aa">零宽度正回顾后发断言 (?&lt;=exp)</h4>
+<div class="outline-text-4" id="text-org0bec1aa">
+<p>
+(?&lt;=exp) 断言自身出现的位置的前面能匹配表达式 exp. 如: (?&lt;=\bre)\w+\b 能匹配以 re 开头的单词的后半部分, 当文本为 reading a book 时, 它匹配 ading.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org769c9a7" class="outline-4">
+<h4 id="org769c9a7">零宽度负预测先行断言 (?!exp)</h4>
+<div class="outline-text-4" id="text-org769c9a7">
+<p>
+(?!exp) 断言此位置的后面不能匹配表达式 exp. 
+</p>
+
+<p>
+如, \d{3}(?!\d) 匹配三位数字, 而且这三位数字的后面不能是数字.
+</p>
+
+<p>
+如, \b((?!abc)\w)+\b 匹配不包含连续字符串 abc 的单词.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1a0956a" class="outline-4">
+<h4 id="org1a0956a">零宽度负回顾后发断言 (?&lt;!exp)</h4>
+<div class="outline-text-4" id="text-org1a0956a">
+<p>
+(?&lt;!exp) 断言此位置的前面不能匹配表达式 exp.
+</p>
+
+<p>
+如, (?&lt;![a-z])\d{7} 匹配前面不是小写字母的 7 位数字.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org17c4895" class="outline-4">
+<h4 id="org17c4895">复杂的例子</h4>
+<div class="outline-text-4" id="text-org17c4895">
+<p>
+(?&lt;=&lt;(\w+)&gt;).*(?=&lt;\/\1&gt;) 匹配 HTML 标签内的内容.
+</p>
+
+<p>
+&lt;(\w+)&gt;: 匹配被 &lt;&gt; 括起来的单词, 包括 &lt;&gt;, 用 \1 来表示.
+</p>
+
+<p>
+(?&lt;=&lt;(\w+)&gt;): 匹配 &lt;(\w+)&gt; 后面的部分, 不包括 &lt;(\w+)&gt;
+</p>
+
+<p>
+.*: 匹配任意长度的字符.
+</p>
+
+<p>
+&lt;\/\1&gt;: \1 表示分组 1, 在前面匹配到的, \/ 中, \ 是转义符, 最终表示字符 /, 所以假如 \1 为 html, 则相当于 &lt;/html&gt;
+</p>
+
+<p>
+(?=&lt;\/\1&gt;): 匹配 &lt;\/\1&gt; 前面的部分, 不包括 &lt;\/\1&gt;
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9916f9e" class="outline-3">
+<h3 id="org9916f9e">懒惰匹配</h3>
+<div class="outline-text-3" id="text-org9916f9e">
+<p>
+正则表达式默认是贪婪匹配. 如果要改成懒惰匹配, 可以在限定符后面加 ?
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">*? : 重复任意次, 但尽可能少重复
++? : 重复 1 次或更多次, 但尽可能少重复
+?? : 重复 0 次或 1 次, 但尽可能少重复
+{n,m}? : 重复 n 到 m 次, 但尽可能少重复
+{n,}? : 重复 n 次以上, 但尽可能少重复
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb49360c" class="outline-2">
+<h2 id="orgb49360c">grep</h2>
+<div class="outline-text-2" id="text-orgb49360c">
+</div>
+<div id="outline-container-org3358d6f" class="outline-3">
+<h3 id="org3358d6f">语法</h3>
+<div class="outline-text-3" id="text-org3358d6f">
+<p>
+grep 用来一行一行分析数据. 其语法如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">grep [-a,-c,-i,-n,-v] [--color=auto] '查找字符串' filename
+
+-a: 将 binary 文件以 text 文件的方式查找数据;
+-c: 计算 '查找字符串' 出现的次数;
+-i: 忽略大小写;
+-n: 输出行号;
+-v: 反向选择, 即找出不包含 '查找字符串' 的那一行
+--color=auto: 将 '查找字符串' 加上颜色显示
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org43c29df" class="outline-3">
+<h3 id="org43c29df">基本用法</h3>
+<div class="outline-text-3" id="text-org43c29df">
+<div class="org-src-container">
+<pre class="src src-Shell">last | grep 'pinvon'  # 将 last 当中, pinvon 用户登录的那些行显示.
+last | grep -v 'pinvon'  # 将 last 当中, 不是 pinvon 用户登录的那些行显示
+grep --color=auto 'MANPATH' /etc/man.config  # 将 /etc/man.config 内包含 MANPATH 的那些行显示
+</pre>
+</div>
+
+<p>
+如果想每次使用 grep 时, 相关信息都用颜色表示, 就用 alias 设置别名:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">alias grep='grep --color=auto'
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org99e8489" class="outline-3">
+<h3 id="org99e8489">配合正则表达式</h3>
+<div class="outline-text-3" id="text-org99e8489">
+<div class="org-src-container">
+<pre class="src src-Shell">grep -n 'o\{2\}' regular_express.txt  # 在 regular_express.txt 中找到有两个 o 的行
+
+ls | grep -n '^a.*'  # 以 a 开头的文件名
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfca6cba" class="outline-2">
+<h2 id="orgfca6cba">sed</h2>
+<div class="outline-text-2" id="text-orgfca6cba">
+<p>
+sed 是一个管道命令, 可以利用 script 来处理文本文件.
+</p>
+
+<p>
+基本语法:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">sed [-nefr] [动作]
+-n: 使用安静模式, 仅显示被处理后的结果
+-e: 在命令行模式中进行 sed 的动作编辑
+-f: 直接将 sed 的动作写在一个文件内, -f filename 则可以执行 filename 内的 sed 动作
+-r: 使用正则表达式
+-i: 直接修改读取的文件内容, 而不是由屏幕输出
+
+# 动作说明: [n1[,n2]]function
+[n1[,n2]]: 可选, 表示要处理的行数.
+
+# function 有下面这些参数
+a: 新增, 后接要增加的字符串
+c: 替换, 后接用于替换的字符串
+d: 删除
+i: 插入, 后接要插入的字符串
+p: 打印, 将某个选择的数据打印出来
+s: 替换, 可以搭配正则表达式 sed 's/要被替换的字符串/新的字符串/g'
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org116ef12" class="outline-3">
+<h3 id="org116ef12">使用</h3>
+<div class="outline-text-3" id="text-org116ef12">
+<ol class="org-ol">
+<li>将 filename 里面的内容列出并打印行号, 同时, 将第 2~5 行删除</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell">nl filename | sed -e '2,5d'
+</pre>
+</div>
+<p>
+由于 -e 的意思是在命令行上进行 sed 的编辑动作, 所以对 filename 这个文件本身不产生影响. -e 是默认的, 可不加.
+</p>
+
+<ol class="org-ol">
+<li>将 filename 里面的内容列出并打印行号, 同时, 在第 2 行后面增加两行字</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell">nl filename | sed '2a add line 1 \nadd line 2'
+</pre>
+</div>
+<p>
+如果要在第 2 行之前插入数据, 则把 a 改成 i.
+</p>
+
+<ol class="org-ol">
+<li>将 filename 里面的内容列出并打印行号, 同时, 将第 2~5 行的内容替换</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell">nl filename | sed '2,5c test'
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>打印 filename 里面的 第 2~5 行内容</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell">nl filename | sed -n '2,5p'
+</pre>
+</div>
+<p>
+这边使用 -n, 是因为如果不加, 会把所有的内容都输出, 并且第 2~5 行的内容会输出两次. 而加上 -n 后, 只输出第 2~5 行的内容, 其他内容不输出.
+</p>
+
+<ol class="org-ol">
+<li>假设 filename 中的注释符号是 #, 使用 sed 命令删除 filename 中的所有注释</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell">cat filename | sed 's/#.*$//g'
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb1ee72c" class="outline-2">
+<h2 id="orgb1ee72c">awk</h2>
+<div class="outline-text-2" id="text-orgb1ee72c">
+<p>
+awk 和 sed 类似, 也可以处理文件. sed 常把一行当作一个单元来处理, 而 awk 则把一行分成几个字段, 对字段进行处理.
+</p>
+
+<p>
+语法如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">awk '条件类型 1{动作 1} 条件类型 2{动作 2} ...' filename
+</pre>
+</div>
+
+<p>
+默认的字段分隔符是空格或 Tab.
+</p>
+</div>
+
+<div id="outline-container-org391386d" class="outline-3">
+<h3 id="org391386d">实例</h3>
+<div class="outline-text-3" id="text-org391386d">
+<p>
+使用 last 可以将登录者的数据取出来, 如果只想取出其中的账号和 IP, 且账号与 IP 之间以 Tab 隔开, 则可以这样:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">last -n 5 -i | awk '{print $1 "\t" $3}'
+</pre>
+</div>
+
+<p>
+awk 有几个内置变量, NF 表示每行拥有的字段总数, NR 表示当前处理的是第几行, FS 表示默认的分隔符是什么.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">last -n 5 -i | awk '{print $1 "\t lines: " NR "\t columns: " NF}'
+</pre>
+</div>
+
+<p>
+查看第 3 列小于 10 的数据:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cat filename | awk '$3 &lt; 10 {print $1 "\t" $3}'
+</pre>
+</div>
+
+<p>
+设置其他的分隔符:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cat filename | awk 'BEGIN {FS=";"} $3 &lt; 10 {print $1 "\t" $3}'
+</pre>
+</div>
+
+<p>
+awk 的动作内部, 也支持 if 语句, 如:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">cat filename | awk '{if ($3 &lt; 10) {print $1 "\t" $3}'
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-08-27</span>
+            <span title="last modification date" class="post-info">2018-08-28</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/ubuntu">Ubuntu</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/OS/2018/08/27/正则表达式及-grep-sed-awk-工具/ Or /blog/OS/正则表达式及-grep-sed-awk-工具/";
+         var disqus_url = "https://pinvondev.github.io/blog/OS/2018/08/27/正则表达式及-grep-sed-awk-工具/ Or /blog/OS/正则表达式及-grep-sed-awk-工具/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
