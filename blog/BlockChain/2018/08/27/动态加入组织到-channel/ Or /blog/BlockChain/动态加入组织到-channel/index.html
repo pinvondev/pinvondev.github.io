@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>动态加入组织到 Channel - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="Pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="BlockChain" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">动态加入组织到 Channel</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org77142a9">概述</a></li>
+<li><a href="#org5547100">启动网络</a>
+<ul>
+<li><a href="#org966fbec">清理</a></li>
+<li><a href="#orge199a03">生成相关文件</a></li>
+<li><a href="#orgf89eb60">启动网络</a></li>
+</ul>
+</li>
+<li><a href="#org2a38e0c">脚本</a></li>
+<li><a href="#org37ee043">手动执行</a>
+<ul>
+<li><a href="#org3b76327">启动网络</a></li>
+<li><a href="#org1c7ee11">生成 Org3 的加密材料</a></li>
+<li><a href="#org6e08560">将 Orderer 的 MSP 材料放进 Org3 的 crypto-config</a></li>
+<li><a href="#org8b18ff0">准备 CLI 环境</a></li>
+<li><a href="#orge1a3339">获取配置</a></li>
+<li><a href="#org95d30e2">解码 config_block.pb</a></li>
+<li><a href="#org8b4d4e8">添加 Org3 的加密材料</a></li>
+<li><a href="#org1d4c0a3">注册和提交更新的配置</a></li>
+<li><a href="#orgd84dd13">选举</a></li>
+<li><a href="#orgc22bbf9">将 Org3 加入通道</a></li>
+<li><a href="#org4b6bd73">升级和调用链码</a></li>
+</ul>
+</li>
+<li><a href="#orgf86e4c8">动态增加节点</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org77142a9" class="outline-2">
+<h2 id="org77142a9">概述</h2>
+<div class="outline-text-2" id="text-org77142a9">
+<p>
+以 fabric-samples/first-network 中的配置为例, 介绍如何加入一个新组织到现有的通道中. 在这边, 我们假定读者已经熟悉了 first-network 如何运行.
+</p>
+
+<p>
+虽然这篇文章是针对增加新组织的, 但是在通道修改策略或改变区块大小时, 方法是类似的.
+</p>
+
+<p>
+一般来说, 更新通道这类事情比较偏运维方向, 而不是开发人员的事情.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5547100" class="outline-2">
+<h2 id="org5547100">启动网络</h2>
+<div class="outline-text-2" id="text-org5547100">
+</div>
+<div id="outline-container-org966fbec" class="outline-3">
+<h3 id="org966fbec">清理</h3>
+<div class="outline-text-3" id="text-org966fbec">
+<p>
+首先执行以下语句, 确保在正式开始之前, 把相关的文件, 容器等, 都清理一遍.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./byfn.sh -m down
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge199a03" class="outline-3">
+<h3 id="orge199a03">生成相关文件</h3>
+<div class="outline-text-3" id="text-orge199a03">
+<div class="org-src-container">
+<pre class="src src-Shell">./byfn.sh -m generate
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf89eb60" class="outline-3">
+<h3 id="orgf89eb60">启动网络</h3>
+<div class="outline-text-3" id="text-orgf89eb60">
+<div class="org-src-container">
+<pre class="src src-Shell">./byfn.sh -m up
+</pre>
+</div>
+
+<p>
+接下来, 我们先学习使用脚本自动完成动态加入组织, 然后再手动操作一遍.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2a38e0c" class="outline-2">
+<h2 id="org2a38e0c">脚本</h2>
+<div class="outline-text-2" id="text-org2a38e0c">
+<p>
+在 first-network 目录下, 直接执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./eyfn.sh up
+</pre>
+</div>
+
+<p>
+如果一切正常, 结果如下:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/08/27/动态加入组织到-channel/ Or /blog/BlockChain/动态加入组织到-channel/71.png" alt="71.png" />
+</p>
+</div>
+
+<p>
+通过查看容器, 可以发现, 已经多出了 Org3:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/08/27/动态加入组织到-channel/ Or /blog/BlockChain/动态加入组织到-channel/72.png" alt="72.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37ee043" class="outline-2">
+<h2 id="org37ee043">手动执行</h2>
+<div class="outline-text-2" id="text-org37ee043">
+<p>
+我们先将日志的级别调成 DEBUG.
+</p>
+
+<p>
+对于 cli 容器, 我们修改 docker-compose-cli.yaml 文件:
+</p>
+<div class="org-src-container">
+<pre class="src src-YAML">cli:
+  container_name: cli
+  image: hyperledger/fabric-tools:$IMAGE_TAG
+  tty: true
+  stdin_open: true
+  environment:
+    - GOPATH=/opt/gopath
+    - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+    #- CORE_LOGGING_LEVEL=INFO
+    - CORE_LOGGING_LEVEL=DEBUG
+</pre>
+</div>
+
+<p>
+对于 Org3cli 容器, 我们修改 docker-compose-org3.yaml 文件, 修改的地方与上面类似.
+</p>
+
+<p>
+如果之前使用 eyfn.sh 添加了 Org3, 现在先将其关掉:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">./eyfn.sh down
+rm channel-artifacts/*
+rm -rf crypto-config
+</pre>
+</div>
+<p>
+这会关掉整个网络, 删除所有容器.
+</p>
+</div>
+
+<div id="outline-container-org3b76327" class="outline-3">
+<h3 id="org3b76327">启动网络</h3>
+<div class="outline-text-3" id="text-org3b76327">
+<div class="org-src-container">
+<pre class="src src-Shell">./byfn.sh -m generate
+./byfn.sh -m up
+</pre>
+</div>
+
+<p>
+如果出现如下错误:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">Error: got unexpected status: FORBIDDEN -- Failed to reach implicit threshold of 1 sub-policies, required 1 remaining: permission denied
+</pre>
+</div>
+<p>
+则执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-cli.yaml -f docker-compose-couch.yaml down --volumes
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1c7ee11" class="outline-3">
+<h3 id="org1c7ee11">生成 Org3 的加密材料</h3>
+<div class="outline-text-3" id="text-org1c7ee11">
+<div class="org-src-container">
+<pre class="src src-Shell">cd org3-artifacts
+</pre>
+</div>
+
+<p>
+这个目录下有两个文件: org3-crypto.yaml 和 configtx.yaml
+</p>
+
+<p>
+首先, 使用 org3-crypto.yaml 生成 Org3 的加密材料:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">../../bin/cryptogen generate --config=./org3-crypto.yaml
+</pre>
+</div>
+<p>
+cryptogen 工具会为 Org3 的 CA, Peers 生成私钥和证书, 并在当前目录创建 crypto-config, 然后把所有材料放在这个目录里.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Shell">export FABRIC_CFG_PATH=$PWD
+../../bin/configtxgen -printOrg Org3MSP &gt; ../channel-artifacts/org3.json
+</pre>
+</div>
+<p>
+该命令会生成 .json 文件, 用作通道配置. 放在 first-network/channel-artifacts 目录下.
+</p>
+
+<p>
+可以打开看看里面的内容. 主要包括 Org3 定义的策略, 管理员证书(Org3 的管理员), CA 根证书, TLS 根证书.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6e08560" class="outline-3">
+<h3 id="org6e08560">将 Orderer 的 MSP 材料放进 Org3 的 crypto-config</h3>
+<div class="outline-text-3" id="text-org6e08560">
+<div class="org-src-container">
+<pre class="src src-Shell">cd ..
+cp -r crypto-config/ordererOrganizations org3-artifacts/crypto-config/
+</pre>
+</div>
+
+<p>
+做完这些以后, 我们开始更新通道配置.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b18ff0" class="outline-3">
+<h3 id="org8b18ff0">准备 CLI 环境</h3>
+<div class="outline-text-3" id="text-org8b18ff0">
+<div class="org-src-container">
+<pre class="src src-Shell">docker exec -it cli bash
+apt update
+apt install -y jq  # 这个工具可以和JSON文件交互
+</pre>
+</div>
+
+<p>
+设置 ORDERER_CA 和 CHANNEL_NAME 环境变量:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+export CHANNEL_NAME=mychannel
+</pre>
+</div>
+
+<p>
+如果重启了 cli 容器, 需要重新设置这些环境变量, 但是 jq 工具将会一直存在, 除非我们删了这个容器.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge1a3339" class="outline-3">
+<h3 id="orge1a3339">获取配置</h3>
+<div class="outline-text-3" id="text-orge1a3339">
+<p>
+在 cli 容器中, 获取最新的通道配置区块(如果这个通道更新过多次):
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+</pre>
+</div>
+<p>
+这条命令将通道配置区块的二进制原型保存到了当前目录的 config_block.pb 里(其实, 名字和后缀都是任意的).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org95d30e2" class="outline-3">
+<h3 id="org95d30e2">解码 config_block.pb</h3>
+<div class="outline-text-3" id="text-org95d30e2">
+<p>
+我们使用 configtxlator 工具将 config_block.pb 解码, 并使用 jq 工具过滤掉与内容无关的信息:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator proto_decode --input config_block.pb --type common.Block | jq .data.data[0].payload.data.config &gt; config.json
+</pre>
+</div>
+
+<p>
+可以另开一个终端, 使用如下命令将生成的 config.json 复制到宿主机器:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker cp cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/config.json ./
+</pre>
+</div>
+
+<p>
+config.json 文件是很重要的, 可以用编辑器打开, 看看里面的内容.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b4d4e8" class="outline-3">
+<h3 id="org8b4d4e8">添加 Org3 的加密材料</h3>
+<div class="outline-text-3" id="text-org8b4d4e8">
+<p>
+使用 jq 工具, 将 Org3 的配置 org3.json 添加到通道配置文件 config.json(这边并不严谨, 只是为了方便理解, 因为 config.json 只是通道配置文件转码且删掉了部分信息后的东西), 并将结果命名为 modified_config.json:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups": {"Org3MSP":.[1]}}}}}' config.json ./channel-artifacts/org3.json &gt; modified_config.json
+</pre>
+</div>
+
+<p>
+现在, cli 容器里已经有 config.json 和 modified_config.json 两个文件了. 前者只包含了 Org1 和 Org2 的加密材料, 后者则还包含了 Org3 的加密材料.
+</p>
+
+<p>
+将 config.json 和 modified_config 转成二进制文件 config.pb 和 modified_config.pb:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator proto_encode --input config.json --type common.Config --output config.pb
+
+configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
+</pre>
+</div>
+
+<p>
+计算 modified_config.pb 和 config.pb 之间的增量, 因为在通道的区块中, 已经有了 Org1 和 Org2 的加密材料, 我们只需要这两个配置之间的增量 org3_update.pb:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator compute_update --channel_id $CHANNEL_NAME --original config.pb --updated modified_config.pb --output org3_update.pb
+</pre>
+</div>
+
+<p>
+再将 org3_update.pb 转成 JSON 格式:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator proto_decode --input org3_update.pb --type common.ConfigUpdate | jq . &gt; org3_update.json
+</pre>
+</div>
+
+<p>
+将我们之前过滤掉的与内容无关的数据添加回去, 得到 org3_update_in_envelope.json:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">echo '{"payload":{"header":{"channel_header":{"channel_id":"mychannel", "type":2}},"data":{"config_update":'$(cat org3_update.json)'}}}' | jq . &gt; org3_update_in_envelope.json
+</pre>
+</div>
+
+<p>
+最后, 再把这个文件转成二进制形式, 得到 org3_update_in_envelope.pb:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">configtxlator proto_encode --input org3_update_in_envelope.json --type common.Envelope --output org3_update_in_envelope.pb
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d4c0a3" class="outline-3">
+<h3 id="org1d4c0a3">注册和提交更新的配置</h3>
+<div class="outline-text-3" id="text-org1d4c0a3">
+<p>
+在将更新的配置写入账本之前, 我们还要用 Admin 进行签名.
+</p>
+
+<p>
+由于通道的修改策略(mod_policy)设置为 MAJORITY, 所以我们需要大多数组织管理员对其进行签名. 在我们的案例中, 只有 Org1 和 Org2, 所以大多数的意思就是, 我们需要他们两个组织的管理员签名. 如果没有两个签名, Orderer 将拒绝未完成该策略的交易.
+</p>
+
+<p>
+由于 cli 容器里的环境变量默认是针对 Org1 的, 所以我们不需要修改什么, 直接签名即可:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel signconfigtx -f org3_update_in_envelope.pb
+</pre>
+</div>
+
+<p>
+而 Org2 的管理员的签名, 则需要先修改 cli 的环境变量, 这样才能使用 cli 来模仿 Org2 的管理员:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export CORE_PEER_LOCALMSPID="Org2MSP"
+
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+
+export CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+</pre>
+</div>
+
+<p>
+然后我们使用 peer channel update 命令, 这个命令会自动对二进制文件签名, 所以我们不用再执行一次 peer channel signconfigtx 命令:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel update -f org3_update_in_envelope.pb -c $CHANNEL_NAME -o orderer.example.com:7050 --tls --cafile $ORDERER_CA
+</pre>
+</div>
+
+<p>
+如果输出的结果类似如下形式, 则说明一切顺利:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">2018-04-23 15:36:55.653 UTC [channelCmd] update -&gt; INFO 002 Successfully submitted channel update
+</pre>
+</div>
+
+<p>
+我们可以新开一个终端, 输入如下命令, 查看日志:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker logs -f peer0.org1.example.com
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd84dd13" class="outline-3">
+<h3 id="orgd84dd13">选举</h3>
+<div class="outline-text-3" id="text-orgd84dd13">
+<p>
+根据需要, 修改 first-network/base/base-peer.yaml 文件:
+</p>
+
+<p>
+静态选举:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">CORE_PEER_GOSSIP_USELEADERELECTION=false
+CORE_PEER_GOSSIP_ORGLEADER=true
+</pre>
+</div>
+
+<p>
+动态选举:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">CORE_PEER_GOSSIP_USELEADERELECTION=true
+CORE_PEER_GOSSIP_ORGLEADER=false
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc22bbf9" class="outline-3">
+<h3 id="orgc22bbf9">将 Org3 加入通道</h3>
+<div class="outline-text-3" id="text-orgc22bbf9">
+<p>
+新开一个终端, 执行:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">docker-compose -f docker-compose-org3.yaml up -d
+docker exec -it Org3cli bash
+</pre>
+</div>
+
+<p>
+设置环境变量:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+export CHANNEL_NAME=mychannel
+</pre>
+</div>
+
+<p>
+获取 Orderer 的创世区块(由于我们之前更新过通道, 所以 Orderer 可以验证我们的签名, 如果 Org3 尚未成功添加到通道配置中, Orderer 会拒绝我们的请求):
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel fetch 0 mychannel.block -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+</pre>
+</div>
+<p>
+参数 0 表示我们需要的是创世区块, 如果不加这个参数, 将会获得最新区块.
+</p>
+
+<p>
+使用 peer channel join 命令加入通道:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer channel join -b mychannel.block
+</pre>
+</div>
+
+<p>
+如果要加入 Org3 的另一个节点, 修改环境变量:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer1.org3.example.com/tls/ca.crt &amp;&amp; export CORE_PEER_ADDRESS=peer1.org3.example.com:7051
+
+peer channel join -b mychannel.block
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4b6bd73" class="outline-3">
+<h3 id="org4b6bd73">升级和调用链码</h3>
+<div class="outline-text-3" id="text-org4b6bd73">
+<p>
+在 Org3cli 中执行, 将链码的版本安装为 2.0 版(一般来说, 一个组织只要主节点升级即可):
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+</pre>
+</div>
+
+<p>
+在 cli 容器中, Org2 也安装链码:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+</pre>
+</div>
+
+<p>
+切换到 Org1, 安装链码:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">export CORE_PEER_LOCALMSPID="Org1MSP"
+
+export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+
+export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+
+peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+</pre>
+</div>
+
+
+<p>
+升级链码:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode upgrade -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
+</pre>
+</div>
+
+<p>
+查询:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+</pre>
+</div>
+
+<p>
+如果一切顺利, 返回结果如下图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/BlockChain/2018/08/27/动态加入组织到-channel/ Or /blog/BlockChain/动态加入组织到-channel/73.png" alt="73.png" />
+</p>
+</div>
+
+<p>
+转账:
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}'
+
+peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+</pre>
+</div>
+<p>
+如果一切顺利, 返回的结果应该是 80.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf86e4c8" class="outline-2">
+<h2 id="orgf86e4c8">动态增加节点</h2>
+<div class="outline-text-2" id="text-orgf86e4c8">
+<p>
+动态增加节点的功能, 在 Fabric v1.0 已经实现. 具体做法如下参考: <a href="https://blog.csdn.net/zhaoliang1131/article/details/54896276">https://blog.csdn.net/zhaoliang1131/article/details/54896276</a>
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-08-27</span>
+            <span title="last modification date" class="post-info">2018-08-27</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/blockchain">BlockChain</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/BlockChain/2018/08/27/动态加入组织到-channel/ Or /blog/BlockChain/动态加入组织到-channel/";
+         var disqus_url = "https://pinvondev.github.io/blog/BlockChain/2018/08/27/动态加入组织到-channel/ Or /blog/BlockChain/动态加入组织到-channel/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+            <script type="text/javascript" src="/media/js/love.js"></script>
+</div>
+
+  </div></body>
+</html>
