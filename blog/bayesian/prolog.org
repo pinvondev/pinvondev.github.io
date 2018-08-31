@@ -1,0 +1,111 @@
+#+TITLE:       Prolog
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-08-31 五
+
+#+URI:         /blog/bayesian/%y/%m/%d/%t/ Or /blog/bayesian/%t/
+#+TAGS:        贝叶斯网
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+Prolog 是基于谓词逻辑的理论. 最基本的写法是定立物件与物件之间的关系, 之后可以用询问目标的方式来查询各种物件之间的关系, 系统会自动进行匹配及回溯, 找出所询问的答案. 目前 Prolog 主要用在人工智能和计算机语言的研究领域.
+
+得益于 Prolog 的模式匹配功能, Prolog 非常适合快速的开发一个语言的解析器, 所以很多计算机科学家在开发新的程序语言时, 喜欢用 Prolog 先写一个实现, 然后观察大众的反应, 如何大众认为这个语言很好, 就用更快的语言如 C++ 来重新写解释器, 如果大众的反应不好, 就再用Prolog进行修改.
+
+* 安装
+
+http://www.swi-prolog.org/build/PPA.txt
+
+* 基本使用
+
+#+BEGIN_SRC Shell
+swipl  # 进入 Prolog 环境
+writenln('Hello World').
+
+# 输出
+Hello World
+true
+
+# 退出
+halt.
+#+END_SRC
+
+输出 true 的原因:
+
+整个过程中 Prolog 都在试图证明这个语句是真是假, 向屏幕输出 "Hello World" 这件事实际上是执行这个语句的"副作用"(side effect)! 在 Prolog 中, 很多任务都是靠副作用来实现的, 包括输入输出, 甚至是参数的传递.
+
+* 语法
+
+考虑以下代码:
+#+BEGIN_SRC Shell
+male(di).
+male(jianbo).
+female(xin).
+female(yuan).
+female(yuqing).
+father(jianbo,di).
+father(di,yuqing).
+mother(xin,di).
+mother(yuan,yuqing).
+grandfather(X,Y):-father(X,Z),father(Z,Y).
+grandmother(X,Y):-mother(X,Z),father(Z,Y).
+daughter(X,Y):-father(X,Y),female(Y).
+#+END_SRC
+保存为 xxx.pl, 进入 Prolog 环境执行: consult('path/to/xxx.pl').
+
+1. 子句: 代码里面的每一行都是一个 =子句= (clause)
+
+2. :- 子句: =规则=
+
+3. 不带 :- 子句: =事实=
+
+4. di, jianbo 这类以小写英文字母开头的名称: =原子=, 原子的值不可变
+
+5. X, Y 这类以大写英文字母开头的名称: =变量=
+
+6. , : 且
+
+7. ; : 或
+
+** 查询
+
+#+BEGIN_SRC Shell
+grandfather(X,yuqing).
+
+# 输出
+X = jianho.
+#+END_SRC
+
+grandfather(X,Y):-father(X,Z),father(Z,Y). 的意思: X 是 Z 的父亲并且 Z 是 Y 的父亲时, X 是 Y 的祖父.
+
+** 回溯规则
+
+#+BEGIN_SRC Shell
+parent(keyuan,jianbo).
+parent(jianbo,di).
+parent(di,yuqing).
+
+ancestor(X,Y):-parent(X,Y).
+ancestor(X,Y):-parent(X,Z),ancestor(Z,Y).
+#+END_SRC
+规则可以这样解读:
+X 是 Y 的祖先基于两个条件: X 是 Y 的 parent; 或者存在一个 Z, 使得 X 是 Z 的 parent 并且 Z 是 Y 的祖先.
+
+* Prolog 查询的原理
+
+仍以上面的 ancestor 为例. 当我们询问 ancestor(keyuan,yuqing). 时, Prolog 会试图证明这个查询.
+
+查找 ancestor 的定义:
+
+关于 ancestor 有两条定义, 首先使用第一条规则, 将两个变量用原子代入: ancestor(keyuan,yuqing) = ancestor(X, Y), 返回 false. 
+
+于是使用第二条规则. 变成: parent(keyuan, Z),ancestor(Z,yuqing). Prolog 依次证明这两条规则是否为 true.
+
+最终证明过程如下图所示:
+[[./9.png]]
+
+Prolog 是用深度优先(depth-first search)的算法来寻找答案的. 当一个规则或者是事实不符合时, Prolog 会通过回溯的方式回到之前的状态, 然后去尝试另外的规则或者是事实, 知道你的查询(query)被证明为止. 如果所有的可能性都搜索过了, 你的查询仍然不能得到证实, 那么 Prolog 会认为你的查询证实不了, 返回 "false".
