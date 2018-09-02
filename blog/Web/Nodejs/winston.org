@@ -1,0 +1,61 @@
+#+TITLE:       Winston 日志库
+#+AUTHOR:      Pinvon
+#+EMAIL:       pinvon@Inspiron
+#+DATE:        2018-09-02 日
+
+#+URI:         /blog/Web/Nodejs/%y/%m/%d/%t/ Or /blog/Web/Nodejs/%t/
+#+TAGS:        Web
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+同步函数和方法会阻止执行进程的运行, 直至其返回. 对同步函数的每次调用可能在数微秒或数毫秒后返回, 但是在大流量网站中, 这些调用的累积返回时间也相当可观, 会影响到应用程序的性能. 因此应避免在生产环境中使用同步函数.
+
+一般而言, 从应用程序进行日志记录有两个原因: 出于调试目的和出于记录应用程序活动目的(基本上就是除调试以外的其他所有事项). 通过使用 console.log() 或 console.err() 在终端上显示日志消息是开发过程中的常见做法. 但是, =如果目标是终端或文件, 这些函数就是同步的=, 因此, 除非要将输出通过管道传到另一个程序, 否则上述函数就不适合用于生产环境.
+
+winston 是一个 node.js 多传输异步日志库, 它还可以为我们打造一个有明显色彩的日志, 对于不同级别的日志, 可以使用不同的颜色显示; 除了命令行之外, 它还能将日志保存为物理文件, 而且是序列化过后的, 留待将来可以排查定位问题.
+
+* 安装
+
+#+BEGIN_SRC Shell
+npm install winston --save
+#+END_SRC
+
+** 使用默认的 logger
+
+#+BEGIN_SRC Shell
+var winston = require('winston');
+winston.log('info','Hello distributed log files!');
+winston.info('Hello distributed log files!');
+winston.level = 'debug';
+winston.log('debug','Now my debug message are written to console!'); 
+#+END_SRC
+
+默认情况下, 日志会输出到终端, 如果想输出到其他地方, 可以增加配置:
+#+BEGIN_SRC Shell
+winston.add(winston.transports.File,{filename:'somefile.log'});
+winston.remove(winston.transports.Console);
+#+END_SRC
+或
+#+BEGIN_SRC Shell
+winston.configure({
+     transports:[new (winston.transports.File)({filename:'somefile.log'})]
+ });
+#+END_SRC
+
+** 自定义 logger
+
+#+BEGIN_SRC Shell
+const logger = module.exports = winston.createLogger({
+  transports: [new winston.transports.Console()],
+  format: winston.format.combine(
+    winston.format.colorize({ all: true }),
+    winston.format.simple()
+  )
+});
+
+logger.level='debug';
+#+END_SRC
