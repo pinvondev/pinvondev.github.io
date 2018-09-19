@@ -55,44 +55,46 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb772cc6">从远程更新到本地(多分支)</a></li>
-<li><a href="#orgb98cdba">撤销</a></li>
-<li><a href="#org8cba971">添加远程库</a>
+<li><a href="#sec-1">从远程更新到本地(多分支)</a></li>
+<li><a href="#sec-2">撤销</a></li>
+<li><a href="#sec-3">添加远程库</a>
 <ul>
-<li><a href="#org13f775d">创建SSH Key</a></li>
-<li><a href="#org03e66f4">创建仓库</a></li>
-<li><a href="#orgfdfa11f">关联仓库</a></li>
-<li><a href="#orge741db9">一台电脑, 多个Github账号</a></li>
+<li><a href="#sec-3-1">创建SSH Key</a></li>
+<li><a href="#sec-3-2">创建仓库</a></li>
+<li><a href="#sec-3-3">关联仓库</a></li>
+<li><a href="#sec-3-4">一台电脑, 多个Github账号</a></li>
 </ul>
 </li>
-<li><a href="#org644473e">暂存</a>
+<li><a href="#sec-4">暂存</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org3fc3ab2">暂存</a></li>
-<li><a href="#orga85aa85">取出</a></li>
+<li><a href="#sec-4-0-1">暂存</a></li>
+<li><a href="#sec-4-0-2">取出</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org300af4d">删除分支</a>
+<li><a href="#sec-5">删除分支</a>
 <ul>
-<li><a href="#org2a43529">查看分支</a></li>
-<li><a href="#orgad55fda">删除本地分支</a></li>
-<li><a href="#org16f86a5">删除远程分支</a></li>
+<li><a href="#sec-5-1">查看分支</a></li>
+<li><a href="#sec-5-2">删除本地分支</a></li>
+<li><a href="#sec-5-3">删除远程分支</a></li>
 </ul>
 </li>
+<li><a href="#sec-6">配置免密钥后仍要输入用户名密码</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb772cc6" class="outline-2">
-<h2 id="orgb772cc6">从远程更新到本地(多分支)</h2>
-<div class="outline-text-2" id="text-orgb772cc6">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">从远程更新到本地(多分支)</h2>
+<div class="outline-text-2" id="text-1">
 <div class="org-src-container">
-<pre class="src src-shell">  git fetch origin source <span style="color: #8B8878;"># </span><span style="color: #8B8878;">&#20174;&#36828;&#31243;origin&#20179;&#24211;&#30340;source&#20998;&#25903;&#19979;&#36733;&#20195;&#30721;&#21040;&#26412;&#22320;&#30340;origin/source&#20998;&#25903;</span>
-git diff source origin/source <span style="color: #8B8878;"># </span><span style="color: #8B8878;">&#26597;&#30475;&#26412;&#22320;source&#20998;&#25903;&#21644;&#36828;&#31243;&#20998;&#25903;origin/source&#30340;&#24046;&#24322;</span>
-git merge origin/source <span style="color: #8B8878;"># </span><span style="color: #8B8878;">&#23558;origin/source&#21512;&#24182;&#21040;&#24403;&#21069;&#20998;&#25903;</span>
+
+<pre class="src src-shell">  git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
+git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
+git merge origin/source # 将origin/source合并到当前分支
 </pre>
 </div>
 
@@ -100,6 +102,7 @@ git merge origin/source <span style="color: #8B8878;"># </span><span style="colo
 也可以直接使用pull来更新
 </p>
 <div class="org-src-container">
+
 <pre class="src src-shell">git pull --rebase origin source:source
 </pre>
 </div>
@@ -109,13 +112,14 @@ git merge origin/source <span style="color: #8B8878;"># </span><span style="colo
 </div>
 </div>
 
-<div id="outline-container-orgb98cdba" class="outline-2">
-<h2 id="orgb98cdba">撤销</h2>
-<div class="outline-text-2" id="text-orgb98cdba">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">撤销</h2>
+<div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-shell">git reflog source <span style="color: #8B8878;"># </span><span style="color: #8B8878;">&#26597;&#30475;source&#30340;&#21382;&#21490;</span>
 
-<span style="color: #8B8878;"># </span><span style="color: #8B8878;">&#22914;&#26524;&#38656;&#35201;&#35814;&#32454;&#30340;&#26102;&#38388;</span>
+<pre class="src src-shell">git reflog source # 查看source的历史
+
+# 如果需要详细的时间
 git reflog source --relative-date
 
 git reset --hard commid_id
@@ -124,14 +128,14 @@ git reset --hard commid_id
 </div>
 </div>
 
-<div id="outline-container-org8cba971" class="outline-2">
-<h2 id="org8cba971">添加远程库</h2>
-<div class="outline-text-2" id="text-org8cba971">
-</div>
-<div id="outline-container-org13f775d" class="outline-3">
-<h3 id="org13f775d">创建SSH Key</h3>
-<div class="outline-text-3" id="text-org13f775d">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">添加远程库</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">创建SSH Key</h3>
+<div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">ssh-keygen -t rsa -C "your@email.com"
 </pre>
 </div>
@@ -141,35 +145,37 @@ git reset --hard commid_id
 </div>
 </div>
 
-<div id="outline-container-org03e66f4" class="outline-3">
-<h3 id="org03e66f4">创建仓库</h3>
-<div class="outline-text-3" id="text-org03e66f4">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">创建仓库</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 到<a href="https://www.github.com">Github</a>创建一个远程仓库. 然后在本地创建一个本地仓库.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgfdfa11f" class="outline-3">
-<h3 id="orgfdfa11f">关联仓库</h3>
-<div class="outline-text-3" id="text-orgfdfa11f">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">关联仓库</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 将本地仓库与远程仓库关联: <code>git remote add origin git@github.com:path/to/repo.git</code>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge741db9" class="outline-3">
-<h3 id="orge741db9">一台电脑, 多个Github账号</h3>
-<div class="outline-text-3" id="text-orge741db9">
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">一台电脑, 多个Github账号</h3>
+<div class="outline-text-3" id="text-3-4">
 <ol class="org-ol">
-<li>生成两对私钥/公钥, 并且密钥文件名不能重复.</li>
+<li>生成两对私钥/公钥, 并且密钥文件名不能重复. 
+</li>
 </ol>
 
 <p>
 此处假设已有一对密钥, 再生成另一对密钥.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">ssh-keygen -t rsa -f ~/.ssh/id_rsa_x -C "your@email.com"
 </pre>
 </div>
@@ -178,11 +184,14 @@ git reset --hard commid_id
 </p>
 
 <ol class="org-ol">
-<li>推送到远程时, 区分不同Github账号, 推送到相应的仓库.</li>
+<li>推送到远程时, 区分不同Github账号, 推送到相应的仓库.
+</li>
 
-<li>在 <code>~/.ssh/</code> 下创建一个 <code>config</code> 文件并编辑:</li>
+<li>在 <code>~/.ssh/</code> 下创建一个 <code>config</code> 文件并编辑:
+</li>
 </ol>
 <div class="org-src-container">
+
 <pre class="src src-Shell"># 第一个账号
 Host github.com
 HostName github.com
@@ -201,9 +210,11 @@ IdentityFile ~/.ssh/id_rsa_x
 </p>
 
 <ul class="org-ul">
-<li>清空本地的SSH缓存, 添加新的SSH密钥到SSH agent中:</li>
+<li>清空本地的SSH缓存, 添加新的SSH密钥到SSH agent中:
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Shell">ssh-add -D
 ssh-add id_rsa
 ssh-add id_rsa_x
@@ -216,9 +227,11 @@ ssh -T git@second.github.com
 </div>
 
 <ul class="org-ul">
-<li>配置完成后, 取消git全局设置:</li>
+<li>配置完成后, 取消git全局设置:
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Shell">git config --global --unset user.name
 git config --global --unset user.email
 
@@ -237,9 +250,9 @@ git config --list
 </div>
 </div>
 </div>
-<div id="outline-container-org644473e" class="outline-2">
-<h2 id="org644473e">暂存</h2>
-<div class="outline-text-2" id="text-org644473e">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">暂存</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 场景: 在项目上的某个分支工作了一段时间, 但是并未完成, 此时需要切换到另一分支, 而我们又不想仅因为过会儿回到这一点而为做了一半的工作创建一次提交. 此时, 就需要用到命令 <code>git stash</code>.
 </p>
@@ -249,10 +262,11 @@ git config --list
 </p>
 </div>
 
-<div id="outline-container-org3fc3ab2" class="outline-4">
-<h4 id="org3fc3ab2">暂存</h4>
-<div class="outline-text-4" id="text-org3fc3ab2">
+<div id="outline-container-sec-4-0-1" class="outline-4">
+<h4 id="sec-4-0-1">暂存</h4>
+<div class="outline-text-4" id="text-4-0-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">git stash
 </pre>
 </div>
@@ -266,10 +280,11 @@ git config --list
 </div>
 </div>
 
-<div id="outline-container-orga85aa85" class="outline-4">
-<h4 id="orga85aa85">取出</h4>
-<div class="outline-text-4" id="text-orga85aa85">
+<div id="outline-container-sec-4-0-2" class="outline-4">
+<h4 id="sec-4-0-2">取出</h4>
+<div class="outline-text-4" id="text-4-0-2">
 <div class="org-src-container">
+
 <pre class="src src-Shell">git stash apply  #  取出最近被暂存的内容
 git stash apply stash@{2}  #  取出指定的更旧的暂存内容
 </pre>
@@ -278,14 +293,14 @@ git stash apply stash@{2}  #  取出指定的更旧的暂存内容
 </div>
 </div>
 
-<div id="outline-container-org300af4d" class="outline-2">
-<h2 id="org300af4d">删除分支</h2>
-<div class="outline-text-2" id="text-org300af4d">
-</div>
-<div id="outline-container-org2a43529" class="outline-3">
-<h3 id="org2a43529">查看分支</h3>
-<div class="outline-text-3" id="text-org2a43529">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">删除分支</h2>
+<div class="outline-text-2" id="text-5">
+</div><div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1">查看分支</h3>
+<div class="outline-text-3" id="text-5-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">// 查看本地分支
 git branch
 
@@ -299,24 +314,35 @@ git branch -a
 </div>
 </div>
 
-<div id="outline-container-orgad55fda" class="outline-3">
-<h3 id="orgad55fda">删除本地分支</h3>
-<div class="outline-text-3" id="text-orgad55fda">
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2">删除本地分支</h3>
+<div class="outline-text-3" id="text-5-2">
 <div class="org-src-container">
+
 <pre class="src src-Shell">git branch -d xxx
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org16f86a5" class="outline-3">
-<h3 id="org16f86a5">删除远程分支</h3>
-<div class="outline-text-3" id="text-org16f86a5">
+<div id="outline-container-sec-5-3" class="outline-3">
+<h3 id="sec-5-3">删除远程分支</h3>
+<div class="outline-text-3" id="text-5-3">
 <div class="org-src-container">
+
 <pre class="src src-Shell">git push origin :xxx
 </pre>
 </div>
 </div>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">配置免密钥后仍要输入用户名密码</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+将 .git/config 中的 <a href="https://www.github.com/pinvondev/project.git">https://www.github.com/pinvondev/project.git</a> 改成 git@github.com:pinvondev/project.git 即可.
+</p>
 </div>
 </div>
 
@@ -325,7 +351,7 @@ git branch -a
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-01-04</span>
-            <span title="last modification date" class="post-info">2018-06-05</span>
+            <span title="last modification date" class="post-info">2018-09-19</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/git">Git</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
@@ -368,7 +394,7 @@ git branch -a
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -384,7 +410,6 @@ git branch -a
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>
