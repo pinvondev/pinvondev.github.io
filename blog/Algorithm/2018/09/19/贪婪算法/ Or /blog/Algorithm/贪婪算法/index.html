@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>贪婪算法 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Algorithms" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">贪婪算法</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">最优化问题</a></li>
+<li><a href="#sec-2">贪婪算法(greedy method)</a>
+<ul>
+<li><a href="#sec-2-1">货箱装船</a></li>
+<li><a href="#sec-2-2">0-1 背包问题</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">最优化问题</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+每个最优化问题都包含 <code>一组限制条件</code> 和 <code>一个优化函数</code>.
+</p>
+
+<p>
+其中, 符合限制条件的方案为 <code>可行解</code>, 使优化函数得到最佳值的可行解称为 <code>最优解</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">贪婪算法(greedy method)</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+贪婪算法彩逐步构造最优解的方法. 在每个阶段, 都作出一个看上去最优的决策, 决策一旦, 就不再更改.
+</p>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">货箱装船</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+船可以分步装载, 每步装一个货箱, 且需要考虑装载哪一个货箱, 如何在船上装载最多的货箱. 
+</p>
+
+<p>
+根据这种思想可利用如下贪婪准则: 从剩下的货箱中, 选择重量最小的货箱. 这种选择次序可以保证所选的货箱总重量最小, 从而可以装载更多的货箱, 直到所有的货箱都装上船, 或者船上不能再容纳任何一个其他货箱.
+</p>
+
+<p>
+如: \(n=8\), \([w_1, w_2, \cdots, w_8]=[100, 200, 50, 90, 150, 50, 20, 80]\), \(c=400\). 利用贪婪算法时, 所考察的货箱的顺序为 7, 3, 6, 8, 4, 1, 5, 2. 货箱 7, 3, 6, 8, 4, 1 的总重量为 390 个单位且已被装载, 剩下的装载能力为 10 个单位, 小于剩下的任何一个货箱. 在这种贪婪解决算法中, 得到 \([x_1, \cdots, x_8]=[1,0,1,1,0,1,1,1]\), 且 \(\sum x_i=6\).
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-C++">template&lt;typename T&gt;
+void ContainerLoading(int x[], T w[], T c, int n) {
+    // x[i]=1 当且仅当货箱 i 被装载, 1&lt;=i&lt;=n
+    // c是船的容量, w 是货箱的重量
+    int *t=new int[n+1];
+    IndirectSort(w, t, n);
+    for (int i=1; i&lt;=n; i++)
+        x[i]=0;
+    for (int i=1; i&lt;=n &amp;&amp; w[t[i]]&lt;=c; i++) {
+        x[t[i]]=1;
+        c-=w[t[i]];  // 剩余容量
+    }
+    delete []t;
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">0-1 背包问题</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+0-1 背包问题是指, 对容量为 \(c\) 的背包进行装载. 从 \(n\) 个物品中选取装入背包的物品, 每件物品 \(i\) 的重量为 \(w_i\), 价值为 \(p_i\). 对于可行的背包装载, 背包中物品的总重量不能超过背包的容量, 最佳装载是指所装入的物品价值最高, 即 \(\sum\limits_{i=1}^{n}p_ix_i\) 取得最大值. 约束条件为 \(\sum\limits_{i=1}^{n}w_ix_i\leq c\) 和 \(x_i\in [0,1](1\leq i\leq n)\).
+</p>
+
+<p>
+0-1 背包问题是一个一般化的货箱装载问题, 即每个货箱所获得的价值不同.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-09-19</span>
+            <span title="last modification date" class="post-info">2018-09-19</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/algorithms">Algorithms</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Algorithm/2018/09/19/贪婪算法/ Or /blog/Algorithm/贪婪算法/";
+         var disqus_url = "https://pinvondev.github.io/blog/Algorithm/2018/09/19/贪婪算法/ Or /blog/Algorithm/贪婪算法/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
