@@ -1,0 +1,46 @@
+#+TITLE:       贪婪算法
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2018-09-19 三
+
+#+URI:         /blog/Algorithm/%y/%m/%d/%t/ Or /blog/Algorithm/%t/
+#+TAGS:        Algorithms
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 最优化问题
+
+每个最优化问题都包含 =一组限制条件= 和 =一个优化函数=.
+
+其中, 符合限制条件的方案为 =可行解=, 使优化函数得到最佳值的可行解称为 =最优解=.
+
+* 贪婪算法(greedy method)
+
+贪婪算法彩逐步构造最优解的方法. 在每个阶段, 都作出一个看上去最优的决策, 决策一旦, 就不再更改.
+
+** 货箱装船
+
+船可以分步装载, 每步装一个货箱, 且需要考虑装载哪一个货箱, 如何在船上装载最多的货箱. 
+
+根据这种思想可利用如下贪婪准则: 从剩下的货箱中, 选择重量最小的货箱. 这种选择次序可以保证所选的货箱总重量最小, 从而可以装载更多的货箱, 直到所有的货箱都装上船, 或者船上不能再容纳任何一个其他货箱.
+
+如: $n=8$, $[w_1, w_2, \cdots, w_8]=[100, 200, 50, 90, 150, 50, 20, 80]$, $c=400$. 利用贪婪算法时, 所考察的货箱的顺序为 7, 3, 6, 8, 4, 1, 5, 2. 货箱 7, 3, 6, 8, 4, 1 的总重量为 390 个单位且已被装载, 剩下的装载能力为 10 个单位, 小于剩下的任何一个货箱. 在这种贪婪解决算法中, 得到 $[x_1, \cdots, x_8]=[1,0,1,1,0,1,1,1]$, 且 $\sum x_i=6$.
+
+#+BEGIN_SRC C++
+template<typename T>
+void ContainerLoading(int x[], T w[], T c, int n) {
+	// x[i]=1 当且仅当货箱 i 被装载, 1<=i<=n
+	// c是船的容量, w 是货箱的重量
+	int *t=new int[n+1];
+	IndirectSort(w, t, n);
+	for (int i=1; i<=n; i++)
+		x[i]=0;
+	for (int i=1; i<=n && w[t[i]]<=c; i++) {
+		x[t[i]]=1;
+		c-=w[t[i]];  // 剩余容量
+	}
+	delete []t;
+}
+#+END_SRC
