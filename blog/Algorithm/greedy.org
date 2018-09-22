@@ -50,3 +50,207 @@ void ContainerLoading(int x[], T w[], T c, int n) {
 0-1 背包问题是指, 对容量为 $c$ 的背包进行装载. 从 $n$ 个物品中选取装入背包的物品, 每件物品 $i$ 的重量为 $w_i$, 价值为 $p_i$. 对于可行的背包装载, 背包中物品的总重量不能超过背包的容量, 最佳装载是指所装入的物品价值最高, 即 $\sum\limits_{i=1}^{n}p_ix_i$ 取得最大值. 约束条件为 $\sum\limits_{i=1}^{n}w_ix_i\leq c$ 和 $x_i\in [0,1](1\leq i\leq n)$.
 
 0-1 背包问题是一个一般化的货箱装载问题, 即每个货箱所获得的价值不同.
+
+0-1 背包问题有几种贪婪策略:
+
+1. 每次从剩余的物品中, 选出可以装入背包的价值最大的物品. 当 $n=2, w=[100,10,10], p=[20,15,15], c=105$ 时, 这种贪婪策略无法得到最优解.
+
+2. 每次从剩余的物品中选择重量最小的物品. 当 $n=2, w=[10,20], p=[5,100], c=25$ 时, 这种贪婪策略无法得到最优解.
+
+3. 每次从剩余的物品中选择价值密度 $\frac{p_i}{w_i}$ 最大的物品. 当 $n=3, w=[20,15,15], p=[40,25,25], c=30$ 时, 这种贪婪策略无法得到最优解.
+
+0-1 背包问题是个 NP-复杂问题, 即也许根本就不可能找到具有多项式时间的算法. 但贪婪算法可以保证, 在大多数情况下, 它可以取得很好的效果.
+
+** 拓扑排序
+
+一个复杂的工程通常可以分解成一组小任务的集合, 完成这些小任务意味着整个工程的完成. 有向图的顶点代表任务, 有向边 $(i,j)$ 表示先后关系: 任务 $j$ 开始前任务 $i$ 必须完成.
+
+#+BEGIN_SRC Shell
+设 n 是有向图中的顶点数
+设 V 是一个空序列
+while(true) {
+    设 w 不存在入边 (v,w), 其中顶点 v 不在 V 中
+    如果没有这样的 w, break
+    把 w 添加到 V 的尾部
+}
+if (V 中的顶点数少于 n) 算法失败
+else V 是一个拓扑序列
+#+END_SRC
+
+实现思路:
+
+用一个一维数组来描述序列 V, 用栈来保存可加入 V 的候选顶点;
+
+采用 DFS, 如果当前顶点 v 存在后续邻接顶点, 则继续遍历后续邻接顶点; 如果当前顶点 v 已经没有后续邻接顶点了, 则将 v 入栈.
+
+出栈时, 会从栈顶开始, 逐步解锁.
+#+BEGIN_SRC C++
+#include<iostream>
+#include <list>
+#include <stack>
+using namespace std;
+
+class Graph {
+	int V;
+	list<int> *adj;
+	void topologicalSortUtil(int v, bool visited[], stack<int> &Stack);
+public:
+	Graph(int V);
+	void addEdge(int v, int w);
+	void topologicalSort();
+};
+
+Graph::Graph(int V) {
+	this->V = V;
+	adj = new list<int>[V];
+}
+
+void Graph::addEdge(int v, int w) {
+	adj[v].push_back(w);
+}
+
+void Graph::topologicalSortUtil(int v, bool visited[], stack<int> &Stack) {
+	visited[v] = true;
+	list<int>::iterator i;
+	// adj[v] 中存放了所有与 v 直接相连的下一个顶点
+	// 只有当 adj[v] 的所有邻接顶点都被访问过, 才将 v 入栈
+	for (i = adj[v].begin(); i != adj[v].end(); ++i)  
+		if (!visited[*i])
+			topologicalSortUtil(*i, visited, Stack);
+	Stack.push(v);  // 栈中保存可加入序列的候选顶点
+}
+
+void Graph::topologicalSort() {
+	stack<int> Stack;
+	bool *visited = new bool[V];
+	for (int i = 0; i < V; i++)
+		visited[i] = false;
+	for (int i = 0; i < V; i++)
+	if (visited[i] == false)
+		topologicalSortUtil(i, visited, Stack);
+
+	while (Stack.empty() == false) {
+		cout << Stack.top() << " ";
+		Stack.pop();
+	}
+}
+
+int main() {
+	Graph g(6);
+	g.addEdge(5, 2);
+	g.addEdge(5, 0);
+	g.addEdge(4, 0);
+	g.addEdge(4, 1);
+	g.addEdge(2, 3);
+	g.addEdge(3, 1);
+	cout << "Following is a Topological Sort of the given graph \n";
+	g.topologicalSort();
+	return 0;
+}
+#+END_SRC
+
+** 单源最短路径
+
+给出有向图 $G$, 它的每条边都有一个非负的长度 $a[i][j]$, 路径的长度即为此路径所经过的边的长度之和. 对于给定的源顶点 $s$, 需找出从它到图中其他任意顶点的最短路径.
+
+Dijkstra 的贪婪算法思路如下:
+
+生成最短路径树 SPT(shortest path tree), 维持两个子集, 一个存储最短路径树中的顶点, 一个存储剩下的顶点. 
+
+1. 创建 sptSet(shortest path tree set) 用于存储最短路径树, 初始为空.
+
+2. 初始化所有顶点之间的距离为 INT_MAX, 第一个顶点的距离为 0.
+
+3. while sptSet != graph
+
+   a. $\forall u\notin sptSet$ 且 sptSet 到 $u$ 的距离最小
+
+   b. 将 $u$ 放到 sptSet
+
+   c. 迭代所有与 $u$ 邻接的顶点, 更新距离.
+
+#+BEGIN_SRC C++
+#define V 9
+
+int minDistance(int dist[], bool sptSet[]) {
+	int min = INT_MAX, min_index;
+	for (int v=0; v<V; v++)
+		if (sptSet[v]==false && dist[v]<=min)
+			min=dist[v], min_index=v;
+	return min_index;
+}
+
+void dijkstra(int graph[V][V], int src) {
+	int dist[V];
+	bool sptSet[v];
+	for (int i=0; i<V; i++)
+		dist[i]=INT_MAX, sptSet[i]=false;
+	dist[src]=0;
+
+	for (int count=0; count<V-1; count++) {  // 更新最短距离
+		int u=minDistance(dist, sptSet);
+		sptSet[u]=true;
+		for (int v=0; v<V; v++) {
+			if (!sptSet[v] && graph[u][v] && dist[u]!=INT_MAX && dist[u]+graph[u][v]<dist[v])
+				dist[v]=dist[u]+graph[u][v];
+		}
+	}
+}
+#+END_SRC
+
+** 最小生成树
+
+最小生成树是连通加权无向图中一棵权值最小的生成树. 对于一个有 $V$ 个顶点的图, 最小生成树有 $V-1$ 条边.
+
+*** Kruskal 算法
+
+1. 对所有权值进行排序.
+
+2. 选择一条不构成环的权值最小的边.
+
+3. 重复 2, 直到有 $V-1$ 条边在最小生成树中.
+
+*** Prim 算法
+
+1. 创建 mstSet(minimum spanning tree), 初始化为空.
+
+2. 为每个顶点赋予权重, 第一个顶点的权重初始化为 0, 其他顶点初始化为 INT_MAX.
+
+3. while mstSet != graph
+
+   a. $\forall u\notin mstSet$, 且其权重最小
+
+   b. 令 $u\in mstSet$
+
+   c. 更新所有 u 的邻接顶点的权重.
+
+#+BEGIN_SRC C++
+#define V 5
+
+int minKey(int key[], bool mstSet[]) {
+	int min=INT_MAX, min_index;
+	for (int v=0; v<V; v++)
+		if (mstSet[v]==false && key[v]<min)
+			min=key[v], min_index=v;
+	return min_index;
+}
+
+void prim(int graph[V][V]) {
+	int parent[V];  // 存储最小生成树
+	int key[V];  // 存储第 i 个节点的权重, 初始化为 INT_MAX, 实际值为 graph[u][v]
+	bool mstSet[V];  // 第 i 个节点是否在 mstSet
+	for (int i=0; i<V; i++)
+		key[i]=INT_MAX, mstSet[i]=false;
+
+	key[0]=0;  // 第一个节点的权值改为 0
+	parent[0]=-1;
+
+	for (int count=0; count<V-1; count++) {
+		int u=minKey(key, mstSet);
+		mstSet[u]=true;
+		for (int v=0; v<V; v++)
+			if (graph[u][v] && mstSet[v]==false && graph[u][v]<key[v])
+				parent[v]=u, key[v]=graph[u][v];
+	}
+}
+#+END_SRC
