@@ -1,0 +1,69 @@
+#+TITLE:       动态规划
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2018-09-22 六
+
+#+URI:         /blog/Algorithm/%y/%m/%d/%t/ Or /blog/Algorithm/%t/
+#+TAGS:        Algorithms
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 算法思想
+
+在动态规划中, 可以将一个问题的解决方案视为一系列决策的结果.
+
+与贪婪算法不同的是, 每采用一次贪婪准则便做出一个不可撤回的决策, 而在动态规划中, 还要考察每个最优决策序列中是否包含一个最优子序列.
+
+动态规划方法彩最优原则来建立用于计算最优解的递归式. 所谓最优原则即不管前面的策略如何, 此后的决策必须是基于当前状态(由上一次决策产生)的最优决策. 由于对于有些问题的某些递归式来说不一定能保证最优原则, 因此在求解问题时有必要对它进行验证. 若不能保持最优原则, 则不可应用动态规划方法. 在得到最优解的递归式之后, 需要执行回溯以构造最优解.
+
+** 0-1 背包问题
+
+y: 背包的剩余容量; n: 物品数量; w[i]: 第 i 个物品重量; p[i]: 第 i 个物品价值.
+#+BEGIN_SRC C++
+int F(int i, int y) {
+    if (i==n) return (y<w[n])?0:p[n];
+    if (y<w[i]) return F(i+1, y);
+    return max(F(i+1,y), F(i+1,y-w[i])+p[i]);
+}
+#+END_SRC
+
+考察上面的代码, 设: n=5, p=[6,3,5,4,6], w=[2,2,6,5,4], c=10, 求 F(1,10).
+
+由于 F(i,y)=max(F(i+1,y),F(i+1,y-w[i])+p[i]), 因此:
+
+F(1,10)=max(F(2,10), F(2,8)+p[1]),
+
+F(2,10)=max(F(3,10), F(3,8)+p[2]),
+
+F(2,8)=max(F(3,8), F(3,2)+p[3]).
+
+可以看出, F(3,8) 会被计算两次, 重复计算了. 类似的情况还有 F(4,8), F(4,6), F(4,2) 等等.
+
+*** 优化方案
+
+为了避免 F(i,y) 的重复计算, 可以定义一个表格用于保存已被计算出的 F(i,y) 的值. 该表格是一个三元组 (i,y,f(i,y)), 当计算 f(i,y) 时, 先检查 (i,y,*) 是否在表格中.
+
+当权为整数时, 优化后的算法如下:
+#+BEGIN_SRC C++
+template<class T>
+void Knapsack(T p[], int w[], int c, int n, T **f) {
+	for (int y=0; y<=yMax; y++) f[n][y]=0;
+	for (int y=w[n]; y<=c; y++) f[n][y]=p[n];
+	for (int i=n-1; i>1; i--) {
+		for (int y=0; y<=yMax; y++) f[i][y]=f[i+1][y];
+		for (int y=w[i]; y<=c; y++) f[i][y]=max(f[i+1][y], f[i+1][y-w[i]]+p[i]);
+	}
+	f[1][c]=f[2][c];
+	if (c>=w[1]) f[1][c]=max(f[1][c],f[2][c-w[1]]+p[1]);
+}
+
+template<class T>
+void Traceback(T **f, int w[], int c, int n, int x[]) {
+	for (int i=1; i<n; i++)
+		if (f[i][c]==f[i+1][c]) x[i]=0;
+		else { x[i]=1; c-=w[i]; }
+	x[n]=(f[n][c])?1:0;
+}
+#+END_SRC

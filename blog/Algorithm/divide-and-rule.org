@@ -1,0 +1,84 @@
+#+TITLE:       分而治之
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2018-09-22 六
+
+#+URI:         /blog/Algorithm/%y/%m/%d/%t/ Or /blog/Algorithm/%t/
+#+TAGS:        Algorithms
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 分而治之(divide and rule)
+
+为了解决一个大的问题, 可以:
+
+1. 把它分成两个或多个更小的问题;
+
+2. 分别解决每个小问题;
+
+3. 把各小问题的解答组合起来, 即可得到原问题的解答.
+
+小问题通常与原问题相似, 可以递归地使用分而治之策略来解决.
+
+** 找出伪币
+
+给定一个装有 16 个硬币的袋子, 其中有一个硬币是伪造的, 其特点是较轻一点. 提供了一台仪器可供称重, 找出伪造的硬币.
+
+方法1: 比较 1 和 2, 找出伪币; 如果一样重, 则比较 3 和 4; 如此反复.
+
+方法2: 把 16 个硬币分成两组, 比较 1-8 和 9-16 两组硬币的重量; 如果 1-8 那组更轻, 则把 1-8 分成 1-4 和 5-8 两组, 再进行比较; 如此反复.
+
+* 例子
+
+** 二分查找
+
+** 归并排序
+
+#+BEGIN_SRC C++
+void merge(int arr[], int l, int m, int r) { 
+    int i, j, k; 
+    int n1 = m - l + 1; 
+    int n2 =  r - m; 
+  
+    int L[n1], R[n2]; 
+    for (i = 0; i < n1; i++) 
+        L[i] = arr[l+i]; 
+    for (j = 0; j < n2; j++) 
+        R[j] = arr[m+1+j]; 
+  
+    i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) { 
+        if (L[i] <= R[j]) { 
+            arr[k] = L[i]; 
+            i++; 
+        } else { 
+            arr[k] = R[j]; 
+            j++; 
+        } 
+        k++; 
+    }
+  
+    while (i < n1) { 
+        arr[k] = L[i]; 
+        i++, k++; 
+    } 
+  
+    while (j < n2) { 
+        arr[k] = R[j]; 
+        j++, k++; 
+    } 
+} 
+  
+void mergeSort(int arr[], int l, int r) { 
+    if (l < r) { 
+        int m = l+(r-l)/2; 
+        mergeSort(arr, l, m); 
+        mergeSort(arr, m+1, r); 
+        merge(arr, l, m, r); 
+    } 
+} 
+#+END_SRC
+
+** 快速排序
