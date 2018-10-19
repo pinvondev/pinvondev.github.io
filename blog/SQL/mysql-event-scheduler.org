@@ -20,17 +20,51 @@
 
 在 MySQL 5 以后, 开始支持存储过程.
 
-存储过程常使用在需要一次性执行多条语句, 编译后放在数据库中, 指定存储过程的名字及相应的参数, 就可以调用它.
+=存储过程常使用在需要一次性执行多条语句=, 编译后放在数据库中, 指定存储过程的名字及相应的参数, 就可以调用它.
 
 其实这相当于平时编程时用到的函数, 通过多条语句完成一定的功能. 所以其实可以读取数据库, 在函数中完成相关的逻辑. 但是数据库性能极高, 如果能在数据库中处理好再返回, 可以提高程序的整体性能.
 
-** 创建存储过程
+存储过程也存在一些缺点:
 
+1. 存储过程比较复杂, 不容易编写;
+
+2. 可能没有创建存储过程的安全访问权限. 许多 DBA 会限制一般用户创建存储过程, 但允许使用.
+
+** 存储过程的操作
+
+*** 创建存储过程
+
+获得订单统计, 加入营业税, 返回统计:
 #+BEGIN_SRC SQL
-CREATE PROCEDURE productpricing()
+DELIMITER //
+
+CREATE PROCEDURE ordertotal(IN onumber INT, IN taxable BOOLEAN, OUT ototal DECIMAL(8,2)) COMMENT 'Obtain order total, optionally adding tax'
 BEGIN
-    SELECT Avg(prod_price) AS priceaverage FROM products;
-END;
+    DECLARE total DECIMAL(8,2);  -- 声明 total 变量
+    DECLARE taxrate INT DEFAULT 6;  -- 声明 taxrate 变量
+    SELECT Sum(item_price*quantity) FROM orderitems WHERE order_num=onumber INTO total;
+    IF taxable THEN  -- 如果需要计算税率
+        SELECT total+(total/100*taxrate) INTO total;
+    END IF;
+    SELECT total into ototal;
+END //
+
+DELIMITER;
+#+END_SRC
+DELIMITER // 告诉命令行, 程序使用 // 作为新的语句结束分隔符, 这样可以将存储过程中的分号正确解释, 否则 MySQL 会将分号作为程序结束的标志.
+
+OUT 表示输出, IN 表示输入, INOUT 表示既作为输入也作为输出, INTO 表示将结果存储到变量.
+
+DECLARE 表示定义局部变量, 需要指明变量名和数据类型.
+
+COMMENT 不是必需的, 但如果给出了, 将会在 SHOW PROCEDURE STATUS 的结果中显示.
+
+*** 调用存储过程
+
+#+BEGIN_SRC Shell
+CALL ordertotal(20005, 1, @total);
+
+select @total
 #+END_SRC
 
 * 查看定时器是否开启
