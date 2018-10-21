@@ -82,3 +82,19 @@ mysql -u root -p
 use database_name
 source output.sql
 #+END_SRC
+
+** 导出存储过程
+
+上述对 MySQL 的导出, 默认是不导出存储过程的, 如果要包含存储过程, 可以改成:
+#+BEGIN_SRC SQL
+mysqldump -u root -p -R database_name > output.sql
+#+END_SRC
+
+以下命令可以单独导出存储过程:
+#+BEGIN_SRC Shell
+mysqldump -u root -p -n -t -d -R --triggers=false database_name > output.sql
+#+END_SRC
+在导入时如果出错, 就修改配置文件 /etc/my.cnf 的 [mysqld] 选项, 添加一行:
+#+BEGIN_SRC SQL
+log-bin-trust-function-creators=1
+#+END_SRC
