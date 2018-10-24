@@ -67,6 +67,61 @@ CALL ordertotal(20005, 1, @total);
 select @total
 #+END_SRC
 
+* 游标
+
+游标的使用场景: MySQL 检索操作返回的一组称为结果集的行, 有时我们需要遍历这个结果集, 以便于进一步处理. 在 MySQL 中, 游标只能用于存储过程和函数.
+
+** 创建游标
+
+#+BEGIN_SRC Shell
+-- 定义游标, 查询商家加入了哪些联盟                                                                                                             
+declare cursor_alliance_name cursor for select alliance_name from member where member_name=in_shop_name;
+#+END_SRC
+
+** 打开和关闭游标
+
+#+BEGIN_SRC Shell
+open cursor_alliance_name;
+close cursor_alliance_name;
+#+END_SRC
+已声明过的游标, 如果关闭后还想再使用, 不需要再次声明, 只要 open 即可.
+
+** 使用游标数据
+
+使用 fetch 语句分别访问检索的数据的每一行, fetch 指定检索什么数据(所需的列), 它还会向前移动游标中的内部行指针, 使下一条 fetch 语句检索下一行(不重复读取同一行).
+#+BEGIN_SRC Shell
+delimiter //
+create procedure query_alliance(IN in_shop_name varchar(50)) comment '查询商家加入的联盟, 获取联盟的活动的设置信息并返回'
+BEGIN
+    declare done boolean default false;
+    declare o varchar(50);
+
+    -- 定义游标, 查询商家加入了哪些联盟
+    declare cur cursor for select alliance_name from member where member_name=in_shop_name;
+    declare continue HANDLER for not found set done = true;
+
+    -- 每次都先清空 query_activity 表, 再将检索结果放入 query_activity 表中
+    set @clear_table = concat("truncate table query_activity");
+    prepare ct from @clear_table;
+    execute ct;
+
+    -- 打开游标
+    open cur;
+    repeat
+        fetch cur into o;
+        insert into query_activity(alliance_name, activity, beginTime, endTime, totalCoupons, realCoupons, energy) (select * from alliance_activity where alliance_name=o group by alliance_name);
+    until done end repeat;
+    close cur;
+
+    select * from query_activity;
+END //
+delimiter ;
+#+END_SRC
+
+sqlstate '02000' 表示一个未找到的条件, 当 repeat 由于没有更多的行供循环而不能继续时, 会出现这个条件.
+
+注意: 变量的声明必须放在游标的声明的前面.
+
 * 查看定时器是否开启
 
 #+BEGIN_SRC SQL
