@@ -66,7 +66,14 @@
 </li>
 </ul>
 </li>
-<li><a href="#sec-3">查看定时器是否开启</a></li>
+<li><a href="#sec-3">游标</a>
+<ul>
+<li><a href="#sec-3-1">创建游标</a></li>
+<li><a href="#sec-3-2">打开和关闭游标</a></li>
+<li><a href="#sec-3-3">使用游标数据</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">查看定时器是否开启</a></li>
 </ul>
 </div>
 </div>
@@ -173,8 +180,91 @@ select @total
 </div>
 
 <div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3">查看定时器是否开启</h2>
+<h2 id="sec-3">游标</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+游标的使用场景: MySQL 检索操作返回的一组称为结果集的行, 有时我们需要遍历这个结果集, 以便于进一步处理. 在 MySQL 中, 游标只能用于存储过程和函数.
+</p>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">创建游标</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+
+<pre class="src src-Shell">-- 定义游标, 查询商家加入了哪些联盟                                                                                                             
+declare cursor_alliance_name cursor for select alliance_name from member where member_name=in_shop_name;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">打开和关闭游标</h3>
+<div class="outline-text-3" id="text-3-2">
+<div class="org-src-container">
+
+<pre class="src src-Shell">open cursor_alliance_name;
+close cursor_alliance_name;
+</pre>
+</div>
+<p>
+已声明过的游标, 如果关闭后还想再使用, 不需要再次声明, 只要 open 即可.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">使用游标数据</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+使用 fetch 语句分别访问检索的数据的每一行, fetch 指定检索什么数据(所需的列), 它还会向前移动游标中的内部行指针, 使下一条 fetch 语句检索下一行(不重复读取同一行).
+</p>
+<div class="org-src-container">
+
+<pre class="src src-Shell">delimiter //
+create procedure query_alliance(IN in_shop_name varchar(50)) comment '查询商家加入的联盟, 获取联盟的活动的设置信息并返回'
+BEGIN
+    declare done boolean default false;
+    declare o varchar(50);
+
+    -- 定义游标, 查询商家加入了哪些联盟
+    declare cur cursor for select alliance_name from member where member_name=in_shop_name;
+    declare continue HANDLER for not found set done = true;
+
+    -- 每次都先清空 query_activity 表, 再将检索结果放入 query_activity 表中
+    set @clear_table = concat("truncate table query_activity");
+    prepare ct from @clear_table;
+    execute ct;
+
+    -- 打开游标
+    open cur;
+    repeat
+        fetch cur into o;
+        insert into query_activity(alliance_name, activity, beginTime, endTime, totalCoupons, realCoupons, energy) (select * from alliance_activity where alliance_name=o group by alliance_name);
+    until done end repeat;
+    close cur;
+
+    select * from query_activity;
+END //
+delimiter ;
+</pre>
+</div>
+
+<p>
+sqlstate '02000' 表示一个未找到的条件, 当 repeat 由于没有更多的行供循环而不能继续时, 会出现这个条件.
+</p>
+
+<p>
+注意: 变量的声明必须放在游标的声明的前面.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">查看定时器是否开启</h2>
+<div class="outline-text-2" id="text-4">
 <div class="org-src-container">
 
 <pre class="src src-SQL">SHOW VARIABLES LIKE 'event_scheduler';  // 查看定时器状态
@@ -189,7 +279,7 @@ SET GLOBAL event_scheduler = 1;         // 开启事件设置
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-06-10</span>
-            <span title="last modification date" class="post-info">2018-10-19</span>
+            <span title="last modification date" class="post-info">2018-10-24</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/sql">SQL</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
