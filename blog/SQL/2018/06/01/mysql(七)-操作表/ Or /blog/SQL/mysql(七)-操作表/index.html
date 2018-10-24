@@ -55,36 +55,37 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org92218ed">创建表</a>
+<li><a href="#sec-1">创建表</a>
 <ul>
-<li><a href="#org197ce4e">NULL 与 NOT NULL</a></li>
-<li><a href="#orgc68fed0">主键</a></li>
-<li><a href="#org8b62138">AUTO_INCREMENT</a></li>
-<li><a href="#orga26573d">默认值</a></li>
-<li><a href="#org33de015">引擎类型</a></li>
+<li><a href="#sec-1-1">NULL 与 NOT NULL</a></li>
+<li><a href="#sec-1-2">主键</a></li>
+<li><a href="#sec-1-3">AUTO_INCREMENT</a></li>
+<li><a href="#sec-1-4">默认值</a></li>
+<li><a href="#sec-1-5">引擎类型</a></li>
 </ul>
 </li>
-<li><a href="#org203d11c">更新表</a></li>
-<li><a href="#orgbf57f95">删除表</a></li>
-<li><a href="#org4d34ef4">表重命名</a></li>
+<li><a href="#sec-2">更新表</a></li>
+<li><a href="#sec-3">删除表</a></li>
+<li><a href="#sec-4">表重命名</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org92218ed" class="outline-2">
-<h2 id="org92218ed">创建表</h2>
-<div class="outline-text-2" id="text-org92218ed">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">创建表</h2>
+<div class="outline-text-2" id="text-1">
 <div class="org-src-container">
+
 <pre class="src src-SQL">CREATE TABLE customers IF NOT EXISTS(
-    cust_id 		int 	  NOT NULL AUTO_INCREMENT,
-    cust_name 		char(50)  NOT NULL,
-    cust_address 	char(50)  NULL,
-    cust_city		char(50)  NULL,
-    cust_state		char(5)	  NULL,
-    cust_zip		char(10)  NULL,
-    cust_country	char(50)  NULL,
-    cust_contact	char(50)  NULL,
-    cust_email		char(255) NULL,
+    cust_id         int       NOT NULL AUTO_INCREMENT,
+    cust_name       char(50)  NOT NULL,
+    cust_address    char(50)  NULL,
+    cust_city       char(50)  NULL,
+    cust_state      char(5)   NULL,
+    cust_zip        char(10)  NULL,
+    cust_country    char(50)  NULL,
+    cust_contact    char(50)  NULL,
+    cust_email      char(255) NULL,
     PRIMARY KEY (cust_id)
 ) ENGINE=InnoDB;
 </pre>
@@ -94,9 +95,9 @@
 </p>
 </div>
 
-<div id="outline-container-org197ce4e" class="outline-3">
-<h3 id="org197ce4e">NULL 与 NOT NULL</h3>
-<div class="outline-text-3" id="text-org197ce4e">
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">NULL 与 NOT NULL</h3>
+<div class="outline-text-3" id="text-1-1">
 <p>
 每个列都是 NULL 或者 NOT NULL.
 </p>
@@ -111,13 +112,14 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 </div>
 </div>
 
-<div id="outline-container-orgc68fed0" class="outline-3">
-<h3 id="orgc68fed0">主键</h3>
-<div class="outline-text-3" id="text-orgc68fed0">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">主键</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
 主键必须唯一. 如果主键使用单个列, 则它的值必须唯一, 如果使用多个列, 则这些列的组合值必须唯一. 主键的定义语句如下:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">PRIMARY KEY(vend_id)
 </pre>
 </div>
@@ -126,15 +128,16 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 如果是多个语句, 定义语句也基本类似:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">PRIMARY KEY(order_num, order_item)
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8b62138" class="outline-3">
-<h3 id="org8b62138">AUTO_INCREMENT</h3>
-<div class="outline-text-3" id="text-org8b62138">
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">AUTO_INCREMENT</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
 含有 AUTO_INCREMENT 的列, 表示每增加一行数据, 该列的值自动加 1. 这一列的值是唯一的, 适合用来做主键.
 </p>
@@ -149,13 +152,14 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 </div>
 </div>
 
-<div id="outline-container-orga26573d" class="outline-3">
-<h3 id="orga26573d">默认值</h3>
-<div class="outline-text-3" id="text-orga26573d">
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">默认值</h3>
+<div class="outline-text-3" id="text-1-4">
 <p>
 使用 DEFAULT 来指定某一列的默认值:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">CREATE TABLE orderitems(
     order_num int NOT NULL,
     order_item int NOT NULL,
@@ -170,9 +174,9 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 </div>
 </div>
 
-<div id="outline-container-org33de015" class="outline-3">
-<h3 id="org33de015">引擎类型</h3>
-<div class="outline-text-3" id="text-org33de015">
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5">引擎类型</h3>
+<div class="outline-text-3" id="text-1-5">
 <p>
 在创建表, 使用 SELECT 语句, 或者进行其他数据库处理时, 都是引擎在内部处理我们的请求. 不同的引擎具有不同的功能和特性.
 </p>
@@ -181,21 +185,25 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 需要了解的常用的引擎, 有以下三个:
 </p>
 <ul class="org-ul">
-<li>InnoDB: 可靠的事务处理引擎, 它不支持全文搜索</li>
-<li>MEMORY: 功能与 MyISAM 相同, 但数据存储在内存而非磁盘, 速度很快, 适用于临时表</li>
-<li>MyISAM: 默认情况下使用这个引擎, 性能极高, 支持全文搜索, 但不支持事务处理</li>
+<li>InnoDB: 可靠的事务处理引擎, 它不支持全文搜索
+</li>
+<li>MEMORY: 功能与 MyISAM 相同, 但数据存储在内存而非磁盘, 速度很快, 适用于临时表
+</li>
+<li>MyISAM: 默认情况下使用这个引擎, 性能极高, 支持全文搜索, 但不支持事务处理
+</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org203d11c" class="outline-2">
-<h2 id="org203d11c">更新表</h2>
-<div class="outline-text-2" id="text-org203d11c">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">更新表</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 增加一个列:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">ALTER TABLE vendors ADD vend_phone CHAR(20);
 </pre>
 </div>
@@ -204,6 +212,7 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 删除一个列:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">ALTER TABLE vendors DROP COLUMN vend_phone;
 </pre>
 </div>
@@ -212,6 +221,7 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 更改一个列的属性:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">ALTER TABLE vendors CHANGE vend_phone vend_phone CHAR(20) NOT NULL;
 </pre>
 </div>
@@ -220,6 +230,7 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 更改一个列的名称:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">ALTER TABLE vendors CHANGE vend_phone phone CHAR(20) NOT NULL;
 </pre>
 </div>
@@ -228,6 +239,7 @@ NULL 表示该列的值可以为空, NOT NULL 则表示不为空.
 定义外键:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">ALTER TABLE orderitems ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders (order_num);
 </pre>
 </div>
@@ -241,20 +253,22 @@ fk_orderitems_orders 是为外键约束命名.
 </div>
 </div>
 
-<div id="outline-container-orgbf57f95" class="outline-2">
-<h2 id="orgbf57f95">删除表</h2>
-<div class="outline-text-2" id="text-orgbf57f95">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">删除表</h2>
+<div class="outline-text-2" id="text-3">
 <div class="org-src-container">
+
 <pre class="src src-SQL">DROP TABLE table_name;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org4d34ef4" class="outline-2">
-<h2 id="org4d34ef4">表重命名</h2>
-<div class="outline-text-2" id="text-org4d34ef4">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">表重命名</h2>
+<div class="outline-text-2" id="text-4">
 <div class="org-src-container">
+
 <pre class="src src-SQL">RENAME TABLE old_name TO new_name;
 </pre>
 </div>
@@ -309,7 +323,7 @@ fk_orderitems_orders 是为外键约束命名.
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -325,7 +339,6 @@ fk_orderitems_orders 是为外键约束命名.
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

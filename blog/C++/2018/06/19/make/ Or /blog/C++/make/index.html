@@ -55,50 +55,50 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9eff298">概述</a></li>
-<li><a href="#org66a2afd">Make</a></li>
-<li><a href="#orgb984fb1">Makefile</a>
+<li><a href="#sec-1">概述</a></li>
+<li><a href="#sec-2">Make</a></li>
+<li><a href="#sec-3">Makefile</a>
 <ul>
-<li><a href="#org9be740a">Makefile 文件的规则</a></li>
-<li><a href="#org32e29ff">target</a></li>
-<li><a href="#org0987b20">phony target</a></li>
-<li><a href="#orgbc8a7d5">prerequisites</a></li>
-<li><a href="#orgfd8faca">commands</a></li>
+<li><a href="#sec-3-1">Makefile 文件的规则</a></li>
+<li><a href="#sec-3-2">target</a></li>
+<li><a href="#sec-3-3">phony target</a></li>
+<li><a href="#sec-3-4">prerequisites</a></li>
+<li><a href="#sec-3-5">commands</a></li>
 </ul>
 </li>
-<li><a href="#org92b951b">Makefile 语法</a>
+<li><a href="#sec-4">Makefile 语法</a>
 <ul>
-<li><a href="#org8b01d57">注释 # 号</a></li>
-<li><a href="#orgc29150b">echo</a></li>
-<li><a href="#orga7eda63">通配符</a></li>
-<li><a href="#orga0511f2">模式匹配</a></li>
-<li><a href="#org94e1d0d">变量和赋值符</a>
+<li><a href="#sec-4-1">注释 # 号</a></li>
+<li><a href="#sec-4-2">echo</a></li>
+<li><a href="#sec-4-3">通配符</a></li>
+<li><a href="#sec-4-4">模式匹配</a></li>
+<li><a href="#sec-4-5">变量和赋值符</a>
 <ul>
-<li><a href="#org7f1ba5f">自定义变量</a></li>
-<li><a href="#org7131c40">Shell 变量</a>
+<li><a href="#sec-4-5-1">自定义变量</a></li>
+<li><a href="#sec-4-5-2">Shell 变量</a>
 <ul>
-<li><a href="#orgb4e8f52">= 操作符</a></li>
-<li><a href="#org121b478">:= 操作符</a></li>
-<li><a href="#org799dca2">?= 操作符</a></li>
-<li><a href="#org68b0b2c">+= 操作符</a></li>
+<li><a href="#sec-4-5-2-1">= 操作符</a></li>
+<li><a href="#sec-4-5-2-2">:= 操作符</a></li>
+<li><a href="#sec-4-5-2-3">?= 操作符</a></li>
+<li><a href="#sec-4-5-2-4">+= 操作符</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org47bcc05">内置变量</a></li>
-<li><a href="#orgd79e527">自动变量</a></li>
-<li><a href="#orgafedc66">判断和循环</a></li>
-<li><a href="#orgcb35403">函数</a></li>
+<li><a href="#sec-4-6">内置变量</a></li>
+<li><a href="#sec-4-7">自动变量</a></li>
+<li><a href="#sec-4-8">判断和循环</a></li>
+<li><a href="#sec-4-9">函数</a></li>
 </ul>
 </li>
-<li><a href="#org3bdf936">例子</a></li>
+<li><a href="#sec-5">例子</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9eff298" class="outline-2">
-<h2 id="org9eff298">概述</h2>
-<div class="outline-text-2" id="text-org9eff298">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 编译(compile): 使用编译器, 将源代码转化为目标文件(.o).
 </p>
@@ -117,30 +117,31 @@
 </div>
 </div>
 
-<div id="outline-container-org66a2afd" class="outline-2">
-<h2 id="org66a2afd">Make</h2>
-<div class="outline-text-2" id="text-org66a2afd">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Make</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 Make 根据指定的 Shell 命令进行构建. 我们应该告诉 Make, 有哪些文件要参与构建, 这些文件的依赖关系是怎样的, 当有文件变动时, 应如何重新构建它.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgb984fb1" class="outline-2">
-<h2 id="orgb984fb1">Makefile</h2>
-<div class="outline-text-2" id="text-orgb984fb1">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Makefile</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 Make 使用的构建规则, 都写在 Makefile 文件里面.
 </p>
 </div>
 
-<div id="outline-container-org9be740a" class="outline-3">
-<h3 id="org9be740a">Makefile 文件的规则</h3>
-<div class="outline-text-3" id="text-org9be740a">
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Makefile 文件的规则</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 一个 Makefile 文件内部包含了许多规则, 每条规则的形式如下:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">&lt;target&gt; : &lt;prerequisites&gt;
 [tab] &lt;commands&gt;
 </pre>
@@ -151,13 +152,14 @@ Make 使用的构建规则, 都写在 Makefile 文件里面.
 </div>
 </div>
 
-<div id="outline-container-org32e29ff" class="outline-3">
-<h3 id="org32e29ff">target</h3>
-<div class="outline-text-3" id="text-org32e29ff">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">target</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 一个 target 构成一条规则. 一般来说, target 就是文件名, <code>如果有多个文件名, 使用空格分隔</code>. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">main: main.o
     g++ main.o -o main
 main.o: main.cpp
@@ -170,13 +172,14 @@ main.o: main.cpp
 </div>
 </div>
 
-<div id="outline-container-org0987b20" class="outline-3">
-<h3 id="org0987b20">phony target</h3>
-<div class="outline-text-3" id="text-org0987b20">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">phony target</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 target 除了可以是某些文件名之外, 还可以是某个操作的名字, 称为 phony target. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">clean:
     rm *.o
 </pre>
@@ -193,6 +196,7 @@ target 除了可以是某些文件名之外, 还可以是某个操作的名字, 
 解决办法是将 clean 声明为 phony target. 如下:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">.PHONY: clean
 clean:
     rm *.o
@@ -204,13 +208,14 @@ clean:
 </div>
 </div>
 
-<div id="outline-container-orgbc8a7d5" class="outline-3">
-<h3 id="orgbc8a7d5">prerequisites</h3>
-<div class="outline-text-3" id="text-orgbc8a7d5">
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">prerequisites</h3>
+<div class="outline-text-3" id="text-3-4">
 <p>
 prerequisites 通常是一组文件名, 文件名之间用空格分隔. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">main: main.o scene.o layer.o
     g++ main.o scene.o layer.o -o main
 </pre>
@@ -219,6 +224,7 @@ prerequisites 通常是一组文件名, 文件名之间用空格分隔. 如:
 重新构建目标 main 的情况: main.o scene.o layer.o 三个中有一个不存在, 或者有更新过(对比文件的最后修改时间和目标的时间). 如果 main.o 不存在, 则需要另外写一条规则来生成 main.o:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">main.o: main.cpp
     g++ -c main.cpp -o main.o
 </pre>
@@ -226,13 +232,14 @@ prerequisites 通常是一组文件名, 文件名之间用空格分隔. 如:
 </div>
 </div>
 
-<div id="outline-container-orgfd8faca" class="outline-3">
-<h3 id="orgfd8faca">commands</h3>
-<div class="outline-text-3" id="text-orgfd8faca">
+<div id="outline-container-sec-3-5" class="outline-3">
+<h3 id="sec-3-5">commands</h3>
+<div class="outline-text-3" id="text-3-5">
 <p>
 commands 就是一条或多条 Shell 命令, 每个命令前都必须有一个 tab 键. 注意, 不同行的 Shell 命令会在不同的 Shell 中执行, 这些 Shell 之间没有继承关系. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">var-lost:
     export foo=bar
     echo "foo=[$$foo]"
@@ -243,10 +250,9 @@ commands 就是一条或多条 Shell 命令, 每个命令前都必须有一个 t
 </p>
 </div>
 
-<ul class="org-ul">
-<li><a id="orgc9bafb2"></a>写在同一行, 使用分号分隔<br />
-<div class="outline-text-6" id="text-orgc9bafb2">
+<ul class="org-ul"><li><a id="sec-3-5-0-0-1" name="sec-3-5-0-0-1"></a>写在同一行, 使用分号分隔<br  /><div class="outline-text-6" id="text-3-5-0-0-1">
 <div class="org-src-container">
+
 <pre class="src src-Make">var-kept:
     export foo=bar; echo "foo=[$$foo]"
 </pre>
@@ -254,9 +260,9 @@ commands 就是一条或多条 Shell 命令, 每个命令前都必须有一个 t
 </div>
 </li>
 
-<li><a id="org031a830"></a>写在不同行, 换行符前加反斜杠转义<br />
-<div class="outline-text-6" id="text-org031a830">
+<li><a id="sec-3-5-0-0-2" name="sec-3-5-0-0-2"></a>写在不同行, 换行符前加反斜杠转义<br  /><div class="outline-text-6" id="text-3-5-0-0-2">
 <div class="org-src-container">
+
 <pre class="src src-Make">var-kept:
     export foo=bar; \
     echo "foo=[$$foo]"
@@ -265,9 +271,9 @@ commands 就是一条或多条 Shell 命令, 每个命令前都必须有一个 t
 </div>
 </li>
 
-<li><a id="org2623564"></a>使用 .ONESHELL 命令<br />
-<div class="outline-text-6" id="text-org2623564">
+<li><a id="sec-3-5-0-0-3" name="sec-3-5-0-0-3"></a>使用 .ONESHELL 命令<br  /><div class="outline-text-6" id="text-3-5-0-0-3">
 <div class="org-src-container">
+
 <pre class="src src-Make">.ONESHELL:
 var-kept:
     export foo=bar;
@@ -275,26 +281,25 @@ var-kept:
 </pre>
 </div>
 </div>
-</li>
-</ul>
+</li></ul>
 </div>
 </div>
 
-<div id="outline-container-org92b951b" class="outline-2">
-<h2 id="org92b951b">Makefile 语法</h2>
-<div class="outline-text-2" id="text-org92b951b">
-</div>
-<div id="outline-container-org8b01d57" class="outline-3">
-<h3 id="org8b01d57">注释 # 号</h3>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Makefile 语法</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">注释 # 号</h3>
 </div>
 
-<div id="outline-container-orgc29150b" class="outline-3">
-<h3 id="orgc29150b">echo</h3>
-<div class="outline-text-3" id="text-orgc29150b">
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">echo</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 make 会打印每条命令, 然后再执行. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">test:
     # this is a test!
 </pre>
@@ -307,6 +312,7 @@ make 会打印每条命令, 然后再执行. 如:
 如果在命令的前面加上 @ 符号, 就可以关闭输出. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">test:
     @# this is a test!
 </pre>
@@ -318,25 +324,26 @@ make 会打印每条命令, 然后再执行. 如:
 </div>
 </div>
 
-<div id="outline-container-orga7eda63" class="outline-3">
-<h3 id="orga7eda63">通配符</h3>
-<div class="outline-text-3" id="text-orga7eda63">
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">通配符</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 如果当前目录下有 1.c, 2.c, test.c, 1.h
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">print:
-    @echo *.c  		# 1.c, 2.c, test.c
-    @echo ?.c  		# 1.c, 2.c
-    @echo [12].*  	# 1.c, 1.h, 2.c
+    @echo *.c       # 1.c, 2.c, test.c
+    @echo ?.c       # 1.c, 2.c
+    @echo [12].*    # 1.c, 1.h, 2.c
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orga0511f2" class="outline-3">
-<h3 id="orga0511f2">模式匹配</h3>
-<div class="outline-text-3" id="text-orga0511f2">
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4">模式匹配</h3>
+<div class="outline-text-3" id="text-4-4">
 <p>
 Make 命令允许对文件名进行类似正则运算的匹配, 主要是使用匹配符 %.
 </p>
@@ -345,6 +352,7 @@ Make 命令允许对文件名进行类似正则运算的匹配, 主要是使用�
 如果当前目录下有 f1.c, f2.c 两个源码文件, 需要将它们编译为对应的对象文件:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">%.o: %.c
 </pre>
 </div>
@@ -352,6 +360,7 @@ Make 命令允许对文件名进行类似正则运算的匹配, 主要是使用�
 相当于:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">f1.o: f1.c
 f2.o: f2.c
 </pre>
@@ -362,17 +371,17 @@ f2.o: f2.c
 </div>
 </div>
 
-<div id="outline-container-org94e1d0d" class="outline-3">
-<h3 id="org94e1d0d">变量和赋值符</h3>
-<div class="outline-text-3" id="text-org94e1d0d">
-</div>
-<div id="outline-container-org7f1ba5f" class="outline-4">
-<h4 id="org7f1ba5f">自定义变量</h4>
-<div class="outline-text-4" id="text-org7f1ba5f">
+<div id="outline-container-sec-4-5" class="outline-3">
+<h3 id="sec-4-5">变量和赋值符</h3>
+<div class="outline-text-3" id="text-4-5">
+</div><div id="outline-container-sec-4-5-1" class="outline-4">
+<h4 id="sec-4-5-1">自定义变量</h4>
+<div class="outline-text-4" id="text-4-5-1">
 <p>
 Makefile 可以使用等号自定义变量, 调用变量时, 需要将变量放在 $() 中间.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">txt = hello world
 test:
     @echo $(txt)
@@ -381,26 +390,28 @@ test:
 </div>
 </div>
 
-<div id="outline-container-org7131c40" class="outline-4">
-<h4 id="org7131c40">Shell 变量</h4>
-<div class="outline-text-4" id="text-org7131c40">
+<div id="outline-container-sec-4-5-2" class="outline-4">
+<h4 id="sec-4-5-2">Shell 变量</h4>
+<div class="outline-text-4" id="text-4-5-2">
 <p>
 调用 Shell 变量, 如 $HOME, 需要在 $HOME 前面再加 $ 符号进行转义. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">test:
     @echo $$HOME
 </pre>
 </div>
 </div>
 
-<div id="outline-container-orgb4e8f52" class="outline-5">
-<h5 id="orgb4e8f52">= 操作符</h5>
-<div class="outline-text-5" id="text-orgb4e8f52">
+<div id="outline-container-sec-4-5-2-1" class="outline-5">
+<h5 id="sec-4-5-2-1">= 操作符</h5>
+<div class="outline-text-5" id="text-4-5-2-1">
 <p>
 = 无限递归, 可以使用后面的变量来定义前面的变量. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">foo = $(bar)
 bar = $(ugh)
 ugh = Huh?
@@ -414,10 +425,11 @@ all:
 </div>
 </div>
 
-<div id="outline-container-org121b478" class="outline-5">
-<h5 id="org121b478">:= 操作符</h5>
-<div class="outline-text-5" id="text-org121b478">
+<div id="outline-container-sec-4-5-2-2" class="outline-5">
+<h5 id="sec-4-5-2-2">:= 操作符</h5>
+<div class="outline-text-5" id="text-4-5-2-2">
 <div class="org-src-container">
+
 <pre class="src src-Make">y := $(x) bar
 x := foo
 </pre>
@@ -428,10 +440,11 @@ x := foo
 </div>
 </div>
 
-<div id="outline-container-org799dca2" class="outline-5">
-<h5 id="org799dca2">?= 操作符</h5>
-<div class="outline-text-5" id="text-org799dca2">
+<div id="outline-container-sec-4-5-2-3" class="outline-5">
+<h5 id="sec-4-5-2-3">?= 操作符</h5>
+<div class="outline-text-5" id="text-4-5-2-3">
 <div class="org-src-container">
+
 <pre class="src src-Make">FOO ?= bar
 </pre>
 </div>
@@ -441,10 +454,11 @@ x := foo
 </div>
 </div>
 
-<div id="outline-container-org68b0b2c" class="outline-5">
-<h5 id="org68b0b2c">+= 操作符</h5>
-<div class="outline-text-5" id="text-org68b0b2c">
+<div id="outline-container-sec-4-5-2-4" class="outline-5">
+<h5 id="sec-4-5-2-4">+= 操作符</h5>
+<div class="outline-text-5" id="text-4-5-2-4">
 <div class="org-src-container">
+
 <pre class="src src-Make">objects = main.o foo.o bar.o utils.o
 objects += another.o
 </pre>
@@ -457,22 +471,24 @@ objects += another.o
 </div>
 </div>
 
-<div id="outline-container-org47bcc05" class="outline-3">
-<h3 id="org47bcc05">内置变量</h3>
-<div class="outline-text-3" id="text-org47bcc05">
+<div id="outline-container-sec-4-6" class="outline-3">
+<h3 id="sec-4-6">内置变量</h3>
+<div class="outline-text-3" id="text-4-6">
 <p>
 如 $(CC) 指向当前使用的编译器, $(MAKE) 指向当前使用的 Make 工具.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgd79e527" class="outline-3">
-<h3 id="orgd79e527">自动变量</h3>
-<div class="outline-text-3" id="text-orgd79e527">
+<div id="outline-container-sec-4-7" class="outline-3">
+<h3 id="sec-4-7">自动变量</h3>
+<div class="outline-text-3" id="text-4-7">
 <ul class="org-ul">
-<li>$@: 表示规则中的目标文件集, 如果有多个目标, 则 $@ 就是这些目标的集合.</li>
+<li>$@: 表示规则中的目标文件集, 如果有多个目标, 则 $@ 就是这些目标的集合.
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Make">main.o: main.cpp
     g++ -c main.cpp -o $@  # $@ 表示 main.o
 </pre>
@@ -482,6 +498,7 @@ objects += another.o
 再如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">a.txt b.txt:
     touch $@
 </pre>
@@ -490,6 +507,7 @@ objects += another.o
 相当于:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">a.txt:
     touch a.txt
 b.txt:
@@ -498,9 +516,11 @@ b.txt:
 </div>
 
 <ul class="org-ul">
-<li>$&lt;: 表示 prerequisites 中的第一个. 如:</li>
+<li>$&lt;: 表示 prerequisites 中的第一个. 如:
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Make">a.txt: b.txt c.txt
     cp $&lt; $@
 </pre>
@@ -509,32 +529,40 @@ b.txt:
 相当于:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">a.txt: b.txt c.txt
     cp b.txt a.txt
 </pre>
 </div>
 
 <ul class="org-ul">
-<li>$?: 表示 prerequisites 中比 target 更新的集合.</li>
+<li>$?: 表示 prerequisites 中比 target 更新的集合.
+</li>
 
-<li>$^: 表示所有 prerequisites.</li>
+<li>$^: 表示所有 prerequisites.
+</li>
 
-<li>$*: 匹配 % 及 % 之前的部分. 如: dir/a.foo.b, 使用的模式为 dir/a.%.b, 则 $* 表示 dir/a.foo</li>
+<li>$*: 匹配 % 及 % 之前的部分. 如: dir/a.foo.b, 使用的模式为 dir/a.%.b, 则 $* 表示 dir/a.foo
+</li>
 
-<li>$(@D): 指向 $@ 的目录名.</li>
+<li>$(@D): 指向 $@ 的目录名.
+</li>
 
-<li>$(@F): 指向 $@ 的文件名.</li>
+<li>$(@F): 指向 $@ 的文件名.
+</li>
 
-<li>$(&lt;D): 指向 $&lt; 的目录名.</li>
+<li>$(&lt;D): 指向 $&lt; 的目录名.
+</li>
 
-<li>$(&lt;F): 指向 $&lt; 的文件名.</li>
+<li>$(&lt;F): 指向 $&lt; 的文件名.
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgafedc66" class="outline-3">
-<h3 id="orgafedc66">判断和循环</h3>
-<div class="outline-text-3" id="text-orgafedc66">
+<div id="outline-container-sec-4-8" class="outline-3">
+<h3 id="sec-4-8">判断和循环</h3>
+<div class="outline-text-3" id="text-4-8">
 <p>
 判断和循环的语法与 Bash 一样.
 </p>
@@ -543,6 +571,7 @@ b.txt:
 判断编译器是否为 gcc, 然后指定不同的库文件:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">ifeq ($(CC), gcc)
     libs=$(libs_for_gcc)
 else
@@ -555,6 +584,7 @@ endif
 循环:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">LIST = one two three
 all:
     for i in $(LIST); do \
@@ -572,29 +602,34 @@ all:
 </div>
 </div>
 
-<div id="outline-container-orgcb35403" class="outline-3">
-<h3 id="orgcb35403">函数</h3>
-<div class="outline-text-3" id="text-orgcb35403">
+<div id="outline-container-sec-4-9" class="outline-3">
+<h3 id="sec-4-9">函数</h3>
+<div class="outline-text-3" id="text-4-9">
 <p>
 函数格式为: $(function arguments) 或 ${function arguments}.
 </p>
 
 <ul class="org-ul">
-<li>shell 函数. 其参数就是 OS shell 的命令.</li>
+<li>shell 函数. 其参数就是 OS shell 的命令.
+</li>
 </ul>
 
 <div class="org-src-container">
+
 <pre class="src src-Make">srcfiles := $(shell echo src/{00..99}.txt)
 </pre>
 </div>
 
 <ul class="org-ul">
-<li>wildcard 函数: 该函数的功能是扩展通配符. 如下面的例子中, 将所有 src 目录下的 txt 文件存入 srcfiles 变量.</li>
+<li>wildcard 函数: 该函数的功能是扩展通配符. 如下面的例子中, 将所有 src 目录下的 txt 文件存入 srcfiles 变量.
+</li>
 
-<li>subst 函数: 文本替换.</li>
+<li>subst 函数: 文本替换.
+</li>
 </ul>
 
 <div class="org-src-container">
+
 <pre class="src src-Make">$(subst arg1, arg2, text)
 </pre>
 </div>
@@ -603,10 +638,12 @@ all:
 </p>
 
 <ul class="org-ul">
-<li>patsubst 函数: 模式匹配的替换.</li>
+<li>patsubst 函数: 模式匹配的替换.
+</li>
 </ul>
 
 <div class="org-src-container">
+
 <pre class="src src-Make">$(patsubst pattern, replacement, text)
 </pre>
 </div>
@@ -615,6 +652,7 @@ all:
 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">$(patsubst %.c, %.o, x.c.c bar.c)  # x.c.o bar.o
 </pre>
 </div>
@@ -622,13 +660,14 @@ all:
 </div>
 </div>
 
-<div id="outline-container-org3bdf936" class="outline-2">
-<h2 id="org3bdf936">例子</h2>
-<div class="outline-text-2" id="text-org3bdf936">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">例子</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 编译 C 语言项目:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Make">edit : main.o kbd.o command.o display.o 
     cc -o edit main.o kbd.o command.o display.o
 
@@ -698,7 +737,7 @@ clean :
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -714,7 +753,6 @@ clean :
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

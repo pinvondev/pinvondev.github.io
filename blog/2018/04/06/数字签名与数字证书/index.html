@@ -55,22 +55,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7f684f6">通俗解释一</a>
+<li><a href="#sec-1">通俗解释一</a>
 <ul>
-<li><a href="#org7add46c">实例(https, 主要用于网页加密)</a></li>
+<li><a href="#sec-1-1">实例(https, 主要用于网页加密)</a></li>
 </ul>
 </li>
-<li><a href="#orgcfd422a">通俗解释二</a>
+<li><a href="#sec-2">通俗解释二</a>
 <ul>
-<li><a href="#org1d8ba02">例子</a></li>
-<li><a href="#org73c8f1e">专业术语</a>
+<li><a href="#sec-2-1">例子</a></li>
+<li><a href="#sec-2-2">专业术语</a>
 <ul>
-<li><a href="#org5bced64">证书</a></li>
-<li><a href="#org60bb80e">CA</a></li>
-<li><a href="#orgee7218a">CA证书</a></li>
-<li><a href="#orgdbdf91c">证书之间的信任关系</a></li>
-<li><a href="#org995c6cd">根证书</a></li>
-<li><a href="#orga5701cb">数字签名</a></li>
+<li><a href="#sec-2-2-1">证书</a></li>
+<li><a href="#sec-2-2-2">CA</a></li>
+<li><a href="#sec-2-2-3">CA证书</a></li>
+<li><a href="#sec-2-2-4">证书之间的信任关系</a></li>
+<li><a href="#sec-2-2-5">根证书</a></li>
+<li><a href="#sec-2-2-6">数字签名</a></li>
 </ul>
 </li>
 </ul>
@@ -79,53 +79,70 @@
 </div>
 </div>
 
-<div id="outline-container-org7f684f6" class="outline-2">
-<h2 id="org7f684f6">通俗解释一</h2>
-<div class="outline-text-2" id="text-org7f684f6">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">通俗解释一</h2>
+<div class="outline-text-2" id="text-1">
 <ol class="org-ol">
-<li>B有一对密钥, 分别是公钥和私钥.</li>
-<li>B把公钥送给他的朋友们: A, C, D.</li>
-<li>A给B写信. 写完后用B的公钥加密, 就可达到保密的效果.</li>
-<li>B收到A的信. 用私钥解密, 可以看到信的内容. 只要B的私钥不泄露, 就算信在别人手中, 信件内容也无法破解.</li>
-<li>B给A回信, 采用数字签名. 先将回件的内容用Hash函数生成内容摘要, 再用私钥对摘要加密, 生成数字签名. (其实数字签名是对内容直接用私钥加密, 但是一般情况下, 信息较大, 直接加密的话运算量很大, 所以一般会先对信息提取摘要, 算法有SHA-256等, 再对摘要用私钥加密)</li>
-<li>B将数字签名附在信件下面, 发给A.</li>
-<li>A收到信后, 取下数字签名, 用B的公钥解密, 得到信件的摘要. 由此证明, 信确实是B发出的.</li>
-<li>A再对信件本身使用Hash函数, 将得到的结果, 与B给的摘要进行对比, 如果两者一致, 就证明这封信未被修改.</li>
-<li>C想欺骗A, C偷偷使用A的电脑, 用自己的公钥换走了B的公钥. 此时, A实际拥有的是C的公钥. 因此, C就可以冒充B, 用自己的私钥做成数字签名, 写信给A.</li>
-<li>A感觉不对劲, 发现自己无法确定公钥是否真的属于B. 于是, A要求B去证书中心(CA), 为公钥做认证. 证书中心用自己的私钥, 对B的公钥和一些相关信息一起加密, 生成数字证书. 如图1所示.</li>
-<li>B拿到数字证书以后, 就可以放心了, 以后再给A写信, 只要在签名的同时, 再附上数字证书就行了.</li>
-<li>A收到信后, 用CA的公钥解开数字证书, 拿到B的公钥, 然后就能证明数字签名是否真的是B签的.</li>
+<li>B有一对密钥, 分别是公钥和私钥.
+</li>
+<li>B把公钥送给他的朋友们: A, C, D.
+</li>
+<li>A给B写信. 写完后用B的公钥加密, 就可达到保密的效果.
+</li>
+<li>B收到A的信. 用私钥解密, 可以看到信的内容. 只要B的私钥不泄露, 就算信在别人手中, 信件内容也无法破解.
+</li>
+<li>B给A回信, 采用数字签名. 先将回件的内容用Hash函数生成内容摘要, 再用私钥对摘要加密, 生成数字签名. (其实数字签名是对内容直接用私钥加密, 但是一般情况下, 信息较大, 直接加密的话运算量很大, 所以一般会先对信息提取摘要, 算法有SHA-256等, 再对摘要用私钥加密)
+</li>
+<li>B将数字签名附在信件下面, 发给A.
+</li>
+<li>A收到信后, 取下数字签名, 用B的公钥解密, 得到信件的摘要. 由此证明, 信确实是B发出的.
+</li>
+<li>A再对信件本身使用Hash函数, 将得到的结果, 与B给的摘要进行对比, 如果两者一致, 就证明这封信未被修改.
+</li>
+<li>C想欺骗A, C偷偷使用A的电脑, 用自己的公钥换走了B的公钥. 此时, A实际拥有的是C的公钥. 因此, C就可以冒充B, 用自己的私钥做成数字签名, 写信给A.
+</li>
+<li>A感觉不对劲, 发现自己无法确定公钥是否真的属于B. 于是, A要求B去证书中心(CA), 为公钥做认证. 证书中心用自己的私钥, 对B的公钥和一些相关信息一起加密, 生成数字证书. 如图1所示.
+</li>
+<li>B拿到数字证书以后, 就可以放心了, 以后再给A写信, 只要在签名的同时, 再附上数字证书就行了.
+</li>
+<li>A收到信后, 用CA的公钥解开数字证书, 拿到B的公钥, 然后就能证明数字签名是否真的是B签的.
+</li>
 </ol>
 
 
 <div class="figure">
 <p><img src="https://pinvondev.github.io/assets/blog/2018/04/06/数字签名与数字证书/0.png" alt="0.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>图1</p>
+<p><span class="figure-number">Figure 1:</span> 图1</p>
 </div>
 </div>
 
-<div id="outline-container-org7add46c" class="outline-3">
-<h3 id="org7add46c">实例(https, 主要用于网页加密)</h3>
-<div class="outline-text-3" id="text-org7add46c">
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">实例(https, 主要用于网页加密)</h3>
+<div class="outline-text-3" id="text-1-1">
 <ol class="org-ol">
-<li>Client向Server发出加密请求.</li>
-<li>Server用自己的私钥加密网页后, 连同本身的数字证书, 一起发给Client.</li>
-<li>Client(浏览器)在证书管理器中有"受信任的根证书颁发机构"列表. Client会根据该列表, 查看解开数字证书的公钥是否在列表之内.</li>
-<li>如果数字证书记载的网址, 与正在浏览的网址不一致, 就说明该证书可能被冒用, 浏览器会发出警告.</li>
-<li>如果该数字证书不是由受信任的机构颁发的, 浏览器会发出另一种警告.</li>
-<li>如果数字证书是可靠的, Client就可以使用证书中的Server公钥, 对信息进行加密, 然后与服务器交换加密信息.</li>
+<li>Client向Server发出加密请求.
+</li>
+<li>Server用自己的私钥加密网页后, 连同本身的数字证书, 一起发给Client.
+</li>
+<li>Client(浏览器)在证书管理器中有"受信任的根证书颁发机构"列表. Client会根据该列表, 查看解开数字证书的公钥是否在列表之内.
+</li>
+<li>如果数字证书记载的网址, 与正在浏览的网址不一致, 就说明该证书可能被冒用, 浏览器会发出警告.
+</li>
+<li>如果该数字证书不是由受信任的机构颁发的, 浏览器会发出另一种警告.
+</li>
+<li>如果数字证书是可靠的, Client就可以使用证书中的Server公钥, 对信息进行加密, 然后与服务器交换加密信息.
+</li>
 </ol>
 </div>
 </div>
 </div>
-<div id="outline-container-orgcfd422a" class="outline-2">
-<h2 id="orgcfd422a">通俗解释二</h2>
-<div class="outline-text-2" id="text-orgcfd422a">
-</div>
-<div id="outline-container-org1d8ba02" class="outline-3">
-<h3 id="org1d8ba02">例子</h3>
-<div class="outline-text-3" id="text-org1d8ba02">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">通俗解释二</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">例子</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 假设A公司的张三先生要到B公司去拜访, 但是B公司的所有人都不认识他. 所以常用的办法是带公司开的一封介绍信, 并在信上敲上A公司的公章. 张三先生到了B公司后, 把介绍信给B公司的前台李四, 李四一看介绍信上有A公司的公章, 就相信张三先生不是歹人了.(这边假设公章难以伪造)
 </p>
@@ -152,13 +169,12 @@
 </div>
 </div>
 
-<div id="outline-container-org73c8f1e" class="outline-3">
-<h3 id="org73c8f1e">专业术语</h3>
-<div class="outline-text-3" id="text-org73c8f1e">
-</div>
-<div id="outline-container-org5bced64" class="outline-4">
-<h4 id="org5bced64">证书</h4>
-<div class="outline-text-4" id="text-org5bced64">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">专业术语</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1">证书</h4>
+<div class="outline-text-4" id="text-2-2-1">
 <p>
 <a href="https://en.wikipedia.org/wiki/Public_key_certificate">专业解释</a>
 </p>
@@ -169,9 +185,9 @@
 </div>
 </div>
 
-<div id="outline-container-org60bb80e" class="outline-4">
-<h4 id="org60bb80e">CA</h4>
-<div class="outline-text-4" id="text-org60bb80e">
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2">CA</h4>
+<div class="outline-text-4" id="text-2-2-2">
 <p>
 <a href="https://en.wikipedia.org/wiki/Certificate_authority">专业解释</a>
 </p>
@@ -182,27 +198,27 @@
 </div>
 </div>
 
-<div id="outline-container-orgee7218a" class="outline-4">
-<h4 id="orgee7218a">CA证书</h4>
-<div class="outline-text-4" id="text-orgee7218a">
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3">CA证书</h4>
+<div class="outline-text-4" id="text-2-2-3">
 <p>
 CA颁发的证书. 在例子中, 它用来证明介绍信1确实是CA发出的. CA证书中, 包含要CA证书来证明的实体的公钥. 如例子中, 介绍信1中包含公司A的公章. 接收者可以用介绍信1中的公章来对比介绍信2中的公章是否相同.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgdbdf91c" class="outline-4">
-<h4 id="orgdbdf91c">证书之间的信任关系</h4>
-<div class="outline-text-4" id="text-orgdbdf91c">
+<div id="outline-container-sec-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4">证书之间的信任关系</h4>
+<div class="outline-text-4" id="text-2-2-4">
 <p>
 例子中, 介绍信1注明了公章C信任公章A. 证书之间的信任关系, 就是用一个证书来证明另一个证书是真实可信的.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org995c6cd" class="outline-4">
-<h4 id="org995c6cd">根证书</h4>
-<div class="outline-text-4" id="text-org995c6cd">
+<div id="outline-container-sec-2-2-5" class="outline-4">
+<h4 id="sec-2-2-5">根证书</h4>
+<div class="outline-text-4" id="text-2-2-5">
 <p>
 <a href="https://en.wikipedia.org/wiki/Root_certificate">专业解释</a>
 </p>
@@ -227,9 +243,9 @@ CA颁发的证书. 在例子中, 它用来证明介绍信1确实是CA发出的. 
 </div>
 </div>
 
-<div id="outline-container-orga5701cb" class="outline-4">
-<h4 id="orga5701cb">数字签名</h4>
-<div class="outline-text-4" id="text-orga5701cb">
+<div id="outline-container-sec-2-2-6" class="outline-4">
+<h4 id="sec-2-2-6">数字签名</h4>
+<div class="outline-text-4" id="text-2-2-6">
 <p>
 数字签名是将摘要(digest1)用A(发送者)的私钥加密, 与原文(Context)一起传送给B(接收者). B只有用A的公钥才能获得摘要(digest1), 然后用Hash函数对收到的原文(Context)进行计算, 得到另一个摘要(digest2), 对比digest1和digest2. 如果相同, 说明收到的信息未被修改, 否则被修改过.
 </p>
@@ -294,7 +310,7 @@ CA颁发的证书. 在例子中, 它用来证明介绍信1确实是CA发出的. 
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -310,7 +326,6 @@ CA颁发的证书. 在例子中, 它用来证明介绍信1确实是CA发出的. 
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

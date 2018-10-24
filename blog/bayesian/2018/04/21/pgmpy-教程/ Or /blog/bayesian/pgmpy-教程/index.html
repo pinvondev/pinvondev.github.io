@@ -55,40 +55,41 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org77f5eee">创建贝叶斯网</a>
+<li><a href="#sec-1">创建贝叶斯网</a>
 <ul>
-<li><a href="#org7a2b631">建立网络结构</a></li>
-<li><a href="#org3397aaa">填入参数</a></li>
-<li><a href="#org971c3cc">将数据加入网络</a></li>
-<li><a href="#org964f9e4">相关的检查</a></li>
+<li><a href="#sec-1-1">建立网络结构</a></li>
+<li><a href="#sec-1-2">填入参数</a></li>
+<li><a href="#sec-1-3">将数据加入网络</a></li>
+<li><a href="#sec-1-4">相关的检查</a></li>
 </ul>
 </li>
-<li><a href="#org39d7ed7">使用 Asia 网络进行推理</a>
+<li><a href="#sec-2">使用 Asia 网络进行推理</a>
 <ul>
-<li><a href="#orgf518cf6">变量消除法</a></li>
+<li><a href="#sec-2-1">变量消除法</a></li>
 </ul>
 </li>
-<li><a href="#org190177b">利用训练数据学习</a>
+<li><a href="#sec-3">利用训练数据学习</a>
 <ul>
-<li><a href="#org3996598">更复杂的例子(学生例子)</a></li>
+<li><a href="#sec-3-1">更复杂的例子(学生例子)</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org77f5eee" class="outline-2">
-<h2 id="org77f5eee">创建贝叶斯网</h2>
-<div class="outline-text-2" id="text-org77f5eee">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">创建贝叶斯网</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 在 pgmpy 中, 定义一个贝叶斯网的流程一般是先建立网络结构, 然后填入相关参数.
 </p>
 </div>
 
-<div id="outline-container-org7a2b631" class="outline-3">
-<h3 id="org7a2b631">建立网络结构</h3>
-<div class="outline-text-3" id="text-org7a2b631">
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">建立网络结构</h3>
+<div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
+
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 
 cancer_model = BayesianModel([('Pollution', 'Cancer'), 
@@ -120,10 +121,11 @@ cancer_model = BayesianModel([('Pollution', 'Cancer'),
 </div>
 </div>
 
-<div id="outline-container-org3397aaa" class="outline-3">
-<h3 id="org3397aaa">填入参数</h3>
-<div class="outline-text-3" id="text-org3397aaa">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">填入参数</h3>
+<div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
+
 <pre class="src src-Python">from pgmpy.factors.discrete import TabularCPD
 
 cpd_poll = TabularCPD(variable='Pollution', variable_card=2,
@@ -168,50 +170,50 @@ Cancer: envidence 表示有 Smoker 和 Pollution 两个节点指向 Cancer 节�
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-right" />
+<col  class="right" />
 
-<col  class="org-right" />
+<col  class="right" />
 
-<col  class="org-right" />
+<col  class="right" />
 
-<col  class="org-right" />
+<col  class="right" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">Pollution</th>
-<th scope="col" class="org-right">Pollution_0</th>
-<th scope="col" class="org-right">Pollution_0</th>
-<th scope="col" class="org-right">Pollution_1</th>
-<th scope="col" class="org-right">Pollution_1</th>
+<th scope="col" class="left">Pollution</th>
+<th scope="col" class="right">Pollution_0</th>
+<th scope="col" class="right">Pollution_0</th>
+<th scope="col" class="right">Pollution_1</th>
+<th scope="col" class="right">Pollution_1</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">Smoker</td>
-<td class="org-right">Smoker_0</td>
-<td class="org-right">Smoker_1</td>
-<td class="org-right">Smoker_0</td>
-<td class="org-right">Smoker_1</td>
+<td class="left">Smoker</td>
+<td class="right">Smoker_0</td>
+<td class="right">Smoker_1</td>
+<td class="right">Smoker_0</td>
+<td class="right">Smoker_1</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">Cancer_0</td>
-<td class="org-right">0.03</td>
-<td class="org-right">0.05</td>
-<td class="org-right">0.001</td>
-<td class="org-right">0.02</td>
+<td class="left">Cancer_0</td>
+<td class="right">0.03</td>
+<td class="right">0.05</td>
+<td class="right">0.001</td>
+<td class="right">0.02</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">Cancer_1</td>
-<td class="org-right">0.97</td>
-<td class="org-right">0.95</td>
-<td class="org-right">0.999</td>
-<td class="org-right">0.98</td>
+<td class="left">Cancer_1</td>
+<td class="right">0.97</td>
+<td class="right">0.95</td>
+<td class="right">0.999</td>
+<td class="right">0.98</td>
 </tr>
 </tbody>
 </table>
@@ -230,10 +232,11 @@ Dyspnoea: 未得癌症的人有 0.65 的可能性呼吸正常, 得癌症的人�
 </div>
 </div>
 
-<div id="outline-container-org971c3cc" class="outline-3">
-<h3 id="org971c3cc">将数据加入网络</h3>
-<div class="outline-text-3" id="text-org971c3cc">
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">将数据加入网络</h3>
+<div class="outline-text-3" id="text-1-3">
 <div class="org-src-container">
+
 <pre class="src src-Python"># Associating the parameters with the model structure.
 cancer_model.add_cpds(cpd_poll, cpd_smoke, cpd_cancer, cpd_xray, cpd_dysp)
 
@@ -248,10 +251,11 @@ cancer_model.check_model()
 </div>
 </div>
 
-<div id="outline-container-org964f9e4" class="outline-3">
-<h3 id="org964f9e4">相关的检查</h3>
-<div class="outline-text-3" id="text-org964f9e4">
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">相关的检查</h3>
+<div class="outline-text-3" id="text-1-4">
 <div class="org-src-container">
+
 <pre class="src src-Python">cancer_model.is_active_trail('Pollution', 'Smoker')  # False
 cancer_model.is_active_trail('Pollution', 'Smoker', observed=['Cancer'])  # True
 cancer_model.local_independencies('Xray')  # (Xray _|_ Dyspnoea, Smoker, Pollution | Cancer)
@@ -278,9 +282,9 @@ cancer_model.get_independencies()
 </div>
 </div>
 
-<div id="outline-container-org39d7ed7" class="outline-2">
-<h2 id="org39d7ed7">使用 Asia 网络进行推理</h2>
-<div class="outline-text-2" id="text-org39d7ed7">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">使用 Asia 网络进行推理</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 在构建了贝叶斯网之后, 我们使用贝叶斯网来进行推理. 推理算法分精确推理和近似推理. 精确推理有变量消元法和团树传播法; 近似推理算法是基于随机抽样的算法.
 </p>
@@ -297,6 +301,7 @@ Asia 网络是早期贝叶斯网文献中给出的一个网络, 与肺结核, �
 下载网络模型放到源文件目录下:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">wget http://www.bnlearn.com/bnrepository/asia/asia.bif.gz
 gzip -qd asia.bif.gz
 </pre>
@@ -310,6 +315,7 @@ gzip -qd asia.bif.gz
 导入 Asia 网络:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">from pgmpy.readwrite import BIFReader
 reader = BIFReader('asia.bif')
 asia_model = reader.get_model()
@@ -320,6 +326,7 @@ asia_model = reader.get_model()
 输出节点信息:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">print(asia_model.nodes())
 
 # ['xray', 'bronc', 'asia', 'dysp', 'lung', 'either', 'smoke', 'tub']
@@ -330,6 +337,7 @@ asia_model = reader.get_model()
 输出依赖关系:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">print(asia_model.edges())
 </pre>
 </div>
@@ -351,6 +359,7 @@ asia_model = reader.get_model()
 查看概率分布:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">print(asia_model.get_cpds())
 </pre>
 </div>
@@ -372,6 +381,7 @@ asia_model = reader.get_model()
 直观显示某节点的概率分布:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">print(asia_model.get_cpds('xray').values)
 </pre>
 </div>
@@ -384,14 +394,15 @@ asia_model = reader.get_model()
 </pre>
 </div>
 
-<div id="outline-container-orgf518cf6" class="outline-3">
-<h3 id="orgf518cf6">变量消除法</h3>
-<div class="outline-text-3" id="text-orgf518cf6">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">变量消除法</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 变量消除法是精确推断的一种方法. 
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-Python">from pgmpy.inference import VariableElimination
 asia_infer = VariableElimination(asia_model)
 q = asia_infer.query(variables=['bronc'], evidence={'smoke': 0})
@@ -417,6 +428,7 @@ print(q['bronc'])
 在在吸烟情况下, 得支气管炎的概率和未得支气管炎的概率可以这样查询:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">q = asia_infer.query(variables=['bronc'], evidence={'smoke': 1})
 print(q['bronc'])
 </pre>
@@ -436,9 +448,9 @@ print(q['bronc'])
 </div>
 </div>
 
-<div id="outline-container-org190177b" class="outline-2">
-<h2 id="org190177b">利用训练数据学习</h2>
-<div class="outline-text-2" id="text-org190177b">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">利用训练数据学习</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 场景: 投硬币, 训练数据中, 有 30% 的正面朝上, 有 70% 的反面朝上. 我们使用极大似然估计和狄利克雷分布下贝叶斯参数先验估计硬币的条件概率分布.
 </p>
@@ -447,6 +459,7 @@ print(q['bronc'])
 生成数据:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">import numpy as np
 import pandas as pd
 raw_data = np.array([0] * 30 + [1] * 70)
@@ -458,6 +471,7 @@ data = pd.DataFrame(raw_data, columns=['coin'])
 定义贝叶斯网:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
 model = BayesianModel()
@@ -469,6 +483,7 @@ model.add_node('coin')
 使用极大似然估计:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">model.fit(data, estimator=MaximumLikelihoodEstimator)
 print(model.get_cpds('coin'))
 </pre>
@@ -488,6 +503,7 @@ print(model.get_cpds('coin'))
 使用狄利克雷分布作为先验分布的贝叶斯推论:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts={'coin': [50, 50]})
 print(model.get_cpds('coin'))
 </pre>
@@ -504,9 +520,9 @@ print(model.get_cpds('coin'))
 </pre>
 </div>
 
-<div id="outline-container-org3996598" class="outline-3">
-<h3 id="org3996598">更复杂的例子(学生例子)</h3>
-<div class="outline-text-3" id="text-org3996598">
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">更复杂的例子(学生例子)</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 学生例子中包含5个随机变量, 如下所示:
 </p>
@@ -515,52 +531,52 @@ print(model.get_cpds('coin'))
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">变量</th>
-<th scope="col" class="org-left">含义</th>
-<th scope="col" class="org-left">取值</th>
+<th scope="col" class="left">变量</th>
+<th scope="col" class="left">含义</th>
+<th scope="col" class="left">取值</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">Difficulty</td>
-<td class="org-left">课程本身难度</td>
-<td class="org-left">0=easy, 1=difficult</td>
+<td class="left">Difficulty</td>
+<td class="left">课程本身难度</td>
+<td class="left">0=easy, 1=difficult</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">Intelligence</td>
-<td class="org-left">学生聪明程度</td>
-<td class="org-left">0=stupid, 1=smart</td>
+<td class="left">Intelligence</td>
+<td class="left">学生聪明程度</td>
+<td class="left">0=stupid, 1=smart</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">Grade</td>
-<td class="org-left">学生课程成绩</td>
-<td class="org-left">1=A, 2=B, 3=C</td>
+<td class="left">Grade</td>
+<td class="left">学生课程成绩</td>
+<td class="left">1=A, 2=B, 3=C</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">SAT</td>
-<td class="org-left">学生高考成绩</td>
-<td class="org-left">0=low, 1=high</td>
+<td class="left">SAT</td>
+<td class="left">学生高考成绩</td>
+<td class="left">0=low, 1=high</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">Letter</td>
-<td class="org-left">可否获得推荐信</td>
-<td class="org-left">0=未获得, 1=获得</td>
+<td class="left">Letter</td>
+<td class="left">可否获得推荐信</td>
+<td class="left">0=未获得, 1=获得</td>
 </tr>
 </tbody>
 </table>
@@ -569,6 +585,7 @@ print(model.get_cpds('coin'))
 生成数据:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">import numpy as np
 import pandas as pd
 raw_data = np.random.randint(low=0, high=2, size=(1000, 5))
@@ -580,6 +597,7 @@ data = pd.DataFrame(raw_data, columns=['D', 'I', 'G', 'L', 'S'])
 定义模型:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">from pgmpy.models import BayesianModel
 from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
 model = BayesianModel([('D', 'G'), ('I', 'G'), ('I', 'S'), ('G', 'L')])
@@ -638,6 +656,7 @@ CPD of S:
 参数学习:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Python">pseudo_counts = {'D': [300, 700], 'I': [500, 500], 'G': [800, 200], 'L': [500, 500], 'S': [400, 600]}
 model.fit(data, estimator=BayesianEstimator, prior_type='dirichlet', pseudo_counts=pseudo_counts)
 for cpd in model.get_cpds():
@@ -741,7 +760,7 @@ CPD of S:
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -757,7 +776,6 @@ CPD of S:
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

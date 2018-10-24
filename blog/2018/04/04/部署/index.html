@@ -55,20 +55,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org209c6b2">概述</a></li>
-<li><a href="#org9564678">网络成员</a></li>
-<li><a href="#org095fe74">本地部署</a></li>
-<li><a href="#orgc6ef9e4">多机部署</a></li>
-<li><a href="#org583a4e9">配置文件</a></li>
-<li><a href="#org5261edb">自定义和扩展</a></li>
-<li><a href="#org8697b28">chaincode</a></li>
+<li><a href="#sec-1">概述</a></li>
+<li><a href="#sec-2">网络成员</a></li>
+<li><a href="#sec-3">本地部署</a></li>
+<li><a href="#sec-4">多机部署</a></li>
+<li><a href="#sec-5">配置文件</a></li>
+<li><a href="#sec-6">自定义和扩展</a></li>
+<li><a href="#sec-7">chaincode</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org209c6b2" class="outline-2">
-<h2 id="org209c6b2">概述</h2>
-<div class="outline-text-2" id="text-org209c6b2">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 <a href="https://github.com/olegabu/fabric-starter">源码</a>
 </p>
@@ -79,14 +79,18 @@
 </div>
 </div>
 
-<div id="outline-container-org9564678" class="outline-2">
-<h2 id="org9564678">网络成员</h2>
-<div class="outline-text-2" id="text-org9564678">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">网络成员</h2>
+<div class="outline-text-2" id="text-2">
 <ol class="org-ol">
-<li>Orderer组织: example.com</li>
-<li>Peer组织1: a</li>
-<li>Peer组织2: b</li>
-<li>Peer组织3: c</li>
+<li>Orderer组织: example.com
+</li>
+<li>Peer组织1: a
+</li>
+<li>Peer组织2: b
+</li>
+<li>Peer组织3: c
+</li>
 </ol>
 
 <p>
@@ -107,14 +111,15 @@ cli.a.example.com: 使用命令与节点交互
 </div>
 </div>
 
-<div id="outline-container-org095fe74" class="outline-2">
-<h2 id="org095fe74">本地部署</h2>
-<div class="outline-text-2" id="text-org095fe74">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">本地部署</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 有了 <code>api</code> 容器, 我们可以在浏览器中看到每个组织中的成员. 由于有三个组织, 我们把原本他们默认使用的4000端口分别映射成4000, 4001, 4002端口.
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m generate
 </pre>
 </div>
@@ -123,6 +128,7 @@ cli.a.example.com: 使用命令与节点交互
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m up
 </pre>
 </div>
@@ -134,12 +140,16 @@ cli.a.example.com: 使用命令与节点交互
 在所有容器都启动完成之后, 启动浏览器通过Channel的管理员admin与该组织交互.
 </p>
 <ul class="org-ul">
-<li>org1 <a href="http://localhost:4000/admin">http://localhost:4000/admin</a></li>
-<li>org2 <a href="http://localhost:4001/admin">http://localhost:4001/admin</a></li>
-<li>org3 <a href="http://localhost:4002/admin">http://localhost:4002/admin</a></li>
+<li>org1 <a href="http://localhost:4000/admin">http://localhost:4000/admin</a>
+</li>
+<li>org2 <a href="http://localhost:4001/admin">http://localhost:4001/admin</a>
+</li>
+<li>org3 <a href="http://localhost:4002/admin">http://localhost:4002/admin</a>
+</li>
 </ul>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m logs -m example.com
 ./network.sh -m logs -m a
 ./network.sh -m logs -m b
@@ -147,6 +157,7 @@ cli.a.example.com: 使用命令与节点交互
 </div>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m down
 ./network.sh -m clean
 </pre>
@@ -154,9 +165,9 @@ cli.a.example.com: 使用命令与节点交互
 </div>
 </div>
 
-<div id="outline-container-orgc6ef9e4" class="outline-2">
-<h2 id="orgc6ef9e4">多机部署</h2>
-<div class="outline-text-2" id="text-orgc6ef9e4">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">多机部署</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 部署每个成员的容器, 然后容器之间通过网络连接.
 </p>
@@ -165,6 +176,7 @@ cli.a.example.com: 使用命令与节点交互
 在多机环境下, 容器之间不能通过容器网络来连接, 而是使用真实的网络. 因此, 我们需要在 <code>network.sh</code> 文件中指定节点的真实IP地址, 或者通过环境变量来设置:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">export IP_ORDERER=54.235.3.243 IP1=54.235.3.231 IP2=54.235.3.232 IP3=54.235.3.233
 </pre>
 </div>
@@ -173,6 +185,7 @@ cli.a.example.com: 使用命令与节点交互
 每个成员在各自的主机上生成配置文件:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m generate-peer -o a
 ./network.sh -m generate-peer -o b
 ./network.sh -m generate-peer -o c
@@ -186,6 +199,7 @@ cli.a.example.com: 使用命令与节点交互
 然后使用Orderer节点通过从成员那边生成的证书来生成创世区块(genesis.block)和Channel的配置文件(.tx). 在Orderer所在主机执行:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m generate-orderer
 ./network.sh -m up-orderer
 </pre>
@@ -199,6 +213,7 @@ cli.a.example.com: 使用命令与节点交互
 每个组织在各自节点上启动成员:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m up-1
 ./network.sh -m up-2
 ./network.sh -m up-3
@@ -207,9 +222,9 @@ cli.a.example.com: 使用命令与节点交互
 </div>
 </div>
 
-<div id="outline-container-org583a4e9" class="outline-2">
-<h2 id="org583a4e9">配置文件</h2>
-<div class="outline-text-2" id="text-org583a4e9">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">配置文件</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 crypto工具使用 <code>cryptogentemplate-orderer.yaml &amp; cryptogentemplate-peer.yaml</code> 生成成员的加密材料: 私钥与证书. 这两个配置文件对应官方示例中的 <code>cryptogen.yaml</code>.
 </p>
@@ -236,13 +251,14 @@ API Server 和 Web应用程序使用 <code>network-config-template.json</code> �
 </div>
 </div>
 
-<div id="outline-container-org5261edb" class="outline-2">
-<h2 id="org5261edb">自定义和扩展</h2>
-<div class="outline-text-2" id="text-org5261edb">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">自定义和扩展</h2>
+<div class="outline-text-2" id="text-6">
 <p>
 通过编辑 <code>network.sh</code> 或设置环境变量, 可以自定义Orderer的名字和组织的名字, 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">export DOMAIN=myapp.com ORG1=bar ORG2=baz ORG3=foo
 </pre>
 </div>
@@ -257,9 +273,9 @@ API Server 和 Web应用程序使用 <code>network-config-template.json</code> �
 </div>
 </div>
 
-<div id="outline-container-org8697b28" class="outline-2">
-<h2 id="org8697b28">chaincode</h2>
-<div class="outline-text-2" id="text-org8697b28">
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">chaincode</h2>
+<div class="outline-text-2" id="text-7">
 <p>
 在 <code>chaincode-dev</code> 模式下有一些与chaincode相关的命令, 该模式下, chaincode不是在容器内, 可以单独执行. Peer可以不安装chaincode, 但可以调用它.
 </p>
@@ -272,6 +288,7 @@ API Server 和 Web应用程序使用 <code>network-config-template.json</code> �
 启动 <code>dev</code> 模式:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m devup
 ./network.sh -m devinstall
 </pre>
@@ -281,6 +298,7 @@ API Server 和 Web应用程序使用 <code>network-config-template.json</code> �
 设置环境变量:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">CORE_CHAINCODE_LOGGING_LEVEL=debug
 CORE_PEER_ADDRESS=0.0.0.0:7051
 CORE_CHAINCODE_ID_NAME=mycc:0
@@ -291,6 +309,7 @@ CORE_CHAINCODE_ID_NAME=mycc:0
 实例化, 调用, 查询:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m devinstantiate
 ./network.sh -m devinvoke
 ./network.sh -m devquery
@@ -305,6 +324,7 @@ CORE_CHAINCODE_ID_NAME=mycc:0
 关闭:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./network.sh -m devdown
 </pre>
 </div>
@@ -359,7 +379,7 @@ CORE_CHAINCODE_ID_NAME=mycc:0
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -375,7 +395,6 @@ CORE_CHAINCODE_ID_NAME=mycc:0
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

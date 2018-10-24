@@ -55,47 +55,48 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge2965a7">安装</a></li>
-<li><a href="#org23bfb94">概要</a></li>
-<li><a href="#org1ee54ae">API参考文档</a></li>
-<li><a href="#orgcccdce1">语法</a>
+<li><a href="#sec-1">安装</a></li>
+<li><a href="#sec-2">概要</a></li>
+<li><a href="#sec-3">API参考文档</a></li>
+<li><a href="#sec-4">语法</a>
 <ul>
-<li><a href="#orgc2e1bd3">属性</a>
+<li><a href="#sec-4-1">属性</a>
 <ul>
-<li><a href="#org2a7be41">在属性中使用变量</a></li>
-<li><a href="#org2d86df3">类的字面值</a></li>
-<li><a href="#org245d4ec">ID的字面值</a></li>
+<li><a href="#sec-4-1-1">在属性中使用变量</a></li>
+<li><a href="#sec-4-1-2">类的字面值</a></li>
+<li><a href="#sec-4-1-3">ID的字面值</a></li>
 </ul>
 </li>
-<li><a href="#orgfdb3c1e">分支</a></li>
-<li><a href="#org177cba8">代码</a></li>
-<li><a href="#org1cf16b1">条件</a></li>
-<li><a href="#org5bafa36">include</a>
+<li><a href="#sec-4-2">分支</a></li>
+<li><a href="#sec-4-3">代码</a></li>
+<li><a href="#sec-4-4">条件</a></li>
+<li><a href="#sec-4-5">include</a>
 <ul>
-<li><a href="#orgfcdb893">包含纯文本</a></li>
+<li><a href="#sec-4-5-1">包含纯文本</a></li>
 </ul>
 </li>
-<li><a href="#org08b8e19">模板继承(block, extends)</a></li>
-<li><a href="#org9bcccad">嵌入</a></li>
+<li><a href="#sec-4-6">模板继承(block, extends)</a></li>
+<li><a href="#sec-4-7">嵌入</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge2965a7" class="outline-2">
-<h2 id="orge2965a7">安装</h2>
-<div class="outline-text-2" id="text-orge2965a7">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">安装</h2>
+<div class="outline-text-2" id="text-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">npm install pug
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org23bfb94" class="outline-2">
-<h2 id="org23bfb94">概要</h2>
-<div class="outline-text-2" id="text-org23bfb94">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">概要</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 <code>pug.compile()</code> 会把Pug代码编译成一个JavaScript函数, 并且这个函数带有一个参数.
 </p>
@@ -105,12 +106,14 @@
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">// template.pug
 p #{name}的 Pug 代码！
 </pre>
 </div>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">const pug = require('pug');
 
 // 编译这份代码
@@ -134,6 +137,7 @@ console.log(compiledFunction({
 Pug提供了 <code>pug.render()</code> 系列函数, 它们把编译和渲染两个步骤合二为一.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">const pug = require('pug');
 
 // 编译并使用一组数据渲染 template.pug
@@ -146,23 +150,23 @@ console.log(pug.renderFile('template.pug', {
 </div>
 </div>
 
-<div id="outline-container-org1ee54ae" class="outline-2">
-<h2 id="org1ee54ae">API参考文档</h2>
-<div class="outline-text-2" id="text-org1ee54ae">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">API参考文档</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 <a href="https://pugjs.org/zh-cn/api/reference.html">https://pugjs.org/zh-cn/api/reference.html</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgcccdce1" class="outline-2">
-<h2 id="orgcccdce1">语法</h2>
-<div class="outline-text-2" id="text-orgcccdce1">
-</div>
-<div id="outline-container-orgc2e1bd3" class="outline-3">
-<h3 id="orgc2e1bd3">属性</h3>
-<div class="outline-text-3" id="text-orgc2e1bd3">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">语法</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">属性</h3>
+<div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">a(class='button' href='baidu.com') 百度
 
 // 相当于
@@ -175,6 +179,7 @@ console.log(pug.renderFile('template.pug', {
 还能使用表达式:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">//- 已登录
 - var authenticated = true
 body(class=authenticated ? 'authed' : 'anon')
@@ -186,28 +191,30 @@ body(class=authenticated ? 'authed' : 'anon')
 </div>
 </div>
 
-<div id="outline-container-org2a7be41" class="outline-4">
-<h4 id="org2a7be41">在属性中使用变量</h4>
-<div class="outline-text-4" id="text-org2a7be41">
+<div id="outline-container-sec-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1">在属性中使用变量</h4>
+<div class="outline-text-4" id="text-4-1-1">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var btnType = 'info'
 var btnSize = 'lg'
 button(type='button' class='btn btn-' + btnType + ' btn-' + btnSize)
 button(type='button' class=`btn btn-${btnType} btn-${btnSize}`)
 
-// 两种写法都相当于 
+// 两种写法都相当于
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2d86df3" class="outline-4">
-<h4 id="org2d86df3">类的字面值</h4>
-<div class="outline-text-4" id="text-org2d86df3">
+<div id="outline-container-sec-4-1-2" class="outline-4">
+<h4 id="sec-4-1-2">类的字面值</h4>
+<div class="outline-text-4" id="text-4-1-2">
 <p>
 类可以使用 <code>.classname</code> 语法来定义:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">a.button
 
 //  相当于
@@ -220,6 +227,7 @@ button(type='button' class=`btn btn-${btnType} btn-${btnSize}`)
 <code>div</code> 较常用, 可以直接写成:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">.content
 
 //  相当于
@@ -230,13 +238,14 @@ button(type='button' class=`btn btn-${btnType} btn-${btnSize}`)
 </div>
 </div>
 
-<div id="outline-container-org245d4ec" class="outline-4">
-<h4 id="org245d4ec">ID的字面值</h4>
-<div class="outline-text-4" id="text-org245d4ec">
+<div id="outline-container-sec-4-1-3" class="outline-4">
+<h4 id="sec-4-1-3">ID的字面值</h4>
+<div class="outline-text-4" id="text-4-1-3">
 <p>
 ID可以使用 <code>$idname</code> 语法来定义:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">a#main-link
 
 // 相当于
@@ -249,6 +258,7 @@ ID可以使用 <code>$idname</code> 语法来定义:
 同样, 由于 <code>div</code> 太常见, 所以可以直接写成:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">#content
 
 //  相当于
@@ -260,22 +270,23 @@ ID可以使用 <code>$idname</code> 语法来定义:
 </div>
 </div>
 
-<div id="outline-container-orgfdb3c1e" class="outline-3">
-<h3 id="orgfdb3c1e">分支</h3>
-<div class="outline-text-3" id="text-orgfdb3c1e">
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">分支</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 <a href="https://pugjs.org/zh-cn/language/case.html">https://pugjs.org/zh-cn/language/case.html</a>
 </p>
 </div>
 </div>
 
-<div id="outline-container-org177cba8" class="outline-3">
-<h3 id="org177cba8">代码</h3>
-<div class="outline-text-3" id="text-org177cba8">
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">代码</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 用 = 开始一段带有输出的代码, 它将被HTML转义:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">p
   = '这个代码被 &lt;转义&gt; 了！'
 
@@ -293,6 +304,7 @@ p= '这个代码被 &lt;转义&gt; 了！'
 != 表示开始一段不转义的, 带有输出的代码.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">p
   != '这段文字 &lt;strong&gt;没有&lt;/strong&gt; 被转义！'
 
@@ -308,10 +320,11 @@ p= '这个代码被 &lt;转义&gt; 了！'
 </div>
 </div>
 
-<div id="outline-container-org1cf16b1" class="outline-3">
-<h3 id="org1cf16b1">条件</h3>
-<div class="outline-text-3" id="text-org1cf16b1">
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4">条件</h3>
+<div class="outline-text-3" id="text-4-4">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var user = { description: 'foo bar baz' }
 var authorised = false
 #user
@@ -333,6 +346,7 @@ var authorised = false
 相当于:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-HTML">&lt;div id="user"&gt;
   &lt;h2 class="green"&gt;描述&lt;/h2&gt;
   &lt;p class="description"&gt;foo bar baz&lt;/p&gt;
@@ -342,9 +356,9 @@ var authorised = false
 </div>
 </div>
 
-<div id="outline-container-org5bafa36" class="outline-3">
-<h3 id="org5bafa36">include</h3>
-<div class="outline-text-3" id="text-org5bafa36">
+<div id="outline-container-sec-4-5" class="outline-3">
+<h3 id="sec-4-5">include</h3>
+<div class="outline-text-3" id="text-4-5">
 <p>
 <code>include</code> 允许我们把其他文件的内容插入进来.
 </p>
@@ -353,6 +367,7 @@ var authorised = false
 index.pug
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">doctype html
 html
   include includes/head.pug
@@ -367,6 +382,7 @@ html
 includes/head.pug
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">head
   title 我的网站
   script(src='/javascripts/jquery.js')
@@ -378,6 +394,7 @@ includes/head.pug
 includes/foot.pug
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">footer#footer
   p Copyright (c) foobar
 </pre>
@@ -387,6 +404,7 @@ includes/foot.pug
 相当于:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-HTML">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 
@@ -409,9 +427,9 @@ includes/foot.pug
 </div>
 </div>
 
-<div id="outline-container-orgfcdb893" class="outline-4">
-<h4 id="orgfcdb893">包含纯文本</h4>
-<div class="outline-text-4" id="text-orgfcdb893">
+<div id="outline-container-sec-4-5-1" class="outline-4">
+<h4 id="sec-4-5-1">包含纯文本</h4>
+<div class="outline-text-4" id="text-4-5-1">
 <p>
 如果被包含的不是Pug文件, 那只会当做文本内容来引入.
 </p>
@@ -420,6 +438,7 @@ includes/foot.pug
 index.pug
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">doctype html
 html
   head
@@ -437,6 +456,7 @@ html
 style.css
 </p>
 <div class="org-src-container">
+
 <pre class="src src-CSS">h1 {
   color: red;
 }
@@ -447,6 +467,7 @@ style.css
 script.js
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">console.log('真了不起！');
 </pre>
 </div>
@@ -455,6 +476,7 @@ script.js
 相当于:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-HTML">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 
@@ -481,9 +503,9 @@ script.js
 </div>
 </div>
 
-<div id="outline-container-org08b8e19" class="outline-3">
-<h3 id="org08b8e19">模板继承(block, extends)</h3>
-<div class="outline-text-3" id="text-org08b8e19">
+<div id="outline-container-sec-4-6" class="outline-3">
+<h3 id="sec-4-6">模板继承(block, extends)</h3>
+<div class="outline-text-3" id="text-4-6">
 <p>
 Pug支持使用 <code>block</code> 和 <code>extends</code> 关键字进行模板的继承.
 </p>
@@ -492,6 +514,7 @@ Pug支持使用 <code>block</code> 和 <code>extends</code> 关键字进行模�
 layout.pug
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">html
   head
     title 我的站点 - #{title}
@@ -510,6 +533,7 @@ layout.pug
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">extends layout.pug
 
 block scripts
@@ -528,6 +552,7 @@ block content
 pet.pug
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">p= petName
 </pre>
 </div>
@@ -537,9 +562,9 @@ pet.pug
 </div>
 </div>
 
-<div id="outline-container-org9bcccad" class="outline-3">
-<h3 id="org9bcccad">嵌入</h3>
-<div class="outline-text-3" id="text-org9bcccad">
+<div id="outline-container-sec-4-7" class="outline-3">
+<h3 id="sec-4-7">嵌入</h3>
+<div class="outline-text-3" id="text-4-7">
 <p>
 <code>#{}</code> 中间的值会被求值.
 </p>
@@ -595,7 +620,7 @@ pet.pug
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -611,7 +636,6 @@ pet.pug
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

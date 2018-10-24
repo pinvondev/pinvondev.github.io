@@ -55,39 +55,39 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org756d1d1">进程间通信</a>
+<li><a href="#sec-1">进程间通信</a>
 <ul>
-<li><a href="#org79ecb04">端口号</a></li>
-<li><a href="#org4e9ca40">套接字地址(Socket)</a></li>
+<li><a href="#sec-1-1">端口号</a></li>
+<li><a href="#sec-1-2">套接字地址(Socket)</a></li>
 </ul>
 </li>
-<li><a href="#org1558357">面向连接服务和面向无连接服务</a>
+<li><a href="#sec-2">面向连接服务和面向无连接服务</a>
 <ul>
-<li><a href="#org4e1c4b9">面向连接服务(虚电路)</a></li>
-<li><a href="#org9523fad">面向无连接服务</a></li>
+<li><a href="#sec-2-1">面向连接服务(虚电路)</a></li>
+<li><a href="#sec-2-2">面向无连接服务</a></li>
 </ul>
 </li>
-<li><a href="#orgeb64306">UDP 协议</a>
+<li><a href="#sec-3">UDP 协议</a>
 <ul>
-<li><a href="#orgbb88937">报文格式</a></li>
+<li><a href="#sec-3-1">报文格式</a></li>
 </ul>
 </li>
-<li><a href="#org5f9cb92">UDP 应用</a></li>
+<li><a href="#sec-4">UDP 应用</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org756d1d1" class="outline-2">
-<h2 id="org756d1d1">进程间通信</h2>
-<div class="outline-text-2" id="text-org756d1d1">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">进程间通信</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 IP 协议负责把数据报从源主机交付到目的主机. 这是一种不完整的交付, 因为报文没有被送到正确的进程. TCP/UDP 这些传输层协议负责进程到进程的通信.
 </p>
 </div>
 
-<div id="outline-container-org79ecb04" class="outline-3">
-<h3 id="org79ecb04">端口号</h3>
-<div class="outline-text-3" id="text-org79ecb04">
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">端口号</h3>
+<div class="outline-text-3" id="text-1-1">
 <p>
 在 C/S 架构中, 客户端进程使用端口号标识自己, 这种端口号称为 <b>短暂端口号</b>. 
 </p>
@@ -103,124 +103,124 @@ UDP 的熟知端口号如下表所示:
 
 
 <colgroup>
-<col  class="org-right" />
+<col  class="right" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-right">端口</th>
-<th scope="col" class="org-left">协议</th>
-<th scope="col" class="org-left">描述</th>
+<th scope="col" class="right">端口</th>
+<th scope="col" class="left">协议</th>
+<th scope="col" class="left">描述</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-right">7</td>
-<td class="org-left">Echo</td>
-<td class="org-left">把收到的数据报发回给发送端</td>
+<td class="right">7</td>
+<td class="left">Echo</td>
+<td class="left">把收到的数据报发回给发送端</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">9</td>
-<td class="org-left">Discard</td>
-<td class="org-left">丢弃收到的任何数据报</td>
+<td class="right">9</td>
+<td class="left">Discard</td>
+<td class="left">丢弃收到的任何数据报</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">11</td>
-<td class="org-left">Users</td>
-<td class="org-left">活跃的用户</td>
+<td class="right">11</td>
+<td class="left">Users</td>
+<td class="left">活跃的用户</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">13</td>
-<td class="org-left">Daytime</td>
-<td class="org-left">返回时间</td>
+<td class="right">13</td>
+<td class="left">Daytime</td>
+<td class="left">返回时间</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">17</td>
-<td class="org-left">Quote</td>
-<td class="org-left">返回时间</td>
+<td class="right">17</td>
+<td class="left">Quote</td>
+<td class="left">返回时间</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">19</td>
-<td class="org-left">Chargen</td>
-<td class="org-left">返回字符串</td>
+<td class="right">19</td>
+<td class="left">Chargen</td>
+<td class="left">返回字符串</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">53</td>
-<td class="org-left">Nameserver</td>
-<td class="org-left">域名服务</td>
+<td class="right">53</td>
+<td class="left">Nameserver</td>
+<td class="left">域名服务</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">67</td>
-<td class="org-left">Bootps</td>
-<td class="org-left">下载引导程序信息的服务器端口</td>
+<td class="right">67</td>
+<td class="left">Bootps</td>
+<td class="left">下载引导程序信息的服务器端口</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">68</td>
-<td class="org-left">Bootpc</td>
-<td class="org-left">下载引导程序信息的客户端端口</td>
+<td class="right">68</td>
+<td class="left">Bootpc</td>
+<td class="left">下载引导程序信息的客户端端口</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">69</td>
-<td class="org-left">TFTP</td>
-<td class="org-left">简单文件传送协议</td>
+<td class="right">69</td>
+<td class="left">TFTP</td>
+<td class="left">简单文件传送协议</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">111</td>
-<td class="org-left">RPC</td>
-<td class="org-left">远程过程调用</td>
+<td class="right">111</td>
+<td class="left">RPC</td>
+<td class="left">远程过程调用</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">123</td>
-<td class="org-left">NTP</td>
-<td class="org-left">网络时间协议</td>
+<td class="right">123</td>
+<td class="left">NTP</td>
+<td class="left">网络时间协议</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">161</td>
-<td class="org-left">SNMP</td>
-<td class="org-left">简单网络管理协议</td>
+<td class="right">161</td>
+<td class="left">SNMP</td>
+<td class="left">简单网络管理协议</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-right">520</td>
-<td class="org-left">RIP</td>
-<td class="org-left">路由信息协议</td>
+<td class="right">520</td>
+<td class="left">RIP</td>
+<td class="left">路由信息协议</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 
-<div id="outline-container-org4e9ca40" class="outline-3">
-<h3 id="org4e9ca40">套接字地址(Socket)</h3>
-<div class="outline-text-3" id="text-org4e9ca40">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">套接字地址(Socket)</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
 Socket = IP + Port. 它唯一标识了某一主机上的某一进程.
 </p>
@@ -228,20 +228,22 @@ Socket = IP + Port. 它唯一标识了某一主机上的某一进程.
 </div>
 </div>
 
-<div id="outline-container-org1558357" class="outline-2">
-<h2 id="org1558357">面向连接服务和面向无连接服务</h2>
-<div class="outline-text-2" id="text-org1558357">
-</div>
-<div id="outline-container-org4e1c4b9" class="outline-3">
-<h3 id="org4e1c4b9">面向连接服务(虚电路)</h3>
-<div class="outline-text-3" id="text-org4e1c4b9">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">面向连接服务和面向无连接服务</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">面向连接服务(虚电路)</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 在进行数据交换前, 先建立连接, 当数据传输结束后, 释放这个连接. 具体包括以下三个阶段:
 </p>
 <ul class="org-ul">
-<li>建立连接: 给出完整的源和目的地址.</li>
-<li>数据交换: 该阶段每个报文不必包含完整的源和目的地址, 只需使用一个连接标识符来代替, 提高效率.</li>
-<li>释放连接</li>
+<li>建立连接: 给出完整的源和目的地址.
+</li>
+<li>数据交换: 该阶段每个报文不必包含完整的源和目的地址, 只需使用一个连接标识符来代替, 提高效率.
+</li>
+<li>释放连接
+</li>
 </ul>
 
 <p>
@@ -250,9 +252,9 @@ Socket = IP + Port. 它唯一标识了某一主机上的某一进程.
 </div>
 </div>
 
-<div id="outline-container-org9523fad" class="outline-3">
-<h3 id="org9523fad">面向无连接服务</h3>
-<div class="outline-text-3" id="text-org9523fad">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">面向无连接服务</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 每个数据报都要给出完整的源和目的地址, 开销较大.
 </p>
@@ -261,17 +263,20 @@ Socket = IP + Port. 它唯一标识了某一主机上的某一进程.
 面向无连接服务主要有三种类型:
 </p>
 <ul class="org-ul">
-<li>数据报: 发完报文就结束, 对方不做任何响应, 可靠性较差.</li>
-<li>证实交付: 对每一个报文产生一个证实给发送方, 但这种证实只能保证报文已经发送到目的站了, 不能保证对方正确接收.</li>
-<li>请求回答: 接收端用户每收到一个报文, 就向发送端发送一个应答报文.</li>
+<li>数据报: 发完报文就结束, 对方不做任何响应, 可靠性较差.
+</li>
+<li>证实交付: 对每一个报文产生一个证实给发送方, 但这种证实只能保证报文已经发送到目的站了, 不能保证对方正确接收.
+</li>
+<li>请求回答: 接收端用户每收到一个报文, 就向发送端发送一个应答报文.
+</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgeb64306" class="outline-2">
-<h2 id="orgeb64306">UDP 协议</h2>
-<div class="outline-text-2" id="text-orgeb64306">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">UDP 协议</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 UDP 协议是无连接的, 不可靠的. 在发送数据前, 不建立连接.
 </p>
@@ -281,9 +286,9 @@ UDP 不提供确认, 也不对数据的到达顺序加以控制, 因此, UDP 报
 </p>
 </div>
 
-<div id="outline-container-orgbb88937" class="outline-3">
-<h3 id="orgbb88937">报文格式</h3>
-<div class="outline-text-3" id="text-orgbb88937">
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">报文格式</h3>
+<div class="outline-text-3" id="text-3-1">
 
 <div class="figure">
 <p><img src="https://pinvondev.github.io/assets/blog/Network/2018/05/23/用户数据报协议-udp/ Or /blog/Network/用户数据报协议-udp/10.png" alt="10.png" />
@@ -301,9 +306,9 @@ UDP 不提供确认, 也不对数据的到达顺序加以控制, 因此, UDP 报
 </div>
 </div>
 
-<div id="outline-container-org5f9cb92" class="outline-2">
-<h2 id="org5f9cb92">UDP 应用</h2>
-<div class="outline-text-2" id="text-org5f9cb92">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">UDP 应用</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 TCP 协议是基于连接的可靠协议, 有流量控制和差错控制, 传输效率较低.
 </p>
@@ -320,9 +325,12 @@ UDP 协议是基于无连接的不可靠协议, 没有控制手段, 仅仅是将
 如:
 </p>
 <ul class="org-ul">
-<li>即时通信(如 QQ聊天): 对准确性和丢包要求较低, 但速度必须快.</li>
-<li>在线视频: 保证视频连续, 偶尔一个图像不清晰, 是可以接受的.</li>
-<li>网络语音通话: 保证通话连续, 偶尔断音或串音, 是可以接受的.</li>
+<li>即时通信(如 QQ聊天): 对准确性和丢包要求较低, 但速度必须快.
+</li>
+<li>在线视频: 保证视频连续, 偶尔一个图像不清晰, 是可以接受的.
+</li>
+<li>网络语音通话: 保证通话连续, 偶尔断音或串音, 是可以接受的.
+</li>
 </ul>
 </div>
 </div>
@@ -375,7 +383,7 @@ UDP 协议是基于无连接的不可靠协议, 没有控制手段, 仅仅是将
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -391,7 +399,6 @@ UDP 协议是基于无连接的不可靠协议, 没有控制手段, 仅仅是将
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

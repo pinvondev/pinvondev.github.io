@@ -55,25 +55,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org1e6527b">实例</a></li>
-<li><a href="#orgf6d80e2">定义一个模板类</a></li>
+<li><a href="#sec-1">实例</a></li>
+<li><a href="#sec-2">定义一个模板类</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1e6527b" class="outline-2">
-<h2 id="org1e6527b">实例</h2>
-<div class="outline-text-2" id="text-org1e6527b">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">实例</h2>
+<div class="outline-text-2" id="text-1">
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">T</span>&gt; <span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">String</span> {
-    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">Srep</span>;
-    <span style="color: #5FD7FF;">Srep</span> *<span style="color: #FF8C00;">rep</span>;
-<span style="color: #FF1493;">public</span>:
-    <span style="color: #87D700;">String</span>();
-    <span style="color: #87D700;">String</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">T</span>*);
-    <span style="color: #87D700;">String</span>(<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">String</span>&amp;);
-    <span style="color: #5FD7FF;">T</span> <span style="color: #87D700;">read</span>(<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>) <span style="color: #FF1493;">const</span>;
-    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+
+<pre class="src src-C++">template&lt;class T&gt; class String {
+    struct Srep;
+    Srep *rep;
+public:
+    String();
+    String(const T*);
+    String(const String&amp;);
+    T read(int i) const;
+    // ...
 };
 </pre>
 </div>
@@ -82,13 +83,14 @@
 在使用的时候, 可以这么写:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #5FD7FF;">String</span>&lt;<span style="color: #5FD7FF;">char</span>&gt; <span style="color: #FF8C00;">cs</span>;
-<span style="color: #5FD7FF;">String</span>&lt;<span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span>&gt; <span style="color: #FF8C00;">us</span>;
-<span style="color: #5FD7FF;">String</span>&lt;<span style="color: #5FD7FF;">wchar_t</span>&gt; <span style="color: #FF8C00;">ws</span>;
-<span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">Jchar</span>{
-    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+
+<pre class="src src-C++">String&lt;char&gt; cs;
+String&lt;unsigned char&gt; us;
+String&lt;wchar_t&gt; ws;
+class Jchar{
+    // ...
 };
-<span style="color: #5FD7FF;">String</span>&lt;<span style="color: #5FD7FF;">Jchar</span>&gt; <span style="color: #FF8C00;">js</span>;
+String&lt;Jchar&gt; js;
 </pre>
 </div>
 
@@ -96,7 +98,8 @@
 在标准库中, 提供了模板类 basic_string, 常使用的 basic_string&lt;char&gt; 由于太长, 不方便书写, 因此使用 typedef 将其定义为 string 的同义词, 同时可以隐藏细节:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #FF1493;">typedef</span> <span style="color: #5FD7FF;">basic_string</span>&lt;<span style="color: #5FD7FF;">char</span>&gt; <span style="color: #5FD7FF;">string</span>;
+
+<pre class="src src-C++">typedef basic_string&lt;char&gt; string;
 </pre>
 </div>
 
@@ -104,45 +107,47 @@
 词频统计:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>(){
-    <span style="color: #5FD7FF;">string</span> <span style="color: #FF8C00;">buf</span>;
-    <span style="color: #5FD7FF;">map</span>&lt;<span style="color: #5FD7FF;">string</span>, <span style="color: #5FD7FF;">int</span>&gt; <span style="color: #FF8C00;">m</span>;
-    <span style="color: #FF1493;">while</span>(cin &gt;&gt; buf) m[buf]++;
-    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+
+<pre class="src src-C++">int main(){
+    string buf;
+    map&lt;string, int&gt; m;
+    while(cin &gt;&gt; buf) m[buf]++;
+    // ...
 }
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf6d80e2" class="outline-2">
-<h2 id="orgf6d80e2">定义一个模板类</h2>
-<div class="outline-text-2" id="text-orgf6d80e2">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">定义一个模板类</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 在上面的实例中, 已经看到了如何定义一个模板类, 模板类的成员在类外的定义方法如下:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">T</span>&gt; <span style="color: #FF1493;">struct</span> <span style="color: #AF87FF;">String</span>&lt;<span style="color: #5FD7FF;">T</span>&gt;::<span style="color: #5FD7FF;">Srep</span>{
-    <span style="color: #5FD7FF;">T</span>* <span style="color: #FF8C00;">s</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#21040;&#20803;&#32032;&#30340;&#25351;&#38024;</span>
-    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">sz</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#20803;&#32032;&#20010;&#25968;</span>
-    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">n</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#24341;&#29992;&#35745;&#25968;</span>
-    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">...</span>
+
+<pre class="src src-C++">template&lt;class T&gt; struct String&lt;T&gt;::Srep{
+    T* s;  // 到元素的指针
+    int sz;  // 元素个数
+    int n;  // 引用计数
+    // ...
 };
 
-<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#20808;&#20889; template&lt;class T&gt;</span>
-<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#20877;&#20889;&#36820;&#22238;&#31867;&#22411; T</span>
-<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#23450;&#20041;&#31867;&#25104;&#21592;&#20989;&#25968;: String&lt;T&gt;::read(int) const</span>
-<span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">T</span>&gt; <span style="color: #5FD7FF;">T</span> <span style="color: #AF87FF;">String</span>&lt;<span style="color: #5FD7FF;">T</span>&gt;::<span style="color: #87D700;">read</span>(<span style="color: #5FD7FF;">int</span>) <span style="color: #FF1493;">const</span> {
-    <span style="color: #FF1493;">return</span> rep-&gt;s[i];
+// 先写 template&lt;class T&gt;
+// 再写返回类型 T
+// 定义类成员函数: String&lt;T&gt;::read(int) const
+template&lt;class T&gt; T String&lt;T&gt;::read(int) const {
+    return rep-&gt;s[i];
 }
 
-<span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">T</span>&gt; <span style="color: #AF87FF;">String</span>&lt;<span style="color: #5FD7FF;">T</span>&gt;::<span style="color: #87D700;">String</span>() {
-    rep = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">Srep</span>(0, T());
+template&lt;class T&gt; String&lt;T&gt;::String() {
+    rep = new Srep(0, T());
 }
 
-<span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#26500;&#36896;&#20989;&#25968;&#30340;&#23450;&#20041;&#20063;&#21487;&#20197;&#20889;&#25104;&#36825;&#26679;:</span>
-<span style="color: #FF1493;">template</span>&lt;<span style="color: #FF1493;">class</span> <span style="color: #5FD7FF;">T</span>&gt; <span style="color: #AF87FF;">String</span>&lt;<span style="color: #5FD7FF;">T</span>&gt;::<span style="color: #87D700;">String</span>&lt;<span style="color: #5FD7FF;">T</span>&gt;() {
-    rep = <span style="color: #FF1493;">new</span> <span style="color: #5FD7FF;">Srep</span>(0, T());
+// 构造函数的定义也可以写成这样:
+template&lt;class T&gt; String&lt;T&gt;::String&lt;T&gt;() {
+    rep = new Srep(0, T());
 }
 </pre>
 </div>
@@ -197,7 +202,7 @@
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -213,7 +218,6 @@
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

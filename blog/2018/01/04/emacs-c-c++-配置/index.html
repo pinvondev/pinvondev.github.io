@@ -55,30 +55,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9391c2b">auto-complete或company</a></li>
-<li><a href="#org53a2f11">yasnippet</a>
+<li><a href="#sec-1">auto-complete或company</a></li>
+<li><a href="#sec-2">yasnippet</a>
 <ul>
-<li><a href="#orga82b0e2">配置</a></li>
+<li><a href="#sec-2-1">配置</a></li>
 </ul>
 </li>
-<li><a href="#org933cedc">auto-complete-c-headers或company-c-headers</a>
+<li><a href="#sec-3">auto-complete-c-headers或company-c-headers</a>
 <ul>
-<li><a href="#org0b7933b">配置</a></li>
+<li><a href="#sec-3-1">配置</a></li>
 </ul>
 </li>
-<li><a href="#orgb1fafdb">代码检查</a>
+<li><a href="#sec-4">代码检查</a>
 <ul>
-<li><a href="#org81eafa4">配置</a></li>
+<li><a href="#sec-4-1">配置</a></li>
 </ul>
 </li>
-<li><a href="#org9779ff4">google-c-style-mode</a></li>
-<li><a href="#org68bd6a9">cedet</a>
+<li><a href="#sec-5">google-c-style-mode</a></li>
+<li><a href="#sec-6">cedet</a>
 <ul>
-<li><a href="#orgf5f3da6">semantic</a>
+<li><a href="#sec-6-1">semantic</a>
 <ul>
-<li><a href="#org4915d96">功能</a></li>
-<li><a href="#orgb8820be">解释</a></li>
-<li><a href="#orgee95dc6">配置</a></li>
+<li><a href="#sec-6-1-1">功能</a></li>
+<li><a href="#sec-6-1-2">解释</a></li>
+<li><a href="#sec-6-1-3">配置</a></li>
 </ul>
 </li>
 </ul>
@@ -87,12 +87,12 @@
 </div>
 </div>
 
-<div id="outline-container-org9391c2b" class="outline-2">
-<h2 id="org9391c2b">auto-complete或company</h2>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">auto-complete或company</h2>
 </div>
-<div id="outline-container-org53a2f11" class="outline-2">
-<h2 id="org53a2f11">yasnippet</h2>
-<div class="outline-text-2" id="text-org53a2f11">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">yasnippet</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 功能: 比如, 输入while()后, 按TAB键, 就会自动补充循环的内容. 在Sublime Text中很常用. 当然, 补充的内容还得自己改.
 </p>
@@ -102,11 +102,12 @@
 </p>
 </div>
 
-<div id="outline-container-orga82b0e2" class="outline-3">
-<h3 id="orga82b0e2">配置</h3>
-<div class="outline-text-3" id="text-orga82b0e2">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">配置</h3>
+<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
-<pre class="src src-lisp">(<span style="color: #FF1493;">require</span> '<span style="color: #AF87FF;">yasnippet</span>)
+
+<pre class="src src-lisp">(require 'yasnippet)
 (yas-global-mode 1)
 </pre>
 </div>
@@ -114,13 +115,12 @@
 </div>
 </div>
 
-<div id="outline-container-org933cedc" class="outline-2">
-<h2 id="org933cedc">auto-complete-c-headers或company-c-headers</h2>
-<div class="outline-text-2" id="text-org933cedc">
-</div>
-<div id="outline-container-org0b7933b" class="outline-3">
-<h3 id="org0b7933b">配置</h3>
-<div class="outline-text-3" id="text-org0b7933b">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">auto-complete-c-headers或company-c-headers</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">配置</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 查看C/C++头文件所在目录: <code>gcc -xc++ -E -v -</code>
 </p>
@@ -130,10 +130,11 @@
 </p>
 
 <div class="org-src-container">
-<pre class="src src-lisp">(<span style="color: #FF1493;">defun</span> <span style="color: #87D700;">my:ac-c-header-init</span> ()
-    (<span style="color: #FF1493;">require</span> '<span style="color: #AF87FF;">auto-complete-c-headers</span>)
+
+<pre class="src src-lisp">(defun my:ac-c-header-init ()
+    (require 'auto-complete-c-headers)
     (add-to-list 'ac-sources 'ac-source-c-headers)
-    (add-to-list 'achead:include-directories '<span style="color: #CDC673;">"/usr/lib/gcc/x86_64-linux-gnu/5/include"</span>))
+    (add-to-list 'achead:include-directories '"/usr/lib/gcc/x86_64-linux-gnu/5/include"))
 (add-hook 'c++-mode-hook 'my:ac-c-header-init)
 (add-hook 'c-mode-hook 'my:ac-c-header-init)
 </pre>
@@ -142,9 +143,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgb1fafdb" class="outline-2">
-<h2 id="orgb1fafdb">代码检查</h2>
-<div class="outline-text-2" id="text-orgb1fafdb">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">代码检查</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 安装flymake-google-cpplint
 </p>
@@ -157,20 +158,22 @@
 安装cpplint.py(静态代码检查工具)
 </p>
 <div class="org-src-container">
+
 <pre class="src src-shell">pip install cpplint
-which cpplint <span style="color: #8B8878;"># </span><span style="color: #8B8878;">&#22797;&#21046;&#20854;&#36335;&#24452;</span>
+which cpplint # 复制其路径
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org81eafa4" class="outline-3">
-<h3 id="org81eafa4">配置</h3>
-<div class="outline-text-3" id="text-org81eafa4">
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">配置</h3>
+<div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
-<pre class="src src-lisp">(<span style="color: #FF1493;">defun</span> <span style="color: #87D700;">my:flymake-google-init</span> ()
-  (<span style="color: #FF1493;">require</span> '<span style="color: #AF87FF;">flymake-google-cpplint</span>)
+
+<pre class="src src-lisp">(defun my:flymake-google-init ()
+  (require 'flymake-google-cpplint)
   (custom-set-variables
-   '(flymake-google-cpplint-command <span style="color: #CDC673;">"/home/pinvon/.local/bin/cpplint"</span>))
+   '(flymake-google-cpplint-command "/home/pinvon/.local/bin/cpplint"))
   (flymake-google-cpplint-load))
 (add-hook 'c-mode-hook 'my:flymake-google-init)
 (add-hook 'c++-mode-hook 'my:flymake-google-init)
@@ -180,114 +183,126 @@ which cpplint <span style="color: #8B8878;"># </span><span style="color: #8B8878
 </div>
 </div>
 
-<div id="outline-container-org9779ff4" class="outline-2">
-<h2 id="org9779ff4">google-c-style-mode</h2>
-<div class="outline-text-2" id="text-org9779ff4">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">google-c-style-mode</h2>
+<div class="outline-text-2" id="text-5">
 <div class="org-src-container">
-<pre class="src src-lisp">(<span style="color: #FF1493;">require</span> '<span style="color: #AF87FF;">google-c-style</span>)
+
+<pre class="src src-lisp">(require 'google-c-style)
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org68bd6a9" class="outline-2">
-<h2 id="org68bd6a9">cedet</h2>
-<div class="outline-text-2" id="text-org68bd6a9">
-</div>
-<div id="outline-container-orgf5f3da6" class="outline-3">
-<h3 id="orgf5f3da6">semantic</h3>
-<div class="outline-text-3" id="text-orgf5f3da6">
-</div>
-<div id="outline-container-org4915d96" class="outline-4">
-<h4 id="org4915d96">功能</h4>
-<div class="outline-text-4" id="text-org4915d96">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">cedet</h2>
+<div class="outline-text-2" id="text-6">
+</div><div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1">semantic</h3>
+<div class="outline-text-3" id="text-6-1">
+</div><div id="outline-container-sec-6-1-1" class="outline-4">
+<h4 id="sec-6-1-1">功能</h4>
+<div class="outline-text-4" id="text-6-1-1">
 <p>
 代码跳转, 自动补全, 分析源码
 </p>
 </div>
 </div>
-<div id="outline-container-orgb8820be" class="outline-4">
-<h4 id="orgb8820be">解释</h4>
-<div class="outline-text-4" id="text-orgb8820be">
+<div id="outline-container-sec-6-1-2" class="outline-4">
+<h4 id="sec-6-1-2">解释</h4>
+<div class="outline-text-4" id="text-6-1-2">
 <p>
 插件一般是先load, 然后enable某个minor mode. semantic有很多mode, 一个一个去enable, 比较麻烦. 所以cedet定义了几个函数, 自动load并enable某些minor mode.
 </p>
 </div>
 
-<ul class="org-ul">
-<li><a id="orgb4c37d9"></a>semantic-load-enable-minimum-features<br />
-<div class="outline-text-5" id="text-orgb4c37d9">
+<ul class="org-ul"><li><a id="sec-6-1-2-1" name="sec-6-1-2-1"></a>semantic-load-enable-minimum-features<br  /><div class="outline-text-5" id="text-6-1-2-1">
 <p>
 该函数开启三个特性:
 </p>
 <ul class="org-ul">
-<li>semantic-idle-scheduler-mode: 这个模式让cedet在emacs空闲的时候自动分析buffer的内容.</li>
-<li>semanticdb-minor-mode: 保存分析后的内容</li>
-<li>semanticdb-load-ebrowse-caches</li>
+<li>semantic-idle-scheduler-mode: 这个模式让cedet在emacs空闲的时候自动分析buffer的内容.
+</li>
+<li>semanticdb-minor-mode: 保存分析后的内容
+</li>
+<li>semanticdb-load-ebrowse-caches
+</li>
 </ul>
 </div>
 </li>
 
-<li><a id="org27ff8a6"></a>semantic-load-enable-code-helpers<br />
-<div class="outline-text-5" id="text-org27ff8a6">
+<li><a id="sec-6-1-2-2" name="sec-6-1-2-2"></a>semantic-load-enable-code-helpers<br  /><div class="outline-text-5" id="text-6-1-2-2">
 <ul class="org-ul">
-<li>semantic-load-enable-minimum-features</li>
-<li>imenu: 显示semantic分析出的类和函数等</li>
-<li>semantic-idle-summary-mode: 光标停留在类或函数上时, 显示原型</li>
-<li>senator-minor-mode: 在emacs中增加senator菜单, 通过菜单在当前文件的各个tag之间移动跳转.</li>
-<li>semantic-mru-bookmark-mode: 书签</li>
+<li>semantic-load-enable-minimum-features
+</li>
+<li>imenu: 显示semantic分析出的类和函数等
+</li>
+<li>semantic-idle-summary-mode: 光标停留在类或函数上时, 显示原型
+</li>
+<li>senator-minor-mode: 在emacs中增加senator菜单, 通过菜单在当前文件的各个tag之间移动跳转.
+</li>
+<li>semantic-mru-bookmark-mode: 书签
+</li>
 </ul>
 </div>
 </li>
 
-<li><a id="org9fdf264"></a>semantic-load-enable-guady-code-helpers<br />
-<div class="outline-text-5" id="text-org9fdf264">
+<li><a id="sec-6-1-2-3" name="sec-6-1-2-3"></a>semantic-load-enable-guady-code-helpers<br  /><div class="outline-text-5" id="text-6-1-2-3">
 <ul class="org-ul">
-<li>semantic-load-enable-code-helpers</li>
-<li>semantic-stickyfunc-mode: 显示当前函数名在buffer顶上</li>
-<li>semantic-decoration-mode: 在类和函数上方添加蓝色的线</li>
-<li>semantic-idle-completions-mode: 补全</li>
+<li>semantic-load-enable-code-helpers
+</li>
+<li>semantic-stickyfunc-mode: 显示当前函数名在buffer顶上
+</li>
+<li>semantic-decoration-mode: 在类和函数上方添加蓝色的线
+</li>
+<li>semantic-idle-completions-mode: 补全
+</li>
 </ul>
 </div>
 </li>
 
-<li><a id="org655d4b4"></a>semantic-load-enable-excessive-code-helpers<br />
-<div class="outline-text-5" id="text-org655d4b4">
+<li><a id="sec-6-1-2-4" name="sec-6-1-2-4"></a>semantic-load-enable-excessive-code-helpers<br  /><div class="outline-text-5" id="text-6-1-2-4">
 <ul class="org-ul">
-<li>semantic-load-enable-gaudy-code-helpers</li>
-<li>semantic-highlight-func-mode: 函数名高亮</li>
-<li>semantic-idle-tag-highlight-mode: 光标停在某变量上, 使用到它的地方都变亮</li>
-<li>semantic-decoration-on-*-members: private和protected的函数不同颜色标识</li>
+<li>semantic-load-enable-gaudy-code-helpers
+</li>
+<li>semantic-highlight-func-mode: 函数名高亮
+</li>
+<li>semantic-idle-tag-highlight-mode: 光标停在某变量上, 使用到它的地方都变亮
+</li>
+<li>semantic-decoration-on-*-members: private和protected的函数不同颜色标识
+</li>
 </ul>
 </div>
 </li>
 
-<li><a id="org15b3dfe"></a>semantic-load-enable-semantic-debugging-helpers<br />
-<div class="outline-text-5" id="text-org15b3dfe">
+<li><a id="sec-6-1-2-5" name="sec-6-1-2-5"></a>semantic-load-enable-semantic-debugging-helpers<br  /><div class="outline-text-5" id="text-6-1-2-5">
 <ul class="org-ul">
-<li>semantic-highlight-edits-mode: 高亮最近修改</li>
-<li>semantic-show-unmatched-syntax-mode: 红色下划线标记不匹配的语法</li>
-<li>semantic-show-parser-state-mode</li>
-</ul>
-</div>
+<li>semantic-highlight-edits-mode: 高亮最近修改
+</li>
+<li>semantic-show-unmatched-syntax-mode: 红色下划线标记不匹配的语法
+</li>
+<li>semantic-show-parser-state-mode
 </li>
 </ul>
 </div>
+</li></ul>
+</div>
 
-<div id="outline-container-orgee95dc6" class="outline-4">
-<h4 id="orgee95dc6">配置</h4>
-<div class="outline-text-4" id="text-orgee95dc6">
+<div id="outline-container-sec-6-1-3" class="outline-4">
+<h4 id="sec-6-1-3">配置</h4>
+<div class="outline-text-4" id="text-6-1-3">
 <div class="org-src-container">
+
 <pre class="src src-lisp">(semantic-mode 1)
-(<span style="color: #FF1493;">defun</span> <span style="color: #87D700;">my:add-semantic-to-autocomplete</span>()
+(defun my:add-semantic-to-autocomplete()
   (add-to-list 'ac-sources 'ac-source-semantic))
 (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
 (global-ede-mode 1)
 
-(ede-cpp-root-project <span style="color: #CDC673;">"my project"</span> <span style="color: #FF1493;">:file</span> <span style="color: #CDC673;">"~/demos/my_program/src/main.cpp"</span>
-    <span style="color: #FF1493;">:include-path</span> '(<span style="color: #CDC673;">"/../my_inc"</span>)
-    <span style="color: #FF1493;">:system-include-path</span> '(<span style="color: #CDC673;">"/usr/include/c++/3.2.2/"</span>))
+(ede-cpp-root-project "my project" :file "~/demos/my_program/src/main.cpp"
+    :include-path '("/../my_inc")
+    :system-include-path '("/usr/include/c++/3.2.2/"))
 </pre>
 </div>
 <p>
@@ -346,7 +361,7 @@ which cpplint <span style="color: #8B8878;"># </span><span style="color: #8B8878
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -362,7 +377,6 @@ which cpplint <span style="color: #8B8878;"># </span><span style="color: #8B8878
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

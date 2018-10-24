@@ -55,36 +55,37 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgb13ba57">问题的引入</a></li>
-<li><a href="#org85341d8">promise 入门</a>
+<li><a href="#sec-1">问题的引入</a></li>
+<li><a href="#sec-2">promise 入门</a>
 <ul>
-<li><a href="#orgecce77b">创建 promise 对象</a></li>
-<li><a href="#orge23f0ac">then()</a></li>
-<li><a href="#orgc08fdf4">小结</a></li>
+<li><a href="#sec-2-1">创建 promise 对象</a></li>
+<li><a href="#sec-2-2">then()</a></li>
+<li><a href="#sec-2-3">小结</a></li>
 </ul>
 </li>
-<li><a href="#org4ffc2d4">promise 方法</a>
+<li><a href="#sec-3">promise 方法</a>
 <ul>
-<li><a href="#org0299ed2">Promise.resolve()</a>
+<li><a href="#sec-3-1">Promise.resolve()</a>
 <ul>
-<li><a href="#org8c969ec">thenable</a></li>
+<li><a href="#sec-3-1-1">thenable</a></li>
 </ul>
 </li>
-<li><a href="#orgd163cde">Promise.reject()</a></li>
-<li><a href="#org0d481fb">promise 方法链</a></li>
+<li><a href="#sec-3-2">Promise.reject()</a></li>
+<li><a href="#sec-3-3">promise 方法链</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb13ba57" class="outline-2">
-<h2 id="orgb13ba57">问题的引入</h2>
-<div class="outline-text-2" id="text-orgb13ba57">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">问题的引入</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 读取文件, 在控制台输出文件内容:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var fs = require('fs')
 fs.readFile('index.txt', 'utf8', function (err, data) {
     console.log(data);
@@ -96,6 +97,7 @@ fs.readFile('index.txt', 'utf8', function (err, data) {
 如果接下来要读取的文件, 存放在 index.txt 文件了, 需要打开 index.txt 才能知道接下来要访问的文件是什么, 就需要获取 data 后, 再继续下一步的读取工作:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var fs = require('fs')
 fs.readFile('pass.txt', 'utf8', function (err, data) {
     console.log(data);
@@ -112,6 +114,7 @@ fs.readFile('pass.txt', 'utf8', function (err, data) {
 如果要读取更多文件, 每个文件读完之后, 才知道下一个要读的文件是什么, 则会出现类似如下的程序结构:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">step1(function(result1){
     step2(function(result2){
         step3(function(result3){
@@ -132,9 +135,9 @@ fs.readFile('pass.txt', 'utf8', function (err, data) {
 </div>
 </div>
 
-<div id="outline-container-org85341d8" class="outline-2">
-<h2 id="org85341d8">promise 入门</h2>
-<div class="outline-text-2" id="text-org85341d8">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">promise 入门</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 关于 Promise, 在 <a href="https://pinvondev.github.io/blog/Web/JavaScript/2018/05/10/javascript%E7%AC%94%E8%AE%B0--%E5%BC%82%E6%AD%A5/%20Or%20/blog/Web/JavaScript/javascript%E7%AC%94%E8%AE%B0--%E5%BC%82%E6%AD%A5/#org7f26022">JavaScript笔记--异步</a> 中已有记录. 这边再记录一遍.
 </p>
@@ -156,6 +159,7 @@ promise 的三种状态: pending(进行), fulfilled(成功), rejected(失败)
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var fs = require('fs');
 function getData(fileName, type) {
     return new Promise(function(resolve, reject){
@@ -175,6 +179,7 @@ getData('pass.txt', 'utf8').then(function (data) {
 可以看到, 我们在 then() 里面进行打印, then() 方法返回的又是 promise 对象, 可以一直这样 .then() 下去. 每次要做的事都放在 then() 里进行, 这样就避免了所有的程序都写在第一次读取文件时的回调函数里. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">aPromise.then(function taskA(value){
 // task A
 }).then(function taskB(vaue){
@@ -186,10 +191,11 @@ getData('pass.txt', 'utf8').then(function (data) {
 </div>
 </div>
 
-<div id="outline-container-orgecce77b" class="outline-3">
-<h3 id="orgecce77b">创建 promise 对象</h3>
-<div class="outline-text-3" id="text-orgecce77b">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">创建 promise 对象</h3>
+<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var promise = new Promise(function (resolve, reject) {
     // 异步处理
     // 处理结束后, 调用 resolve 或 reject
@@ -199,9 +205,9 @@ getData('pass.txt', 'utf8').then(function (data) {
 </div>
 </div>
 
-<div id="outline-container-orge23f0ac" class="outline-3">
-<h3 id="orge23f0ac">then()</h3>
-<div class="outline-text-3" id="text-orge23f0ac">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">then()</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 使用 new Promise(function(){...}) 生成 promise 实例以后, 会有两个状态: resolved(成功) 或 rejected(失败). 一旦确定了状态, 就会触发回调函数. then() 可以作为这两种状态的回调函数. 
 </p>
@@ -214,6 +220,7 @@ getData('pass.txt', 'utf8').then(function (data) {
 promise.then() 可以接受 3 个函数作为参数, 其中, 第 1 个函数在 resolved 时会进入, 第 2 个函数在 rejected 时会进入.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">promiseSomething().then(function(fulfilled){
         //当promise状态变成fulfilled时，调用此函数
     },function(rejected){
@@ -228,6 +235,7 @@ promise.then() 可以接受 3 个函数作为参数, 其中, 第 1 个函数在 
 如果只想对失败的情况进行处理, 有以下两种选择:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">promiseSomething().then(undefined, function(rejected){...});
 promiseSomething().catch(function(rejected){...});
 </pre>
@@ -237,6 +245,7 @@ promiseSomething().catch(function(rejected){...});
 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function asyncFunction() {
     return new Promise(function (resolve, reject) {
         setTimeout(function () {
@@ -264,6 +273,7 @@ catch() 相当于 then() 的第二个参数.
 如果不使用 catch(), 代码可以改成这样:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">asyncFunction().then(function (value) {
     console.log(value);
 }, function (error) {
@@ -274,32 +284,35 @@ catch() 相当于 then() 的第二个参数.
 </div>
 </div>
 
-<div id="outline-container-orgc08fdf4" class="outline-3">
-<h3 id="orgc08fdf4">小结</h3>
-<div class="outline-text-3" id="text-orgc08fdf4">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">小结</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 使用 promise 进行异步编程的流程如下:
 </p>
 <ul class="org-ul">
-<li>new Promise(fn) 返回一个 promise 对象</li>
-<li>在 fn 中指定异步处理: 如果处理结果正常, 调用 resolve(处理结果); 如果处理出错, 调用 reject(Error对象)</li>
+<li>new Promise(fn) 返回一个 promise 对象
+</li>
+<li>在 fn 中指定异步处理: 如果处理结果正常, 调用 resolve(处理结果); 如果处理出错, 调用 reject(Error对象)
+</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org4ffc2d4" class="outline-2">
-<h2 id="org4ffc2d4">promise 方法</h2>
-<div class="outline-text-2" id="text-org4ffc2d4">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">promise 方法</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 除了使用 <b>new Promise()</b> 来创建一个 promise 对象之外, 还可以使用 <b>Promise.resolve()</b> 和 <b>Promise.reject()</b> 两个方法来创建 promise 对象.
 </p>
 </div>
 
-<div id="outline-container-org0299ed2" class="outline-3">
-<h3 id="org0299ed2">Promise.resolve()</h3>
-<div class="outline-text-3" id="text-org0299ed2">
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Promise.resolve()</h3>
+<div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">Promise.resolve(42);
 
 // 等价于
@@ -315,9 +328,9 @@ new Promise(function (resolve) {
 </p>
 </div>
 
-<div id="outline-container-org8c969ec" class="outline-4">
-<h4 id="org8c969ec">thenable</h4>
-<div class="outline-text-4" id="text-org8c969ec">
+<div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1">thenable</h4>
+<div class="outline-text-4" id="text-3-1-1">
 <p>
 thenable 的意思是, 如果一个对象有 then() 方法, 则它就是 thenable 的.
 </p>
@@ -326,6 +339,7 @@ thenable 的意思是, 如果一个对象有 then() 方法, 则它就是 thenabl
 如果一个非 promise 对象是 thenable 的, 则可以使用 Promise.resolve() 将其转为 promise 对象. 如, jQuery.ajax() 的返回值有 then():
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var promise = Promise.resolve($.ajax('/json/comment.json'));
 promise.then(function (value) {
     console.log(value);
@@ -336,19 +350,20 @@ promise.then(function (value) {
 </div>
 </div>
 
-<div id="outline-container-orgd163cde" class="outline-3">
-<h3 id="orgd163cde">Promise.reject()</h3>
-<div class="outline-text-3" id="text-orgd163cde">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">Promise.reject()</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 与 Promise.resolve() 类似, 但内部调用的是 reject().
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0d481fb" class="outline-3">
-<h3 id="org0d481fb">promise 方法链</h3>
-<div class="outline-text-3" id="text-org0d481fb">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">promise 方法链</h3>
+<div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function doubleUp(value) {
     return value * 2;
 }
@@ -425,7 +440,7 @@ promise
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -441,7 +456,6 @@ promise
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

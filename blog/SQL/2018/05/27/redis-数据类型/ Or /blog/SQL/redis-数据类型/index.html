@@ -55,56 +55,56 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org01a4e2a">键</a>
+<li><a href="#sec-1">键</a>
 <ul>
-<li><a href="#orga69c179">获取所有键</a></li>
-<li><a href="#org2106eeb">判断一个键是否存在</a></li>
-<li><a href="#orgc657b1b">删除键</a></li>
-<li><a href="#org646654b">键值的数据类型</a></li>
+<li><a href="#sec-1-1">获取所有键</a></li>
+<li><a href="#sec-1-2">判断一个键是否存在</a></li>
+<li><a href="#sec-1-3">删除键</a></li>
+<li><a href="#sec-1-4">键值的数据类型</a></li>
 </ul>
 </li>
-<li><a href="#org3c4e82c">string</a>
+<li><a href="#sec-2">string</a>
 <ul>
-<li><a href="#org5a2d97f">命令</a></li>
-<li><a href="#org4dd7e33">递增数字</a></li>
-<li><a href="#orgd7f06e0">增加指定的整数</a></li>
-<li><a href="#orgcd62e65">减少指定的整数</a></li>
-<li><a href="#org3af71f9">增加指定浮点数</a></li>
-<li><a href="#org634a399">向尾部添加值</a></li>
-<li><a href="#org808b05f">获取键值的长度</a></li>
-<li><a href="#org9a87a93">同时设置多个键值对</a></li>
-<li><a href="#orgdf392df">位操作</a></li>
+<li><a href="#sec-2-1">命令</a></li>
+<li><a href="#sec-2-2">递增数字</a></li>
+<li><a href="#sec-2-3">增加指定的整数</a></li>
+<li><a href="#sec-2-4">减少指定的整数</a></li>
+<li><a href="#sec-2-5">增加指定浮点数</a></li>
+<li><a href="#sec-2-6">向尾部添加值</a></li>
+<li><a href="#sec-2-7">获取键值的长度</a></li>
+<li><a href="#sec-2-8">同时设置多个键值对</a></li>
+<li><a href="#sec-2-9">位操作</a></li>
 </ul>
 </li>
-<li><a href="#org20cbe95">hash</a>
+<li><a href="#sec-3">hash</a>
 <ul>
-<li><a href="#orga8d2448">赋值与取值</a></li>
-<li><a href="#orgda7946c">字段是否存在</a></li>
-<li><a href="#org380b7e0">删除字段</a></li>
-<li><a href="#org1131061">仅获取字段名</a></li>
-<li><a href="#orgf95d771">仅获取字段值</a></li>
-<li><a href="#org24d4f11">获得字段数量</a></li>
-<li><a href="#org981a36a">例子</a></li>
+<li><a href="#sec-3-1">赋值与取值</a></li>
+<li><a href="#sec-3-2">字段是否存在</a></li>
+<li><a href="#sec-3-3">删除字段</a></li>
+<li><a href="#sec-3-4">仅获取字段名</a></li>
+<li><a href="#sec-3-5">仅获取字段值</a></li>
+<li><a href="#sec-3-6">获得字段数量</a></li>
+<li><a href="#sec-3-7">例子</a></li>
 </ul>
 </li>
-<li><a href="#org82a2c5b">list</a>
+<li><a href="#sec-4">list</a>
 <ul>
-<li><a href="#org3b28742">向 list 两端添加元素</a></li>
-<li><a href="#orgb480e08">获取 list 两端元素</a></li>
+<li><a href="#sec-4-1">向 list 两端添加元素</a></li>
+<li><a href="#sec-4-2">获取 list 两端元素</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org01a4e2a" class="outline-2">
-<h2 id="org01a4e2a">键</h2>
-<div class="outline-text-2" id="text-org01a4e2a">
-</div>
-<div id="outline-container-orga69c179" class="outline-3">
-<h3 id="orga69c179">获取所有键</h3>
-<div class="outline-text-3" id="text-orga69c179">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">键</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">获取所有键</h3>
+<div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
+
 <pre class="src src-SQL">KEYS pattern
 </pre>
 </div>
@@ -113,26 +113,32 @@
 其中, pattern 有以下模式:
 </p>
 <ul class="org-ul">
-<li>?: 匹配一个字符</li>
-<li>*: 匹配任意个字符(包括 0 个)</li>
-<li>[]: 匹配括号间的任一字符, 可以使用 - 符号表示一个范围, 如 ab-d[] 可以匹配 ab, ac, ad</li>
-<li>\x: 匹配转义字符, 如要匹配 ?, 需要使用 \?</li>
+<li>?: 匹配一个字符
+</li>
+<li>*: 匹配任意个字符(包括 0 个)
+</li>
+<li>[]: 匹配括号间的任一字符, 可以使用 - 符号表示一个范围, 如 ab-d[] 可以匹配 ab, ac, ad
+</li>
+<li>\x: 匹配转义字符, 如要匹配 ?, 需要使用 \?
+</li>
 </ul>
 
 <p>
 所以, 要查询所有的键, 就输入:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">KEYS *
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org2106eeb" class="outline-3">
-<h3 id="org2106eeb">判断一个键是否存在</h3>
-<div class="outline-text-3" id="text-org2106eeb">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">判断一个键是否存在</h3>
+<div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
+
 <pre class="src src-SQL">EXISTS key
 </pre>
 </div>
@@ -142,10 +148,11 @@
 </div>
 </div>
 
-<div id="outline-container-orgc657b1b" class="outline-3">
-<h3 id="orgc657b1b">删除键</h3>
-<div class="outline-text-3" id="text-orgc657b1b">
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">删除键</h3>
+<div class="outline-text-3" id="text-1-3">
 <div class="org-src-container">
+
 <pre class="src src-SQL">DEL key
 </pre>
 </div>
@@ -155,10 +162,11 @@
 </div>
 </div>
 
-<div id="outline-container-org646654b" class="outline-3">
-<h3 id="org646654b">键值的数据类型</h3>
-<div class="outline-text-3" id="text-org646654b">
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">键值的数据类型</h3>
+<div class="outline-text-3" id="text-1-4">
 <div class="org-src-container">
+
 <pre class="src src-SQL">TYPE key
 </pre>
 </div>
@@ -166,17 +174,17 @@
 </div>
 </div>
 
-<div id="outline-container-org3c4e82c" class="outline-2">
-<h2 id="org3c4e82c">string</h2>
-<div class="outline-text-2" id="text-org3c4e82c">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">string</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 string 类型可以存储任何形式的字符串, 如邮箱, JSON对象, 图片, 等等. 一个字符串类型键允许存储的数据的最大容量是 512MB.
 </p>
 </div>
 
-<div id="outline-container-org5a2d97f" class="outline-3">
-<h3 id="org5a2d97f">命令</h3>
-<div class="outline-text-3" id="text-org5a2d97f">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">命令</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 赋值: SET key value
 </p>
@@ -187,13 +195,14 @@ string 类型可以存储任何形式的字符串, 如邮箱, JSON对象, 图片
 </div>
 </div>
 
-<div id="outline-container-org4dd7e33" class="outline-3">
-<h3 id="org4dd7e33">递增数字</h3>
-<div class="outline-text-3" id="text-org4dd7e33">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">递增数字</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 字符串类型可以存储任何形式的字符串, 所以也自然可以存储整数形式的字符串, 并且可以使用命令 INCR 让键值递增, 并返回递增后的值. 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">INCR 1  // (integer) 1
 INCR 1  // (integer) 2
 INCR 1  // (integer) 3
@@ -213,10 +222,11 @@ INCR 1  // (integer) 3
 </div>
 </div>
 
-<div id="outline-container-orgd7f06e0" class="outline-3">
-<h3 id="orgd7f06e0">增加指定的整数</h3>
-<div class="outline-text-3" id="text-orgd7f06e0">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">增加指定的整数</h3>
+<div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
+
 <pre class="src src-SQL">INCRBY bar 2  // (integer) 2
 INCRBY bar 3  // (integer) 5
 </pre>
@@ -224,10 +234,11 @@ INCRBY bar 3  // (integer) 5
 </div>
 </div>
 
-<div id="outline-container-orgcd62e65" class="outline-3">
-<h3 id="orgcd62e65">减少指定的整数</h3>
-<div class="outline-text-3" id="text-orgcd62e65">
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">减少指定的整数</h3>
+<div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
+
 <pre class="src src-SQL">DECR bar  // (integer) 4
 DECRBY bar 2  // (integer) 2
 </pre>
@@ -235,20 +246,22 @@ DECRBY bar 2  // (integer) 2
 </div>
 </div>
 
-<div id="outline-container-org3af71f9" class="outline-3">
-<h3 id="org3af71f9">增加指定浮点数</h3>
-<div class="outline-text-3" id="text-org3af71f9">
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5">增加指定浮点数</h3>
+<div class="outline-text-3" id="text-2-5">
 <div class="org-src-container">
+
 <pre class="src src-SQL">INCRBYFLOAT key num
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org634a399" class="outline-3">
-<h3 id="org634a399">向尾部添加值</h3>
-<div class="outline-text-3" id="text-org634a399">
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6">向尾部添加值</h3>
+<div class="outline-text-3" id="text-2-6">
 <div class="org-src-container">
+
 <pre class="src src-SQL">SET key hello  // OK
 APPEND key " world!"  // (integer) 12
 </pre>
@@ -259,20 +272,22 @@ APPEND 会向键值的末尾添加追加 value, 返回追加后字符串的总�
 </div>
 </div>
 
-<div id="outline-container-org808b05f" class="outline-3">
-<h3 id="org808b05f">获取键值的长度</h3>
-<div class="outline-text-3" id="text-org808b05f">
+<div id="outline-container-sec-2-7" class="outline-3">
+<h3 id="sec-2-7">获取键值的长度</h3>
+<div class="outline-text-3" id="text-2-7">
 <div class="org-src-container">
+
 <pre class="src src-SQL">STRLEN key  // (integer) 12
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org9a87a93" class="outline-3">
-<h3 id="org9a87a93">同时设置多个键值对</h3>
-<div class="outline-text-3" id="text-org9a87a93">
+<div id="outline-container-sec-2-8" class="outline-3">
+<h3 id="sec-2-8">同时设置多个键值对</h3>
+<div class="outline-text-3" id="text-2-8">
 <div class="org-src-container">
+
 <pre class="src src-SQL">MSET k1 v1 k2 v2 k3 v3  // OK
 GET k2  // "v2"
 MGET k1 k3  // "v1" "v3"
@@ -281,9 +296,9 @@ MGET k1 k3  // "v1" "v3"
 </div>
 </div>
 
-<div id="outline-container-orgdf392df" class="outline-3">
-<h3 id="orgdf392df">位操作</h3>
-<div class="outline-text-3" id="text-orgdf392df">
+<div id="outline-container-sec-2-9" class="outline-3">
+<h3 id="sec-2-9">位操作</h3>
+<div class="outline-text-3" id="text-2-9">
 <p>
 GETBIT, SETBIT, BITCOUNT(1的个数).
 </p>
@@ -293,6 +308,7 @@ BITOP 可以支持 AND, OR, XOR, NOT 操作.
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-SQL">BITOP OR result key1 key2  // 结果保存到 result
 </pre>
 </div>
@@ -300,9 +316,9 @@ BITOP 可以支持 AND, OR, XOR, NOT 操作.
 </div>
 </div>
 
-<div id="outline-container-org20cbe95" class="outline-2">
-<h2 id="org20cbe95">hash</h2>
-<div class="outline-text-2" id="text-org20cbe95">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">hash</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 hash 类型只能存储字符串, 一个 hash 类型的键, 最多可以包含 \(2^32 - 1\) 个字段.
 </p>
@@ -312,10 +328,11 @@ hash 类型适合存储的对象: 使用对象类别和 ID 构成键名, 使用�
 </p>
 </div>
 
-<div id="outline-container-orga8d2448" class="outline-3">
-<h3 id="orga8d2448">赋值与取值</h3>
-<div class="outline-text-3" id="text-orga8d2448">
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">赋值与取值</h3>
+<div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
+
 <pre class="src src-SQL">HSET car price 500  // (integer) 1
 HSET car name BMW  // (integer) 1
 HGET car name  // "BMW"
@@ -332,13 +349,14 @@ HGET car name  // "BMW"
 </div>
 </div>
 
-<div id="outline-container-orgda7946c" class="outline-3">
-<h3 id="orgda7946c">字段是否存在</h3>
-<div class="outline-text-3" id="text-orgda7946c">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">字段是否存在</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 判断某个键的某字段是否存在:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">HEXISTS key field
 </pre>
 </div>
@@ -354,6 +372,7 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 在查询的时, 如果不存在则添加, 可以使用 HSETNX 命令, 该命令与 HSET 用法一样, 当字段已存在时, 不进行任何操作, 当字段不存在时, 添加该字段.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">HSETNX key field value
 </pre>
 </div>
@@ -364,10 +383,11 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 </div>
 </div>
 
-<div id="outline-container-org380b7e0" class="outline-3">
-<h3 id="org380b7e0">删除字段</h3>
-<div class="outline-text-3" id="text-org380b7e0">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">删除字段</h3>
+<div class="outline-text-3" id="text-3-3">
 <div class="org-src-container">
+
 <pre class="src src-SQL">HDEL key field
 </pre>
 </div>
@@ -377,13 +397,14 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 </div>
 </div>
 
-<div id="outline-container-org1131061" class="outline-3">
-<h3 id="org1131061">仅获取字段名</h3>
-<div class="outline-text-3" id="text-org1131061">
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">仅获取字段名</h3>
+<div class="outline-text-3" id="text-3-4">
 <p>
 有时候, 只想获取字段名, 而不需要字段值:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">HKEYS car
 // "name"
 // "model"
@@ -392,10 +413,11 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 </div>
 </div>
 
-<div id="outline-container-orgf95d771" class="outline-3">
-<h3 id="orgf95d771">仅获取字段值</h3>
-<div class="outline-text-3" id="text-orgf95d771">
+<div id="outline-container-sec-3-5" class="outline-3">
+<h3 id="sec-3-5">仅获取字段值</h3>
+<div class="outline-text-3" id="text-3-5">
 <div class="org-src-container">
+
 <pre class="src src-SQL">HVALS car
 // "BMW"
 // "C200"
@@ -404,10 +426,11 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 </div>
 </div>
 
-<div id="outline-container-org24d4f11" class="outline-3">
-<h3 id="org24d4f11">获得字段数量</h3>
-<div class="outline-text-3" id="text-org24d4f11">
+<div id="outline-container-sec-3-6" class="outline-3">
+<h3 id="sec-3-6">获得字段数量</h3>
+<div class="outline-text-3" id="text-3-6">
 <div class="org-src-container">
+
 <pre class="src src-SQL">HLEN car
 // (integer) 2
 </pre>
@@ -415,9 +438,9 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 </div>
 </div>
 
-<div id="outline-container-org981a36a" class="outline-3">
-<h3 id="org981a36a">例子</h3>
-<div class="outline-text-3" id="text-org981a36a">
+<div id="outline-container-sec-3-7" class="outline-3">
+<h3 id="sec-3-7">例子</h3>
+<div class="outline-text-3" id="text-3-7">
 <p>
 有一篇博客, 有 title, author, time, content 等属性, 使用 string 类型可以这样存储:
 <img src="https://pinvondev.github.io/assets/blog/SQL/2018/05/27/redis-数据类型/ Or /blog/SQL/redis-数据类型/1.png" alt="1.png" />
@@ -435,18 +458,19 @@ EXISTS 命令是用于 string 类型 , 不能用于 hash 类型.
 </div>
 </div>
 
-<div id="outline-container-org82a2c5b" class="outline-2">
-<h2 id="org82a2c5b">list</h2>
-<div class="outline-text-2" id="text-org82a2c5b">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">list</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 list 类型内部使用双向链表, 所以向列表两端添加元素的时间复杂度是 O(1), 而不管 list 内部有多少元素. 但链表这种数据结构, 用于随机访问时较慢. 一个 list 类型最多能容纳 \(2^32 - 1\) 个元素.
 </p>
 </div>
 
-<div id="outline-container-org3b28742" class="outline-3">
-<h3 id="org3b28742">向 list 两端添加元素</h3>
-<div class="outline-text-3" id="text-org3b28742">
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">向 list 两端添加元素</h3>
+<div class="outline-text-3" id="text-4-1">
 <div class="org-src-container">
+
 <pre class="src src-SQL">LPUSH key value [value ...]
 RPUSH key value [value ...]
 </pre>
@@ -457,10 +481,11 @@ RPUSH key value [value ...]
 </div>
 </div>
 
-<div id="outline-container-orgb480e08" class="outline-3">
-<h3 id="orgb480e08">获取 list 两端元素</h3>
-<div class="outline-text-3" id="text-orgb480e08">
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">获取 list 两端元素</h3>
+<div class="outline-text-3" id="text-4-2">
 <div class="org-src-container">
+
 <pre class="src src-SQL">LPOP key
 RPOP key
 </pre>
@@ -517,7 +542,7 @@ RPOP key
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -533,7 +558,6 @@ RPOP key
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

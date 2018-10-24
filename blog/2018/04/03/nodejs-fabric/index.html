@@ -55,56 +55,62 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6975f0e">概述</a>
+<li><a href="#sec-1">概述</a>
 <ul>
-<li><a href="#orgfc8296c">fabric-client</a></li>
-<li><a href="#org4f20872">fabric-ca-client</a></li>
+<li><a href="#sec-1-1">fabric-client</a></li>
+<li><a href="#sec-1-2">fabric-ca-client</a></li>
 </ul>
 </li>
-<li><a href="#org8d018e5">配置应用程序开发环境</a>
+<li><a href="#sec-2">配置应用程序开发环境</a>
 <ul>
-<li><a href="#orgd905d8f">开发环境组成</a>
+<li><a href="#sec-2-1">开发环境组成</a>
 <ul>
-<li><a href="#orga9dbe55">orderer</a></li>
-<li><a href="#orgc15c2f5">peer</a></li>
-<li><a href="#org7c935a2">身份</a></li>
+<li><a href="#sec-2-1-1">orderer</a></li>
+<li><a href="#sec-2-1-2">peer</a></li>
+<li><a href="#sec-2-1-3">身份</a></li>
 </ul>
 </li>
-<li><a href="#orgc6d48dd">前提</a>
+<li><a href="#sec-2-2">前提</a>
 <ul>
-<li><a href="#orgad2fb61">Docker</a></li>
-<li><a href="#org023fa8f">Docker Compose</a></li>
-<li><a href="#orgdd4f7a4">Nodejs(v6.2.0-6.10.0)</a></li>
+<li><a href="#sec-2-2-1">Docker</a></li>
+<li><a href="#sec-2-2-2">Docker Compose</a></li>
+<li><a href="#sec-2-2-3">Nodejs(v6.2.0-6.10.0)</a></li>
 </ul>
 </li>
-<li><a href="#orgf692a30">准备加密材料</a></li>
-<li><a href="#orgd554629">创世区块</a></li>
-<li><a href="#orgaee0c71">启动网络</a></li>
+<li><a href="#sec-2-3">准备加密材料</a></li>
+<li><a href="#sec-2-4">创世区块</a></li>
+<li><a href="#sec-2-5">启动网络</a></li>
 </ul>
 </li>
-<li><a href="#org9ca8262">如何创建channel</a>
+<li><a href="#sec-3">如何创建channel</a>
 <ul>
-<li><a href="#org2a6b958">步骤</a></li>
-<li><a href="#org4e71b72">使用*.tx构建可签名的channel配置</a></li>
+<li><a href="#sec-3-1">步骤</a></li>
+<li><a href="#sec-3-2">使用*.tx构建可签名的channel配置</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6975f0e" class="outline-2">
-<h2 id="org6975f0e">概述</h2>
-<div class="outline-text-2" id="text-org6975f0e">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链进行交互. 使用这些API, 我们可以做到:
 </p>
 <ul class="org-ul">
-<li>创建channels</li>
-<li>将peer加入channel</li>
-<li>在peer上安装chaincode</li>
-<li>在channel上实例化chaincode</li>
-<li>通过chaincode调用事务</li>
-<li>查询账本</li>
+<li>创建channels
+</li>
+<li>将peer加入channel
+</li>
+<li>在peer上安装chaincode
+</li>
+<li>在channel上实例化chaincode
+</li>
+<li>通过chaincode调用事务
+</li>
+<li>查询账本
+</li>
 </ul>
 
 <p>
@@ -112,67 +118,95 @@ Hypeledger Fabric SDK for Node.js 提供了强大的API, 让我们与区块链�
 </p>
 </div>
 
-<div id="outline-container-orgfc8296c" class="outline-3">
-<h3 id="orgfc8296c">fabric-client</h3>
-<div class="outline-text-3" id="text-orgfc8296c">
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">fabric-client</h3>
+<div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
-<li><a href="https://fabric-sdk-node.github.io/Client.html#createChannel">创建channel</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#joinChannel">将peer加入channel</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Client.html#installChaincode">将chaincode安装到peer</a></li>
-<li>在channel上实例化chaincode, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a></li>
-<li>提交事务, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryByChaincode">查询chaincode以获得最新的应用程序状态</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInfo">查询其他的channel状态</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlock">查询块(通过number)</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlockByHash">查询块(通过hash)</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Client.html#queryChannels">peer属于哪些channel</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Client.html#queryInstalledChaincodes">peer上安装的所有chaincode</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInstantiatedChaincodes">peer上实例化的所有chaincode</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryTransaction">查询事务(通过id)</a></li>
-<li><a href="https://fabric-sdk-node.github.io/Channel.html#getChannelConfig">channel的配置数据</a></li>
-<li><a href="https://fabric-sdk-node.github.io/EventHub.html#connect">与peer事件建立联系</a></li>
-<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerBlockEvent">监听块事件</a></li>
-<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerTxEvent">监听交易事件以获知是否成功写入账本</a></li>
-<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerChaincodeEvent">自定义一些由chaincode产生的事件</a></li>
-<li><a href="https://fabric-sdk-node.github.io/User.html">序列化用户类(已经登记, 并由登记证书和签名密钥表示)</a></li>
-<li>具有多层覆盖的分层配置设置: 文件, 环境变量, 程序参数, 内存中设置</li>
-<li>内置的日志系统为winston, 也可以使用常用的log4j</li>
-<li>可插入的CryptoSuite接口描述与Fabric成功交互所需的加密操作. 提供两种实现方式: <a href="https://fabric-sdk-node.github.io/CryptoSuite_ECDSA_AES.html">Software-based ECDSA</a>和<a href="https://fabric-sdk-node.github.io/CryptoSuite_PKCS11.html">PKCS#11-compliant ECDSA</a></li>
-<li>可插拔的状态存储接口, 用于保存诸如用户的状态缓存: <a href="https://fabric-sdk-node.github.io/FileKeyValueStore.html">存储到文件</a>和<a href="https://fabric-sdk-node.github.io/CouchDBKeyValueStore.html">存储到CouchDB</a></li>
-<li><a href="https://fabric-sdk-node.github.io/CryptoKeyStore.html">可自定义的加密密钥库</a></li>
-<li>支持使用TLS(grpcs://)和非TLS(grcp://)与peer和orderer连接. 可查看<a href="https://fabric-sdk-node.github.io/Remote.html">Remote类</a>, 它是peers和orderers的父类.</li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#createChannel">创建channel</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#joinChannel">将peer加入channel</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#installChaincode">将chaincode安装到peer</a>
+</li>
+<li>在channel上实例化chaincode, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a>
+</li>
+<li>提交事务, 包括两步: <a href="https://fabric-sdk-node.github.io/Channel.html#sendInstantiateProposal">将提案发送到背书节点</a> 和 <a href="https://fabric-sdk-node.github.io/Channel.html#sendTransaction">将提案回复发送到Orderer节点</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryByChaincode">查询chaincode以获得最新的应用程序状态</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInfo">查询其他的channel状态</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlock">查询块(通过number)</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryBlockByHash">查询块(通过hash)</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#queryChannels">peer属于哪些channel</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Client.html#queryInstalledChaincodes">peer上安装的所有chaincode</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryInstantiatedChaincodes">peer上实例化的所有chaincode</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#queryTransaction">查询事务(通过id)</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/Channel.html#getChannelConfig">channel的配置数据</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#connect">与peer事件建立联系</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerBlockEvent">监听块事件</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerTxEvent">监听交易事件以获知是否成功写入账本</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/EventHub.html#registerChaincodeEvent">自定义一些由chaincode产生的事件</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/User.html">序列化用户类(已经登记, 并由登记证书和签名密钥表示)</a>
+</li>
+<li>具有多层覆盖的分层配置设置: 文件, 环境变量, 程序参数, 内存中设置
+</li>
+<li>内置的日志系统为winston, 也可以使用常用的log4j
+</li>
+<li>可插入的CryptoSuite接口描述与Fabric成功交互所需的加密操作. 提供两种实现方式: <a href="https://fabric-sdk-node.github.io/CryptoSuite_ECDSA_AES.html">Software-based ECDSA</a>和<a href="https://fabric-sdk-node.github.io/CryptoSuite_PKCS11.html">PKCS#11-compliant ECDSA</a>
+</li>
+<li>可插拔的状态存储接口, 用于保存诸如用户的状态缓存: <a href="https://fabric-sdk-node.github.io/FileKeyValueStore.html">存储到文件</a>和<a href="https://fabric-sdk-node.github.io/CouchDBKeyValueStore.html">存储到CouchDB</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/CryptoKeyStore.html">可自定义的加密密钥库</a>
+</li>
+<li>支持使用TLS(grpcs://)和非TLS(grcp://)与peer和orderer连接. 可查看<a href="https://fabric-sdk-node.github.io/Remote.html">Remote类</a>, 它是peers和orderers的父类.
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4f20872" class="outline-3">
-<h3 id="org4f20872">fabric-ca-client</h3>
-<div class="outline-text-3" id="text-org4f20872">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">fabric-ca-client</h3>
+<div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
-<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#register">注册新用户</a></li>
-<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#enroll">登记一个用户, 获得Fabric CA签名的登记证书</a></li>
-<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#revoke">通过登记ID注销用户或注销某证书</a></li>
-<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html">自定义持久化存储</a></li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#register">注册新用户</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#enroll">登记一个用户, 获得Fabric CA签名的登记证书</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html#revoke">通过登记ID注销用户或注销某证书</a>
+</li>
+<li><a href="https://fabric-sdk-node.github.io/FabricCAServices.html">自定义持久化存储</a>
+</li>
 </ul>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org8d018e5" class="outline-2">
-<h2 id="org8d018e5">配置应用程序开发环境</h2>
-<div class="outline-text-2" id="text-org8d018e5">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">配置应用程序开发环境</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 chaincode运行在服务器(背书节点), 客户端使用node.js编写.
 </p>
 </div>
 
-<div id="outline-container-orgd905d8f" class="outline-3">
-<h3 id="orgd905d8f">开发环境组成</h3>
-<div class="outline-text-3" id="text-orgd905d8f">
-</div>
-<div id="outline-container-orga9dbe55" class="outline-4">
-<h4 id="orga9dbe55">orderer</h4>
-<div class="outline-text-4" id="text-orga9dbe55">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">开发环境组成</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1">orderer</h4>
+<div class="outline-text-4" id="text-2-1-1">
 <p>
 orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要orderer?
 </p>
@@ -183,9 +217,9 @@ orderer节点的主要责任是共识. 那么, 为什么应用程序开发需要
 </div>
 </div>
 
-<div id="outline-container-orgc15c2f5" class="outline-4">
-<h4 id="orgc15c2f5">peer</h4>
-<div class="outline-text-4" id="text-orgc15c2f5">
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2">peer</h4>
+<div class="outline-text-4" id="text-2-1-2">
 <p>
 peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节点是否是背书节点, 需要自己配置. 而提交节点则无需配置, 因为所有的peer都是提交节点. 在实际环境中, 一个组织内的节点需要多个, 在开发阶段, 一个组织只配置一个节点, 这个节点既是背书节点, 又是提交节点. 它可以为提交的事务提案进行背书, 可以从账本中获得信息.
 </p>
@@ -196,9 +230,9 @@ peer节点分两种: 背书节点和提交节点. 在配置文件中, 一个节�
 </div>
 </div>
 
-<div id="outline-container-org7c935a2" class="outline-4">
-<h4 id="org7c935a2">身份</h4>
-<div class="outline-text-4" id="text-org7c935a2">
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3">身份</h4>
+<div class="outline-text-4" id="text-2-1-3">
 <p>
 Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进行访问控制. 在v1.0以后, 身份基于公钥基础设施(PKI)标准. 每个orderer, peer, 用户, 交易者都必须有密钥对, 其中公钥包含在CA签名的x.509证书里. 在开发阶段, 为了简便, 我们直接使用一些工具来生成证书.
 </p>
@@ -218,34 +252,37 @@ Hyperledger Fabric网络中的每个操作都必须进行数字签名, 以便进
 </div>
 </div>
 
-<div id="outline-container-orgc6d48dd" class="outline-3">
-<h3 id="orgc6d48dd">前提</h3>
-<div class="outline-text-3" id="text-orgc6d48dd">
-</div>
-<div id="outline-container-orgad2fb61" class="outline-4">
-<h4 id="orgad2fb61">Docker</h4>
-</div>
-
-<div id="outline-container-org023fa8f" class="outline-4">
-<h4 id="org023fa8f">Docker Compose</h4>
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">前提</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1">Docker</h4>
 </div>
 
-<div id="outline-container-orgdd4f7a4" class="outline-4">
-<h4 id="orgdd4f7a4">Nodejs(v6.2.0-6.10.0)</h4>
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2">Docker Compose</h4>
+</div>
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3">Nodejs(v6.2.0-6.10.0)</h4>
 </div>
 </div>
 
-<div id="outline-container-orgf692a30" class="outline-3">
-<h3 id="orgf692a30">准备加密材料</h3>
-<div class="outline-text-3" id="text-orgf692a30">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">准备加密材料</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 身份由x.509证书建立. 我们涉及到很多身份证明:
 </p>
 <ul class="org-ul">
-<li>peer需要身份来注册背书</li>
-<li>orderer需要身份来生成交易区块, 然后供给提交节点验证与加入区块链</li>
-<li>应用程序需要身份来生成交易请求</li>
-<li>Fabric CA需要身份, 这样它们的给证书的签名都能被验证</li>
+<li>peer需要身份来注册背书
+</li>
+<li>orderer需要身份来生成交易区块, 然后供给提交节点验证与加入区块链
+</li>
+<li>应用程序需要身份来生成交易请求
+</li>
+<li>Fabric CA需要身份, 这样它们的给证书的签名都能被验证
+</li>
 </ul>
 
 <p>
@@ -258,18 +295,18 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-orgd554629" class="outline-3">
-<h3 id="orgd554629">创世区块</h3>
-<div class="outline-text-3" id="text-orgd554629">
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">创世区块</h3>
+<div class="outline-text-3" id="text-2-4">
 <p>
 我们需要使用创世区块来启动网络. 使用configtxgen工具来生成genesis.block.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgaee0c71" class="outline-3">
-<h3 id="orgaee0c71">启动网络</h3>
-<div class="outline-text-3" id="text-orgaee0c71">
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5">启动网络</h3>
+<div class="outline-text-3" id="text-2-5">
 <p>
 使用docker-compose来启动网络.
 </p>
@@ -277,26 +314,31 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
 </div>
 </div>
 
-<div id="outline-container-org9ca8262" class="outline-2">
-<h2 id="org9ca8262">如何创建channel</h2>
-<div class="outline-text-2" id="text-org9ca8262">
-</div>
-<div id="outline-container-org2a6b958" class="outline-3">
-<h3 id="org2a6b958">步骤</h3>
-<div class="outline-text-3" id="text-org2a6b958">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">如何创建channel</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">步骤</h3>
+<div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
-<li>使用configtxgen工具, 生成genesis.block</li>
-<li>使用configtxgen工具, 生成 *.tx</li>
-<li>获取channel的可签名的配置文件</li>
-<li>使用fabric-client SDK注册channel的可签名的配置文件</li>
-<li>使用fabric-client SDK将channel可签名配置文件和签名发给orderer</li>
-<li>使用fabric-client SDK将peer加入到channel</li>
+<li>使用configtxgen工具, 生成genesis.block
+</li>
+<li>使用configtxgen工具, 生成 *.tx
+</li>
+<li>获取channel的可签名的配置文件
+</li>
+<li>使用fabric-client SDK注册channel的可签名的配置文件
+</li>
+<li>使用fabric-client SDK将channel可签名配置文件和签名发给orderer
+</li>
+<li>使用fabric-client SDK将peer加入到channel
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4e71b72" class="outline-3">
-<h3 id="org4e71b72">使用*.tx构建可签名的channel配置</h3>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">使用*.tx构建可签名的channel配置</h3>
 </div>
 </div>
 
@@ -348,7 +390,7 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -364,7 +406,6 @@ cryptogen工具将自动为Fabric CA节点, orderer, peer生成身份, 这可以
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

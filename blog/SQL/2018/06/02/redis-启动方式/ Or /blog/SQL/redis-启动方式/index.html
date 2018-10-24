@@ -55,31 +55,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org693292f">直接启动</a></li>
-<li><a href="#org98ba976">使用初始化脚本启动 Redis</a>
+<li><a href="#sec-1">直接启动</a></li>
+<li><a href="#sec-2">使用初始化脚本启动 Redis</a>
 <ul>
-<li><a href="#org18caa04">配置初始化脚本</a></li>
-<li><a href="#orgc1ffd0c">建立需要的文件夹</a></li>
-<li><a href="#orgb92eade">修改配置文件</a>
+<li><a href="#sec-2-1">配置初始化脚本</a></li>
+<li><a href="#sec-2-2">建立需要的文件夹</a></li>
+<li><a href="#sec-2-3">修改配置文件</a>
 <ul>
-<li><a href="#orgc9da99d">配置</a></li>
-<li><a href="#org01a34b5">配置文件模板</a></li>
-<li><a href="#org4f30c2e">动态修改部分配置</a></li>
-<li><a href="#orgfbdfd45">脚本启动方式 + 配置文件</a></li>
+<li><a href="#sec-2-3-1">配置</a></li>
+<li><a href="#sec-2-3-2">配置文件模板</a></li>
+<li><a href="#sec-2-3-3">动态修改部分配置</a></li>
+<li><a href="#sec-2-3-4">脚本启动方式 + 配置文件</a></li>
 </ul>
 </li>
-<li><a href="#org5b1705c">启动</a></li>
+<li><a href="#sec-2-4">启动</a></li>
 </ul>
 </li>
-<li><a href="#orgd8be5c9">客户端</a></li>
+<li><a href="#sec-3">客户端</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org693292f" class="outline-2">
-<h2 id="org693292f">直接启动</h2>
-<div class="outline-text-2" id="text-org693292f">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">直接启动</h2>
+<div class="outline-text-2" id="text-1">
 <div class="org-src-container">
+
 <pre class="src src-SQL">redis-server
 </pre>
 </div>
@@ -88,15 +89,16 @@
 直接启动时, 默认使用 6379 端口, 我们也可以使用 --port 参数来指定端口号:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">redis-server --port 6380
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org98ba976" class="outline-2">
-<h2 id="org98ba976">使用初始化脚本启动 Redis</h2>
-<div class="outline-text-2" id="text-org98ba976">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">使用初始化脚本启动 Redis</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 在生产环境中, 推荐使用此方法, 该方法使得 Redis 能随系统自动运行.
 </p>
@@ -106,13 +108,14 @@
 </p>
 </div>
 
-<div id="outline-container-org18caa04" class="outline-3">
-<h3 id="org18caa04">配置初始化脚本</h3>
-<div class="outline-text-3" id="text-org18caa04">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">配置初始化脚本</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 系统启动时, 会自动到 /etc/init.d 中执行脚本. 因此, 我们将 redis_init_script 复制到 /etc/init.d 中, 并修改文件名为 redis_端口号, 这个端口号表示要让 Redis 监听的端口号, 客户端也通过该端口连接 Redis:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">cp redis_init_script /etc/init.d
 mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 </pre>
@@ -124,9 +127,9 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 </div>
 </div>
 
-<div id="outline-container-orgc1ffd0c" class="outline-3">
-<h3 id="orgc1ffd0c">建立需要的文件夹</h3>
-<div class="outline-text-3" id="text-orgc1ffd0c">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">建立需要的文件夹</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 /etc/redis: 存放 Redis 的配置文件
 </p>
@@ -137,13 +140,12 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 </div>
 </div>
 
-<div id="outline-container-orgb92eade" class="outline-3">
-<h3 id="orgb92eade">修改配置文件</h3>
-<div class="outline-text-3" id="text-orgb92eade">
-</div>
-<div id="outline-container-orgc9da99d" class="outline-4">
-<h4 id="orgc9da99d">配置</h4>
-<div class="outline-text-4" id="text-orgc9da99d">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">修改配置文件</h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1">配置</h4>
+<div class="outline-text-4" id="text-2-3-1">
 <p>
 由于 Redis 可以配置的选项很多, 如是否开启持久化, 日志级别等, Redis 支持使用配置文件来设置这些选项.
 </p>
@@ -152,6 +154,7 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 如果使用直接启动的方式来启动 Redis, 则将配置文件的路径作为参数传递给 redis-server:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">redis-server /path/to/redis.conf
 </pre>
 </div>
@@ -160,37 +163,39 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 命令行的参数优先级比配置文件的优先级要高, 所以如果两者重复, 以命令行的参数为准:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">redis-server /path/to/redis.conf --loglevel warning
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org01a34b5" class="outline-4">
-<h4 id="org01a34b5">配置文件模板</h4>
-<div class="outline-text-4" id="text-org01a34b5">
+<div id="outline-container-sec-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2">配置文件模板</h4>
+<div class="outline-text-4" id="text-2-3-2">
 <p>
 配置文件的模板位于 Redis 的根目录, 文件名为 redis.conf.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4f30c2e" class="outline-4">
-<h4 id="org4f30c2e">动态修改部分配置</h4>
-<div class="outline-text-4" id="text-org4f30c2e">
+<div id="outline-container-sec-2-3-3" class="outline-4">
+<h4 id="sec-2-3-3">动态修改部分配置</h4>
+<div class="outline-text-4" id="text-2-3-3">
 <p>
 在 Redis 运行过程中, 动态修改部分配置(不是所有配置都能动态修改)的方式为:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">CONFIG SET loglevel warning
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgfbdfd45" class="outline-4">
-<h4 id="orgfbdfd45">脚本启动方式 + 配置文件</h4>
-<div class="outline-text-4" id="text-orgfbdfd45">
+<div id="outline-container-sec-2-3-4" class="outline-4">
+<h4 id="sec-2-3-4">脚本启动方式 + 配置文件</h4>
+<div class="outline-text-4" id="text-2-3-4">
 <p>
 复制 redis.conf 到 /etc/redis 目录, 以端口号命名, 如: 6379.conf
 </p>
@@ -202,41 +207,41 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">参数</td>
-<td class="org-left">值</td>
-<td class="org-left">说明</td>
+<td class="left">参数</td>
+<td class="left">值</td>
+<td class="left">说明</td>
 </tr>
 
 <tr>
-<td class="org-left">daemonize</td>
-<td class="org-left">yes</td>
-<td class="org-left">使 Redis 以守护进程模式运行</td>
+<td class="left">daemonize</td>
+<td class="left">yes</td>
+<td class="left">使 Redis 以守护进程模式运行</td>
 </tr>
 
 <tr>
-<td class="org-left">pidfile</td>
-<td class="org-left">/var/run/redis_端口号.pid</td>
-<td class="org-left">设置 Redis 的 PID 文件位置</td>
+<td class="left">pidfile</td>
+<td class="left">/var/run/redis_端口号.pid</td>
+<td class="left">设置 Redis 的 PID 文件位置</td>
 </tr>
 
 <tr>
-<td class="org-left">port</td>
-<td class="org-left">端口号</td>
-<td class="org-left">设置 Redis 监听的端口号</td>
+<td class="left">port</td>
+<td class="left">端口号</td>
+<td class="left">设置 Redis 监听的端口号</td>
 </tr>
 
 <tr>
-<td class="org-left">dir</td>
-<td class="org-left">/var/redis/端口号</td>
-<td class="org-left">设置持久化文件存放位置</td>
+<td class="left">dir</td>
+<td class="left">/var/redis/端口号</td>
+<td class="left">设置持久化文件存放位置</td>
 </tr>
 </tbody>
 </table>
@@ -244,10 +249,11 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 </div>
 </div>
 
-<div id="outline-container-org5b1705c" class="outline-3">
-<h3 id="org5b1705c">启动</h3>
-<div class="outline-text-3" id="text-org5b1705c">
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">启动</h3>
+<div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
+
 <pre class="src src-Shell">/etc/init.d/redis_6379 start
 </pre>
 </div>
@@ -256,6 +262,7 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 使 Redis 随系统自动启动:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">sudo update-rc.d redis_6379 defaults
 </pre>
 </div>
@@ -263,13 +270,14 @@ mv /etc/init.d/redis_init_script /etc/init.d/redis_6379
 </div>
 </div>
 
-<div id="outline-container-orgd8be5c9" class="outline-2">
-<h2 id="orgd8be5c9">客户端</h2>
-<div class="outline-text-2" id="text-orgd8be5c9">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">客户端</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 第一种方式:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">redis-cli -h 127.0.0.1 -p 6379
 
 //测试是否正常连接
@@ -281,6 +289,7 @@ redis-cli PING  //PONG
 第二种方式(推荐):
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">redis-cli
 PING  //PONG
 </pre>
@@ -336,7 +345,7 @@ PING  //PONG
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -352,7 +361,6 @@ PING  //PONG
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

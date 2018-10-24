@@ -55,21 +55,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgdbb9f4b">概述</a></li>
-<li><a href="#org5872645">运算符函数</a>
+<li><a href="#sec-1">概述</a></li>
+<li><a href="#sec-2">运算符函数</a>
 <ul>
-<li><a href="#org3f2ef47">二元和一元运算符</a></li>
-<li><a href="#org5d034f5">默认规则</a></li>
-<li><a href="#org0ae1d59">为 enum 定义运算符</a></li>
+<li><a href="#sec-2-1">二元和一元运算符</a></li>
+<li><a href="#sec-2-2">默认规则</a></li>
+<li><a href="#sec-2-3">为 enum 定义运算符</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgdbb9f4b" class="outline-2">
-<h2 id="orgdbb9f4b">概述</h2>
-<div class="outline-text-2" id="text-orgdbb9f4b">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 C++ 为其内部类型提供了一组运算符，但是我们平时所用到的大部分运算符，都不是内部类型的，而是用户自定义的类型。
 </p>
@@ -78,9 +78,9 @@ C++ 为其内部类型提供了一组运算符，但是我们平时所用到的�
 
 
 
-<div id="outline-container-org5872645" class="outline-2">
-<h2 id="org5872645">运算符函数</h2>
-<div class="outline-text-2" id="text-org5872645">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">运算符函数</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 不能由用户定义的运算符：::  .  .*  ?:  sizeof  typeid
 </p>
@@ -104,32 +104,33 @@ C++ 为其内部类型提供了一组运算符，但是我们平时所用到的�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-C++">
-<span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">f</span>(<span style="color: #5FD7FF;">complex</span> <span style="color: #FF8C00;">a</span>, <span style="color: #5FD7FF;">complex</span> <span style="color: #FF8C00;">b</span>) {
 
-    <span style="color: #5FD7FF;">complex</span> <span style="color: #FF8C00;">c</span> = a + b;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#31616;&#20889;</span>
+<pre class="src src-C++">void f(complex a, complex b) {
 
-    <span style="color: #5FD7FF;">complex</span> <span style="color: #FF8C00;">d</span> = a.<span style="color: #FF1493;">operator</span>+(b);  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#26174;&#24335;&#35843;&#29992;</span>
+    complex c = a + b;  // 简写
+
+    complex d = a.operator+(b);  // 显式调用
 
 }
-
 </pre>
 </div>
 </div>
 
 
 
-<div id="outline-container-org3f2ef47" class="outline-3">
-<h3 id="org3f2ef47">二元和一元运算符</h3>
-<div class="outline-text-3" id="text-org3f2ef47">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">二元和一元运算符</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 对于任何二元运算符 @，可以有两种定义方式。
 </p>
 
 <ul class="org-ul">
-<li>带一个参数的非静态成员函数，如：aa@bb  &lt;==&gt;  aa.operator@(bb)</li>
+<li>带一个参数的非静态成员函数，如：aa@bb  &lt;==&gt;  aa.operator@(bb)
+</li>
 
-<li>带两个参数的非成员函数，如：aa@bb  &lt;==&gt;  operator@(aa, bb)</li>
+<li>带两个参数的非成员函数，如：aa@bb  &lt;==&gt;  operator@(aa, bb)
+</li>
 </ul>
 
 
@@ -139,18 +140,20 @@ C++ 为其内部类型提供了一组运算符，但是我们平时所用到的�
 </p>
 
 <ul class="org-ul">
-<li>如果是前缀运算符，可以定义为无参数的非静态成员函数，如 @aa  &lt;==&gt;  aa.operator@()；也可以定义为带一个参数的非成员函数，如 @aa  &lt;==&gt;  operator@(aa)</li>
+<li>如果是前缀运算符，可以定义为无参数的非静态成员函数，如 @aa  &lt;==&gt;  aa.operator@()；也可以定义为带一个参数的非成员函数，如 @aa  &lt;==&gt;  operator@(aa)
+</li>
 
-<li>如果是后缀运算符，可以定义为带一个参数的非静态成员函数，如 aa@  &lt;==&gt;  aa.operator@(int)；也可以定义为带两个参数的非成员函数，如 aa@  &lt;==&gt;  operator@(aa, int)</li>
+<li>如果是后缀运算符，可以定义为带一个参数的非静态成员函数，如 aa@  &lt;==&gt;  aa.operator@(int)；也可以定义为带两个参数的非成员函数，如 aa@  &lt;==&gt;  operator@(aa, int)
+</li>
 </ul>
 </div>
 </div>
 
 
 
-<div id="outline-container-org5d034f5" class="outline-3">
-<h3 id="org5d034f5">默认规则</h3>
-<div class="outline-text-3" id="text-org5d034f5">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">默认规则</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 operator=、operator[]、operator() 和 operator-&gt; 只能作为非静态成员函数，这样才能保证它们的第一个运算对象一定是一个左值。
 </p>
@@ -159,15 +162,14 @@ operator=、operator[]、operator() 和 operator-&gt; 只能作为非静态成�
 
 
 
-<div id="outline-container-org0ae1d59" class="outline-3">
-<h3 id="org0ae1d59">为 enum 定义运算符</h3>
-<div class="outline-text-3" id="text-org0ae1d59">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">为 enum 定义运算符</h3>
+<div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
-<pre class="src src-C++">
-<span style="color: #FF1493;">enum</span> <span style="color: #5FD7FF;">Day</span> {<span style="color: #FF8C00;">sun</span>, <span style="color: #FF8C00;">mon</span>, <span style="color: #FF8C00;">tue</span>, <span style="color: #FF8C00;">wed</span>, <span style="color: #FF8C00;">thu</span>, <span style="color: #FF8C00;">fri</span>, <span style="color: #FF8C00;">sat</span>};
 
-<span style="color: #5FD7FF;">Day</span>&amp; <span style="color: #FF1493;">operator</span><span style="color: #87D700;">++</span>(<span style="color: #5FD7FF;">Day</span>&amp; <span style="color: #FF8C00;">d</span>) { <span style="color: #FF1493;">return</span> d=(sat==d) ? sun : Day(d+1); }
+<pre class="src src-C++">enum Day {sun, mon, tue, wed, thu, fri, sat};
 
+Day&amp; operator++(Day&amp; d) { return d=(sat==d) ? sun : Day(d+1); }
 </pre>
 </div>
 </div>
@@ -222,7 +224,7 @@ operator=、operator[]、operator() 和 operator-&gt; 只能作为非静态成�
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -238,7 +240,6 @@ operator=、operator[]、operator() 和 operator-&gt; 只能作为非静态成�
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

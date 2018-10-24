@@ -55,39 +55,38 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org423b709">异步操作概述</a>
+<li><a href="#sec-1">异步操作概述</a>
 <ul>
-<li><a href="#orged3ba25">单线程模型</a></li>
-<li><a href="#org80c3c75">同步任务和异步任务</a></li>
-<li><a href="#org5b93ce6">任务队列和事件循环</a></li>
-<li><a href="#orgdb8f6cf">异步操作的模式</a>
+<li><a href="#sec-1-1">单线程模型</a></li>
+<li><a href="#sec-1-2">同步任务和异步任务</a></li>
+<li><a href="#sec-1-3">任务队列和事件循环</a></li>
+<li><a href="#sec-1-4">异步操作的模式</a>
 <ul>
-<li><a href="#orgb86a0f0">回调函数</a></li>
-<li><a href="#org8254aaa">事件监听</a></li>
-<li><a href="#org3bdaccb">发布/订阅</a></li>
+<li><a href="#sec-1-4-1">回调函数</a></li>
+<li><a href="#sec-1-4-2">事件监听</a></li>
+<li><a href="#sec-1-4-3">发布/订阅</a></li>
 </ul>
 </li>
-<li><a href="#orgce0980d">异步操作的流程控制</a></li>
+<li><a href="#sec-1-5">异步操作的流程控制</a></li>
 </ul>
 </li>
-<li><a href="#org7e5f809">Promise</a>
+<li><a href="#sec-2">Promise</a>
 <ul>
-<li><a href="#orgd2c60d1">创建 Project 实例</a></li>
-<li><a href="#org964b7d8">then()</a></li>
-<li><a href="#org28a3692">例子</a></li>
+<li><a href="#sec-2-1">创建 Project 实例</a></li>
+<li><a href="#sec-2-2">then()</a></li>
+<li><a href="#sec-2-3">例子</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org423b709" class="outline-2">
-<h2 id="org423b709">异步操作概述</h2>
-<div class="outline-text-2" id="text-org423b709">
-</div>
-<div id="outline-container-orged3ba25" class="outline-3">
-<h3 id="orged3ba25">单线程模型</h3>
-<div class="outline-text-3" id="text-orged3ba25">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">异步操作概述</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">单线程模型</h3>
+<div class="outline-text-3" id="text-1-1">
 <p>
 JavaScript 在同一时刻只能执行一个任务, 其他任务都要排除等待. 但 JavaScript 引擎支持多线程, 只是单个脚本只能在一个称为主线程的线程上运行, 其他线程在后台运行.
 </p>
@@ -102,9 +101,9 @@ JavaScript 在同一时刻只能执行一个任务, 其他任务都要排除等�
 </div>
 </div>
 
-<div id="outline-container-org80c3c75" class="outline-3">
-<h3 id="org80c3c75">同步任务和异步任务</h3>
-<div class="outline-text-3" id="text-org80c3c75">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">同步任务和异步任务</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
 同步任务: 未被 JavaScript 引擎挂起的任务, 在主线程上排队执行.
 </p>
@@ -119,9 +118,9 @@ JavaScript 在同一时刻只能执行一个任务, 其他任务都要排除等�
 </div>
 </div>
 
-<div id="outline-container-org5b93ce6" class="outline-3">
-<h3 id="org5b93ce6">任务队列和事件循环</h3>
-<div class="outline-text-3" id="text-org5b93ce6">
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">任务队列和事件循环</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
 任务队列: JavaScript 引擎除了提供主线程之外, 还提供了多个任务队列. 在主线程排除的任务是同步任务, 在任务队列中排除的是异步任务. 当主线程执行完同步任务后, 就去检查任务队列中是否有任务满足某条件, 若满足, 则该异步任务重新进入主线程开始执行.
 </p>
@@ -132,14 +131,14 @@ JavaScript 在同一时刻只能执行一个任务, 其他任务都要排除等�
 </div>
 </div>
 
-<div id="outline-container-orgdb8f6cf" class="outline-3">
-<h3 id="orgdb8f6cf">异步操作的模式</h3>
-<div class="outline-text-3" id="text-orgdb8f6cf">
-</div>
-<div id="outline-container-orgb86a0f0" class="outline-4">
-<h4 id="orgb86a0f0">回调函数</h4>
-<div class="outline-text-4" id="text-orgb86a0f0">
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">异步操作的模式</h3>
+<div class="outline-text-3" id="text-1-4">
+</div><div id="outline-container-sec-1-4-1" class="outline-4">
+<h4 id="sec-1-4-1">回调函数</h4>
+<div class="outline-text-4" id="text-1-4-1">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function f1() { ... }
 function f2() { ... }
 f1();
@@ -158,6 +157,7 @@ f2();
 我们可以通过回调函数的写法, 来使 f2() 等待 f1() 结束:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function f1(callback) { ...; callback(); }
 function f2() { ... }
 f1(f2);
@@ -170,9 +170,9 @@ f1(f2);
 </div>
 </div>
 
-<div id="outline-container-org8254aaa" class="outline-4">
-<h4 id="org8254aaa">事件监听</h4>
-<div class="outline-text-4" id="text-org8254aaa">
+<div id="outline-container-sec-1-4-2" class="outline-4">
+<h4 id="sec-1-4-2">事件监听</h4>
+<div class="outline-text-4" id="text-1-4-2">
 <p>
 由于异步任务的执行不取决于代码的顺序, 而取决于某个事件是否发生, 所以就有了事件监听的思路.
 </p>
@@ -181,6 +181,7 @@ f1(f2);
 采用 jQuery 有写法, 为 f1() 绑定一个事件:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">f1.on('done', f2);
 </pre>
 </div>
@@ -192,6 +193,7 @@ f1(f2);
 考虑如下代码:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function f1() {
     setTimeout(function () {
         ...
@@ -210,9 +212,9 @@ f1.trigger('done') 表示执行完成后, 立即触发 done 事件.
 </div>
 </div>
 
-<div id="outline-container-org3bdaccb" class="outline-4">
-<h4 id="org3bdaccb">发布/订阅</h4>
-<div class="outline-text-4" id="text-org3bdaccb">
+<div id="outline-container-sec-1-4-3" class="outline-4">
+<h4 id="sec-1-4-3">发布/订阅</h4>
+<div class="outline-text-4" id="text-1-4-3">
 <p>
 把事件理解成信息, 假设有一个信号中心, 当某任务执行完成时, 就向信号中心发布信息, 其他任务可以向信号中心订阅该信号, 从而知道什么时候自己可以开始执行.
 </p>
@@ -221,11 +223,13 @@ f1.trigger('done') 表示执行完成后, 立即触发 done 事件.
 f2 向信号中心 jQuery 订阅 done 信号:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">jQuery.subscript('done', f2);
 </pre>
 </div>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function f1() {
     setTimeout(function() {
         ...
@@ -238,6 +242,7 @@ f2 向信号中心 jQuery 订阅 done 信号:
 当 f1() 执行完成后, 向信号中心 jQuery 发布 done 信号, 从而引发 f2() 的执行. f2() 执行以后, 可以取消订阅:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">jQuery.unsubscribe('done', f2);
 </pre>
 </div>
@@ -245,9 +250,9 @@ f2 向信号中心 jQuery 订阅 done 信号:
 </div>
 </div>
 
-<div id="outline-container-orgce0980d" class="outline-3">
-<h3 id="orgce0980d">异步操作的流程控制</h3>
-<div class="outline-text-3" id="text-orgce0980d">
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5">异步操作的流程控制</h3>
+<div class="outline-text-3" id="text-1-5">
 <p>
 如果有多个异步操作, 如何确定异步操作的执行顺序?
 </p>
@@ -256,6 +261,7 @@ f2 向信号中心 jQuery 订阅 done 信号:
 假设有如下异步任务, 每次执行耗时 1s, 然后调用回调函数:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function f1(arg, callback) {
     setTimeout(function () { callback(arg*2); }, 1000);
 }
@@ -266,6 +272,7 @@ f2 向信号中心 jQuery 订阅 done 信号:
 如果有 6 个这样的异步任务, 全部完成后才能执行 final(), 应如何写?
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function final(value) { ... }
 f1(1, function(value) {
     f1(value, function(value) {
@@ -284,6 +291,7 @@ f1(1, function(value) {
 显然, 这种嵌套方式非常麻烦. 可以使用如下方式解决:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">var items = [ 1, 2, 3, 4, 5, 6 ];
 var results = [];
 var running = 0;
@@ -324,9 +332,9 @@ launcher();
 </div>
 </div>
 
-<div id="outline-container-org7e5f809" class="outline-2">
-<h2 id="org7e5f809">Promise</h2>
-<div class="outline-text-2" id="text-org7e5f809">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Promise</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 Promise 是 JavaScript 中异步编程的一种解决方案, 比传统的解决方案(回调函数, 事件)更加强大.
 </p>
@@ -344,10 +352,11 @@ Promise 对象代表一个异步操作, 它有三种状态: pending(进行中), 
 </p>
 </div>
 
-<div id="outline-container-orgd2c60d1" class="outline-3">
-<h3 id="orgd2c60d1">创建 Project 实例</h3>
-<div class="outline-text-3" id="text-orgd2c60d1">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">创建 Project 实例</h3>
+<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">const promise = new Promise(function(resolve, reject) {
   // ... some code
 
@@ -373,14 +382,15 @@ reject(): 当异步操作失败时, 将 Promise 对象的状态改变, 并将报
 </div>
 </div>
 
-<div id="outline-container-org964b7d8" class="outline-3">
-<h3 id="org964b7d8">then()</h3>
-<div class="outline-text-3" id="text-org964b7d8">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">then()</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 生成 Promise 实例后, 可以使用 then() 指定 resolved 状态和 rejected 状态的回调函数.
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">promise.then(function(value) {
   // success
 }, function(error) {
@@ -394,10 +404,11 @@ reject(): 当异步操作失败时, 将 Promise 对象的状态改变, 并将报
 </div>
 </div>
 
-<div id="outline-container-org28a3692" class="outline-3">
-<h3 id="org28a3692">例子</h3>
-<div class="outline-text-3" id="text-org28a3692">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">例子</h3>
+<div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">function timeout(ms) {
   return new Promise((resolve, reject) =&gt; {
     setTimeout(resolve, ms, 'done');
@@ -414,6 +425,7 @@ timeout() 返回一个 Promise 对象, 表示一段时间以后才会发生的�
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-JavaScript">let promise = new Promise(function(resolve, reject) {
   console.log('Promise');
   resolve();
@@ -485,7 +497,7 @@ Promise 新建后会立即执行, 输出 Promise; 然后, then() 方法指定的
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -501,7 +513,6 @@ Promise 新建后会立即执行, 输出 Promise; 然后, then() 方法指定的
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

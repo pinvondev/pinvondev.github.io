@@ -55,32 +55,33 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org7b6b039">练习1: 启用编译器</a></li>
-<li><a href="#org9117007">练习2: 用Make来代替Python</a>
+<li><a href="#sec-1">练习1: 启用编译器</a></li>
+<li><a href="#sec-2">练习2: 用Make来代替Python</a>
 <ul>
-<li><a href="#org0531152">附加题</a></li>
+<li><a href="#sec-2-1">附加题</a></li>
 </ul>
 </li>
-<li><a href="#orgfa3b94b">练习3: 格式化输出</a></li>
-<li><a href="#org4493b5f">练习4: Valgrind介绍</a>
+<li><a href="#sec-3">练习3: 格式化输出</a></li>
+<li><a href="#sec-4">练习4: Valgrind介绍</a>
 <ul>
-<li><a href="#org8c96e49">安装Valgrind</a></li>
-<li><a href="#orgdc596fc">使用Valgrind</a></li>
+<li><a href="#sec-4-1">安装Valgrind</a></li>
+<li><a href="#sec-4-2">使用Valgrind</a></li>
 </ul>
 </li>
-<li><a href="#orgd9e5f8f">练习5: 一个C程序的结构</a></li>
-<li><a href="#org5708590">练习6: 变量类型</a></li>
+<li><a href="#sec-5">练习5: 一个C程序的结构</a></li>
+<li><a href="#sec-6">练习6: 变量类型</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org7b6b039" class="outline-2">
-<h2 id="org7b6b039">练习1: 启用编译器</h2>
-<div class="outline-text-2" id="text-org7b6b039">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">练习1: 启用编译器</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 编译使用命令:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">make ex1
 # 或者
 CFLAGS="-Wall" make ex1
@@ -96,13 +97,14 @@ CFLAGS="-Wall" make ex1
 </div>
 </div>
 
-<div id="outline-container-org9117007" class="outline-2">
-<h2 id="org9117007">练习2: 用Make来代替Python</h2>
-<div class="outline-text-2" id="text-org9117007">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">练习2: 用Make来代替Python</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 创建 <code>Makefile</code> 文件, 编辑内容:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Makefile">CFLAGS=-Wall -g
 clean:
     rm -f ex1
@@ -117,19 +119,21 @@ clean:
 保存Makefile后, 执行:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">make clean  #  执行clean目标
 make ex1  # 编译
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org0531152" class="outline-3">
-<h3 id="org0531152">附加题</h3>
-<div class="outline-text-3" id="text-org0531152">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">附加题</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 添加目标 <code>all:ex1</code> , 可以直接使用命令 <code>make</code>, 而不用 <code>make ex1</code>.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Makefile">CFLAGS=-Wall -g
 all: ex1
 clean:
@@ -140,31 +144,32 @@ clean:
 </div>
 </div>
 
-<div id="outline-container-orgfa3b94b" class="outline-2">
-<h2 id="orgfa3b94b">练习3: 格式化输出</h2>
-<div class="outline-text-2" id="text-orgfa3b94b">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">练习3: 格式化输出</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 了解占位符和转义符.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4493b5f" class="outline-2">
-<h2 id="org4493b5f">练习4: Valgrind介绍</h2>
-<div class="outline-text-2" id="text-org4493b5f">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">练习4: Valgrind介绍</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 Valgrind可以运行我们的程序, 随后报告所有我们犯下的错误.
 </p>
 </div>
 
-<div id="outline-container-org8c96e49" class="outline-3">
-<h3 id="org8c96e49">安装Valgrind</h3>
-<div class="outline-text-3" id="text-org8c96e49">
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">安装Valgrind</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 <a href="http://valgrind.org/downloads/current.html">官网</a>下载Valgrind.
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell"># 校验 确保下载没有出错
 md5sum valgrind-3.13.0.tar.bz2
 # 解压
@@ -179,9 +184,9 @@ sudo make install
 </div>
 </div>
 
-<div id="outline-container-orgdc596fc" class="outline-3">
-<h3 id="orgdc596fc">使用Valgrind</h3>
-<div class="outline-text-3" id="text-orgdc596fc">
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">使用Valgrind</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 使用方法: <code>valgrind program_name</code>. 
 </p>
@@ -190,18 +195,20 @@ sudo make install
 在 <code>ex4.c</code> 中, 我们修改程序, 故意使其崩溃.
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;stdio.h&gt;</span>
-<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>() {
-    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">age</span> = 10;
-    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">height</span>;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">&#26410;&#21021;&#22987;&#21270;</span>
-    printf(<span style="color: #CDC673;">"I am %d years old.\n"</span>);  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">&#32570;&#23569;&#21442;&#25968;</span>
-    printf(<span style="color: #CDC673;">"I am %d inches tall.\n"</span>, height);
-    <span style="color: #FF1493;">return</span> 0;
+
+<pre class="src src-C">#include &lt;stdio.h&gt;
+int main() {
+    int age = 10;
+    int height;  //  未初始化
+    printf("I am %d years old.\n");  //  缺少参数
+    printf("I am %d inches tall.\n", height);
+    return 0;
 }
 </pre>
 </div>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell">make ex4  #  像往常一样构建
 valgrind ./ex4  #  使用valgrind运行程序
 </pre>
@@ -211,6 +218,7 @@ valgrind ./ex4  #  使用valgrind运行程序
 确保 <code>make ex4</code> 构建时, <code>cc</code> 命令带有 <code>-g</code> 选项, 否则Valgrind的输出不会带上行号. 如果没有 <code>-g</code> 选项, 则新建 <code>Makefile</code> 文件, 编辑如下:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Makefile">CFLAGS=-Wall -g
 all:ex4
 clean:
@@ -222,6 +230,7 @@ clean:
 如果用Valgrind运行程序时, 出现类似于 <code>by 0x4052112: (bellow main) (libc-start.c:226)</code> 的语句, 则命令要改成:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">valgrind --track-origins=yes ./ex4
 </pre>
 </div>
@@ -244,9 +253,9 @@ clean:
 </div>
 </div>
 </div>
-<div id="outline-container-orgd9e5f8f" class="outline-2">
-<h2 id="orgd9e5f8f">练习5: 一个C程序的结构</h2>
-<div class="outline-text-2" id="text-orgd9e5f8f">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">练习5: 一个C程序的结构</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 <code>int main(int argc, char *argv[])</code>: 第一个参数表示命令行参数的数量, 第二个为真正的命令行参数.
 </p>
@@ -257,40 +266,47 @@ clean:
 </div>
 </div>
 
-<div id="outline-container-org5708590" class="outline-2">
-<h2 id="org5708590">练习6: 变量类型</h2>
-<div class="outline-text-2" id="text-org5708590">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">练习6: 变量类型</h2>
+<div class="outline-text-2" id="text-6">
 <ol class="org-ol">
-<li>数组声明:</li>
+<li>数组声明: 
+</li>
 </ol>
 <div class="org-src-container">
-<pre class="src src-C"><span style="color: #5FD7FF;">char</span> <span style="color: #FF8C00;">name</span>[] = <span style="color: #CDC673;">"Pinvon"</span>;
-printf(<span style="color: #CDC673;">"%s"</span>, name);
 
-<span style="color: #5FD7FF;">char</span> <span style="color: #FF8C00;">initial</span> = <span style="color: #CDC673;">'A'</span>;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">&#27880;&#24847;, &#23383;&#31526;&#20351;&#29992;&#21333;&#24341;&#21495;; &#32780;&#23383;&#31526;&#20018;&#20351;&#29992;&#21452;&#24341;&#21495;</span>
+<pre class="src src-C">char name[] = "Pinvon";
+printf("%s", name);
+
+char initial = 'A';  //  注意, 字符使用单引号; 而字符串使用双引号
 </pre>
 </div>
 
 <ol class="org-ol">
-<li>打印 <code>float</code> 和 <code>double</code> 两种类型, 都使用 <code>%f</code>.</li>
+<li>打印 <code>float</code> 和 <code>double</code> 两种类型, 都使用 <code>%f</code>.
+</li>
 
-<li>打印8进制, 16进制</li>
+<li>打印8进制, 16进制
+</li>
 </ol>
 <div class="org-src-container">
-<pre class="src src-C"><span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">num</span> = 9;
-printf(<span style="color: #CDC673;">"%x"</span>, num);  <span style="color: #8B8878;">//   </span><span style="color: #8B8878;">16&#36827;&#21046;</span>
-printf(<span style="color: #CDC673;">"%o"</span>, num);  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">8&#36827;&#21046;</span>
-printf(<span style="color: #CDC673;">"%4x"</span>, num);  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">16&#36827;&#21046;&#36755;&#20986;, &#34917;&#40784;4&#20301;&#30340;&#23485;&#24230;, &#19981;&#36275;4&#20301;&#29992;&#31354;&#26684;&#20195;&#26367;</span>
-printf(<span style="color: #CDC673;">"%04x"</span>, num);  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">16&#36827;&#21046;&#36755;&#20986;, &#34917;&#40784;4&#20301;&#30340;&#23485;&#24230;, &#19981;&#36275;4&#20301;&#29992;0&#20195;&#26367;</span>
+
+<pre class="src src-C">int num = 9;
+printf("%x", num);  //   16进制
+printf("%o", num);  //  8进制
+printf("%4x", num);  //  16进制输出, 补齐4位的宽度, 不足4位用空格代替
+printf("%04x", num);  //  16进制输出, 补齐4位的宽度, 不足4位用0代替
 </pre>
 </div>
 
 <ol class="org-ol">
-<li>打印空字符串:</li>
+<li>打印空字符串:
+</li>
 </ol>
 <div class="org-src-container">
-<pre class="src src-C"><span style="color: #5FD7FF;">char</span> <span style="color: #FF8C00;">cNull</span> = <span style="color: #CDC673;">'\0'</span>;
-printf(<span style="color: #CDC673;">"%c"</span>, cNull);
+
+<pre class="src src-C">char cNull = '\0';
+printf("%c", cNull);
 </pre>
 </div>
 </div>
@@ -344,7 +360,7 @@ printf(<span style="color: #CDC673;">"%c"</span>, cNull);
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -360,7 +376,6 @@ printf(<span style="color: #CDC673;">"%c"</span>, cNull);
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

@@ -55,30 +55,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgbb9a9b5">C++基础 C++风格字符串 名称空间 引用</a>
+<li><a href="#sec-1">C++基础 C++风格字符串 名称空间 引用</a>
 <ul>
-<li><a href="#org8d9aa73">编译</a></li>
-<li><a href="#orgf8fc6e1">头文件</a></li>
-<li><a href="#org59b12b4">namespace(避免名字冲突)</a></li>
-<li><a href="#org95deb5e">string s1与char s2[100]的对比.</a></li>
-<li><a href="#org9736950">严格类型检查</a></li>
-<li><a href="#org0075d2e">bool</a></li>
-<li><a href="#orga379e56">引用(给变量起别名)</a></li>
-<li><a href="#org339e0ad">查看进程的内存使用情况</a></li>
+<li><a href="#sec-1-1">编译</a></li>
+<li><a href="#sec-1-2">头文件</a></li>
+<li><a href="#sec-1-3">namespace(避免名字冲突)</a></li>
+<li><a href="#sec-1-4">string s1与char s2的对比.</a></li>
+<li><a href="#sec-1-5">严格类型检查</a></li>
+<li><a href="#sec-1-6">bool</a></li>
+<li><a href="#sec-1-7">引用(给变量起别名)</a></li>
+<li><a href="#sec-1-8">查看进程的内存使用情况</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbb9a9b5" class="outline-2">
-<h2 id="orgbb9a9b5">C++基础 C++风格字符串 名称空间 引用</h2>
-<div class="outline-text-2" id="text-orgbb9a9b5">
-</div>
-<div id="outline-container-org8d9aa73" class="outline-3">
-<h3 id="org8d9aa73">编译</h3>
-<div class="outline-text-3" id="text-org8d9aa73">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">C++基础 C++风格字符串 名称空间 引用</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">编译</h3>
+<div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell"># 编译
 g++ -c xxx.cpp  # 生成xxx.o文件
 
@@ -93,18 +93,18 @@ g++ xxx.cpp -o newname
 </div>
 </div>
 
-<div id="outline-container-orgf8fc6e1" class="outline-3">
-<h3 id="orgf8fc6e1">头文件</h3>
-<div class="outline-text-3" id="text-orgf8fc6e1">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">头文件</h3>
+<div class="outline-text-3" id="text-1-2">
 <p>
 C++头文件不加 <code>.h</code>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org59b12b4" class="outline-3">
-<h3 id="org59b12b4">namespace(避免名字冲突)</h3>
-<div class="outline-text-3" id="text-org59b12b4">
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">namespace(避免名字冲突)</h3>
+<div class="outline-text-3" id="text-1-3">
 <p>
 在C中没有这个概念, 大型项目中, 有时会有函数名冲突的情况, 在C++中引入namespace来解决这个问题. 内部使用可不加名字空间, 外部调用需要加名字空间.
 </p>
@@ -121,68 +121,80 @@ C中需要先定义所有变量, 再来使用(但后来的标准也修改了这�
 namespace例子:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;iostream&gt;</span>
-<span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;string&gt;</span>
-<span style="color: #FF1493;">using</span> <span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">std</span>;
-<span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">nameA</span>{
-  <span style="color: #5FD7FF;">string</span> <span style="color: #FF8C00;">name</span> = <span style="color: #CDC673;">"Pinvon"</span>;
-  <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">age</span> = 10;
+
+<pre class="src src-C++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+namespace nameA{
+  string name = "Pinvon";
+  int age = 10;
 }
-<span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">nameB</span>{
-  <span style="color: #5FD7FF;">char</span> <span style="color: #FF8C00;">name</span>[20] = <span style="color: #CDC673;">"pwlin"</span>;
+namespace nameB{
+  char name[20] = "pwlin";
 }
-<span style="color: #FF1493;">using</span> <span style="color: #FF1493;">namespace</span> <span style="color: #AF87FF;">nameB</span>;
-<span style="color: #5FD7FF;">char</span> <span style="color: #FF8C00;">name</span>[20] = <span style="color: #CDC673;">"global"</span>;
-<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>() {
-  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">cout &lt;&lt; "my name is " &lt;&lt; name &lt;&lt; endl;  //  &#32534;&#35793;&#20986;&#38169;, &#22240;&#20026;&#26410;&#25351;&#26126;&#26159;&#21738;&#20010;namespace&#30340;name</span>
-  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">cout &lt;&lt; "age is " &lt;&lt; age &lt;&lt; endl;  //  &#32534;&#35793;&#20986;&#38169;, &#21363;&#20351;&#21517;&#23383;&#27809;&#20914;&#31361;, &#20063;&#35201;&#25351;&#26126;&#26159;&#21738;&#20010;&#22495;&#30340;, &#24212;&#25913;&#25104; nameA::age</span>
-  cout &lt;&lt; <span style="color: #CDC673;">"my name is "</span> &lt;&lt; <span style="color: #AF87FF;">nameA</span>::name &lt;&lt; endl;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#27491;&#30830;; Pinvon</span>
-  cout &lt;&lt; <span style="color: #CDC673;">"his name is "</span> &lt;&lt; name &lt;&lt; endl;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#27491;&#30830;; pwlin</span>
-  <span style="color: #5FD7FF;">string</span> <span style="color: #FF8C00;">name</span> = <span style="color: #CDC673;">"test"</span>;
-  cout &lt;&lt; name &lt;&lt; endl;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#27491;&#30830;, &#23616;&#37096;&#20248;&#20808;, &#20250;&#36755;&#20986;test</span>
-  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#27880;&#37322;pwlin&#37027;&#34892;&#21518;&#28155;&#21152;&#20197;&#19979;&#35821;&#21477;</span>
-  cout &lt;&lt; ::name &lt;&lt; endl;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">&#27491;&#30830;, ::&#34920;&#31034;&#20840;&#23616;&#33539;&#22260;, &#20250;&#36755;&#20986;global</span>
-  <span style="color: #FF1493;">return</span> 0;
+using namespace nameB;
+char name[20] = "global";
+int main() {
+  // cout &lt;&lt; "my name is " &lt;&lt; name &lt;&lt; endl;  //  编译出错, 因为未指明是哪个namespace的name
+  // cout &lt;&lt; "age is " &lt;&lt; age &lt;&lt; endl;  //  编译出错, 即使名字没冲突, 也要指明是哪个域的, 应改成 nameA::age
+  cout &lt;&lt; "my name is " &lt;&lt; nameA::name &lt;&lt; endl;  // 正确; Pinvon
+  cout &lt;&lt; "his name is " &lt;&lt; name &lt;&lt; endl;  // 正确; pwlin
+  string name = "test";
+  cout &lt;&lt; name &lt;&lt; endl;  // 正确, 局部优先, 会输出test
+  // 注释pwlin那行后添加以下语句
+  cout &lt;&lt; ::name &lt;&lt; endl;  // 正确, ::表示全局范围, 会输出global
+  return 0;
 }
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org95deb5e" class="outline-3">
-<h3 id="org95deb5e">string s1与char s2[100]的对比.</h3>
-<div class="outline-text-3" id="text-org95deb5e">
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">string s1与char s2<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>的对比.</h3>
+<div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
-<li>s2称为C风格字符串, 以'\0'结束; s2称为C++风格字符串;</li>
-<li>s1保存的字符串没有限制(实际上为1G); s2保存的字符串有长度限制;</li>
-<li>初始化后, 不能再给s2赋值, 即s2=xxx是不对的, 要用strcpy();</li>
-<li>连接字符串, s2要用strcat(); s1直接使用 s1+=xx;</li>
-<li>比较字符串, s2要用strcmp(); s1直接使用操作符==, &gt;=, &lt;=;</li>
-<li>取字符串长度, s2要用strlen(); s1使用s1.size()或s1.length();</li>
-<li>查找子串, s2要用strchr()或strstr(); s1使用s1.find(), 就可找字符串和字符;</li>
-<li>访问某元素, 都使用s1[i]或s2[i];</li>
-<li>C风格字符串可自动转成C++字符串, 如s1="xxx"; 或if(s1&gt;=s2);</li>
-<li>C++风格字符串转成C风格字符串: s1.c_str();</li>
+<li>s2称为C风格字符串, 以'\0'结束; s2称为C++风格字符串;
+</li>
+<li>s1保存的字符串没有限制(实际上为1G); s2保存的字符串有长度限制;
+</li>
+<li>初始化后, 不能再给s2赋值, 即s2=xxx是不对的, 要用strcpy(); 
+</li>
+<li>连接字符串, s2要用strcat(); s1直接使用 s1+=xx;
+</li>
+<li>比较字符串, s2要用strcmp(); s1直接使用操作符==, &gt;=, &lt;=;
+</li>
+<li>取字符串长度, s2要用strlen(); s1使用s1.size()或s1.length();
+</li>
+<li>查找子串, s2要用strchr()或strstr(); s1使用s1.find(), 就可找字符串和字符;
+</li>
+<li>访问某元素, 都使用s1[i]或s2[i];
+</li>
+<li>C风格字符串可自动转成C++字符串, 如s1="xxx"; 或if(s1&gt;=s2);
+</li>
+<li>C++风格字符串转成C风格字符串: s1.c_str();
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org9736950" class="outline-3">
-<h3 id="org9736950">严格类型检查</h3>
-<div class="outline-text-3" id="text-org9736950">
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5">严格类型检查</h3>
+<div class="outline-text-3" id="text-1-5">
 <p>
 如enum类型, 其成员在C中当成是整型, 而C++则不是.
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #FF1493;">#include</span> <span style="color: #CDC673;">&lt;iostream&gt;</span>
-<span style="color: #FF1493;">enum</span> <span style="color: #5FD7FF;">Course</span>{<span style="color: #FF8C00;">UNIX</span>, <span style="color: #FF8C00;">C</span>, <span style="color: #FF8C00;">CPP</span>, <span style="color: #FF8C00;">UC</span>, <span style="color: #FF8C00;">VC</span>};
-<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>() {
-  <span style="color: #5FD7FF;">Course</span> <span style="color: #FF8C00;">c</span>;
-  <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">n</span>;
+
+<pre class="src src-C++">#include &lt;iostream&gt;
+enum Course{UNIX, C, CPP, UC, VC};
+int main() {
+  Course c;
+  int n;
   c = CPP;
-  n = CPP;  <span style="color: #8B8878;">//</span><span style="color: #8B8878;">OK</span>
-  c = n;  <span style="color: #8B8878;">//</span><span style="color: #8B8878;">Error. &#19981;&#33021;&#23558;int&#36716;&#25104;Course</span>
-  <span style="color: #FF1493;">return</span> 0;
+  n = CPP;  //OK
+  c = n;  //Error. 不能将int转成Course
+  return 0;
 }
 </pre>
 </div>
@@ -202,46 +214,52 @@ namespace例子:
 在C++中, 自定义的类型, 在使用时不需要再声明该类型的关键字, 而C则需要. 如:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #FF1493;">enum</span> <span style="color: #5FD7FF;">Course</span>{<span style="color: #FF8C00;">UNIX</span>, <span style="color: #FF8C00;">C</span>, <span style="color: #FF8C00;">CPP</span>, <span style="color: #FF8C00;">UC</span>, <span style="color: #FF8C00;">VC</span>};
-<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span>(){
-    <span style="color: #FF1493;">enum</span> <span style="color: #5FD7FF;">Course</span> <span style="color: #FF8C00;">c1</span>;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">C&#35821;&#35328;</span>
-    <span style="color: #5FD7FF;">Course</span> <span style="color: #FF8C00;">c2</span>;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">C++&#35821;&#35328;</span>
+
+<pre class="src src-C++">enum Course{UNIX, C, CPP, UC, VC};
+int main(){
+    enum Course c1;  //  C语言
+    Course c2;  //  C++语言
 }
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org0075d2e" class="outline-3">
-<h3 id="org0075d2e">bool</h3>
-<div class="outline-text-3" id="text-org0075d2e">
+<div id="outline-container-sec-1-6" class="outline-3">
+<h3 id="sec-1-6">bool</h3>
+<div class="outline-text-3" id="text-1-6">
 <p>
 C里没有bool类型.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orga379e56" class="outline-3">
-<h3 id="orga379e56">引用(给变量起别名)</h3>
-<div class="outline-text-3" id="text-orga379e56">
+<div id="outline-container-sec-1-7" class="outline-3">
+<h3 id="sec-1-7">引用(给变量起别名)</h3>
+<div class="outline-text-3" id="text-1-7">
 <ul class="org-ul">
-<li>在C里, 参数的传递都是使用复制的方式.</li>
-<li>引用必须初始化. 用谁初始化, 它就是谁的别名. double a = 123.45; double&amp; b = a; (a和b的地址相同).</li>
-<li>不加const的引用只能用变量来初始化.</li>
+<li>在C里, 参数的传递都是使用复制的方式.
+</li>
+<li>引用必须初始化. 用谁初始化, 它就是谁的别名. double a = 123.45; double&amp; b = a; (a和b的地址相同).
+</li>
+<li>不加const的引用只能用变量来初始化.
+</li>
 </ul>
 <div class="org-src-container">
-<pre class="src src-C++"><span style="color: #5FD7FF;">double</span>&amp; <span style="color: #FF8C00;">a</span> = 123.45;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">Error</span>
-<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">double</span>&amp; <span style="color: #FF8C00;">b</span> = 1.1;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">OK</span>
-<span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">double</span>&amp; <span style="color: #FF8C00;">c</span> = d+5;  <span style="color: #8B8878;">//  </span><span style="color: #8B8878;">&#24341;&#29992;&#19968;&#20010;&#20020;&#26102;&#20540;</span>
+
+<pre class="src src-C++">double&amp; a = 123.45;  //  Error
+const double&amp; b = 1.1;  //  OK
+const double&amp; c = d+5;  //  引用一个临时值
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org339e0ad" class="outline-3">
-<h3 id="org339e0ad">查看进程的内存使用情况</h3>
-<div class="outline-text-3" id="text-org339e0ad">
+<div id="outline-container-sec-1-8" class="outline-3">
+<h3 id="sec-1-8">查看进程的内存使用情况</h3>
+<div class="outline-text-3" id="text-1-8">
 <div class="org-src-container">
+
 <pre class="src src-Shell">ps  # 找到想看的进程id
 cd /proc/进程id  # 可以
 ls
@@ -251,7 +269,15 @@ cat xxx  # 查看某文件的内存映射
 </div>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
 
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+
+</div>
+</div>
 </div>
 </div>
 <div>
@@ -300,7 +326,7 @@ cat xxx  # 查看某文件的内存映射
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -316,7 +342,6 @@ cat xxx  # 查看某文件的内存映射
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

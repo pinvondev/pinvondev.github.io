@@ -55,41 +55,42 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3265616">安装</a>
+<li><a href="#sec-1">安装</a>
 <ul>
-<li><a href="#orgcd96055">使用 apt 安装</a></li>
-<li><a href="#orgbbca408">手动安装</a></li>
+<li><a href="#sec-1-1">使用 apt 安装</a></li>
+<li><a href="#sec-1-2">手动安装</a></li>
 </ul>
 </li>
-<li><a href="#org13bf8c2">一些命令和配置文件</a>
+<li><a href="#sec-2">一些命令和配置文件</a>
 <ul>
-<li><a href="#org4614771">例子</a></li>
+<li><a href="#sec-2-1">例子</a></li>
 </ul>
 </li>
-<li><a href="#orgc147b6b">反向代理</a></li>
-<li><a href="#orgde640fc">负载均衡</a></li>
+<li><a href="#sec-3">反向代理</a></li>
+<li><a href="#sec-4">负载均衡</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3265616" class="outline-2">
-<h2 id="org3265616">安装</h2>
-<div class="outline-text-2" id="text-org3265616">
-</div>
-<div id="outline-container-orgcd96055" class="outline-3">
-<h3 id="orgcd96055">使用 apt 安装</h3>
-<div class="outline-text-3" id="text-orgcd96055">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">安装</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">使用 apt 安装</h3>
+<div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">sudo apt install nginx
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgbbca408" class="outline-3">
-<h3 id="orgbbca408">手动安装</h3>
-<div class="outline-text-3" id="text-orgbbca408">
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">手动安装</h3>
+<div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
+
 <pre class="src src-Shell">sudo apt install libpcre3-dev zlibc zlib-bin
 </pre>
 </div>
@@ -102,6 +103,7 @@
 解压后进入执行: 
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">./configure
 sudo make
 sudo make install
@@ -115,29 +117,33 @@ sudo make install
 </div>
 </div>
 
-<div id="outline-container-org13bf8c2" class="outline-2">
-<h2 id="org13bf8c2">一些命令和配置文件</h2>
-<div class="outline-text-2" id="text-org13bf8c2">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">一些命令和配置文件</h2>
+<div class="outline-text-2" id="text-2">
 <div class="org-src-container">
-<pre class="src src-Shell">nginx	// 使用默认的配置文件 /etc/nginx/nginx.conf 启动 nginx
-nginx -c nginx_conf_path  	// 使用自定义的配置文件启动 nginx
 
-nginx -s stop	// 暴力关闭服务器
+<pre class="src src-Shell">nginx   // 使用默认的配置文件 /etc/nginx/nginx.conf 启动 nginx
+nginx -c nginx_conf_path    // 使用自定义的配置文件启动 nginx
+
+nginx -s stop   // 暴力关闭服务器
 nginx -s quit   // 安全关闭服务器
 nginx -s reload    // 重新加载配置文件
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org4614771" class="outline-3">
-<h3 id="org4614771">例子</h3>
-<div class="outline-text-3" id="text-org4614771">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">例子</h3>
+<div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
-<li>创建 /data/www 和 /data/images 两个目录;</li>
+<li>创建 /data/www 和 /data/images 两个目录;
+</li>
 
-<li>打开配置文件 nginx.conf, 添加如下代码:</li>
+<li>打开配置文件 nginx.conf, 添加如下代码:
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Shell">http {
     server {
     }
@@ -146,9 +152,11 @@ nginx -s reload    // 重新加载配置文件
 </div>
 
 <ul class="org-ul">
-<li>一个配置文件可以包含多个 server 块, 每个 server 块都表示一个虚拟主机, 并且这个虚拟主机有 listen 和 server_name 字段区分.</li>
+<li>一个配置文件可以包含多个 server 块, 每个 server 块都表示一个虚拟主机, 并且这个虚拟主机有 listen 和 server_name 字段区分.
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Shell">server {
     listen 8080;
     server_name www.website.com;  # 监听的主机名
@@ -168,13 +176,14 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 </div>
 </div>
 
-<div id="outline-container-orgc147b6b" class="outline-2">
-<h2 id="orgc147b6b">反向代理</h2>
-<div class="outline-text-2" id="text-orgc147b6b">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">反向代理</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 在配置文件 /etc/nginx/nginx.conf 中有这样的语句:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">include /etc/nginx/sites-enabled/*;
 </pre>
 </div>
@@ -186,10 +195,13 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 在 /etc/nginx/sites-enabled 目录里有一个 default, 它是 /etc/nginx/sites-available/default 的软链接. 如果我们不希望把所有配置都写在一个文件, 也可以这么做:
 </p>
 <ul class="org-ul">
-<li>新建一个配置文件 node_server</li>
-<li>将 node_server 软链接到 sites-enabled/node_server</li>
+<li>新建一个配置文件 node_server
+</li>
+<li>将 node_server 软链接到 sites-enabled/node_server
+</li>
 </ul>
 <div class="org-src-container">
+
 <pre class="src src-Shell">ln -s /etc/nginx/sites-available/node_server /etc/nginx/sites-enabled/node_server
 </pre>
 </div>
@@ -202,6 +214,7 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 假设我们的 node 程序监听 3000 端口, 则 nginx 设置反向代理的配置如下:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">server {
     listen 80;
     # ...
@@ -226,9 +239,9 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 </div>
 </div>
 
-<div id="outline-container-orgde640fc" class="outline-2">
-<h2 id="orgde640fc">负载均衡</h2>
-<div class="outline-text-2" id="text-orgde640fc">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">负载均衡</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 当访问量增加时, 一台服务器可能无法支撑, 这时就要使用服务器集群来提供服务. nginx 可以提供负载均衡, 当 nginx 接收到一个动态请求时, 会按照一定的策略(如轮询或随机)从集群中选择一台服务器处理请求.
 </p>
@@ -237,6 +250,7 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 配置集群列表及负载均衡策略:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">upstream backend {
     # server 定义提供服务机器ip &amp; port，eg: server 10.20.155.37 8080
     server  127.0.0.1:9090
@@ -251,6 +265,7 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 设置反向代理:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">server {
     listen 80;
     location / {
@@ -268,6 +283,7 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
 另外, 也可以为性能好的服务器配置高一点的权重, 如:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">upstream backend {   
     server 127.0.0.1:9090 weight=2;
     server 127.0.0.1:9091;              
@@ -328,7 +344,7 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -344,7 +360,6 @@ nginx 会选择那个匹配最长前缀的 location 块. 如访问 /images/hello
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

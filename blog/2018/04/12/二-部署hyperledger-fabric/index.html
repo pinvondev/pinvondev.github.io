@@ -55,59 +55,59 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org9667278">概述</a>
+<li><a href="#sec-1">概述</a>
 <ul>
-<li><a href="#org20c2a49">启动Fabric网络的流程</a></li>
+<li><a href="#sec-1-1">启动Fabric网络的流程</a></li>
 </ul>
 </li>
-<li><a href="#orgfeb6cdd">本地部署Hyperledger Fabric</a>
+<li><a href="#sec-2">本地部署Hyperledger Fabric</a>
 <ul>
-<li><a href="#org1722711">下载Docker镜像文件</a></li>
-<li><a href="#org77eadfe">部署网络</a>
+<li><a href="#sec-2-1">下载Docker镜像文件</a></li>
+<li><a href="#sec-2-2">部署网络</a>
 <ul>
-<li><a href="#org702d426">创建channel</a></li>
-<li><a href="#org80d7163">加入channel</a></li>
-<li><a href="#org053d77f">安装chaincode</a></li>
-<li><a href="#org8272a50">实例化chaincode</a></li>
-<li><a href="#orgdc46260">调用chaincode</a></li>
-<li><a href="#orgd70d48a">调用chaincode查询</a></li>
-<li><a href="#org4464db7">节点的配置参数传递规则</a></li>
+<li><a href="#sec-2-2-1">创建channel</a></li>
+<li><a href="#sec-2-2-2">加入channel</a></li>
+<li><a href="#sec-2-2-3">安装chaincode</a></li>
+<li><a href="#sec-2-2-4">实例化chaincode</a></li>
+<li><a href="#sec-2-2-5">调用chaincode</a></li>
+<li><a href="#sec-2-2-6">调用chaincode查询</a></li>
+<li><a href="#sec-2-2-7">节点的配置参数传递规则</a></li>
 </ul>
 </li>
-<li><a href="#org5ee1687">yaml配置文件</a></li>
+<li><a href="#sec-2-3">yaml配置文件</a></li>
 </ul>
 </li>
-<li><a href="#orgd5bef05">配置</a>
+<li><a href="#sec-3">配置</a>
 <ul>
-<li><a href="#orgd8ba35b">简介</a>
+<li><a href="#sec-3-1">简介</a>
 <ul>
-<li><a href="#org37e6339">节点</a></li>
-<li><a href="#org150c4c1">配置管理工具</a></li>
+<li><a href="#sec-3-1-1">节点</a></li>
+<li><a href="#sec-3-1-2">配置管理工具</a></li>
 </ul>
 </li>
-<li><a href="#orga17c6c0">Peer节点配置</a>
+<li><a href="#sec-3-2">Peer节点配置</a>
 <ul>
-<li><a href="#org6720e7c">logging</a></li>
-<li><a href="#orga96374a">peer</a>
+<li><a href="#sec-3-2-1">logging</a></li>
+<li><a href="#sec-3-2-2">peer</a>
 <ul>
-<li><a href="#orge513ae1">通用配置</a></li>
+<li><a href="#sec-3-2-2-1">通用配置</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgc7a0ca2">cryptogen</a>
+<li><a href="#sec-3-3">cryptogen</a>
 <ul>
-<li><a href="#org4ed4e27">配置文件crypto-config.yaml</a></li>
-<li><a href="#org08a4d36">例子</a></li>
-<li><a href="#orgb23d64f">生成密钥和证书文件</a></li>
+<li><a href="#sec-3-3-1">配置文件crypto-config.yaml</a></li>
+<li><a href="#sec-3-3-2">例子</a></li>
+<li><a href="#sec-3-3-3">生成密钥和证书文件</a></li>
 </ul>
 </li>
-<li><a href="#org2796709">configtxgen</a>
+<li><a href="#sec-3-4">configtxgen</a>
 <ul>
-<li><a href="#orge621617">configtx.yaml 文件</a>
+<li><a href="#sec-3-4-1">configtx.yaml 文件</a>
 <ul>
-<li><a href="#org1ece44f">profiles</a></li>
-<li><a href="#org89971d5">organizations</a></li>
+<li><a href="#sec-3-4-1-1">profiles</a></li>
+<li><a href="#sec-3-4-1-2">organizations</a></li>
 </ul>
 </li>
 </ul>
@@ -118,32 +118,38 @@
 </div>
 </div>
 
-<div id="outline-container-org9667278" class="outline-2">
-<h2 id="org9667278">概述</h2>
-<div class="outline-text-2" id="text-org9667278">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一条独立的系统通道负责管理网络中的各种配置信息, 并完成对其他应用通道的创建.
 </p>
 </div>
 
-<div id="outline-container-org20c2a49" class="outline-3">
-<h3 id="org20c2a49">启动Fabric网络的流程</h3>
-<div class="outline-text-3" id="text-org20c2a49">
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">启动Fabric网络的流程</h3>
+<div class="outline-text-3" id="text-1-1">
 <ol class="org-ol">
-<li>预备网络内各项配置, 包括网络中成员的组织结构和对应的身份证书; 生成系统通道的初始配置区块文件; 新建应用通道的配置更新交易文件; (如果需要)主节点配置更新交易文件.</li>
-<li>使用系统通道的初始配置区块文件启动排序节点, 排序节点启动后自动按照指定配置创建系统通道.</li>
-<li>不同的组织按照预置角色分别启动Peer节点. 此时网络中不存在应用通道, Peer节点也没有加入网络.</li>
-<li>使用新建应用通道的配置更新交易文件, 向系统通道发送交易, 创建新的应用通道.</li>
-<li>让对应的Peer节点加入所创建的应用通道中, 准备接收交易.</li>
-<li>用户通过客户端向网络中安装注册链码, 链码容器启动成功后, 用户可对链码进行调用, 将交易发送到网络中.</li>
+<li>预备网络内各项配置, 包括网络中成员的组织结构和对应的身份证书; 生成系统通道的初始配置区块文件; 新建应用通道的配置更新交易文件; (如果需要)主节点配置更新交易文件.
+</li>
+<li>使用系统通道的初始配置区块文件启动排序节点, 排序节点启动后自动按照指定配置创建系统通道.
+</li>
+<li>不同的组织按照预置角色分别启动Peer节点. 此时网络中不存在应用通道, Peer节点也没有加入网络.
+</li>
+<li>使用新建应用通道的配置更新交易文件, 向系统通道发送交易, 创建新的应用通道.
+</li>
+<li>让对应的Peer节点加入所创建的应用通道中, 准备接收交易.
+</li>
+<li>用户通过客户端向网络中安装注册链码, 链码容器启动成功后, 用户可对链码进行调用, 将交易发送到网络中.
+</li>
 </ol>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgfeb6cdd" class="outline-2">
-<h2 id="orgfeb6cdd">本地部署Hyperledger Fabric</h2>
-<div class="outline-text-2" id="text-orgfeb6cdd">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">本地部署Hyperledger Fabric</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 <a href="https://pinvondev.github.io/blog/2018/03/25/hyperledger/#org2e6ba64">安装</a>
 </p>
@@ -153,10 +159,11 @@ Hyperledger Fabric v1.0以后, 网络中支持了多通道的特性. 使用一�
 </p>
 </div>
 
-<div id="outline-container-org1722711" class="outline-3">
-<h3 id="org1722711">下载Docker镜像文件</h3>
-<div class="outline-text-3" id="text-org1722711">
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">下载Docker镜像文件</h3>
+<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">cd fabric/scripts
 
 # 不下载二进制文件
@@ -182,13 +189,14 @@ sed -i 's/curl/#curl/g' bootstrap.sh
 </div>
 </div>
 
-<div id="outline-container-org77eadfe" class="outline-3">
-<h3 id="org77eadfe">部署网络</h3>
-<div class="outline-text-3" id="text-org77eadfe">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">部署网络</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 使用 <code>fabric-samples</code> 中已经生成的配置文件来部署网络:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">git clone https://github.com/hyperledger/fabric-samples.git
 cd fabric-samples/basic-network
 docker-compose -f docker-compose.yml up -d
@@ -206,10 +214,11 @@ docker-compose -f docker-compose.yml up -d
 </div>
 </div>
 
-<div id="outline-container-org702d426" class="outline-4">
-<h4 id="org702d426">创建channel</h4>
-<div class="outline-text-4" id="text-org702d426">
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1">创建channel</h4>
+<div class="outline-text-4" id="text-2-2-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell"># 切换到管理员用户
 docker exec -it -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com bash
 
@@ -219,10 +228,11 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-org80d7163" class="outline-4">
-<h4 id="org80d7163">加入channel</h4>
-<div class="outline-text-4" id="text-org80d7163">
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2">加入channel</h4>
+<div class="outline-text-4" id="text-2-2-2">
 <div class="org-src-container">
+
 <pre class="src src-Shell">peer channel join -b mychannel.block
 </pre>
 </div>
@@ -235,10 +245,11 @@ peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger
 </div>
 </div>
 
-<div id="outline-container-org053d77f" class="outline-4">
-<h4 id="org053d77f">安装chaincode</h4>
-<div class="outline-text-4" id="text-org053d77f">
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3">安装chaincode</h4>
+<div class="outline-text-4" id="text-2-2-3">
 <div class="org-src-container">
+
 <pre class="src src-Shell"># 退出peer0.org1.example.com容器
 exit
 
@@ -252,23 +263,25 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-org8272a50" class="outline-4">
-<h4 id="org8272a50">实例化chaincode</h4>
-<div class="outline-text-4" id="text-org8272a50">
+<div id="outline-container-sec-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4">实例化chaincode</h4>
+<div class="outline-text-4" id="text-2-2-4">
 <div class="org-src-container">
+
 <pre class="src src-Shell">peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v v0 -c '{"Args": ["init", "a", "100", "b", "200"]}'
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgdc46260" class="outline-4">
-<h4 id="orgdc46260">调用chaincode</h4>
-<div class="outline-text-4" id="text-orgdc46260">
+<div id="outline-container-sec-2-2-5" class="outline-4">
+<h4 id="sec-2-2-5">调用chaincode</h4>
+<div class="outline-text-4" id="text-2-2-5">
 <p>
 实例化chaincode后, 可以查看初始值. 这些操作都是在CLI容器中进行:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </pre>
 </div>
@@ -281,10 +294,11 @@ peer chaincode install -n mycc -v v0 -p github.com/chaincode_example02/go
 </div>
 </div>
 
-<div id="outline-container-orgd70d48a" class="outline-4">
-<h4 id="orgd70d48a">调用chaincode查询</h4>
-<div class="outline-text-4" id="text-orgd70d48a">
+<div id="outline-container-sec-2-2-6" class="outline-4">
+<h4 id="sec-2-2-6">调用chaincode查询</h4>
+<div class="outline-text-4" id="text-2-2-6">
 <div class="org-src-container">
+
 <pre class="src src-Shell"># 转账
 peer chaincode invoke -C mychannel -n mycc -v v0 -c '{"Args":["invoke","a","b","10"]}'
 
@@ -304,9 +318,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-org4464db7" class="outline-4">
-<h4 id="org4464db7">节点的配置参数传递规则</h4>
-<div class="outline-text-4" id="text-org4464db7">
+<div id="outline-container-sec-2-2-7" class="outline-4">
+<h4 id="sec-2-2-7">节点的配置参数传递规则</h4>
+<div class="outline-text-4" id="text-2-2-7">
 <p>
 程序在启动的时候, 会读取配置文件和环境变量的值, 如 <code>fabric-samples/basic-network/docker-compose.yml</code> 中的 ORDERER_GENERAL_LOGLEVEL=debug, 这是传递给节点的参数, 传递参数的方法有环境变量, 配置文件, 动态环境变量, 默认值等. 获取参数的流程如下图所示:
 </p>
@@ -324,9 +338,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-org5ee1687" class="outline-3">
-<h3 id="org5ee1687">yaml配置文件</h3>
-<div class="outline-text-3" id="text-org5ee1687">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">yaml配置文件</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
 查看 <code>fabric/examples/e2e_cli/base/docker-compose-base.yaml</code> 配置文件. 此处给出其中一些选项的解释.
 </p>
@@ -335,101 +349,101 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">选项</th>
-<th scope="col" class="org-left">举例</th>
-<th scope="col" class="org-left">说明</th>
+<th scope="col" class="left">选项</th>
+<th scope="col" class="left">举例</th>
+<th scope="col" class="left">说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">version</td>
-<td class="org-left">version:'2'</td>
-<td class="org-left">采用version2的语法</td>
+<td class="left">version</td>
+<td class="left">version:'2'</td>
+<td class="left">采用version2的语法</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">services</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">定义服务列表</td>
+<td class="left">services</td>
+<td class="left">&#xa0;</td>
+<td class="left">定义服务列表</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">orderer.example.com</td>
-<td class="org-left">根据服务名称自定义</td>
-<td class="org-left">自定义的服务名称, 需要唯一</td>
+<td class="left">orderer.example.com</td>
+<td class="left">根据服务名称自定义</td>
+<td class="left">自定义的服务名称, 需要唯一</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">container_name</td>
-<td class="org-left">container_name: orderer.example.com</td>
-<td class="org-left">容器名称</td>
+<td class="left">container_name</td>
+<td class="left">container_name: orderer.example.com</td>
+<td class="left">容器名称</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">image</td>
-<td class="org-left">image:hyperledger/fabric-orderer</td>
-<td class="org-left">容器使用的镜像文件</td>
+<td class="left">image</td>
+<td class="left">image:hyperledger/fabric-orderer</td>
+<td class="left">容器使用的镜像文件</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">environment</td>
-<td class="org-left">-CORE_PEER_LOCALMSPID=Org1MSP</td>
-<td class="org-left">传递给容器的环境变量</td>
+<td class="left">environment</td>
+<td class="left">-CORE_PEER_LOCALMSPID=Org1MSP</td>
+<td class="left">传递给容器的环境变量</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">working_dir</td>
-<td class="org-left">working_dir:/opt/gopath/src/github.com/hyperledger/fabric</td>
-<td class="org-left">容器启动的工作目录</td>
+<td class="left">working_dir</td>
+<td class="left">working_dir:/opt/gopath/src/github.com/hyperledger/fabric</td>
+<td class="left">容器启动的工作目录</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">command</td>
-<td class="org-left">command:orderer</td>
-<td class="org-left">容器启动命令</td>
+<td class="left">command</td>
+<td class="left">command:orderer</td>
+<td class="left">容器启动命令</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">volumes</td>
-<td class="org-left">- <i>var/run:/host/var/run</i></td>
-<td class="org-left">宿主机和容器之间的目录映射</td>
+<td class="left">volumes</td>
+<td class="left">- <i>var/run:/host/var/run</i></td>
+<td class="left">宿主机和容器之间的目录映射</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">ports</td>
-<td class="org-left">- 7050:7050</td>
-<td class="org-left">宿主机和容器之间的端口映射</td>
+<td class="left">ports</td>
+<td class="left">- 7050:7050</td>
+<td class="left">宿主机和容器之间的端口映射</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">extends</td>
-<td class="org-left">file: common.yml</td>
-<td class="org-left">服务扩展, 基于common.yml文件</td>
+<td class="left">extends</td>
+<td class="left">file: common.yml</td>
+<td class="left">服务扩展, 基于common.yml文件</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">extends</td>
-<td class="org-left">service:peer-base</td>
-<td class="org-left">服务扩展, 基础服务是peer-base</td>
+<td class="left">extends</td>
+<td class="left">service:peer-base</td>
+<td class="left">服务扩展, 基础服务是peer-base</td>
 </tr>
 </tbody>
 </table>
@@ -437,13 +451,12 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orgd5bef05" class="outline-2">
-<h2 id="orgd5bef05">配置</h2>
-<div class="outline-text-2" id="text-orgd5bef05">
-</div>
-<div id="outline-container-orgd8ba35b" class="outline-3">
-<h3 id="orgd8ba35b">简介</h3>
-<div class="outline-text-3" id="text-orgd8ba35b">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">配置</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">简介</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 每个节点启动时, 可以通过读取本地配置文件来设置参数, 也可以通过环境变量指定的配置来设置参数, 还可以通过命令行参数来设置参数. 这三种方式可以互相结合使用. 如果三种方式都设置了某个参数, 优先级为: 命令行参数 &gt; 环境变量 &gt; 配置文件.
 </p>
@@ -457,88 +470,88 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </p>
 </div>
 
-<div id="outline-container-org37e6339" class="outline-4">
-<h4 id="org37e6339">节点</h4>
-<div class="outline-text-4" id="text-org37e6339">
+<div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1">节点</h4>
+<div class="outline-text-4" id="text-3-1-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">节点</th>
-<th scope="col" class="org-left">默认配置文件路径</th>
-<th scope="col" class="org-left">配置指定方式</th>
-<th scope="col" class="org-left">主要功能</th>
+<th scope="col" class="left">节点</th>
+<th scope="col" class="left">默认配置文件路径</th>
+<th scope="col" class="left">配置指定方式</th>
+<th scope="col" class="left">主要功能</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">Peer节点</td>
-<td class="org-left">$FABRIC_CFG_PATH/core.yaml</td>
-<td class="org-left">配置文件, 环境变量, 命令行参数</td>
-<td class="org-left">指定Peer节点运行时的参数</td>
+<td class="left">Peer节点</td>
+<td class="left">$FABRIC_CFG_PATH/core.yaml</td>
+<td class="left">配置文件, 环境变量, 命令行参数</td>
+<td class="left">指定Peer节点运行时的参数</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">Orderer节点</td>
-<td class="org-left">$FABRIC_CFG_PATH/orderer.yaml</td>
-<td class="org-left">配置文件, 环境变量, 命令行参数</td>
-<td class="org-left">指定Orderer运行时的参数</td>
+<td class="left">Orderer节点</td>
+<td class="left">$FABRIC_CFG_PATH/orderer.yaml</td>
+<td class="left">配置文件, 环境变量, 命令行参数</td>
+<td class="left">指定Orderer运行时的参数</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 
-<div id="outline-container-org150c4c1" class="outline-4">
-<h4 id="org150c4c1">配置管理工具</h4>
-<div class="outline-text-4" id="text-org150c4c1">
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2">配置管理工具</h4>
+<div class="outline-text-4" id="text-3-1-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 
-<col  class="org-left" />
+<col  class="left" />
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">工具</th>
-<th scope="col" class="org-left">默认配置文件路径</th>
-<th scope="col" class="org-left">主要功能</th>
+<th scope="col" class="left">工具</th>
+<th scope="col" class="left">默认配置文件路径</th>
+<th scope="col" class="left">主要功能</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">cryptogen</td>
-<td class="org-left">通过命令行指定路径</td>
-<td class="org-left">负责生成网络中组织结构和身份文件</td>
+<td class="left">cryptogen</td>
+<td class="left">通过命令行指定路径</td>
+<td class="left">负责生成网络中组织结构和身份文件</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">configtxgen</td>
-<td class="org-left">$FABRIC_CFG_PATH/configtx.yaml</td>
-<td class="org-left">负责生成通道相关配置</td>
+<td class="left">configtxgen</td>
+<td class="left">$FABRIC_CFG_PATH/configtx.yaml</td>
+<td class="left">负责生成通道相关配置</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
-<td class="org-left">configtxlator</td>
-<td class="org-left">&#xa0;</td>
-<td class="org-left">转换配置文件成可读的形式</td>
+<td class="left">configtxlator</td>
+<td class="left">&#xa0;</td>
+<td class="left">转换配置文件成可读的形式</td>
 </tr>
 </tbody>
 </table>
@@ -546,9 +559,9 @@ peer chaincode query -C mychannel -n mycc -v v0 -c '{"Args": ["query", "a"]}'
 </div>
 </div>
 
-<div id="outline-container-orga17c6c0" class="outline-3">
-<h3 id="orga17c6c0">Peer节点配置</h3>
-<div class="outline-text-3" id="text-orga17c6c0">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">Peer节点配置</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 如果从环境变量中读取配置信息, 需要以 <code>CORE_</code> 前缀打头. 如配置 <code>peer.id</code>, 环境变量应为 <code>CORE_PEER_ID</code>.
 </p>
@@ -566,14 +579,15 @@ Fabric 也有提供 core.yaml 的参考配置, 在目录 <code>sampleconfig/core
 </p>
 </div>
 
-<div id="outline-container-org6720e7c" class="outline-4">
-<h4 id="org6720e7c">logging</h4>
-<div class="outline-text-4" id="text-org6720e7c">
+<div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1">logging</h4>
+<div class="outline-text-4" id="text-3-2-1">
 <p>
 日志. 有 critcal, error, warning, notice, info, debug 六个级别, 越往后级别越低, 输出的内容也越丰富, 默认情况下为 info 级别.
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-YAML">logging:
     peer:info
     cauthdsl:warning
@@ -589,31 +603,33 @@ Fabric 也有提供 core.yaml 的参考配置, 在目录 <code>sampleconfig/core
 日志的输出格式为:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-YAML">format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -&gt; %{level:.4s} %{id:03x}%{color:reset} %{message}'
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orga96374a" class="outline-4">
-<h4 id="orga96374a">peer</h4>
-<div class="outline-text-4" id="text-orga96374a">
+<div id="outline-container-sec-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2">peer</h4>
+<div class="outline-text-4" id="text-3-2-2">
 <p>
 peer 部分的配置项较多, 可以分为通用配置, gossip, events, tls 等多个部分.
 </p>
 </div>
 
-<div id="outline-container-orge513ae1" class="outline-5">
-<h5 id="orge513ae1">通用配置</h5>
-<div class="outline-text-5" id="text-orge513ae1">
+<div id="outline-container-sec-3-2-2-1" class="outline-5">
+<h5 id="sec-3-2-2-1">通用配置</h5>
+<div class="outline-text-5" id="text-3-2-2-1">
 <div class="org-src-container">
-<pre class="src src-YAML">id  					# peer 在网络中的 id
-networkId  				# 网络 id, 可以通过 id 指定多个隔离的网络
-listenAddress			# 服务器监听的本地地址, 如果有多个网卡, 可以指定监听某网卡, 默认情况下监听本地所有网卡(0.0.0.0), 端口号为 7051
-chaincodeListenAddress	# 链码容器监听的地址, 不指定则为 listenAddress, 在生产环境中, 建议指定, 端口号为 7052
-address					# 外部访问服务的地址
-addressAutoDetect		# 是否自动探测服务地址, 如果 peer 的运行环境是动态分配地址的, 该配置可以进行自动探测, 探测将内部地址作为服务地址. 如果启用 TLS, 则建议关闭该配置项
-gomaxprocs				# 配置运行该 Go 应用的最大进程数
+
+<pre class="src src-YAML">id                      # peer 在网络中的 id
+networkId               # 网络 id, 可以通过 id 指定多个隔离的网络
+listenAddress           # 服务器监听的本地地址, 如果有多个网卡, 可以指定监听某网卡, 默认情况下监听本地所有网卡(0.0.0.0), 端口号为 7051
+chaincodeListenAddress  # 链码容器监听的地址, 不指定则为 listenAddress, 在生产环境中, 建议指定, 端口号为 7052
+address                 # 外部访问服务的地址
+addressAutoDetect       # 是否自动探测服务地址, 如果 peer 的运行环境是动态分配地址的, 该配置可以进行自动探测, 探测将内部地址作为服务地址. 如果启用 TLS, 则建议关闭该配置项
+gomaxprocs              # 配置运行该 Go 应用的最大进程数
 </pre>
 </div>
 </div>
@@ -621,9 +637,9 @@ gomaxprocs				# 配置运行该 Go 应用的最大进程数
 </div>
 </div>
 
-<div id="outline-container-orgc7a0ca2" class="outline-3">
-<h3 id="orgc7a0ca2">cryptogen</h3>
-<div class="outline-text-3" id="text-orgc7a0ca2">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">cryptogen</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 该工具生成组织身份配置.
 </p>
@@ -637,9 +653,9 @@ cryptogen可以快速根据配置自动批量生成所需要的密钥和证书�
 </p>
 </div>
 
-<div id="outline-container-org4ed4e27" class="outline-4">
-<h4 id="org4ed4e27">配置文件crypto-config.yaml</h4>
-<div class="outline-text-4" id="text-org4ed4e27">
+<div id="outline-container-sec-3-3-1" class="outline-4">
+<h4 id="sec-3-3-1">配置文件crypto-config.yaml</h4>
+<div class="outline-text-4" id="text-3-3-1">
 <p>
 <code>crypto-config.yaml</code> 会指定网络的拓扑结构. 主要包括两种组织信息:
 </p>
@@ -682,10 +698,11 @@ cryptogen可以快速根据配置自动批量生成所需要的密钥和证书�
 </div>
 </div>
 
-<div id="outline-container-org08a4d36" class="outline-4">
-<h4 id="org08a4d36">例子</h4>
-<div class="outline-text-4" id="text-org08a4d36">
+<div id="outline-container-sec-3-3-2" class="outline-4">
+<h4 id="sec-3-3-2">例子</h4>
+<div class="outline-text-4" id="text-3-3-2">
 <div class="org-src-container">
+
 <pre class="src src-YAML">OrdererOrgs:
   - Name: Orderer
     Domain: example.com
@@ -735,9 +752,9 @@ Peer组织则通过Template来自动生成了Count个数的主机. Users字段�
 </div>
 </div>
 
-<div id="outline-container-orgb23d64f" class="outline-4">
-<h4 id="orgb23d64f">生成密钥和证书文件</h4>
-<div class="outline-text-4" id="text-orgb23d64f">
+<div id="outline-container-sec-3-3-3" class="outline-4">
+<h4 id="sec-3-3-3">生成密钥和证书文件</h4>
+<div class="outline-text-4" id="text-3-3-3">
 <p>
 cryptogen工具生成的文件会放在当前目录下的 <code>crypto-config</code> 目录中. 目录结构如图所示:
 </p>
@@ -760,9 +777,12 @@ ca: 存放组织的根证书和对应的私钥文件, 默认采用EC算法, 证�
 msp: 存放代表该组织的身份信息. msp下有 <code>admincerts, cacerts, tlscacerts</code> 三个目录.
 </p>
 <ul class="org-ul">
-<li>admincerts: 组织管理员的身份验证证书, 被根证书签名.</li>
-<li>cacerts: 组织的根证书, 与ca目录下的文件一样.</li>
-<li>tlscacerts: 用于TLS的CA证书, 自签名.</li>
+<li>admincerts: 组织管理员的身份验证证书, 被根证书签名.
+</li>
+<li>cacerts: 组织的根证书, 与ca目录下的文件一样.
+</li>
+<li>tlscacerts: 用于TLS的CA证书, 自签名.
+</li>
 </ul>
 
 <p>
@@ -777,8 +797,10 @@ users: 用户信息, 里面包括msp证书和tls证书.
 peers: 存放属于该组织的所有Peer节点.
 </p>
 <ul class="org-ul">
-<li>peer0: 第1个Peer节点的信息, 包括msp证书和tls证书. msp(这个msp是peers里面的msp): 包括 <code>admincerts, cacerts, tlscacerts</code> 三个目录. <code>admincerts</code> 目录里的内容和外层的msp目录下的 <code>admincerts</code> 里的内容一样. 同理, 另外两个目录里的内容也分别和外层的msp目录下相应目录里的内容相同. <code>keystore</code> 目录下存放本节点的身份私钥, 用来签名. <code>signcerts</code> 目录下存放的是验证本节点签名的证书, 该证书被组织的根证书签名. tls: 存放tls相关的证书和私钥. ca.crt: 组织的根证书. server.crt: 验证本节点签名的证书, 被组织根证书签名. server.key: 本节点的身份私钥, 用来签名.</li>
-<li>peer1: 与peer0类似.</li>
+<li>peer0: 第1个Peer节点的信息, 包括msp证书和tls证书. msp(这个msp是peers里面的msp): 包括 <code>admincerts, cacerts, tlscacerts</code> 三个目录. <code>admincerts</code> 目录里的内容和外层的msp目录下的 <code>admincerts</code> 里的内容一样. 同理, 另外两个目录里的内容也分别和外层的msp目录下相应目录里的内容相同. <code>keystore</code> 目录下存放本节点的身份私钥, 用来签名. <code>signcerts</code> 目录下存放的是验证本节点签名的证书, 该证书被组织的根证书签名. tls: 存放tls相关的证书和私钥. ca.crt: 组织的根证书. server.crt: 验证本节点签名的证书, 被组织根证书签名. server.key: 本节点的身份私钥, 用来签名.
+</li>
+<li>peer1: 与peer0类似.
+</li>
 </ul>
 
 <p>
@@ -789,14 +811,22 @@ peers: 存放属于该组织的所有Peer节点.
 最重要的是msp目录下的内容. 一般包括:
 </p>
 <ul class="org-ul">
-<li>admincerts: 管理员的身份证书文件</li>
-<li>cacerts: 信任的根证书文件</li>
-<li>keystore: 节点的私钥, 用于签名</li>
-<li>signcerts: 节点的证书, 用于证明自己的身份</li>
-<li>tlscacerts: TLS连接用的证书</li>
-<li>intermediatecerts(可选): 信任的中间证书</li>
-<li>crls(可选): 证书撤销列表</li>
-<li>config.yaml(可选): 记录组织中的实体信息, 包括根证书位置和ID信息</li>
+<li>admincerts: 管理员的身份证书文件
+</li>
+<li>cacerts: 信任的根证书文件
+</li>
+<li>keystore: 节点的私钥, 用于签名
+</li>
+<li>signcerts: 节点的证书, 用于证明自己的身份
+</li>
+<li>tlscacerts: TLS连接用的证书
+</li>
+<li>intermediatecerts(可选): 信任的中间证书
+</li>
+<li>crls(可选): 证书撤销列表
+</li>
+<li>config.yaml(可选): 记录组织中的实体信息, 包括根证书位置和ID信息
+</li>
 </ul>
 
 <p>
@@ -822,9 +852,9 @@ CLI: 为方便操作, 将完整的 crypto-config 目录复制到 /etc/hyperledge
 </div>
 </div>
 
-<div id="outline-container-org2796709" class="outline-3">
-<h3 id="org2796709">configtxgen</h3>
-<div class="outline-text-3" id="text-org2796709">
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">configtxgen</h3>
+<div class="outline-text-3" id="text-3-4">
 <p>
 在 Fabric 中, 对 channel 的相关配置进行更新, 也要像应用交易一样, 经过网络中节点的共识确认.
 </p>
@@ -837,9 +867,12 @@ configtxgen 工具是一个很重要的辅助工具, 可以配置 cryptogen 生�
 主要功能:
 </p>
 <ol class="org-ol">
-<li>生成启动 Orderer 需要的创世区块, 并支持检查区块内容;</li>
-<li>生成创建应用通道需要的配置交易, 并支持检查交易内容;</li>
-<li>生成 Anchor Peer 的更新配置交易;</li>
+<li>生成启动 Orderer 需要的创世区块, 并支持检查区块内容;
+</li>
+<li>生成创建应用通道需要的配置交易, 并支持检查交易内容;
+</li>
+<li>生成 Anchor Peer 的更新配置交易;
+</li>
 </ol>
 
 <p>
@@ -847,23 +880,27 @@ configtxgen 工具会依次从 $FABRIC_CFG_PATH 指定的路径, 当前路径, /
 </p>
 </div>
 
-<div id="outline-container-orge621617" class="outline-4">
-<h4 id="orge621617">configtx.yaml 文件</h4>
-<div class="outline-text-4" id="text-orge621617">
+<div id="outline-container-sec-3-4-1" class="outline-4">
+<h4 id="sec-3-4-1">configtx.yaml 文件</h4>
+<div class="outline-text-4" id="text-3-4-1">
 <p>
 configtx.yaml 文件中的内容主要有 profile, organizations, orderer, application 四个部分.
 </p>
 <ul class="org-ul">
-<li>profile: 定义了一系列通道配置模板, 包括 Orderer 系统通道模板和应用通道类型模板.</li>
-<li>organizations: 定义了一系列的组织结构, 由其他部分引用.</li>
-<li>orderer: 系统通道相关配置, 包括 orderer 服务配置和参与 ordering service 的组织信息.</li>
-<li>application: 应用通道相关配置.</li>
+<li>profile: 定义了一系列通道配置模板, 包括 Orderer 系统通道模板和应用通道类型模板.
+</li>
+<li>organizations: 定义了一系列的组织结构, 由其他部分引用.
+</li>
+<li>orderer: 系统通道相关配置, 包括 orderer 服务配置和参与 ordering service 的组织信息.
+</li>
+<li>application: 应用通道相关配置.
+</li>
 </ul>
 </div>
 
-<div id="outline-container-org1ece44f" class="outline-5">
-<h5 id="org1ece44f">profiles</h5>
-<div class="outline-text-5" id="text-org1ece44f">
+<div id="outline-container-sec-3-4-1-1" class="outline-5">
+<h5 id="sec-3-4-1-1">profiles</h5>
+<div class="outline-text-5" id="text-3-4-1-1">
 <p>
 每个 profile 代表了某种应用场景下的通道配置模板. 它包括 Orderer 系统通道模板和应用通道模板.
 </p>
@@ -872,16 +909,20 @@ configtx.yaml 文件中的内容主要有 profile, organizations, orderer, appli
 Orderer 系统通道模板包括 Orderer, Consortiums.
 </p>
 <ul class="org-ul">
-<li>Orderer: 指定系统通道的配置信息, 包括 Ordering Service(solo 还是 kafka, ip, 最大应用通道数量等) 和 属于此系统通道的组织信息.</li>
-<li>Consortiums: Orderer 所服务的联盟列表. 每个联盟下面可包含多个组织.</li>
+<li>Orderer: 指定系统通道的配置信息, 包括 Ordering Service(solo 还是 kafka, ip, 最大应用通道数量等) 和 属于此系统通道的组织信息.
+</li>
+<li>Consortiums: Orderer 所服务的联盟列表. 每个联盟下面可包含多个组织.
+</li>
 </ul>
 
 <p>
 应用通道模板包括 Application, Consortium.
 </p>
 <ul class="org-ul">
-<li>Application: 指定属于某应用通道的信息, 如属于此通道的组织信息.</li>
-<li>Consortium: 该应用通道所关联的联盟.</li>
+<li>Application: 指定属于某应用通道的信息, 如属于此通道的组织信息.
+</li>
+<li>Consortium: 该应用通道所关联的联盟.
+</li>
 </ul>
 
 <p>
@@ -890,9 +931,9 @@ Orderer 系统通道模板包括 Orderer, Consortiums.
 </div>
 </div>
 
-<div id="outline-container-org89971d5" class="outline-5">
-<h5 id="org89971d5">organizations</h5>
-<div class="outline-text-5" id="text-org89971d5">
+<div id="outline-container-sec-3-4-1-2" class="outline-5">
+<h5 id="sec-3-4-1-2">organizations</h5>
+<div class="outline-text-5" id="text-3-4-1-2">
 <p>
 组织主要分成 Orderer 组织(系统组织)和普通的应用组织.
 </p>
@@ -958,7 +999,7 @@ Orderer 组织包括名称, ID, MSP文件路径, 管理员策略; Peer 组织除
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -974,7 +1015,6 @@ Orderer 组织包括名称, ID, MSP文件路径, 管理员策略; Peer 组织除
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>

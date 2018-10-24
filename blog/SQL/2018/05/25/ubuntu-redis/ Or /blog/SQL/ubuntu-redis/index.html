@@ -55,30 +55,30 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgd143e2d">Redis 简介</a></li>
-<li><a href="#orgaa0691d">安装</a>
+<li><a href="#sec-1">Redis 简介</a></li>
+<li><a href="#sec-2">安装</a>
 <ul>
-<li><a href="#org7a835b0">下载编译</a></li>
-<li><a href="#orga90d19a">启动 Redis 服务</a></li>
-<li><a href="#org4f09c3a">启动 Redis 客户端</a></li>
+<li><a href="#sec-2-1">下载编译</a></li>
+<li><a href="#sec-2-2">启动 Redis 服务</a></li>
+<li><a href="#sec-2-3">启动 Redis 客户端</a></li>
 </ul>
 </li>
-<li><a href="#orgbe9b568">常用操作</a>
+<li><a href="#sec-3">常用操作</a>
 <ul>
-<li><a href="#orgeaf9428">插入数据</a></li>
-<li><a href="#orgb299a91">修改数据</a></li>
-<li><a href="#orgcf409ba">查询数据</a></li>
-<li><a href="#org56ce7be">删除数据</a></li>
-<li><a href="#org9c492de">选择数据库</a></li>
+<li><a href="#sec-3-1">插入数据</a></li>
+<li><a href="#sec-3-2">修改数据</a></li>
+<li><a href="#sec-3-3">查询数据</a></li>
+<li><a href="#sec-3-4">删除数据</a></li>
+<li><a href="#sec-3-5">选择数据库</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd143e2d" class="outline-2">
-<h2 id="orgd143e2d">Redis 简介</h2>
-<div class="outline-text-2" id="text-orgd143e2d">
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Redis 简介</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 Redis 是一个高性能的键值对非关系型数据库, 支持存储的值类型包括: string, list, set, zset(有序集合), 这些数据类型都支持 push/pop, add/remove, 取交集, 取并集, 取差集等原子性操作.
 </p>
@@ -93,14 +93,14 @@ Redis 是一个高性能的键值对非关系型数据库, 支持存储的值类
 </div>
 </div>
 
-<div id="outline-container-orgaa0691d" class="outline-2">
-<h2 id="orgaa0691d">安装</h2>
-<div class="outline-text-2" id="text-orgaa0691d">
-</div>
-<div id="outline-container-org7a835b0" class="outline-3">
-<h3 id="org7a835b0">下载编译</h3>
-<div class="outline-text-3" id="text-org7a835b0">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">安装</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">下载编译</h3>
+<div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
+
 <pre class="src src-Shell">wget http://download.redis.io/releases/redis-4.0.9.tar.gz
 tar xzf redis-4.0.9.tar.gz
 cd redis-4.0.9
@@ -110,13 +110,14 @@ make
 </div>
 </div>
 
-<div id="outline-container-orga90d19a" class="outline-3">
-<h3 id="orga90d19a">启动 Redis 服务</h3>
-<div class="outline-text-3" id="text-orga90d19a">
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">启动 Redis 服务</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 编译好的二进制文件在 src 目录下, 通过如下命令启动 Redis 服务:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">src/redis-server
 </pre>
 </div>
@@ -125,16 +126,18 @@ make
 启动 Redis 服务时, 默认监听 6379 端口. 通过 --port 参数可以自定义端口号:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">redis-server --port 6380
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org4f09c3a" class="outline-3">
-<h3 id="org4f09c3a">启动 Redis 客户端</h3>
-<div class="outline-text-3" id="text-org4f09c3a">
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">启动 Redis 客户端</h3>
+<div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
+
 <pre class="src src-Shell">src/redis-cli
 // 等价于
 src/redis-cli -h 127.0.0.1 -p 6379
@@ -150,6 +153,7 @@ get foo // "bar"
 如果强行停止 Redis, 可能会导致内存中的数据来不及同步到磁盘就被关闭. 因此, 正确停止 Redis 的方式为:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">redis-cli SHUTDOWN
 </pre>
 </div>
@@ -157,9 +161,9 @@ get foo // "bar"
 </div>
 </div>
 
-<div id="outline-container-orgbe9b568" class="outline-2">
-<h2 id="orgbe9b568">常用操作</h2>
-<div class="outline-text-2" id="text-orgbe9b568">
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">常用操作</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 Redis 以 &lt;key, value&gt; 的形式存储数据.
 </p>
@@ -173,53 +177,57 @@ Redis 以 &lt;key, value&gt; 的形式存储数据.
 </p>
 </div>
 
-<div id="outline-container-orgeaf9428" class="outline-3">
-<h3 id="orgeaf9428">插入数据</h3>
-<div class="outline-text-3" id="text-orgeaf9428">
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">插入数据</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 只要我们提前设计好 key 和 value 即可. 
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">set Users:1:name Pinvon
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb299a91" class="outline-3">
-<h3 id="orgb299a91">修改数据</h3>
-<div class="outline-text-3" id="text-orgb299a91">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">修改数据</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 Redis 中没有修改数据的命令, 如果想修改数据, 只能使用 set 命令, 对相同的 key 赋予和之前不同的 value. 如, 将之前的用户名 Pinvon 改成 Penglaozi.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">set Users:1:name Penglaozi
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgcf409ba" class="outline-3">
-<h3 id="orgcf409ba">查询数据</h3>
-<div class="outline-text-3" id="text-orgcf409ba">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">查询数据</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 查询数据, 使用 get 命令, 再把 key 输入即可.
 </p>
 
 <div class="org-src-container">
+
 <pre class="src src-Shell">get Users:1:name  // Penglaozi
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org56ce7be" class="outline-3">
-<h3 id="org56ce7be">删除数据</h3>
-<div class="outline-text-3" id="text-org56ce7be">
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">删除数据</h3>
+<div class="outline-text-3" id="text-3-4">
 <p>
 使用 del 命令删除数据.
 </p>
 <div class="org-src-container">
+
 <pre class="src src-Shell">del Users:1:name
 </pre>
 </div>
@@ -229,13 +237,14 @@ Redis 中没有修改数据的命令, 如果想修改数据, 只能使用 set �
 </p>
 </div>
 </div>
-<div id="outline-container-org9c492de" class="outline-3">
-<h3 id="org9c492de">选择数据库</h3>
-<div class="outline-text-3" id="text-org9c492de">
+<div id="outline-container-sec-3-5" class="outline-3">
+<h3 id="sec-3-5">选择数据库</h3>
+<div class="outline-text-3" id="text-3-5">
 <p>
 Redis 默认支持 16 个数据库, 可以通过修改配置来改变这个数字. cli 与 server 连接后自动选择 0 号数据库, 要切换数据库, 可以这么写:
 </p>
 <div class="org-src-container">
+
 <pre class="src src-SQL">SELECT 1  // OK
 </pre>
 </div>
@@ -302,7 +311,7 @@ Redis 默认支持 16 个数据库, 可以通过修改配置来改变这个数�
         </section>
     <script src="https://pinvondev.github.io/media/js/main.js"></script>
     <div class="footer">
-        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 9.x)</p>
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
         <p>
             Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@Inspiron">Pinvon</a>
             &nbsp;&nbsp;-&nbsp;&nbsp;
@@ -318,7 +327,6 @@ Redis 默认支持 16 个数据库, 可以通过修改配置来改变这个数�
             <script type="text/x-mathjax-config">
              MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
             </script>
-            <script type="text/javascript" src="/media/js/love.js"></script>
 </div>
 
   </div></body>
