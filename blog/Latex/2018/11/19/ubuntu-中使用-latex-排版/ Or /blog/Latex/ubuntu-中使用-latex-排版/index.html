@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ubuntu 中使用 Latex 排版 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Latex" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Ubuntu 中使用 Latex 排版</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">在 Ubuntu 中安装 Windows 字体</a>
+<ul>
+<li><a href="#sec-1-1">测试</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">字号</a>
+<ul>
+<li><a href="#sec-2-1">中文字号</a></li>
+<li><a href="#sec-2-2">英文字号</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">行距</a>
+<ul>
+<li><a href="#sec-3-1">修改行距</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">在 Ubuntu 中安装 Windows 字体</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+拷贝 Windows 下的字体到 /usr/share/fonts/winFonts 目录里, 执行命令:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-Shell">sudo chmod +x /usr/share/fonts/winFonts/*
+sudo mkfontscale
+sudo mkfontdir
+sudo fc-cache -fsv  // 更新字体缓存
+</pre>
+</div>
+
+<p>
+查看可用的字体名:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-Shell">fc-list :lang=zh
+
+// 结果类似如下
+/usr/share/fonts/winFonts/simli.ttf: 隶书,LiSu:style=Regular
+</pre>
+</div>
+<p>
+其中, LiSu 是字体名, 而不是 simli
+</p>
+</div>
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">测试</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+
+<pre class="src src-Shell">\documentclass[UTF8]{article}                                                                                                                              \usepackage{ctex}                                                                                                                                          \setCJKfamilyfont{ls}{LiSu}                                                                                                                                \newcommand{\lishu}{\CJKfamily{ls}}                                                                                                                        \begin{document}                                                                                                                                           \lishu 我爱中国!                                                                                                                                           \end{document}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">字号</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">中文字号</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+在 ctex 中, 提供了 \zihao 命令, 可以选择与 Microsoft Word 相同的字号.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-Shell">\zihao{0} 初 号
+\zihao{2} 二 号
+\zihao{4} 四 号
+\zihao{6} 六 号
+\zihao{-0} 小 初 号
+\zihao{-2} 小 二 号
+\zihao{-4} 小 四 号
+\zihao{-6} 小 六 号
+\zihao{1} 一 号
+\zihao{3} 三 号
+\zihao{5} 五 号
+\zihao{7} 七 号
+\zihao{-1} 小 一 号 
+\zihao{-3} 小 三 号
+\zihao{-5} 小 五 号
+\zihao{8} 八 号
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">英文字号</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+当文档类设定字体大小为 10pt, 11pt, 12pt 时, 下面的表格列出了对应的字号命令的大小.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">字体命令</th>
+<th scope="col" class="left">10pt</th>
+<th scope="col" class="left">11pt</th>
+<th scope="col" class="left">12pt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">\tiny</td>
+<td class="left">5pt</td>
+<td class="left">6pt</td>
+<td class="left">6pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\scriptsize</td>
+<td class="left">7pt</td>
+<td class="left">8pt</td>
+<td class="left">8pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\footnotesize</td>
+<td class="left">8pt</td>
+<td class="left">9pt</td>
+<td class="left">10pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\small</td>
+<td class="left">9pt</td>
+<td class="left">10pt</td>
+<td class="left">10.95pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\normalsize</td>
+<td class="left">10pt</td>
+<td class="left">10.95pt</td>
+<td class="left">12pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\large</td>
+<td class="left">12pt</td>
+<td class="left">12pt</td>
+<td class="left">14.4pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\Large</td>
+<td class="left">14.4pt</td>
+<td class="left">14.4pt</td>
+<td class="left">17.28pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\LARGE</td>
+<td class="left">17.28pt</td>
+<td class="left">17.28pt</td>
+<td class="left">20.74pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\huge</td>
+<td class="left">20.74pt</td>
+<td class="left">20.74pt</td>
+<td class="left">24.88pt</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">\Huge</td>
+<td class="left">24.88pt</td>
+<td class="left">24.88pt</td>
+<td class="left">24.88pt</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+利用 \fontsize 命令, 我们也可以指定任意的字号. 例如:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-Shell">{\fontsize{20}{24}\selectfont TEXT}
+</pre>
+</div>
+<p>
+其中 \fontsize 命令的第二个参数是基本行距. 英文文档行距一般设为字号的 1.2 倍, 中文文档的行距一般设为字号的 1.5 倍. 改变字号后需要用 \selectfont 才能生效.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">行距</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Latex 中每个字符都放在一个 box 里, 每个 box 有 base, width, height, depth, 其中, height+depth 就是总的高度. 多个字符组成一个词的 box, 这个 box 也一样具备这些参数. 如下图所示:
+<img src="https://pinvondev.github.io/assets/blog/Latex/2018/11/19/ubuntu-中使用-latex-排版/ Or /blog/Latex/ubuntu-中使用-latex-排版/0.png" alt="0.png" />
+</p>
+
+<p>
+Latex 断行之后, 会把这一行的所有 box 的 base 连接起来, 保证该行的内容都在一个基准线上, 即 baseline.
+</p>
+
+<p>
+每一行都有一条 baseline, 同一段落中相邻两行之间的 baseline 的间距称为行距(linespace), 最终决定两条 baseline 之间的 linespace 的是 \baselineskip, 即 \baselineskip 的值就是两条基准线之间的距离.
+</p>
+
+<p>
+\baselineskip 的值应该随着字号的大小而变化, 否则较大字号的内容会显得拥挤. Latex 中将字号存储在内部宏 \f@size 中, 将行距和字号相关的部分存储在 \f@baselineskip 中. 为了对不同字号的内容进行行距的调整, 引入了因子的概念, 这是一个数值, 存储在 \baselinestretch 里面, \baselinestretch 的值与字号无关, 在 article 文档类中默认为 1, 在 ctexart 中默认为 1.3. 一般情况下, 修改行距, 就是修改这个因子, 而不改动前面的 \baselineskip.
+</p>
+
+<p>
+综上, 最终, \baselineskip = \f@baselineskip * \baselinestretch. 在 article 中, 默认行距是字号的 1.2 倍, ctexart 中, 默认行距是字号的 1.56 倍. <code>Microsoft Office Word 中的单倍行距, 1.5 倍行距和双倍行距, 在 Latex 中就是因子(\baselinestretch)的值为 1, 1.2 和 1.6 时的行距(\baselineskip)</code>.
+</p>
+
+<p>
+在 setspace 宏包中, 也有单倍, 双倍, 1.5 倍的行距, 这个宏包中的行距, 指的是相对于字号的倍数.
+</p>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">修改行距</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+修改行距就是修改因子(\baselinestretch)的值. 有两种方法: 使用 \renewcommand 命令直接修改 \baselinestretch; 使用 \linespread{<因子>}\selectfont 修改.
+</p>
+
+<p>
+\linespread 和 \fontsize{}{} 这类命令, 必须在其后添加 \selectfont 才会生效.
+</p>
+
+<p>
+如:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-Shell">\linespread{1.6}\selectfont
+% 或
+\renewcommand{\baselinestretch}{1.6}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2018-11-19</span>
+            <span title="last modification date" class="post-info">2018-11-21</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/latex">Latex</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Latex/2018/11/19/ubuntu-中使用-latex-排版/ Or /blog/Latex/ubuntu-中使用-latex-排版/";
+         var disqus_url = "https://pinvondev.github.io/blog/Latex/2018/11/19/ubuntu-中使用-latex-排版/ Or /blog/Latex/ubuntu-中使用-latex-排版/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
