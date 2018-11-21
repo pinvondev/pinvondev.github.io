@@ -1,0 +1,120 @@
+#+TITLE:       Ubuntu 中使用 Latex 排版
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2018-11-19 一
+
+#+URI:         /blog/Latex/%y/%m/%d/%t/ Or /blog/Latex/%t/
+#+TAGS:        Latex
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 在 Ubuntu 中安装 Windows 字体
+
+拷贝 Windows 下的字体到 /usr/share/fonts/winFonts 目录里, 执行命令:
+#+BEGIN_SRC Shell
+sudo chmod +x /usr/share/fonts/winFonts/*
+sudo mkfontscale
+sudo mkfontdir
+sudo fc-cache -fsv  // 更新字体缓存
+#+END_SRC
+
+查看可用的字体名:
+#+BEGIN_SRC Shell
+fc-list :lang=zh
+
+// 结果类似如下
+/usr/share/fonts/winFonts/simli.ttf: 隶书,LiSu:style=Regular
+#+END_SRC
+其中, LiSu 是字体名, 而不是 simli
+
+** 测试
+
+#+BEGIN_SRC Shell
+\documentclass[UTF8]{article}                                                                                                                              \usepackage{ctex}                                                                                                                                          \setCJKfamilyfont{ls}{LiSu}                                                                                                                                \newcommand{\lishu}{\CJKfamily{ls}}                                                                                                                        \begin{document}                                                                                                                                           \lishu 我爱中国!                                                                                                                                           \end{document}                                                                                                                                             
+#+END_SRC
+
+* 字号
+
+** 中文字号
+
+在 ctex 中, 提供了 \zihao 命令, 可以选择与 Microsoft Word 相同的字号.
+#+BEGIN_SRC Shell
+\zihao{0} 初 号
+\zihao{2} 二 号
+\zihao{4} 四 号
+\zihao{6} 六 号
+\zihao{-0} 小 初 号
+\zihao{-2} 小 二 号
+\zihao{-4} 小 四 号
+\zihao{-6} 小 六 号
+\zihao{1} 一 号
+\zihao{3} 三 号
+\zihao{5} 五 号
+\zihao{7} 七 号
+\zihao{-1} 小 一 号 
+\zihao{-3} 小 三 号
+\zihao{-5} 小 五 号
+\zihao{8} 八 号
+#+END_SRC
+
+** 英文字号
+
+当文档类设定字体大小为 10pt, 11pt, 12pt 时, 下面的表格列出了对应的字号命令的大小.
+| 字体命令      | 10pt    | 11pt    | 12pt    |
+|---------------+---------+---------+---------|
+| \tiny         | 5pt     | 6pt     | 6pt     |
+|---------------+---------+---------+---------|
+| \scriptsize   | 7pt     | 8pt     | 8pt     |
+|---------------+---------+---------+---------|
+| \footnotesize | 8pt     | 9pt     | 10pt    |
+|---------------+---------+---------+---------|
+| \small        | 9pt     | 10pt    | 10.95pt |
+|---------------+---------+---------+---------|
+| \normalsize   | 10pt    | 10.95pt | 12pt    |
+|---------------+---------+---------+---------|
+| \large        | 12pt    | 12pt    | 14.4pt  |
+|---------------+---------+---------+---------|
+| \Large        | 14.4pt  | 14.4pt  | 17.28pt |
+|---------------+---------+---------+---------|
+| \LARGE        | 17.28pt | 17.28pt | 20.74pt |
+|---------------+---------+---------+---------|
+| \huge         | 20.74pt | 20.74pt | 24.88pt |
+|---------------+---------+---------+---------|
+| \Huge         | 24.88pt | 24.88pt | 24.88pt |
+|---------------+---------+---------+---------|
+
+利用 \fontsize 命令, 我们也可以指定任意的字号. 例如:
+#+BEGIN_SRC Shell
+{\fontsize{20}{24}\selectfont TEXT}
+#+END_SRC
+其中 \fontsize 命令的第二个参数是基本行距. 英文文档行距一般设为字号的 1.2 倍, 中文文档的行距一般设为字号的 1.5 倍. 改变字号后需要用 \selectfont 才能生效.
+
+* 行距
+
+Latex 中每个字符都放在一个 box 里, 每个 box 有 base, width, height, depth, 其中, height+depth 就是总的高度. 多个字符组成一个词的 box, 这个 box 也一样具备这些参数. 如下图所示:
+[[./0.png]]
+
+Latex 断行之后, 会把这一行的所有 box 的 base 连接起来, 保证该行的内容都在一个基准线上, 即 baseline.
+
+每一行都有一条 baseline, 同一段落中相邻两行之间的 baseline 的间距称为行距(linespace), 最终决定两条 baseline 之间的 linespace 的是 \baselineskip, 即 \baselineskip 的值就是两条基准线之间的距离.
+
+\baselineskip 的值应该随着字号的大小而变化, 否则较大字号的内容会显得拥挤. Latex 中将字号存储在内部宏 \f@size 中, 将行距和字号相关的部分存储在 \f@baselineskip 中. 为了对不同字号的内容进行行距的调整, 引入了因子的概念, 这是一个数值, 存储在 \baselinestretch 里面, \baselinestretch 的值与字号无关, 在 article 文档类中默认为 1, 在 ctexart 中默认为 1.3. 一般情况下, 修改行距, 就是修改这个因子, 而不改动前面的 \baselineskip.
+
+综上, 最终, \baselineskip = \f@baselineskip * \baselinestretch. 在 article 中, 默认行距是字号的 1.2 倍, ctexart 中, 默认行距是字号的 1.56 倍. =Microsoft Office Word 中的单倍行距, 1.5 倍行距和双倍行距, 在 Latex 中就是因子(\baselinestretch)的值为 1, 1.2 和 1.6 时的行距(\baselineskip)=.
+
+在 setspace 宏包中, 也有单倍, 双倍, 1.5 倍的行距, 这个宏包中的行距, 指的是相对于字号的倍数.
+
+** 修改行距
+
+修改行距就是修改因子(\baselinestretch)的值. 有两种方法: 使用 \renewcommand 命令直接修改 \baselinestretch; 使用 \linespread{<因子>}\selectfont 修改.
+
+\linespread 和 \fontsize{}{} 这类命令, 必须在其后添加 \selectfont 才会生效.
+
+如:
+#+BEGIN_SRC Shell
+\linespread{1.6}\selectfont
+% 或
+\renewcommand{\baselinestretch}{1.6}
+#+END_SRC
