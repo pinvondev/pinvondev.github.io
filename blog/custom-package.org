@@ -1,0 +1,134 @@
+#+TITLE:       自定义宏包
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2018-11-21 三
+
+#+URI:         /blog/%y/%m/%d/%t/ Or /blog/%t/
+#+TAGS:        Latex
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 自定义命令和环境
+
+** 自定义命令
+
+自定义命令的格式如下:
+#+BEGIN_SRC Latex
+\newcommand{\<name>}[<num>}>]{<definition>}
+#+END_SRC
+其中, <name> 是自定义的命令名称, <num> 是可选的, 用于指定新命令所需的参数个数, 如果省略, 则默认为 0, 即没有参数, <definition> 是命令的定义.
+
+例子:
+#+BEGIN_EXAMPLE
+\newcommand{\reverse}[3]{#3#2#1}
+
+% 用法
+\reverse{A}{B}{C}
+
+% 输出
+CBA
+#+END_EXAMPLE
+
+\renewcommand: 可以修改已有命令;
+
+\providecommand: 如果命令不存在, 则相当于 \newcommand, 如果命令已经存在, 则使用原有定义.
+
+\renewcommand 和 \providecommand 的用法与 \newcommand 一样.
+
+** 自定义环境
+
+\newenvironment 可以用于定义一个新的原本不存在的环境, 如果想重新定义已有环境, 则要使用 \renewenvironment. 用法如下:
+#+BEGIN_EXAMPLE
+\newenvironment{<name>}[<num>]{<before>}{<after>}
+#+END_EXAMPLE
+其中, <before> 中的内容将在此环境包含的文本之前处理, <after> 中的内容将在遇到 \end{<name>} 时处理.
+
+例子如下:
+#+BEGIN_EXAMPLE
+\newenvironment{myabstract}{
+  {\centering \zihao{3}{摘 \qquad 要} \par}
+  \zihao{-4}
+}{测试}
+
+% 使用
+\begin{myabstract}
+您好.
+\end{myabstract}
+
+% 输出居中的3号字体"摘要", 换行输出"您好.测试"
+#+END_EXAMPLE
+
+* 宏包与文档类的区别
+
+宏包以 .sty 作为扩展名, 一般将一些功能与特征(如将文字彩色显示)包含在宏包文件中.
+
+文档类以 .cls 作为扩展名, 一般将文档的逻辑结构进行格式化排版包含在文档类中, 如摘要三号黑体居中等信息.
+
+如果我们自定义的命令可以用于各种文档类中, 则将它们置于一个宏包中, 否则就放在文档类中.
+
+* 自定义宏包/文档类
+
+** 宏包/文档类的结构
+
+*** Identification
+
+identification 用于标识自身是一个宏包/文档类, 并给出简要的描述.
+
+宏包标识的格式为:
+#+BEGIN_EXAMPLE
+\NeedsTexFormat{LaTeX2e}
+\ProvidesPackage{<package>}[<date> <other information>]
+
+% 如
+\NeedsTexFormat{LaTeX2e}
+\ProvidesPackage{latexsym}[2018/11/22 study]
+#+END_EXAMPLE
+
+文档标识的格式为:
+#+BEGIN_EXAMPLE
+\NeedsTexFormat{LaTeX2e}
+\ProvidesClass{<class-name>}[<date> <other information>]
+
+% 如
+\NeedsTexFormat{LaTeX2e}
+\ProvidesClass{article}
+#+END_EXAMPLE
+注意, <package> 和 <class-name> 需要和文件名一致.
+
+*** 使用宏包/文档类
+
+在 Latex 的宏包/文档类中装载另一个宏包的语法如下:
+#+BEGIN_EXAMPLE
+\RequirePackage[<options>]{<package-name>}[<date>]
+
+% 如
+\RequirePackage{ifthen}
+#+END_EXAMPLE
+
+在 Latex 的宏包/文档类中装载另一个文档类的语法如下:
+#+BEGIN_EXAMPLE
+\LoadClass[<options>]{<class-name>}[<date>]
+
+% 如
+\LoadClass[twocolmn]{article}
+#+END_EXAMPLE
+
+*** 声明选项
+
+声明的选项就是 \usepackage[options]{package-name} 中的 options. 语法如下:
+#+BEGIN_EXAMPLE
+\DeclareOption{<option>}{<code>}
+#+END_EXAMPLE
+
+如:
+#+BEGIN_EXAMPLE
+\DeclareOption{bachelor}{\xjtu@bachelortrue}
+\DeclareOption{master}{\xjtu@mastertrue}
+\DeclareOption{doctor}{\xjtu@doctortrue}
+\ProcessOptions\relax
+#+END_EXAMPLE
+\ProcessOptions\relax 会执行每个指定选项的 <code> 部分.
+
+当用户在使用时, \documentclass[bachelor]{XJTUthesis} 表示使用 bachelor 选项.
