@@ -1,0 +1,77 @@
+#+TITLE:       七牛云工具使用
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2018-12-28 五
+
+#+URI:         /blog/VPN/%y/%m/%d/%t/ Or /blog/VPN/%t/
+#+TAGS:        VPN
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* qshell
+
+qshell 是利用七牛文档上公开的 API 实现的一个方便开发者测试和使用七牛 API 服务的命令行工具.
+
+具体介绍: [[https://developer.qiniu.com/kodo/tools/1302/qshell][命令行工具(qshell)]]
+
+下载完成后, 解压, 移动到 /usr/bin 目录中, 并重命令为 qshell, 这样就可以不修改环境变量直接使用了.
+#+BEGIN_EXAMPLE
+mv qshell_linux_64 /usr/bin/qshell
+#+END_EXAMPLE
+
+** 登录
+
+#+BEGIN_EXAMPLE
+qshell account ak sk name
+#+END_EXAMPLE
+其中, ak, sk 在"个人面板-密钥管理"中查看.
+
+如果 ak, sk, name 这些信息中, 首字母是"-", 则登录命令改成:
+#+BEGIN_EXAMPLE
+qshell account -- ak sk name
+#+END_EXAMPLE
+
+** 常用命令
+
+*** fput 介绍
+
+fput 命令用来以 multipart/form-data 的表单方式上传一个文件. 适合于中小型文件的上传, 一般建议如果文件大小超过 100MB 的话, 都使用分片上传.
+
+命令格式:
+#+BEGIN_EXAMPLE
+qshell fput [--overwrite] [--callback-urls <CallbackUrls>] [--callback-host <CallbackHost>] [--storage <StorageType>] [--mimetype <MimeType>] <Bucket> <Key> <LocalFile>
+#+END_EXAMPLE
+
+参数意义如下:
+| 参数名称     | 描述                                           | 可选参数 |
+|--------------+------------------------------------------------+----------|
+| Bucket       | 七牛空间名称, 可以为公开空间或私有空间         | N        |
+|--------------+------------------------------------------------+----------|
+| Key          | 文件保存在七牛空间的名称                       | N        |
+|--------------+------------------------------------------------+----------|
+| LocalFile    | 本地文件的路径                                 | N        |
+|--------------+------------------------------------------------+----------|
+| Overwrite    | 是否覆盖空间已有文件, 默认为 false             | Y        |
+|--------------+------------------------------------------------+----------|
+| MimeType     | 指定文件的 MimeType                            | Y        |
+|--------------+------------------------------------------------+----------|
+| StorageType  | 文件存储类型, 默认为 0(标准存储), 1 为低频存储 | Y        |
+|--------------+------------------------------------------------+----------|
+| CallbackUrls | 上传回调地址, 可以指定多个地址, 以逗号分隔     | Y        |
+|--------------+------------------------------------------------+----------|
+| CallbackHost | 上传回调的 HOST, 必须和 CallbackUrls 一起指定  | Y        |
+|--------------+------------------------------------------------+----------|
+
+*** fputs 常用命令
+
+上传本地文件 /Users/jemy/Documents/qiniu.jpg 到空间 if-pbl 里面:
+#+BEGIN_EXAMPLE
+qshell fput if-pbl qiniu.jpg /Users/jemy/Documents/qiniu.jpg
+#+END_EXAMPLE
+
+上传本地文件 /Users/jemy/Documents/qiniu.jpg 到空间 if-pbl 里面, 带前缀 2015/01/18/, 并且指定 MimeType 参数为 image/jpg:
+#+BEGIN_EXAMPLE
+qshell fput if-pbl 2015/01/18/qiniu.jpg /Users/jemy/Documents/qiniu.jpg --mimetype image/jpg
+#+END_EXAMPLE
