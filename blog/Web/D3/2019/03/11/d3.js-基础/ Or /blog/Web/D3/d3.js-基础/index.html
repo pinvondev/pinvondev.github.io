@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>D3.js 基础 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Web" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">D3.js 基础</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">基本操作</a>
+<ul>
+<li><a href="#sec-1-1">添加元素</a></li>
+<li><a href="#sec-1-2">绑定数据</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">添加 SVG 画布制作简单图表</a></li>
+<li><a href="#sec-3">比例尺</a>
+<ul>
+<li><a href="#sec-3-1">线性比例尺</a></li>
+<li><a href="#sec-3-2">序数比例尺</a></li>
+<li><a href="#sec-3-3">给柱形图添加比例尺</a></li>
+<li><a href="#sec-3-4">坐标轴</a></li>
+<li><a href="#sec-3-5">完整柱状图</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">动画</a>
+<ul>
+<li><a href="#sec-4-1">transition()</a></li>
+<li><a href="#sec-4-2">duration()</a></li>
+<li><a href="#sec-4-3">ease()</a></li>
+<li><a href="#sec-4-4">delay()</a></li>
+<li><a href="#sec-4-5">例子</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">update, enter 和 exit</a>
+<ul>
+<li><a href="#sec-5-1">update 和 enter 的使用</a></li>
+<li><a href="#sec-5-2">update 和 exit 的使用</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">交互式操作</a>
+<ul>
+<li><a href="#sec-6-1">例子</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">布局</a>
+<ul>
+<li><a href="#sec-7-1">力导向图</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">基本操作</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">添加元素</h3>
+<div class="outline-text-3" id="text-1-1">
+<pre class="example">
+d3.select("body").append("p").text("hello world");
+
+d3.select("body")
+	.append("p")
+	.text("hello world");
+
+var body = d3.select("body");
+var p = body.append("p");
+p.text("hello world");
+</pre>
+<p>
+解释: 选择 body 标签, 为之添加一个 p 标签, 设置内容为 "hello world".
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">绑定数据</h3>
+<div class="outline-text-3" id="text-1-2">
+<pre class="example">
+var dataset = [1, 2, 3, 4, 5];
+d3.select("body").selectAll("p")  // 选择 body 中所有的 p 标签
+.data(dataset)
+.enter()	// 如果数值多于 DOM 元素, 就用 enter() 创建新元素的占们符
+.append("p")  // 在 enter() 创建的占位符中插入 p 标签
+.text("hello world");
+</pre>
+<p>
+结果会出现 dataset.length 个 "hello world".
+</p>
+
+<p>
+在 .text() 内部, 也可以使用匿名函数, 对数据进行更多的操作:
+</p>
+<pre class="example">
+d3.select("body").selectAll("p")
+.data(dataset)
+.enter()
+.append("p")
+.text(function(d, i) {	... })  // d 代表数据, i 代表索引
+.style("color", function(d) { 
+	if (d &gt; 3) return "red";
+	else return "black";
+});
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">添加 SVG 画布制作简单图表</h2>
+<div class="outline-text-2" id="text-2">
+<pre class="example">
+var width = 300;
+var height = 300;
+var svg = d3.select("body")
+	.append("svg")	// 添加一个 svg 元素
+	.attr("width", width)
+	.attr("height", height);
+
+var dataset = [ 250, 210, 170, 130, 90];
+var rectHeight = 25;  // 每个矩形所占的像素高度
+
+svg.selectAll("rect")
+	.data(dataset)
+	.enter()
+	.append("rect")
+	.attr("x", 20)
+	.attr("y", function(d, i) { return i*rectHeight; })
+	.attr("width", function(d) { return d; })
+	.attr("heigth", rectHeight-2)
+	.attr("fill", "steelblue");
+</pre>
+
+<p>
+svg 中包含的基本元素有: 矩形(rect), 圆(circle), 椭圆(ellipse), 线(line), 文本(text)
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">比例尺</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">线性比例尺</h3>
+<div class="outline-text-3" id="text-3-1">
+<pre class="example">
+var dataset = [1.2, 2.3, 0.9, 1.5, 3.3];
+var min = d3.min(dataset);
+var max = d3.max(dataset);
+var linear = d3.scale.linear()  // 在新版本中改成 d3.scaleLinear()
+	.domain([min, max])
+	.range([0, 300]);
+
+linear(0.9);  // 返回 0
+linear(2.3);  // 返回 175
+linear(3.3);  // 返回 300
+</pre>
+<p>
+线性比例尺就是按照 y=kx+b 的线性关系来映射的.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">序数比例尺</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+如果比例尺不是连续的, 则可以使用序数比例尺.
+</p>
+<pre class="example">
+var index = [0, 1, 2, 3, 4];
+var color = ["red", "blue", "green", "yellow", "black"];
+var ordinal = d3.scale.ordinal()
+	.domain(index)
+	.range(color);
+
+ordinal(0);  // 返回 red
+ordinal(2);  // 返回 green
+ordinal(4);  // 返回 black
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">给柱形图添加比例尺</h3>
+<div class="outline-text-3" id="text-3-3">
+<pre class="example">
+...
+svg.selectAll("rect")
+	.data(dataset)
+	...
+	.attr("y", function(d, i) { return i*rectHeight; })
+	.attr("width", function(d) { return linear(d); })  // 使用比例尺
+	...
+</pre>
+<p>
+这样, 所有数值都按照同一个线性比例尺的关系来计算宽度, 因此数值之间的大小关系不变.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">坐标轴</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+要生成坐标轴, 需要用到比例尺, 两者经常一起使用.
+</p>
+<pre class="example">
+var dataset = [2.5, 2.1, 1.7, 1.3, 0.9];
+var linear = d3.scale.linear()
+	.domain([0, d3.max(dataset)])
+	.range([0, 250]);
+var axis = d3.svg.axis()
+	.scale(linear)  // 指定比例尺
+	.orient("bottom")  // 指定刻度的方向, bottom 表示在坐标轴的下方显示
+	.ticks(7);  // 指定刻度的数量
+
+svg.append("g")  // 添加一个元素, g 表示 group, 相当于容器
+	.attr("transform", "translate(20, 130)")  // 通过 transform 属性来设置坐标轴的位置
+	.call(axis);
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-3-5" class="outline-3">
+<h3 id="sec-3-5">完整柱状图</h3>
+<div class="outline-text-3" id="text-3-5">
+<pre class="example">
+&lt;html&gt;  
+&lt;head&gt;  
+	&lt;meta charset="utf-8"&gt;  
+	&lt;title&gt;完整的柱形图&lt;/title&gt;  
+&lt;/head&gt; 
+&lt;style&gt;
+	.axis path,
+	.axis line{
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+	.axis text {
+		font-family: sans-serif;
+		font-size: 11px;
+	}
+	.MyRect {
+		fill: steelblue;
+	}
+	.MyText {
+		fill: white;
+		text-anchor: middle;
+	}
+&lt;/style&gt;
+&lt;body&gt;  
+	&lt;script src="http://d3js.org/d3.v3.min.js" charset="utf-8"&gt;&lt;/script&gt;  
+	&lt;script&gt;
+	//画布大小
+	var width = 400;
+	var height = 400;
+	//在 body 里添加一个 SVG 画布	
+	var svg = d3.select("body")
+		.append("svg")
+		.attr("width", width)
+		.attr("height", height);
+	//画布周边的空白
+	var padding = {left:30, right:30, top:20, bottom:20};
+	//定义一个数组
+	var dataset = [10, 20, 30, 40, 33, 24, 12, 5];
+	//x轴的比例尺
+	var xScale = d3.scale.ordinal()
+		.domain(d3.range(dataset.length))
+		.rangeRoundBands([0, width - padding.left - padding.right]);
+	//y轴的比例尺
+	var yScale = d3.scale.linear()
+		.domain([0,d3.max(dataset)])
+		.range([height - padding.top - padding.bottom, 0]);
+	//定义x轴
+	var xAxis = d3.svg.axis()
+		.scale(xScale)
+		.orient("bottom");
+	//定义y轴
+	var yAxis = d3.svg.axis()
+		.scale(yScale)
+		.orient("left");
+	//矩形之间的空白
+	var rectPadding = 4;
+	//添加矩形元素
+	var rects = svg.selectAll(".MyRect")
+		.data(dataset)
+		.enter()
+		.append("rect")
+		.attr("class","MyRect")
+		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
+		.attr("x", function(d,i){ return xScale(i) + rectPadding/2; })
+		.attr("y",function(d){ return yScale(d); })
+		.attr("width", xScale.rangeBand() - rectPadding )
+		.attr("height", function(d){
+			return height - padding.top - padding.bottom - yScale(d);
+		});
+	//添加文字元素
+	var texts = svg.selectAll(".MyText")
+		.data(dataset)
+		.enter()
+		.append("text")
+		.attr("class","MyText")
+		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
+		.attr("x", function(d,i){ return xScale(i) + rectPadding/2; })
+		.attr("y",function(d){ return yScale(d); })
+		.attr("dx",function(){ return (xScale.rangeBand() - rectPadding)/2;	})
+		.attr("dy",function(d){	return 20; })
+		.text(function(d){ return d; });
+	//添加x轴
+	svg.append("g")
+		.attr("class","axis")
+		.attr("transform","translate(" + padding.left + "," + (height - padding.bottom) + ")")
+		.call(xAxis); 
+	//添加y轴
+	svg.append("g")
+		.attr("class","axis")
+		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
+		.call(yAxis);
+&lt;/script&gt;  
+&lt;/body&gt;  
+&lt;/html&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">动画</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+D3 提供了 4 个方法用于实现图形的过渡.
+</p>
+</div>
+
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">transition()</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+启动过渡效果.
+</p>
+<pre class="example">
+.attr("fill", "red")  // 初始颜色为红色
+.transition()
+.attr("fill", "steelblue")  // 终止颜色为蓝色
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">duration()</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+指定过渡的持续时间, 单位为毫秒. 如 duration(2000).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">ease()</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+指定过渡的方式. 常用方式有: linear(线性变化), circle(慢慢到达变换的最终状态), elastic(带有弹跳的到达最终状态), blounce(在最终状态处弹跳几下)
+</p>
+
+<p>
+调用: ease("bounce");
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4">delay()</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+指定延迟时间, 表示一定时间后才开始转变, 单位为毫秒.
+</p>
+
+<pre class="example">
+.transition()
+.duration(1000)
+.delay(500)
+</pre>
+
+<p>
+再如:
+</p>
+<pre class="example">
+.transition()
+.duration(1000)
+.delay(function(d, i){ return 200*i; })
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4-5" class="outline-3">
+<h3 id="sec-4-5">例子</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+(1) 移动 x 坐标.
+</p>
+<pre class="example">
+var circle1 = svg.append("circle")
+        .attr("cx", 100)
+        .attr("cy", 100)
+        .attr("r", 45)
+        .style("fill","green");
+
+//在1秒（1000毫秒）内将圆心坐标由100变为300
+circle1.transition()
+    .duration(1000)
+    .attr("cx", 300);
+</pre>
+
+<p>
+(2) 移动 x 坐标, 改变颜色.
+</p>
+<pre class="example">
+var circle2 = svg.append("circle")... //与第一个圆一样，省略部分代码
+
+//在1.5秒（1500毫秒）内将圆心坐标由100变为300，
+//将颜色从绿色变为红色
+circle2.transition()
+    .duration(1500)
+    .attr("cx", 300)
+    .style("fill","red");
+</pre>
+
+<p>
+(3) 移动 x 坐标, 改变颜色, 改变半径.
+</p>
+<pre class="example">
+var circle3 = svg.append("circle")... //与第一个圆一样，省略部分代码
+
+//在2秒（2000毫秒）内将圆心坐标由100变为300
+//将颜色从绿色变为红色
+//将半径从45变成25
+//过渡方式采用bounce（在终点处弹跳几次）
+circle3.transition()
+    .duration(2000)
+    .ease("bounce")
+    .attr("cx", 300)
+    .style("fill","red")
+    .attr("r", 25);
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">update, enter 和 exit</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+update, enter 和 exit 主要用于处理当选择集和数据的数量关系不确定的情况.
+</p>
+
+<p>
+如, 有数据, 但没有足够图形元素的时候, 使用此方法添加足够的元素:
+</p>
+<pre class="example">
+svg.selectAll("rect")   //选择svg内所有的矩形
+    .data(dataset)      //绑定数组
+    .enter()            //指定选择集的enter部分
+    .append("rect")     //添加足够数量的矩形元素
+</pre>
+
+<p>
+如果数组为 [3,6,9,12,15], 将此数组绑定到三个 p 元素的选择集上, 则会有两个数据没有元素与之对应, 这一部分称为 enter, 有元素与数据对应的部分称为 update, 如果数组元素数量少于选择集数量, 则没有数据绑定的部分称为 exit. 如下图所示:
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Web/D3/2019/03/11/d3.js-基础/ Or /blog/Web/D3/d3.js-基础/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1">update 和 enter 的使用</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+绑定数据数量 &gt; 对应元素时, 需要使用 append() 添加元素. 如:
+</p>
+<pre class="example">
+var dataset = [ 3 , 6 , 9 , 12 , 15 ];
+
+//选择body中的p元素
+var p = d3.select("body").selectAll("p");
+
+//获取update部分
+var update = p.data(dataset);
+
+//获取enter部分
+var enter = update.enter();
+
+//update部分的处理：更新属性值
+update.text(function(d){
+    return "update " + d;
+});
+
+//enter部分的处理：添加元素后赋予属性值
+enter.append("p")
+    .text(function(d){
+        return "enter " + d;
+    });
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2">update 和 exit 的使用</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+绑定数据量 &lt; 对应元素时, 需要删除多余的元素. 如:
+</p>
+<pre class="example">
+var dataset = [ 3 ];
+
+//选择body中的p元素
+var p = d3.select("body").selectAll("p");
+
+//获取update部分
+var update = p.data(dataset);
+
+//获取exit部分
+var exit = update.exit();
+
+//update部分的处理：更新属性值
+update.text(function(d){
+    return "update " + d;
+});
+
+//exit部分的处理：修改p元素的属性
+exit.text(function(d){
+        return "exit";
+    });
+
+//exit部分的处理通常是删除元素
+// exit.remove();
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">交互式操作</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+在图形元素上设置一个或多个监听器, 当事件发生时, 做出相应的反应.
+</p>
+
+<p>
+添加交互的例子:
+</p>
+<pre class="example">
+var circle = svg.append("circle");
+
+circle.on("click", function(){
+    //在这里添加交互内容
+});
+</pre>
+
+<p>
+在 D3 中, 每一个选择集都有 on() 方法, 用于添加事件监听器. 第一个参数是监听的事件, 第二个参数是监听到事件后响应的内容, 是一个函数.
+</p>
+
+<p>
+鼠标常用事件:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">事件</th>
+<th scope="col" class="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">click</td>
+<td class="left">单击, 相当于 mousedown 和 mouseup</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">mouseover</td>
+<td class="left">光标放在某元素上</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">mouseout</td>
+<td class="left">光标从某元素上移出来时</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">mousemove</td>
+<td class="left">鼠标被移动的时候</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">mousedown</td>
+<td class="left">鼠标按钮被按下</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">mouseup</td>
+<td class="left">鼠标按钮被松开</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">dbclick</td>
+<td class="left">鼠标双击</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+键盘常用的事件为:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">keydown</th>
+<th scope="col" class="left">当用户按下任意键时触发, 按住不放会重复触发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">keypress</td>
+<td class="left">当用户按下字符键时触发, 按住不放会重复触发</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">keyup</td>
+<td class="left">当用户释放时触发</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+触屏常用的事件为:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">touchstart</th>
+<th scope="col" class="left">当触摸点被放在触摸屏上时触发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">touchmove</td>
+<td class="left">当触摸点在触摸屏上移动时触发</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">touchend</td>
+<td class="left">当触摸点从触摸屏上拿开时触发</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1">例子</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+为前面的柱状图加上交互事件.
+</p>
+<pre class="example">
+var rects = svg.selectAll(".MyRect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class","MyRect")   //把类里的 fill 属性清空
+        .attr("transform","translate(" + padding.left + "," + padding.top + ")")
+        .attr("x", function(d,i){
+            return xScale(i) + rectPadding/2;
+        } )
+        .attr("y",function(d){
+            return yScale(d);
+        })
+        .attr("width", xScale.rangeBand() - rectPadding )
+        .attr("height", function(d){
+            return height - padding.top - padding.bottom - yScale(d);
+        })
+        .attr("fill","steelblue")       //填充颜色不要写在CSS里
+        .on("mouseover",function(d,i){
+            d3.select(this)
+                .attr("fill","yellow");
+        })
+        .on("mouseout",function(d,i){
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .attr("fill","steelblue");
+        });
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">布局</h2>
+<div class="outline-text-2" id="text-7">
+</div><div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1">力导向图</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+力导向图是绘图的一种算法, 在二维或三维空间里配置节点, 节点之间用线连接, 称为连线. 各连线的长度几乎相等, 且尽可能不相交. 节点和连线都被施加了力的作用, 力是根据节点和连线的相对位置计算的. 根据力的作用, 来计算节点和连线的运动轨迹, 并不断降低它们的能量, 最终达到一种能量很低的安定状态.
+</p>
+
+<pre class="example">
+var nodes = [ { name: "桂林" }, { name: "广州" },
+              { name: "厦门" }, { name: "杭州" },
+              { name: "上海" }, { name: "青岛" },
+              { name: "天津" } ];
+
+ var edges = [ { source : 0 , target: 1 } , { source : 0 , target: 2 } ,
+               { source : 0 , target: 3 } , { source : 1 , target: 4 } ,
+               { source : 1 , target: 5 } , { source : 1 , target: 6 } ];
+
+// 定义一个力导向图的布局
+var force = d3.layout.force()
+      .nodes(nodes) //指定节点数组
+      .links(edges) //指定连线数组
+      .size([width,height]) //指定作用域范围
+      .linkDistance(150) //指定连线长度
+      .charge([-400]); //相互之间的作用力
+
+// 使力学作用生效
+force.start();
+
+// 绘制
+//添加连线 
+ var svg_edges = svg.selectAll("line")
+     .data(edges)
+     .enter()
+     .append("line")
+     .style("stroke","#ccc")
+     .style("stroke-width",1);
+
+ var color = d3.scale.category20();
+
+ //添加节点 
+ var svg_nodes = svg.selectAll("circle")
+     .data(nodes)
+     .enter()
+     .append("circle")
+     .attr("r",20)
+     .style("fill",function(d,i){
+         return color(i);
+     })
+     .call(force.drag);  //使得节点能够拖动
+
+ //添加描述节点的文字
+ var svg_texts = svg.selectAll("text")
+     .data(nodes)
+     .enter()
+     .append("text")
+     .style("fill", "black")
+     .attr("dx", 20)
+     .attr("dy", 8)
+     .text(function(d){
+        return d.name;
+     });
+
+// 不断更新节点和连线的位置
+force.on("tick", function(){ //对于每一个时间间隔
+    //更新连线坐标
+    svg_edges.attr("x1",function(d){ return d.source.x; })
+        .attr("y1",function(d){ return d.source.y; })
+        .attr("x2",function(d){ return d.target.x; })
+        .attr("y2",function(d){ return d.target.y; });
+
+    //更新节点坐标
+    svg_nodes.attr("cx",function(d){ return d.x; })
+        .attr("cy",function(d){ return d.y; });
+
+    //更新文字坐标
+    svg_texts.attr("x", function(d){ return d.x; })
+       .attr("y", function(d){ return d.y; });
+ });
+</pre>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-03-11</span>
+            <span title="last modification date" class="post-info">2019-03-13</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/web">Web</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Web/D3/2019/03/11/d3.js-基础/ Or /blog/Web/D3/d3.js-基础/";
+         var disqus_url = "https://pinvondev.github.io/blog/Web/D3/2019/03/11/d3.js-基础/ Or /blog/Web/D3/d3.js-基础/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
