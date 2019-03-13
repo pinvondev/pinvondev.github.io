@@ -96,6 +96,7 @@
 <li><a href="#sec-7-1">力导向图</a></li>
 </ul>
 </li>
+<li><a href="#sec-8">读取 csv 文件</a></li>
 </ul>
 </div>
 </div>
@@ -862,6 +863,44 @@ force.on("tick", function(){ //对于每一个时间间隔
  });
 </pre>
 </div>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">读取 csv 文件</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+由于 Web 浏览器不支持直接加载本地数据, 因此, 我们可以搭建本地 Web 服务器.
+</p>
+
+<p>
+在终端进入到 html 文件的根目录, 输入:
+</p>
+<pre class="example">
+python -m SimpleHTTPServer 8888 &amp;
+</pre>
+
+<p>
+然后在浏览器中输入: <a href="http://localhost:8888/index.html">http://localhost:8888/index.html</a>
+</p>
+
+<p>
+读取 csv 文件的代码如下:
+</p>
+<pre class="example">
+d3.csv("http://localhost:8888/data/test.csv",function(error,data){
+    if(error){
+        console.log(error);
+    } else {  //(3)取出其中的数字，和类别名
+        for(var i=0;i&lt;data.length;i++){
+            numset.push(parseFloat(data[i].Column1_name));
+            nameset.push(data[i].Column2_name);
+        }
+        var pie=d3.layout.pie(numset);// (4)numset转化数据为适合生成饼图的对象数组
+        // 略，使用加载的数据画圆环图
+    }
+});
+</pre>
 </div>
 </div>
 
