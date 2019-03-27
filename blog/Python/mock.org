@@ -1,0 +1,304 @@
+#+TITLE:       mock
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2019-03-27 三
+
+#+URI:         /blog/Python/%y/%m/%d/%t/ Or /blog/Python/%t/
+#+TAGS:        Python
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+mock: 可以使用 mock 对象来替代指定的 Python 对象, 以达到模拟对象的行为.
+
+场景: c() 需要发送请求给特定的服务器, 得到一个 JSON 返回值, 根据这个返回值做处理. 对 c() 做单元测试时, 如果真的搭建一台测试服务器, 可能会花费大量功夫, mock 可以帮我们在没有测试服务器的情况下, 对 c() 进行单元测试. 假设 c() 的代码如下:
+#+BEGIN_EXAMPLE
+import requests
+ 
+def c(url):
+    resp = requests.get(url)
+    # further process with resp
+#+END_EXAMPLE
+可以使用 mock 对象替换掉 requests.get(), 然后执行 c() 时, requests.get() 的返回值就能由 mock 对象来决定, 而不需要服务器的参与.
+
+* 安装
+
+Python 3.3 之前:
+#+BEGIN_EXAMPLE
+pip install mock
+import mock
+#+END_EXAMPLE
+
+Python 3.3 之后:
+#+BEGIN_EXAMPLE
+from unittest import mock
+#+END_EXAMPLE
+
+* 基本用法
+
+使用流程:
+1. 找到要替换的对象, 可以是一个类, 函数, 或类实例;
+2. 实例化 Mock 类, 得到一个 mock 对象, 设置这个对象的行为;
+3. 使用 mock 对象代替想要代替的对象;
+4. 编写测试代码.
+
+** 例子
+
+一个简单的客户端实现, 用来访问一个 URL, 正常访问时返回 200, 不正常时返回 404. 代码如下:
+#+BEGIN_EXAMPLE
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+ 
+import requests
+ 
+ 
+def send_request(url):
+    r = requests.get(url)
+    return r.status_code
+ 
+ 
+def visit_ustack():
+    return send_request('http://www.ustack.com')
+#+END_EXAMPLE
+
+使用 mock 对象的单元测试代码如下:
+#+BEGIN_EXAMPLE
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+ 
+import unittest
+ 
+import mock
+ 
+import client
+ 
+ 
+class TestClient(unittest.TestCase):
+ 
+    def test_success_request(self):
+        success_send = mock.Mock(return_value='200')
+        client.send_request = success_send
+        self.assertEqual(client.visit_ustack(), '200')
+ 
+    def test_fail_request(self):
+        fail_send = mock.Mock(return_value='404')
+        client.send_request = fail_send
+        self.assertEqual(client.visit_ustack(), '404')
+#+END_EXAMPLE
+1. 找到要替换的对象. 由于要测试 visit_ustack(), 因此要替换的就是另一个函数 send_request();
+2. 实例化 mock 对象, 设置行为. 在成功测试时, 设置返回 200, 在失败测试时, 设置返回 404;
+3. 使用 mock 对象进行替换. 我们替换掉了 client.send_request;
+4. 写测试代码. 调用 client.visit_ustack(), 期望它的返回值和预设的一样.
+
+* 进阶
+
+** class Mock 的参数
+
+name: 用来命名一个 mock 对象, 如果 print(mock对象), 可以看到它的 name;
+
+return_value: 该参数可以指定一个值, 当 mock 对象被调用且 side_effect 返回的是 DEFAULT 时, 对 mock 对象的调用会返回 return_value 指定的值;
+
+side_effect: 该参数指向一个可调用对象, 一般是函数. 如果该函数的返回值不是 DEFAULT, 则以该函数的返回值作为 mock 对象调用的返回值.
+
+如果想要模拟一个序列, 指定 side_effect 为一个 list 即可:
+#+BEGIN_EXAMPLE
+mock_thing.side_effect = [1, 2, 3]
+for i in range(3):
+    print("{}".format(mock_thing()))
+
+1
+2
+3
+#+END_EXAMPLE
+
+如果想要模拟一个异常:
+#+BEGIN_EXAMPLE
+mock_thing.side_effect = Exception('Test')
+mock_thing()
+
+...
+Exception: Test
+#+END_EXAMPLE
+
+** mock 对象的自动创建
+
+当访问一个 mock 对象中不存在的属性时, mock 会自动建立一个子 mock 对象, 并且把正在访问的属性指向它.
+#+BEGIN_EXAMPLE
+client = mock.Mock()
+client.v2_client.get.return_value = '200'
+#+END_EXAMPLE
+这时, 会得到 mock 对象 client, 调用 client 的 v2_client.get() 方法, 会返回 200.
+
+** 常用方法
+
+*** called
+表示该 mock 对象是否被调用过; 如:
+#+BEGIN_EXAMPLE
+mock_thing.called  # False
+mock_thing()
+mock_thing.called  # True
+#+END_EXAMPLE
+
+*** call_args
+列出参数, 如:
+#+BEGIN_EXAMPLE
+mock_thing.some_method(a=1, b=4)
+mock_thing.some_method.call_args  # call(a=1, b=4)
+#+END_EXAMPLE
+
+*** call_count
+统计被调用了几次, 如:
+#+BEGIN_EXAMPLE
+mock_thing.some_method()
+mock_thing.some_method()
+mock_thing.some_method.call_count  # 2
+#+END_EXAMPLE
+
+*** assert_called_with(*args, **kwargs)
+测试是否有调用输入的参数, 如:
+#+BEGIN_EXAMPLE
+mock_thing.some_method(a=1, b=4)
+mock_thing.some_method.assert_called_with(a=1, b=4)  # OK
+mock_thing.some_method.assert_called_with(a=1, b=5)  # Error
+#+END_EXAMPLE
+
+*** call_args_list
+将使用过的参数都列出来, 如:
+#+BEGIN_EXAMPLE
+mock_thing.some_method(a=1, b=4)
+mock_thing.some_method(a=1, b=5)
+mock_thing.some_method.call_args.list  # [call(a=1, b=4), call(a=1, b=5)]
+#+END_EXAMPLE
+
+*** reset_mock
+重置是否被调用, 对其他不会有影响, 如:
+#+BEGIN_EXAMPLE
+mock_thing.return_value = 10
+mock_thing()  # 10
+mock_thing.called  # True
+
+mock_thing.reset_mock()
+mock_thing.called  # False
+
+mock_thing()  # 10
+#+END_EXAMPLE
+
+** patch 和 patch.object
+
+unittest.mock.patch(target, new=DEFAULT, spec=None, create=False, spec_set=None, autospec=None, new_callable=None, **kwargs)
+- target. str 类型, 格式为 package.module.ClassName. 如: package a 下有个 b.py, b.py 里有个 c(), 就要写成 a.b.c;
+
+使用 patch 或 patch.object 的主要目的是为了控制 mock 的范围, 意思是在一个函数范围内, 或一个类的范围内, 或 with 语句的范围内 mock 掉一个对象. 如:
+#+BEGIN_EXAMPLE
+class TestClient(unittest.TestCase):
+ 
+    def test_success_request(self):
+        status_code = '200'
+        success_send = mock.Mock(return_value=status_code)
+        with mock.patch('client.send_request', success_send):
+            from client import visit_ustack
+            self.assertEqual(visit_ustack(), status_code)
+ 
+    def test_fail_request(self):
+        status_code = '404'
+        fail_send = mock.Mock(return_value=status_code)
+        with mock.patch('client.send_request', fail_send):
+            from client import visit_ustack
+            self.assertEqual(visit_ustack(), status_code)
+#+END_EXAMPLE
+此时, 不需要显示创建 mock 对象并进行替换, 使用 patch() 即可.
+
+patch.object 的效果一样, 用法不同:
+#+BEGIN_EXAMPLE
+    def test_fail_request(self):
+        status_code = '404'
+        fail_send = mock.Mock(return_value=status_code)
+        with mock.patch.object(client, 'send_request', fail_send):
+            from client import visit_ustack
+            self.assertEqual(visit_ustack(), status_code)
+#+END_EXAMPLE
+
+* 例子
+
+utils.py
+#+BEGIN_EXAMPLE
+import gzip  
+  
+  
+class Reader(object):  
+  
+    def __init__(self, filename):  
+        self.f = self.open(filename)  
+  
+    def open(self, filename):  
+        try:  
+            f = gzip.open(filename, 'rb')  
+        except:  
+            f = open(filename, 'r')  
+        return f  
+  
+    def get(self):  
+        return self.f.readline()  
+  
+  
+def convert(reader):  
+    return reader.get().split(',')
+#+END_EXAMPLE
+
+test.py
+#+BEGIN_EXAMPLE
+import unittest  
+try:  
+    # Python3  
+    from unittest import mock  
+except:  
+    # Python2  
+    import mock  
+from utils import Reader, convert  
+  
+  
+class ReaderTest(unittest.TestCase):  
+  
+    @mock.patch('utils.open')  
+    @mock.patch('gzip.open')  
+    def test_gzip_open(self, mock_gzip, mock_open):  
+        mock_gzip.return_value = 'Mock Gzip'  
+        reader = Reader('test.csv.gz')  
+        mock_gzip.assert_called_with('test.csv.gz', 'rb')  
+        mock_open.assert_not_called()  
+        self.assertEqual(reader.f, 'Mock Gzip')  
+  
+    @mock.patch('utils.open')  
+    @mock.patch('gzip.open')  
+    def test_builtins_open(self, mock_gzip, mock_open):  
+        mock_gzip.side_effect = Exception('Not this')  
+        mock_open.return_value = 'Open'  
+        reader = Reader('test.csv')  
+        mock_gzip.assert_called_with('test.csv', 'rb')  
+        mock_open.assert_called_with('test.csv', 'r')  
+        self.assertEqual(reader.f, 'Open')  
+  
+    @mock.patch('utils.Reader.open')  
+    def test_get(self, mock_open):  
+        mock_open.return_value.readline.side_effect = [1, 2]  
+        reader = Reader('test.csv')  
+        self.assertEqual(reader.get(), 1)  
+        self.assertEqual(reader.get(), 2)  
+        with self.assertRaises(StopIteration):  
+            reader.get()  
+  
+  
+class ConverterTest(unittest.TestCase):  
+  
+    def test_convert(self):  
+        mock_reader = mock.MagicMock()  
+        mock_reader.get.return_value = '1,2,3'  
+        self.assertEqual(convert(mock_reader), ['1', '2', '3'])  
+  
+  
+if __name__ == '__main__':  
+    unittest.main()  
+#+END_EXAMPLE

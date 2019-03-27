@@ -15,11 +15,46 @@
 
 如果标题以 =TODO= 开关时, 就表示它是一个TODO项.
 
+|--------------+--------------------------------------------------|
 | S-RIGHT/LEFT | 在 =TODO= 状态, =DONE= 状态, =标题= 状态之间切换 |
 |--------------+--------------------------------------------------|
 | S-M-RET      | 在当前项下插入一个新的TODO项                     |
+|--------------+--------------------------------------------------|
+
 
 ** 多状态工作流程
+
+除了 TODO 和 DONE 之外, 还可以定义其他的状态; 还可以定义不同的待办事项的类型:
+#+BEGIN_EXAMPLE
+#+TYP_TODO: 工作(w!) 学习(s!) 休闲(l!) |
+#+SEQ_TODO: PENDING(p!) TODO(t!) | DONE(d!) ABORT(a@/!)
+#+END_EXAMPLE
+1. 使用 "|" 来区分未完成和完成两种状态, 如果没有 "|", 最后一个关键词被设置成完成项, 其余被设置成未完成项;
+2. 关键词后括号内的字母为快捷键, 使用 C-c C-t 来切换状态或类型时, 可以使用快捷键进行选择;
+3. 括号内的 "!" 表示时间戳, 切换到该状态时将插入当前时间; 括号内的 "@" 表示切换到该状态时需要输入文字说明, 如任务取消, 失败等原因.
+
+生效方式: 输入后, 将光标放在改变行上, 使用 C-c C-c 生效.
+
+如果想让所有文件都适用这些设置, 可以写入配置文件:
+#+BEGIN_EXAMPLE
+(setq org-todo-keywords
+  '((type "工作(w!)" "学习(s!)" "休闲(l!)" "|")
+    (sequence "PENDING(p!)" "TODO(t!)"  "|" "DONE(d!)" "ABORT(a@/!)")
+))
+#+END_EXAMPLE
+
+改变不同状态的外观:
+#+BEGIN_EXAMPLE
+(setq org-todo-keyword-faces
+  '(("工作" .      (:background "red" :foreground "white" :weight bold))
+    ("学习" .      (:background "white" :foreground "red" :weight bold))
+    ("休闲" .      (:foreground "MediumBlue" :weight bold)) 
+    ("PENDING" .   (:background "LightGreen" :foreground "gray" :weight bold))
+    ("TODO" .      (:background "DarkOrange" :foreground "black" :weight bold))
+    ("DONE" .      (:background "azure" :foreground "Darkgreen" :weight bold)) 
+    ("ABORT" .     (:background "gray" :foreground "black"))
+))
+#+END_EXAMPLE
 
 ** 进度日志
 
@@ -35,9 +70,12 @@ TODO项标记为 =DONE= 状态时, 插入截止时间和备注.
 
 ** 优先级
 
+|--------+----------------------------|
 | S-UP   | 增加当前 =TODO= 项的优先级 |
 |--------+----------------------------|
 | S-DOWN | 减少当前 =TODO= 项的优先级 |
+|--------+----------------------------|
+
 
 ** 任务细分
 
@@ -47,9 +85,15 @@ TODO项标记为 =DONE= 状态时, 插入截止时间和备注.
 
 当纯文本中的项以"[ ]"开头时, 就会变成一个复选框. 它适合用来做细分任务的再细分.
 
+|---------+------------------------------------|
 | C-c C-c | 更改复选框状态                     |
 |---------+------------------------------------|
 | M-S-RET | 在复选框下面增加一个带有复选框的项 |
+|---------+------------------------------------|
+
+* 标签
+
+* 日期和时间
 
 ** 时间统计
 
