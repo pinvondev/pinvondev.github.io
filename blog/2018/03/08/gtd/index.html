@@ -63,10 +63,15 @@
 <li><a href="#sec-1-4">优先级</a></li>
 <li><a href="#sec-1-5">任务细分</a></li>
 <li><a href="#sec-1-6">复选框</a></li>
-<li><a href="#sec-1-7">时间统计</a>
+</ul>
+</li>
+<li><a href="#sec-2">标签</a></li>
+<li><a href="#sec-3">日期和时间</a>
 <ul>
-<li><a href="#sec-1-7-1">任务时间统计</a></li>
-<li><a href="#sec-1-7-2">当天时间统计</a></li>
+<li><a href="#sec-3-1">时间统计</a>
+<ul>
+<li><a href="#sec-3-1-1">任务时间统计</a></li>
+<li><a href="#sec-3-1-2">当天时间统计</a></li>
 </ul>
 </li>
 </ul>
@@ -109,8 +114,55 @@
 </div>
 </div>
 
+
 <div id="outline-container-sec-1-2" class="outline-3">
 <h3 id="sec-1-2">多状态工作流程</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+除了 TODO 和 DONE 之外, 还可以定义其他的状态; 还可以定义不同的待办事项的类型:
+</p>
+<pre class="example">
+#+TYP_TODO: 工作(w!) 学习(s!) 休闲(l!) |
+#+SEQ_TODO: PENDING(p!) TODO(t!) | DONE(d!) ABORT(a@/!)
+</pre>
+<ol class="org-ol">
+<li>使用 "|" 来区分未完成和完成两种状态, 如果没有 "|", 最后一个关键词被设置成完成项, 其余被设置成未完成项;
+</li>
+<li>关键词后括号内的字母为快捷键, 使用 C-c C-t 来切换状态或类型时, 可以使用快捷键进行选择;
+</li>
+<li>括号内的 "!" 表示时间戳, 切换到该状态时将插入当前时间; 括号内的 "@" 表示切换到该状态时需要输入文字说明, 如任务取消, 失败等原因.
+</li>
+</ol>
+
+<p>
+生效方式: 输入后, 将光标放在改变行上, 使用 C-c C-c 生效.
+</p>
+
+<p>
+如果想让所有文件都适用这些设置, 可以写入配置文件:
+</p>
+<pre class="example">
+(setq org-todo-keywords
+  '((type "工作(w!)" "学习(s!)" "休闲(l!)" "|")
+    (sequence "PENDING(p!)" "TODO(t!)"  "|" "DONE(d!)" "ABORT(a@/!)")
+))
+</pre>
+
+<p>
+改变不同状态的外观:
+</p>
+<pre class="example">
+(setq org-todo-keyword-faces
+  '(("工作" .      (:background "red" :foreground "white" :weight bold))
+    ("学习" .      (:background "white" :foreground "red" :weight bold))
+    ("休闲" .      (:foreground "MediumBlue" :weight bold)) 
+    ("PENDING" .   (:background "LightGreen" :foreground "gray" :weight bold))
+    ("TODO" .      (:background "DarkOrange" :foreground "black" :weight bold))
+    ("DONE" .      (:background "azure" :foreground "Darkgreen" :weight bold)) 
+    ("ABORT" .     (:background "gray" :foreground "black"))
+))
+</pre>
+</div>
 </div>
 
 <div id="outline-container-sec-1-3" class="outline-3">
@@ -163,6 +215,7 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 </div>
 </div>
 
+
 <div id="outline-container-sec-1-5" class="outline-3">
 <h3 id="sec-1-5">任务细分</h3>
 <div class="outline-text-3" id="text-1-5">
@@ -202,22 +255,30 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 </table>
 </div>
 </div>
+</div>
 
-<div id="outline-container-sec-1-7" class="outline-3">
-<h3 id="sec-1-7">时间统计</h3>
-<div class="outline-text-3" id="text-1-7">
-</div><div id="outline-container-sec-1-7-1" class="outline-4">
-<h4 id="sec-1-7-1">任务时间统计</h4>
-<div class="outline-text-4" id="text-1-7-1">
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">标签</h2>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">日期和时间</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">时间统计</h3>
+<div class="outline-text-3" id="text-3-1">
+</div><div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1">任务时间统计</h4>
+<div class="outline-text-4" id="text-3-1-1">
 <p>
 在 <code>TODO</code> 项中输入 <code>C-c C-x C-i</code> 开始计时, 任务结束后输入 <code>C-c C-x C-o</code> 结束计时.
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-1-7-2" class="outline-4">
-<h4 id="sec-1-7-2">当天时间统计</h4>
-<div class="outline-text-4" id="text-1-7-2">
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2">当天时间统计</h4>
+<div class="outline-text-4" id="text-3-1-2">
 <p>
 输入 <code>C-c C-x C-r</code> 会出现一个时间统计表, 当有一个待办事项完成后, 将待办事项的状态切换到 <code>DONE</code>, 然后再到时间统计表的 <code>BEGIN</code> 那一行中输入 <code>C-c C-c</code>, 就会刷新统计状态.
 </p>
@@ -231,7 +292,7 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-03-08</span>
-            <span title="last modification date" class="post-info">2018-03-08</span>
+            <span title="last modification date" class="post-info">2019-03-27</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/emacs">Emacs</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>
