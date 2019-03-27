@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>pytest - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Python" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">pytest</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">快速入门</a>
+<ul>
+<li><a href="#sec-1-1">安装</a></li>
+<li><a href="#sec-1-2">测试</a>
+<ul>
+<li><a href="#sec-1-2-1">成功</a></li>
+<li><a href="#sec-1-2-2">失败</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-2">测试</a>
+<ul>
+<li><a href="#sec-2-1">assert</a></li>
+<li><a href="#sec-2-2">捕获异常</a></li>
+<li><a href="#sec-2-3">标记函数</a></li>
+<li><a href="#sec-2-4">参数化</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">固件</a>
+<ul>
+<li><a href="#sec-3-1">预处理和后处理</a></li>
+<li><a href="#sec-3-2">作用域</a></li>
+<li><a href="#sec-3-3">自动执行固件</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">快速入门</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">安装</h3>
+<div class="outline-text-3" id="text-1-1">
+<pre class="example">
+pip install pytest
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">测试</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1">成功</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<pre class="example">
+def test_passing():
+    assert (1, 2, 3) == (1, 2, 3)
+
+$ pytest test.py
+...
+test.py .
+</pre>
+<p>
+. 表示测试成功
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2">失败</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<pre class="example">
+def test_failing():
+    assert (1, 2, 3) == (3, 2, 1)
+
+$ pytest test.py
+...
+test.py F
+...
+</pre>
+<p>
+F 表示测试失败
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">测试</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">assert</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+最基础的工具, 进行条件判断.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">捕获异常</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+在测试时, 经常需要测试是否如期抛出预期的异常, 以确定异常处理模块生效. 使用 pytest.raises() 进行异常捕获.
+</p>
+<pre class="example">
+def test_raises():
+    with pytest.raises(TypeError) as e:
+        connect('localhost', '6379')
+    exec_msg = e.value.args[0]
+    assert exec_msg == 'port type must be int'
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">标记函数</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+pytest 会查找当前目录下所有以 test 开头或结尾的 py 文件, 执行文件内所有以 test 开头或结尾的方法. 如果某个方法尚未完成, 可以用以下方法指明不执行该方法:
+</p>
+
+<p>
+1 使用 :: 显示指定函数名
+</p>
+<pre class="example">
+pytest test.py::test_func1
+</pre>
+<p>
+这样只会执行 test_func1().
+</p>
+
+<p>
+2 使用 -k 模糊匹配
+</p>
+<pre class="example">
+pytest -k func1 test.py
+</pre>
+<p>
+只执行 test.py 中包含 func1 字眼的方法.
+</p>
+
+<p>
+3 使用 pytest.mark 在函数上进行标记
+</p>
+<pre class="example">
+@pytest.mark.finished
+def test_func1():
+    assert 1 == 1
+
+@pytest.mark.unfinished
+def test_func2():
+    assert 1 != 1
+</pre>
+<p>
+测试时使用 -m 选择标记的测试函数:
+</p>
+<pre class="example">
+pytest -m finished test.py
+</pre>
+<p>
+使用 mark, 可以给每个函数打上不同的标记, 测试时指定只执行有该标记的方法.
+</p>
+
+<p>
+还可以使用 pytest.mark.skip, 这样可以在 pytest 时不指定 -m 参数:
+</p>
+<pre class="example">
+@pytest.mark.skip(reason='out-of-date api')
+def test_connect():
+    pass
+
+$ pytest test.py
+...
+test.py s
+</pre>
+<p>
+s 表示跳过.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">参数化</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+如果把测试用例都写在测试函数内部进行遍历, 会因为某组用例失败, 导致测试终止.
+</p>
+
+<p>
+可以使用 pytest.mark.parametrize(argnames, argvalues) 进行参数化测试, 使得每组参数都独立执行一次.
+</p>
+
+<p>
+校验用户密码的例子:
+</p>
+<pre class="example">
+@pytest.mark.parametrize('user, passwd',
+                         [('jack', 'abcdefgh'),
+                          ('tom', 'a123456a')])
+def test_passwd_md5(user, passwd):
+    db = {
+        'jack': 'e8dc4081b13434b45189a720b77b6818',
+        'tom': '1702a132e769a623c1adb78353fc9503'
+    }
+
+    import hashlib
+
+    assert hashlib.md5(passwd.encode()).hexdigest() == db[user]
+
+$ pytest -v test.py
+...
+collected 2 items
+
+tests/test-function/test_parametrize.py::test_passwd_md5[jack-abcdefgh] PASSED [ 50%]
+tests/test-function/test_parametrize.py::test_passwd_md5[tom-a123456a] PASSED [100%]
+
+========================== 2 passed in 0.04 seconds ===========================
+</pre>
+<p>
+记得要使用 -v 进行测试.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">固件</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+概念: 固件是一些函数, pytest 会在执行测试函数之前或之后自动运行它们.
+</p>
+
+<p>
+可以使用固件来做一些初始化工作和扫尾工作.
+</p>
+
+<p>
+固件可以直接定义在各个测试脚本中, 但是更推荐写在 conftest.py 中进行集中管理.
+</p>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">预处理和后处理</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+pytest 使用 yield 将固件分成两部分, yield 之前的代码属于预处理, 之后的代码属于后处理.
+</p>
+<pre class="example">
+@pytest.fixture()
+def db():
+    print('Connection successful')
+
+    yield
+
+    print('Connection closed')
+
+
+def search_user(user_id):
+    d = {
+        '001': 'xiaoming'
+    }
+    return d[user_id]
+
+
+def test_search(db):
+    assert search_user('001') == 'xiaoming'
+
+$ pytest -s test.py
+============================= test session starts =============================
+platform win32 -- Python 3.6.4, pytest-3.6.1, py-1.5.2, pluggy-0.6.0
+rootdir: F:\self-repo\learning-pytest, inifile:
+collected 1 item
+
+tests\fixture\test_db.py Connection successful
+.Connection closed
+
+
+========================== 1 passed in 0.02 seconds ===========================
+</pre>
+<p>
+-s 参数可以阻止消息被吞
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">作用域</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+固件的 scope 可以声明固件的作用域, 可选项有:
+1 function. 函数级, 每个测试函数都会执行一次固件;
+2 class. 类级, 每个测试类都会执行一次;
+3 module. 模块级, 每个模块执行一次;
+4 session. 会话级, 每次测试执行一次.
+</p>
+
+<pre class="example">
+@pytest.fixture(scope='function')
+def func_scope():
+    pass
+
+
+@pytest.fixture(scope='module')
+def mod_scope():
+    pass
+
+
+@pytest.fixture(scope='session')
+def sess_scope():
+    pass
+
+
+@pytest.fixture(scope='class')
+def class_scope():
+    pass
+</pre>
+<p>
+使用方法: 作为测试函数的参数. 如:
+</p>
+<pre class="example">
+def test_multi_scope(sess_scope, mod_scope, func_scope):
+    pass
+</pre>
+
+<p>
+注意, 如果是类作用域, 需要使用 pytest.mark.usefixtures 来指定.
+</p>
+<pre class="example">
+@pytest.mark.usefixtures('class_scope')
+class TestClassScope:
+    def test_1(self):
+        pass
+
+    def test_2(self):
+        pass
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">自动执行固件</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+如果想让固件自动执行, 可以使用 autouse 参数.
+</p>
+
+<p>
+下面两个自动计时固件, 一个用于统计函数运行时间(function 作用域), 一个用于计算测试总耗时(session 作用域)
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-03-26</span>
+            <span title="last modification date" class="post-info">2019-03-27</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Python/2019/03/26/pytest/ Or /blog/Python/pytest/";
+         var disqus_url = "https://pinvondev.github.io/blog/Python/2019/03/26/pytest/ Or /blog/Python/pytest/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>RPC 与 REST - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="云" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">RPC 与 REST</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">RPC</a>
+<ul>
+<li><a href="#sec-1-1">概念</a></li>
+<li><a href="#sec-1-2">解释</a>
+<ul>
+<li><a href="#sec-1-2-1">本地函数调用</a></li>
+<li><a href="#sec-1-2-2">远程过程调用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-2">REST</a>
+<ul>
+<li><a href="#sec-2-1">REST 架构约定</a>
+<ul>
+<li><a href="#sec-2-1-1">CS 结构</a></li>
+<li><a href="#sec-2-1-2">无状态</a></li>
+<li><a href="#sec-2-1-3">缓存机制</a></li>
+<li><a href="#sec-2-1-4">系统分层</a></li>
+<li><a href="#sec-2-1-5">可定制代码(可选)</a></li>
+<li><a href="#sec-2-1-6">一致的接口</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-3">对比</a>
+<ul>
+<li><a href="#sec-3-1">http 协议 vs 二进制协议</a></li>
+<li><a href="#sec-3-2">RPC vs REST</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">RPC</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">概念</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+远程过程调用.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">解释</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1">本地函数调用</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+假设有个计算类: Calculator, 需要调用 Calculator.add() 来执行加法运算, 可以直接生成一个 Calculator 对象, 调用 add() 即可.
+</p>
+
+<p>
+这就是本地函数调用, 因为在同一个地址空间, 所以通过方法栈和参数栈就可以实现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2">远程过程调用</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+在分布式架构下, Calculator 在 A 主机的服务中运行, 为其他服务提供计算功能.
+</p>
+
+<p>
+B 主机中的服务想执行加法计算, 如何调用 A 主机的 Calculator.add()?
+</p>
+
+<p>
+RPC 要解决的两个问题:
+1 解决分布式系统中, 服务之间的调用问题;
+2 远程调用时, 要能够像本地调用一样方便.
+</p>
+
+<p>
+思路:
+1 可以使用 http 协议来进行数据传输;
+2 使用 Socket 等方式进行二进制传输.
+</p>
+
+<p>
+http 接口适用于接口不多, 系统与系统交互较少的情况, 简单直接, 开发方便, 利用现成的 http 协议进行传输;
+</p>
+
+<p>
+如果是大型网站, 内部子系统较多, 接口较多的情况下, RPC 接口的好处就显现出来了.
+1 长连接. 不必每次通信都像 http 一样进行 3 次握手, 减少网络开销; (不是很靠得住, http 开启 keepalive 后只需 1 次握手)
+2 注册中心. RPC 框架一般都有注册中心, 有丰富的监控管理, 发布, 动态扩展等, 对调用方来说是无感知的;
+3 安全性. (这点 SSL 也安全)
+</p>
+
+<p>
+总的来说, RPC 可以解耦服务, 提高灵活性, 提高效率.
+</p>
+
+<p>
+如果使用二进制传输, 最重要的就是序列化和反序列化, 将对象序列化成二进制格式, 到了 Server 再反序列化为对象.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">REST</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在微服务和分布式架构越来越流行的时代, 简单, 可靠, 高效, 跨平台和跨语言的 Web Service 是这类系统架构的基石.
+</p>
+
+<p>
+Web Service: 提供给不同设备通过互联网进行通信和交换数据的一种服务, 一般使用 HTTP 协议;
+</p>
+
+<p>
+Restful Web Service: 实现 Web Service 的一种方式.
+</p>
+
+<p>
+REST: 一种架构方式和约定, 和具体的实现无关, 不一定非要基于 Web, 采用 REST 架构的 Web Service 就称为 RESTful Web Service. 但更标准的叫法应该是 <code>具有 REST 风格的 Web Service</code>, 因为这种 Service 可能并不完全遵守 REST 架构的所有约定.
+</p>
+
+<p>
+基于 SOAP 的 Web Service: 以协议的形式工作, 严格规定了如何发现和描述 API, 传输的消息也有严格统一的格式. 而 RESTful Web Service 并不是协议, 没有规定传输消息的具体格式, 只是一种约定使用 REST 架构实现的 Web Service. 两者相比, RESTful Web Service 更加简单和轻量, 大部分都使用 HTTP 传输, 使用风格类似的 URL 作为 API, 使用 JSON 传输数据.
+</p>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">REST 架构约定</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1">CS 结构</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+CS 之间遵守相同的接口规范, S 端需要保存数据.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2">无状态</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+一次请求就是一次完整的操作, S 端不依赖前后不同请求的顺序和状态来完成一次操作. 如果所需数据需要通过多次请求才能完成, C 端要自己负责记录状态.
+</p>
+
+<p>
+C 端持有 session, S 端使用 session 信息去验证并执行相关操作.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3">缓存机制</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+合理的缓存设计可以减少请求次数, 进而提高 S 端的效率和性能.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4" class="outline-4">
+<h4 id="sec-2-1-4">系统分层</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<p>
+C 端不知道数据是从 S 端直接返回还是通过中间代理返回, 提高了系统的可扩展性, 可以使用负载均衡和反向代理等技术来对系统进行水平扩展和缓存处理, 把系统划分成不同的层次. 使用分层设计也方便管理不同资源的权限, 提高系统的安全性.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-5" class="outline-4">
+<h4 id="sec-2-1-5">可定制代码(可选)</h4>
+<div class="outline-text-4" id="text-2-1-5">
+<p>
+S 端可以返回一些代码让客户端执行, 从而定制和扩展 C 端的功能.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-6" class="outline-4">
+<h4 id="sec-2-1-6">一致的接口</h4>
+<div class="outline-text-4" id="text-2-1-6">
+<p>
+一致的接口可以降低子系统之间的耦合度, 因为子系统只要关注实现接口即可. 一致的接口包括四个方面:
+</p>
+<ol class="org-ol">
+<li>一致的数据格式;
+</li>
+<li>可以对已有数据进一步操作. 如从服务端获得了一个订单数据, 这个订单数据里应该保证有一个唯一的订单 ID, 当我们想对这个订单进行进一步操作时, 可以保障操作的是同一个订单;
+</li>
+<li>数据具有自我描述性. 如, 通过 HTTP 返回的数据里面有 [MIME type] 字段, 通过该字段可知数据是图片, 视频还是别的.
+</li>
+<li>应用系统状态变化只依赖超媒体. 如向一个微博 Web Service 请求一条微博信息, 服务端响应信息中应该包含和这条微博相关的其它的URL, 客户端可以进一步利用这些URL发起请求来获取感兴趣的信息; Facebook API 可以从第一页的返回数据中获取下一页的 URL.
+</li>
+</ol>
+
+<p>
+RESTful Web Service API 简单为 RESTful API, 一般来说, 这类 API 是通过 HTTP 协议以 URL 形式暴露给其他系统或模块调用, 如, 一个获得用户所有评论的 API 可能像这样: <a href="https://api.server-name.com/user-id/comments">https://api.server-name.com/user-id/comments</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">对比</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">http 协议 vs 二进制协议</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+http 协议更规范, 标准, 通用, 无论哪种语言都支持 http 协议.
+</p>
+
+<p>
+二进制协议如 protobuf, thrift, kyro 等, 性能高, 吞吐量大概是 http 的两位, 响应时间也更为出色.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">RPC vs REST</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+REST 调用及测试都很方便，RPC 就显得有点麻烦，但是 RPC 的效率是毋庸置疑的.
+</p>
+
+<p>
+可以在内部采用 RPC 通信, 对外提供 RESTful API.
+</p>
+
+<p>
+RPC 一般在底层使用 Socket(可以指定协议是 TCP/UDP), 定义了一套远程调用方法.
+</p>
+
+<p>
+REST 一般在底层使用 HTTP 协议, 建立在 TCP 之上, 不使用 Socket, 需要连接方主动发数据给服务器, 服务器无法主动发数据给某个客户端.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-03-26</span>
+            <span title="last modification date" class="post-info">2019-03-27</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/云">云</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Cloud//2019/03/26/rpc-与-rest/ Or /blog/Cloud//rpc-与-rest/";
+         var disqus_url = "https://pinvondev.github.io/blog/Cloud//2019/03/26/rpc-与-rest/ Or /blog/Cloud//rpc-与-rest/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
