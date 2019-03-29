@@ -1,0 +1,58 @@
+#+TITLE:       pylint
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2019-03-30 六
+
+#+URI:         /blog/Python/%y/%m/%d/%t/ Or /blog/Python/%t/
+#+TAGS:        Python
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+Pylint 是一个 Python 代码分析工具, 它分析 Python 代码中的错误, 查找不符合代码风格标准和有潜在问题的代码.
+
+* 安装
+
+#+BEGIN_EXAMPLE
+pip install pylint
+#+END_EXAMPLE
+
+* 使用
+
+#+BEGIN_EXAMPLE
+pylint [options] module.py
+pylint [options] package
+#+END_EXAMPLE
+
+** 命令行参数
+
+-h: 显示帮助信息
+
+--generate-rcfile: 将当前的设置保存成文件, 方便下次使用. 如:
+#+BEGIN_EXAMPLE
+pylint --persistent=n --generate-rcfile > pylint.conf
+#+END_EXAMPLE
+查看 pylint.conf, 可以看到 persistent 被设置成 no, 而不是默认值 yes.
+
+--rcfile=<file>: 指定配置文件
+
+-i: 在输出中包含 message_id, 然后通过 pylint --help-msg=<msg-id> 来查看详细错误信息.
+
+-r <y/n>: 默认为 y, 表示 Pylint 的输出中, 除了包含源码分析的部分, 还包含报告.
+
+--files-output=<y/n>: 将 message 输出到 pylint_module/package.[txt/html] 命名的文件中.
+
+-f: 设置输出格式, 可选值有: text, parseable, colorized, msvs, html, 默认为 text
+
+** 输出
+
+#+BEGIN_EXAMPLE
+C: 惯例. 违反了编码风格标准
+R: 重构. 写得非常糟糕的代码
+W: 警告. 某些 Python 特定的问题
+E: 错误.
+F: 致命错误. 这会阻止 Pylint 进一步运行
+#+END_EXAMPLE
