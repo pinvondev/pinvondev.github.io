@@ -65,17 +65,21 @@
 <li><a href="#sec-1-6">复选框</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">标签</a></li>
+<li><a href="#sec-2">标签</a>
+<ul>
+<li><a href="#sec-2-1">标签继承</a></li>
+<li><a href="#sec-2-2">设置标签</a></li>
+<li><a href="#sec-2-3">标签查找</a></li>
+</ul>
+</li>
 <li><a href="#sec-3">日期和时间</a>
 <ul>
-<li><a href="#sec-3-1">时间统计</a>
-<ul>
-<li><a href="#sec-3-1-1">任务时间统计</a></li>
-<li><a href="#sec-3-1-2">当天时间统计</a></li>
+<li><a href="#sec-3-1">截止期限和计划安排</a></li>
+<li><a href="#sec-3-2">时间统计</a></li>
+<li><a href="#sec-3-3">org-pomodoro</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li><a href="#sec-4">归档</a></li>
 </ul>
 </div>
 </div>
@@ -215,7 +219,6 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 </div>
 </div>
 
-
 <div id="outline-container-sec-1-5" class="outline-3">
 <h3 id="sec-1-5">任务细分</h3>
 <div class="outline-text-3" id="text-1-5">
@@ -259,31 +262,164 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 
 <div id="outline-container-sec-2" class="outline-2">
 <h2 id="sec-2">标签</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+每个标题都可以有对应的标签, 标签前后都有":", 如 :work:, 可以指定多个标签, 如 :work:study:
+</p>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">标签继承</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+如果一个标题具有某个标签, 它的所有子标题也会继承这个标签.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">设置标签</h3>
+<div class="outline-text-3" id="text-2-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">C-c C-q</th>
+<th scope="col" class="left">为当前标题输入标签</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">C-c C-c</td>
+<td class="left">如果光标处于标题上, 这个命令同 C-c C-q</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+可以在配置文件中固定标签, 如:
+</p>
+<pre class="example">
+(setq org-tag-alist '(("@work" . ?w) ("@study" . ?s) ("@anki" . ?a)))
+</pre>
+
+<p>
+如果只想用于当前文件, 则在当前文件中配置:
+</p>
+<pre class="example">
+#+TAGS: @work(w) @home(h) @tennisclub(t) laptop(l) pc(p)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">标签查找</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+一旦标签体系设置好, 就可以用来收集相关联的信息到指定列表中.
+</p>
+</div>
+</div>
 </div>
 
 <div id="outline-container-sec-3" class="outline-2">
 <h2 id="sec-3">日期和时间</h2>
 <div class="outline-text-2" id="text-3">
 </div><div id="outline-container-sec-3-1" class="outline-3">
-<h3 id="sec-3-1">时间统计</h3>
+<h3 id="sec-3-1">截止期限和计划安排</h3>
 <div class="outline-text-3" id="text-3-1">
-</div><div id="outline-container-sec-3-1-1" class="outline-4">
-<h4 id="sec-3-1-1">任务时间统计</h4>
-<div class="outline-text-4" id="text-3-1-1">
-<p>
-在 <code>TODO</code> 项中输入 <code>C-c C-x C-i</code> 开始计时, 任务结束后输入 <code>C-c C-x C-o</code> 结束计时.
-</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">C-c C-d</th>
+<th scope="col" class="left">在标题下插入一个带有 DEADLINE 关键字的时间戳</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">C-c C-s</td>
+<td class="left">在标题下插入一个带有 SCHEDULED 关键这的时间戳</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
-<div id="outline-container-sec-3-1-2" class="outline-4">
-<h4 id="sec-3-1-2">当天时间统计</h4>
-<div class="outline-text-4" id="text-3-1-2">
-<p>
-输入 <code>C-c C-x C-r</code> 会出现一个时间统计表, 当有一个待办事项完成后, 将待办事项的状态切换到 <code>DONE</code>, 然后再到时间统计表的 <code>BEGIN</code> 那一行中输入 <code>C-c C-c</code>, 就会刷新统计状态.
-</p>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">时间统计</h3>
+<div class="outline-text-3" id="text-3-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">C-c C-x C-i</th>
+<th scope="col" class="left">开始计时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">C-c C-x C-o</td>
+<td class="left">结束计时</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">C-c C-x C-r</td>
+<td class="left">出现时间统计表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">C-c C-c</td>
+<td class="left">到 BEGIN 那行输入, 可刷新统计状态</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">org-pomodoro</h3>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">归档</h2>
+<div class="outline-text-2" id="text-4">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="left">C-c C-x C-a</td>
+<td class="left">将当前项移除到归档文件</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -292,7 +428,7 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-03-08</span>
-            <span title="last modification date" class="post-info">2019-03-27</span>
+            <span title="last modification date" class="post-info">2019-03-29</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/emacs">Emacs</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>argparse - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Python" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">argparse</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">基本用法</a>
+<ul>
+<li><a href="#sec-1-1">基本用法</a>
+<ul>
+<li><a href="#sec-1-1-1">必选参数</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">可选参数</a></li>
+<li><a href="#sec-1-3">禁止指定参数值</a></li>
+<li><a href="#sec-1-4">指定类型</a></li>
+<li><a href="#sec-1-5">选择某个值</a></li>
+<li><a href="#sec-1-6">自定义帮助信息</a></li>
+<li><a href="#sec-1-7">自定义程序帮助信息</a></li>
+<li><a href="#sec-1-8">互斥参数</a></li>
+<li><a href="#sec-1-9">参数默认值</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">基本用法</h2>
+<div class="outline-text-2" id="text-1">
+<pre class="example">
+import argparse
+parser = argparse.ArgumentParser()
+parser.parse_args()
+</pre>
+
+<p>
+输出:
+</p>
+<pre class="example">
+$ python3 prog.py
+
+
+$ python3 prog.py --help
+usage: prog.py [-h]
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+
+$ python3 prog.py --verbose
+usage: prog.py [-h]
+prog.py: error: unrecognized arguments: --verbose
+
+
+$ python3 prog.py foo
+usage: prog.py [-h]
+prog.py: error: unrecognized arguments: foo
+</pre>
+</div>
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">基本用法</h3>
+<div class="outline-text-3" id="text-1-1">
+</div><div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1">必选参数</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+必选参数的意思就是不用输入类似 "-v xxx" 的语句就可以获取到参数.
+</p>
+
+<pre class="example">
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("echo")
+args = parser.parse_args()
+print(args.echo)
+</pre>
+
+<p>
+输出:
+</p>
+<pre class="example">
+$ python3 prog.py
+usage: prog.py [-h] echo
+prog.py: error: the following arguments are required: echo
+$ python3 prog.py --help
+usage: prog.py [-h] echo
+
+positional arguments:
+  echo
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+
+$ python3 prog.py foo
+foo
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">可选参数</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+可选参数有两种:
+</p>
+<ol class="org-ol">
+<li>短参数, 形如: "-v xxx"
+</li>
+<li>长参数, 形如: "--verbosity xxx"
+</li>
+</ol>
+
+<pre class="example">
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbosity", help="increase output verbosity")
+args = parser.parse_args()
+if args.verbosity:
+    print("verbosity turned on")
+</pre>
+
+<p>
+输出:
+</p>
+<pre class="example">
+$ python3 prog.py --verbosity 1
+verbosity turned on
+
+
+$ python3 prog.py -v 1
+verbosity turned on
+
+
+$ python3 prog.py --verbosity
+usage: prog.py [-h] [--verbosity VERBOSITY]
+prog.py: error: argument --verbosity: expected one argument
+</pre>
+<p>
+可选的意思是你可以不填 -v 选项, 但是如果写了 -v, 对应的值一定要给.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">禁止指定参数值</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+通过 action="store_true" 来禁止指定参数值.
+</p>
+
+<pre class="example">
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--verbose", help="increase output verbosity",
+                    action="store_true")
+args = parser.parse_args()
+if args.verbose:
+    print("verbosity turned on")
+</pre>
+
+<p>
+输出:
+</p>
+<pre class="example">
+$ python3 prog.py --verbose
+verbosity turned on
+
+
+$ python3 prog.py --verbose 1
+usage: prog.py [-h] [--verbose]
+prog.py: error: unrecognized arguments: 1
+</pre>
+<p>
+此时, 有写 --verbose 表示值为 True, 不写 --verbose 表示值为 False.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">指定类型</h3>
+<div class="outline-text-3" id="text-1-4">
+<pre class="example">
+arser = argparse.ArgumentParser()
+parser.add_argument('x', type=int, help="the base")
+args = parser.parse_args()
+answer = args.x ** 2
+print(answer)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5">选择某个值</h3>
+<div class="outline-text-3" id="text-1-5">
+<pre class="example">
+parser = argparse.ArgumentParser()
+parser.add_argument("square", type=int,
+                    help="display a square of a given number")
+parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2],
+                    help="increase output verbosity")
+args = parser.parse_args()
+answer = args.square**2
+if args.verbosity == 2:
+    print("the square of {} equals {}".format(args.square, answer))
+elif args.verbosity == 1:
+    print("{}^2 == {}".format(args.square, answer))
+else:
+    print(answer)
+</pre>
+<p>
+使用 choices 表示只能在这里选择值, 输入其他值会出错.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-6" class="outline-3">
+<h3 id="sec-1-6">自定义帮助信息</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+使用 help 参数.
+</p>
+<pre class="example">
+parser.add_argument("square", type=int, help="display a square of a given number")
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-1-7" class="outline-3">
+<h3 id="sec-1-7">自定义程序帮助信息</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+在 ArgumentParser 中使用 description 参数.
+</p>
+<pre class="example">
+argparse.ArgumentParser(description="calculate X to the power of Y")
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-1-8" class="outline-3">
+<h3 id="sec-1-8">互斥参数</h3>
+<div class="outline-text-3" id="text-1-8">
+<pre class="example">
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-v", "--verbose", action="store_true")
+group.add_argument("-q", "--quiet", action="store_true")
+</pre>
+<p>
+互斥参数表示: -v -q 不可同时出现.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-9" class="outline-3">
+<h3 id="sec-1-9">参数默认值</h3>
+<div class="outline-text-3" id="text-1-9">
+<pre class="example">
+parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2], default=1,
+                    help="increase output verbosity")
+</pre>
+<p>
+使用 default 来指定默认值.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-03-28</span>
+            <span title="last modification date" class="post-info">2019-03-29</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Python/2019/03/28/argparse/ Or /blog/Python/argparse/";
+         var disqus_url = "https://pinvondev.github.io/blog/Python/2019/03/28/argparse/ Or /blog/Python/argparse/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

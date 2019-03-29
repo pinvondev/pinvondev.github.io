@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>装饰器和方法 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Python" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">装饰器和方法</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">装饰器</a>
+<ul>
+<li><a href="#sec-1-1">应用场景</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">方法</a>
+<ul>
+<li><a href="#sec-2-1">实例方法</a></li>
+<li><a href="#sec-2-2">静态方法</a></li>
+<li><a href="#sec-2-3">类方法</a></li>
+<li><a href="#sec-2-4">抽象方法</a></li>
+<li><a href="#sec-2-5">super()</a></li>
+<li><a href="#sec-2-6">小结</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">装饰器</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+装饰器的本质: 本质上是一个函数, 以其他的函数作为参数并修改, 最后将修改后的函数替换原有函数.
+</p>
+
+<p>
+如:
+</p>
+<pre class="example">
+def identity(f):
+    return f
+</pre>
+
+<pre class="example">
+@identity
+def foo():
+    return 'bar'
+
+# 等价于
+def foo():
+    return 'bar'
+foo = identity(foo)
+</pre>
+</div>
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">应用场景</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+如果多个函数在调用前后都要执行同一段代码, 就可以把这个通用的代码分离出来, 以装饰器的方式来修改其他函数. 如:
+</p>
+<pre class="example">
+class  Store(object):
+    def get_food(self, username, food):
+        if username != 'admin':
+            raise Exception("This user is not allowed to get food")
+        return self.storage.get(food)
+
+    def put_food(self, username, food):
+        if username != 'admin':
+            raise Exception("This user is not allowed to put food")
+        self.storage.put(food)
+</pre>
+
+<ol class="org-ol">
+<li>分离出通用代码, 即其中的 if 语句.
+</li>
+</ol>
+<pre class="example">
+def check_is_admin(username):
+    if username != 'admin':
+        raise Exception("This user is not allowed to get food")
+
+class Store(object):
+    def get_food(self, username, food):
+        check_is_admin(username)
+        return self.storage.get(food)
+
+    def put_food(self, username, food):
+        check_is_admin(username)
+        self.storage.put(food)
+</pre>
+
+<ol class="org-ol">
+<li>修改成装饰器:
+</li>
+</ol>
+<pre class="example">
+def check_is_admin(f):
+    def wraper(*args, **kwargs):
+        if kwargs.get('username') != 'admin':
+            raise Exception("This user is not allowed to get food")
+        return f(*args, **kwargs)
+    return wrapper
+
+class Store(object):
+    @check_is_admin
+    def get_food(self, username, food):
+        return self.storage.get(food)
+
+    @check_is_admin
+    def put_food(self, username, food):
+        self.storage.put(food)
+</pre>
+
+<p>
+如前所述, 装饰器会用一个动态创建的新函数代替原来的函数, 但是新函数的问题在于, 缺少了很多原来函数的属性, 如文档字符串和名字.
+</p>
+
+<p>
+Python 内置的 functools 模块提供了 wraps 装饰器, 将这些属性复制给我们的装饰器. 最终代码如下:
+</p>
+<pre class="example">
+import functools
+
+
+def check_is_admin(f):
+    @functools.wraps(f)
+    def wraper(*args, **kwargs):
+        if kwargs.get('username') != 'admin':
+            raise Exception("This user is not allowed to get food")
+        return f(*args, **kwargs)
+    return wrapper
+
+class Store(object):
+    @check_is_admin
+    def get_food(self, username, food):
+        return self.storage.get(food)
+
+    @check_is_admin
+    def put_food(self, username, food):
+        self.storage.put(food)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">方法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+方法是指类内部的函数.
+</p>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">实例方法</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Python 会自动将对象传给方法的 self 参数; 如:
+</p>
+<pre class="example">
+class Foo(object):
+    def get_size(self):
+        ...
+
+# 调用方法
+foo = Foo()
+foo.get_size()
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">静态方法</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+静态方法: 属于类, 但不依赖于实例.
+</p>
+<pre class="example">
+class Pizza(object):
+    @staticmethod
+    def mix_ingredients(x, y):
+        return x + y
+
+    def cook(self):
+        return self.mix_ingredients(self.cheese, self.vegetables)
+</pre>
+<p>
+使用 @staticmethod 可以声明一个方法是静态方法.
+</p>
+
+<p>
+调用方式:
+</p>
+<pre class="example">
+pizza = Pizza()
+pizza.mix_ingredients()
+# 或
+Pizza.mix_ingredients()
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">类方法</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+类方法使用 @classmethod 声明, 第一个参数为 cls, 调用方式和静态方法一样.
+</p>
+<pre class="example">
+class Pizza(object):
+    radius = 42
+    @classmethod
+    def get_radius(cls):
+        return cls.radius
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">抽象方法</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+抽象方法是定义在基类中, 可能有或者没有任何实现的方法. 最简单的抽象方法如下:
+</p>
+<pre class="example">
+class Pizza(object):
+    @staticmethod
+    def get_radius():
+        raise NotImplementedError
+</pre>
+<p>
+任何继承自 Pizza 的子类都要实现并重写 get_radius(), 否则调用这个方法会引发异常.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5">super()</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+super() 用来调用父类的方法.
+</p>
+<pre class="example">
+class A:
+    def add(self, x):
+        y = x + 1
+        print(y)
+
+class B(A):
+    def add(self, x):
+        super().add(x)
+
+b = B()
+b.add(2)  # 3
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6">小结</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+classmethod 主要用途是作为构造函数. Python 只有一个构造函数 __new__(), 并且 __new__() 比较复杂, 我们一般不会去重写该方法, 由系统自动生成即可. 因此需要使用其他构造函数(classmethod)来满足我们的需求, 故 classmethod 的最后一句一般是 return cls(xxx).
+</p>
+<pre class="example">
+class DateTest(object):
+
+    def __init__(self, year=None, month=None, day=None):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def out_date(self):
+        print("Year:", self.year)
+        print("Month:", self.month)
+        print("Day:", self.day)
+
+    @classmethod
+    def string_date(cls, date):
+        year, month, day = map(int, date.split("-"))
+        date_res = cls(year, month, day)
+        return date_res
+
+t = DateTest.string_date("2017-06-21")
+t.out_date()
+</pre>
+
+<p>
+staticmethod 的主要作用是限定 namespace, 虽然是个普通的方法, 但它只有这个 class 会用到, 不适合作为模块级的方法.
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-03-29</span>
+            <span title="last modification date" class="post-info">2019-03-29</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Python/2019/03/29/装饰器和方法/ Or /blog/Python/装饰器和方法/";
+         var disqus_url = "https://pinvondev.github.io/blog/Python/2019/03/29/装饰器和方法/ Or /blog/Python/装饰器和方法/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
