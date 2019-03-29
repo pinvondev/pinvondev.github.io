@@ -1,0 +1,214 @@
+#+TITLE:       装饰器和方法
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2019-03-29 五
+
+#+URI:         /blog/Python/%y/%m/%d/%t/ Or /blog/Python/%t/
+#+TAGS:        Python
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 装饰器
+
+装饰器的本质: 本质上是一个函数, 以其他的函数作为参数并修改, 最后将修改后的函数替换原有函数.
+
+如:
+#+BEGIN_EXAMPLE
+def identity(f):
+    return f
+#+END_EXAMPLE
+
+#+BEGIN_EXAMPLE
+@identity
+def foo():
+    return 'bar'
+
+# 等价于
+def foo():
+    return 'bar'
+foo = identity(foo)
+#+END_EXAMPLE
+
+** 应用场景
+
+如果多个函数在调用前后都要执行同一段代码, 就可以把这个通用的代码分离出来, 以装饰器的方式来修改其他函数. 如:
+#+BEGIN_EXAMPLE
+class  Store(object):
+    def get_food(self, username, food):
+        if username != 'admin':
+            raise Exception("This user is not allowed to get food")
+        return self.storage.get(food)
+
+    def put_food(self, username, food):
+        if username != 'admin':
+            raise Exception("This user is not allowed to put food")
+        self.storage.put(food)
+#+END_EXAMPLE
+
+1. 分离出通用代码, 即其中的 if 语句.
+#+BEGIN_EXAMPLE
+def check_is_admin(username):
+    if username != 'admin':
+        raise Exception("This user is not allowed to get food")
+
+class Store(object):
+    def get_food(self, username, food):
+        check_is_admin(username)
+        return self.storage.get(food)
+
+    def put_food(self, username, food):
+        check_is_admin(username)
+        self.storage.put(food)
+#+END_EXAMPLE
+
+2. 修改成装饰器:
+#+BEGIN_EXAMPLE
+def check_is_admin(f):
+    def wraper(*args, **kwargs):
+        if kwargs.get('username') != 'admin':
+            raise Exception("This user is not allowed to get food")
+        return f(*args, **kwargs)
+    return wrapper
+
+class Store(object):
+    @check_is_admin
+    def get_food(self, username, food):
+        return self.storage.get(food)
+
+    @check_is_admin
+    def put_food(self, username, food):
+        self.storage.put(food)
+#+END_EXAMPLE
+
+如前所述, 装饰器会用一个动态创建的新函数代替原来的函数, 但是新函数的问题在于, 缺少了很多原来函数的属性, 如文档字符串和名字.
+
+Python 内置的 functools 模块提供了 wraps 装饰器, 将这些属性复制给我们的装饰器. 最终代码如下:
+#+BEGIN_EXAMPLE
+import functools
+
+
+def check_is_admin(f):
+    @functools.wraps(f)
+    def wraper(*args, **kwargs):
+        if kwargs.get('username') != 'admin':
+            raise Exception("This user is not allowed to get food")
+        return f(*args, **kwargs)
+    return wrapper
+
+class Store(object):
+    @check_is_admin
+    def get_food(self, username, food):
+        return self.storage.get(food)
+
+    @check_is_admin
+    def put_food(self, username, food):
+        self.storage.put(food)
+#+END_EXAMPLE
+
+* 方法
+
+方法是指类内部的函数.
+
+** 实例方法
+
+Python 会自动将对象传给方法的 self 参数; 如:
+#+BEGIN_EXAMPLE
+class Foo(object):
+    def get_size(self):
+        ...
+
+# 调用方法
+foo = Foo()
+foo.get_size()
+#+END_EXAMPLE
+
+** 静态方法
+
+静态方法: 属于类, 但不依赖于实例.
+#+BEGIN_EXAMPLE
+class Pizza(object):
+    @staticmethod
+    def mix_ingredients(x, y):
+        return x + y
+
+    def cook(self):
+        return self.mix_ingredients(self.cheese, self.vegetables)
+#+END_EXAMPLE
+使用 @staticmethod 可以声明一个方法是静态方法.
+
+调用方式:
+#+BEGIN_EXAMPLE
+pizza = Pizza()
+pizza.mix_ingredients()
+# 或
+Pizza.mix_ingredients()
+#+END_EXAMPLE
+
+** 类方法
+
+类方法使用 @classmethod 声明, 第一个参数为 cls, 调用方式和静态方法一样.
+#+BEGIN_EXAMPLE
+class Pizza(object):
+    radius = 42
+    @classmethod
+    def get_radius(cls):
+        return cls.radius
+#+END_EXAMPLE
+
+** 抽象方法
+
+抽象方法是定义在基类中, 可能有或者没有任何实现的方法. 最简单的抽象方法如下:
+#+BEGIN_EXAMPLE
+class Pizza(object):
+    @staticmethod
+    def get_radius():
+        raise NotImplementedError
+#+END_EXAMPLE
+任何继承自 Pizza 的子类都要实现并重写 get_radius(), 否则调用这个方法会引发异常.
+
+** super()
+
+super() 用来调用父类的方法.
+#+BEGIN_EXAMPLE
+class A:
+    def add(self, x):
+        y = x + 1
+        print(y)
+
+class B(A):
+    def add(self, x):
+        super().add(x)
+
+b = B()
+b.add(2)  # 3
+#+END_EXAMPLE
+
+** 小结
+
+classmethod 主要用途是作为构造函数. Python 只有一个构造函数 __new__(), 并且 __new__() 比较复杂, 我们一般不会去重写该方法, 由系统自动生成即可. 因此需要使用其他构造函数(classmethod)来满足我们的需求, 故 classmethod 的最后一句一般是 return cls(xxx).
+#+BEGIN_EXAMPLE
+class DateTest(object):
+
+    def __init__(self, year=None, month=None, day=None):
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def out_date(self):
+        print("Year:", self.year)
+        print("Month:", self.month)
+        print("Day:", self.day)
+
+    @classmethod
+    def string_date(cls, date):
+        year, month, day = map(int, date.split("-"))
+        date_res = cls(year, month, day)
+        return date_res
+
+t = DateTest.string_date("2017-06-21")
+t.out_date()
+#+END_EXAMPLE
+
+staticmethod 的主要作用是限定 namespace, 虽然是个普通的方法, 但它只有这个 class 会用到, 不适合作为模块级的方法.
