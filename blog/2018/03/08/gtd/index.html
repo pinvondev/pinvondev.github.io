@@ -76,10 +76,22 @@
 <ul>
 <li><a href="#sec-3-1">截止期限和计划安排</a></li>
 <li><a href="#sec-3-2">时间统计</a></li>
-<li><a href="#sec-3-3">org-pomodoro</a></li>
+<li><a href="#sec-3-3">org-pomodoro</a>
+<ul>
+<li><a href="#sec-3-3-1">安装</a></li>
+<li><a href="#sec-3-3-2">配置</a></li>
 </ul>
 </li>
-<li><a href="#sec-4">归档</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">归档</a>
+<ul>
+<li><a href="#sec-4-1">基础设置</a></li>
+<li><a href="#sec-4-2">常用功能</a></li>
+<li><a href="#sec-4-3">转发事件</a></li>
+<li><a href="#sec-4-4">归档文件设置</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -117,7 +129,6 @@
 </table>
 </div>
 </div>
-
 
 <div id="outline-container-sec-1-2" class="outline-3">
 <h3 id="sec-1-2">多状态工作流程</h3>
@@ -355,6 +366,12 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 </tr>
 </tbody>
 </table>
+
+<pre class="example">
+&lt;2018-05-29 二 10:00-11:00 +1d&gt;  // 每天的 10:00-11:00 都要做这事
+&lt;2018-05-29 二 11:00-12:00 +1w&gt;  // 每周的 11:00-12:00 都要做这事
+&lt;2018-05-29 二 10:00&gt;-&lt;2018-05-30 三 10:00&gt;  // 表示这段时间范围里做的事
+</pre>
 </div>
 </div>
 
@@ -399,12 +416,60 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 
 <div id="outline-container-sec-3-3" class="outline-3">
 <h3 id="sec-3-3">org-pomodoro</h3>
+<div class="outline-text-3" id="text-3-3">
+</div><div id="outline-container-sec-3-3-1" class="outline-4">
+<h4 id="sec-3-3-1">安装</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<pre class="example">
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3-2" class="outline-4">
+<h4 id="sec-3-3-2">配置</h4>
+<div class="outline-text-4" id="text-3-3-2">
+<p>
+输入:
+</p>
+<pre class="example">
+M-x customize-group
+org-pomodoro
+</pre>
+
+<p>
+如果要修改番茄工作时间长度, 可以修改: org pomodoro length 这个字段的值;
+</p>
+
+<p>
+类似的, 如果想要修改休息时间, 或者声音, 都可以更改配置.
+</p>
+</div>
+</div>
 </div>
 </div>
 
 <div id="outline-container-sec-4" class="outline-2">
 <h2 id="sec-4">归档</h2>
 <div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">基础设置</h3>
+<div class="outline-text-3" id="text-4-1">
+<pre class="example">
+(setq org-agenda-files '("~/GTD"))  ;; 设置默认的 org-agenda 文件目录
+(global-set-key (kbd "C-c a") 'org-agenda)  ;; 设置 org-agenda 打开的快捷键
+</pre>
+
+<p>
+以后日程文件都放在 ~/GTD 目录下.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">常用功能</h3>
+<div class="outline-text-3" id="text-4-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -413,6 +478,66 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 
 <col  class="left" />
 </colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">C-c a a</th>
+<th scope="col" class="left">从 org 文件中为本周收集出一个日程, 显示出每天的条目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">C-c a t</td>
+<td class="left">显示在 org-agenda-files 下所有文件中的 TODO 项</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">C-c a m</td>
+<td class="left">使用标签来筛选要显示的列表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">n/p</td>
+<td class="left">上一行/下一行</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">o</td>
+<td class="left">删除其他窗口</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">d/w</td>
+<td class="left">切换到日/周视图</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">f/b</td>
+<td class="left">切换到下/上一周的视图</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">.</td>
+<td class="left">转到今天</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">j</td>
+<td class="left">询问日期并转到那天</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">s/g</td>
+<td class="left">刷新</td>
+</tr>
+</tbody>
 <tbody>
 <tr>
 <td class="left">C-c C-x C-a</td>
@@ -423,12 +548,40 @@ TODO项标记为 <code>DONE</code> 状态时, 插入截止时间和备注.
 </div>
 </div>
 
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">转发事件</h3>
+<div class="outline-text-3" id="text-4-3">
+<pre class="example">
+(setq org-refile-targets '(
+                           ("~/GTD/agenda.org" :maxlevel . 1)))
+</pre>
+<p>
+这样可以将 agenda.org 文件中, 光标所在的事件转发到 agenda.org 的其他事件中, "maxlevel . 1" 表示只能选择一级标题来接收事件.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4">归档文件设置</h3>
+<div class="outline-text-3" id="text-4-4">
+<pre class="example">
+(setq org-archive-location (concat "archive/archive-"
+                                   (format-time-string "%Y%m" (current-time))
+                                   ".org_archive::"))
+</pre>
+<p>
+这样, 在当前待办事项中, 使用 C-c C-x C-s 命令, 会将当前事件归档到 archive/archive-201903.org_archive 文件中. 其中, 时间根据归档命令发生的时间而定.
+</p>
+</div>
+</div>
+</div>
+
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2018-03-08</span>
-            <span title="last modification date" class="post-info">2019-03-29</span>
+            <span title="last modification date" class="post-info">2019-03-31</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/emacs">Emacs</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@Inspiron">Pinvon</a></span>
         </div>

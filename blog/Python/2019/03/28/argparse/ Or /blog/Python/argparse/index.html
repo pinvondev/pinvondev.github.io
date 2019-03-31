@@ -72,6 +72,11 @@
 <li><a href="#sec-1-9">参数默认值</a></li>
 </ul>
 </li>
+<li><a href="#sec-2">进阶</a>
+<ul>
+<li><a href="#sec-2-1">子命令</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -320,12 +325,78 @@ parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2], default=1,
 </div>
 </div>
 
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">进阶</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">子命令</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+在学习 docker 命令时, 发现 docker 有子命令, 如 docker create, docker run 等. argparse 可以通过 add_subparsers 和 add_parser 来达到这种效果. 具体步骤为:
+</p>
+
+<ul class="org-ul">
+<li>在顶层解析器 parser 下, 定义 subparsers, 用来产生子命令解析器, 每个解析器只能有一个 subparsers;
+</li>
+<li>在 subparsers 下, 定义子解析器 parser_a, parser_b, 等等, 这是一对多的关系, 但这些子解析器是互斥关系.
+</li>
+</ul>
+
+<p>
+如:
+</p>
+<pre class="example">
+parser = argparse.ArgumentParser()
+parser.add_argument('-a', metavar='host', default=get_ip(),
+                    help='Host address')
+parser.add_argument('-p', default='9876', help='Port')
+parser.add_argument('-f', dest="file",
+                    help="read method parameters from json file")
+
+subparsers = parser.add_subparsers(title='Namespaces', metavar='namespace method [arg=value]')
+parser_a = subparsers.add_parser('a', help='a help')
+parser_a.add_argument('bar', type=int, help='bar help')
+
+parser.parse_args()
+</pre>
+
+<p>
+输出:
+</p>
+<pre class="example">
+$ python3 cli.py --help
+usage: cli.py [-h] [-a host] [-p P] [-f FILE] namespace method [arg=value] ...
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a host               Host address
+  -p P                  Port
+  -f FILE               read method parameters from json file
+
+Namespaces:
+  namespace method [arg=value]
+    a                   a help
+</pre>
+
+<pre class="example">
+usage: cli.py a [-h] bar
+
+positional arguments:
+  bar         bar help
+
+optional arguments:
+  -h, --help  show this help message and exit
+</pre>
+</div>
+</div>
+</div>
+
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2019-03-28</span>
-            <span title="last modification date" class="post-info">2019-03-29</span>
+            <span title="last modification date" class="post-info">2019-03-31</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
         </div>
