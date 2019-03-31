@@ -189,3 +189,54 @@ parser.add_argument("-v", "--verbosity", type=int, choices=[0, 1, 2], default=1,
                     help="increase output verbosity")
 #+END_EXAMPLE
 使用 default 来指定默认值.
+
+* 进阶
+
+** 子命令
+
+在学习 docker 命令时, 发现 docker 有子命令, 如 docker create, docker run 等. argparse 可以通过 add_subparsers 和 add_parser 来达到这种效果. 具体步骤为:
+
+- 在顶层解析器 parser 下, 定义 subparsers, 用来产生子命令解析器, 每个解析器只能有一个 subparsers;
+- 在 subparsers 下, 定义子解析器 parser_a, parser_b, 等等, 这是一对多的关系, 但这些子解析器是互斥关系.
+
+如:
+#+BEGIN_EXAMPLE
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-a', metavar='host', default=get_ip(),
+                        help='Host address')
+    parser.add_argument('-p', default='9876', help='Port')
+    parser.add_argument('-f', dest="file",
+                        help="read method parameters from json file")
+
+    subparsers = parser.add_subparsers(title='Namespaces', metavar='namespace method [arg=value]')
+    parser_a = subparsers.add_parser('a', help='a help')
+    parser_a.add_argument('bar', type=int, help='bar help')
+
+    parser.parse_args()
+#+END_EXAMPLE
+
+输出:
+#+BEGIN_EXAMPLE
+$ python3 cli.py --help
+usage: cli.py [-h] [-a host] [-p P] [-f FILE] namespace method [arg=value] ...
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a host               Host address
+  -p P                  Port
+  -f FILE               read method parameters from json file
+
+Namespaces:
+  namespace method [arg=value]
+    a                   a help
+#+END_EXAMPLE
+
+#+BEGIN_EXAMPLE
+usage: cli.py a [-h] bar
+
+positional arguments:
+  bar         bar help
+
+optional arguments:
+  -h, --help  show this help message and exit
+#+END_EXAMPLE
