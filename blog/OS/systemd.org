@@ -1,0 +1,500 @@
+#+TITLE:       Systemd
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2019-04-01 一
+
+#+URI:         /blog/OS/%y/%m/%d/%t/ Or /blog/OS/%t/
+#+TAGS:        Ubuntu
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:4 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+部分内容转自阮一峰老师的博客: http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+
+在历史上, Linux 的启动一直采用 init 进程, init 是 Linux 内核加载后执行的第一个进程, 以串行的方式对服务进行管理(启动, 停止, 监控等).
+
+缺点:
+- 以串行方式管理服务, 没有利用多 CPU 特性, 启动慢;
+- 只负责执行启动脚本, 脚本需要自己处理各种情况, 使得脚本变得很长;
+- 未体现服务间的依赖性;
+- 不同服务的启动顺序由服务本身设定, 且设定没有依据;
+
+Systemd 的设计目标: 为系统的启动和管理提供一套完整的解决方案, d 的含义就是要守护整个系统. 使用 Systemd 后, Systemd 成为系统的第一个进程(PID=1), 其他进程都是它的子进程. 它是一组命令, 涉及到系统管理的方方面面.
+
+* 系统管理
+
+** 主命令 systemctl
+
+#+BEGIN_EXAMPLE
+sudo systemctl reboot  # 重启系统
+sudo systemctl poweroff  # 关闭系统
+sudo systemctl halt  # 停止 CPU
+sudo systemctl suspend  # 暂停系统
+sudo systemctl hibernate  # 休眠
+...
+#+END_EXAMPLE
+
+** hostnamectl
+
+查看当前主机的信息.
+
+#+BEGIN_EXAMPLE
+hostnamectl  # 显示当前主机信息
+sudo hostnamectl set-hostname pinvon  # 设置主机名
+#+END_EXAMPLE
+
+** systemd-analyze
+
+用于查看启动耗时.
+
+#+BEGIN_EXAMPLE
+systemd-analyze  # 查看启动耗时
+systemd-analyze blame  # 查看每个服务的启动耗时
+systemd-analyze critical-chain  # 显示瀑布状的启动过程流
+systemd-analyze critical-chain atd.service  # 显示指定服务的启动流
+#+END_EXAMPLE
+
+** localectl
+
+用于本地化管理.
+
+#+BEGIN_EXAMPLE
+localectl  # 查看本地化设置
+
+# 设置本地化参数。
+sudo localectl set-locale LANG=en_GB.utf8
+sudo localectl set-keymap en_GB
+#+END_EXAMPLE
+
+** timedatectl
+
+用于当前时间设置的管理.
+
+#+BEGIN_EXAMPLE
+timedatectl  # 查看当前时区设置
+timedatectl list-timezones  # 显示所有可用的时区
+
+# 设置当前时区
+sudo timedatectl set-timezone America/New_York
+sudo timedatectl set-time YYYY-MM-DD
+sudo timedatectl set-time HH:MM:SS
+#+END_EXAMPLE
+
+** loginctl
+
+用于查看当前登录用户.
+
+#+BEGIN_EXAMPLE
+loginctl list-sessions  # 列出当前session
+loginctl list-users  # 列出当前登录用户
+loginctl show-user ruanyf  # 列出显示指定用户的信息
+#+END_EXAMPLE
+
+* Unit
+
+Systemd 可以管理所有系统资源, 资源统称为 Unit, 一共有 12 种.
+#+BEGIN_EXAMPLE
+Service Unit: 系统服务
+Target Unit: 多个 Unit 构成的一个组
+Device Unit: 硬件设备
+Mount Unit: 文件系统的挂载点
+Automount Unit: 自动挂载点
+Path Unit: 文件或路径
+Scope Unit: 不是由 Systemd 启动的外部进程
+Slice Unit: 进程组
+Snapshot Unit: Systemd 快照，可以切回某个快照
+Socket Unit: 进程间通信的 socket
+Swap Unit: swap 文件
+Timer Unit: 定时器
+#+END_EXAMPLE
+
+关于 Unit 的命令:
+#+BEGIN_EXAMPLE
+systemctl list-units  # 列出正在运行的 Unit
+systemctl list-units --all  # 列出所有Unit，包括没有找到配置文件的或者启动失败的
+systemctl list-units --all --state=inactive  # 列出所有没有运行的 Unit
+systemctl list-units --failed  # 列出所有加载失败的 Unit
+systemctl list-units --type=service  # 列出所有正在运行的、类型为 service 的 Unit
+
+
+systemctl status  # 显示系统状态
+sysystemctl status bluetooth.service  # 显示单个 Unit 的状态
+systemctl -H root@rhel7.example.com status httpd.service  # 显示远程主机的某个 Unit 的状态
+
+
+systemctl is-active application.service  # 显示某个 Unit 是否正在运行
+systemctl is-failed application.service  # 显示某个 Unit 是否处于启动失败状态
+systemctl is-enabled application.service  # 显示某个 Unit 服务是否建立了启动链接
+
+
+sudo systemctl start apache.service  # 立即启动一个服务
+sudo systemctl stop apache.service  # 立即停止一个服务
+sudo systemctl restart apache.service  # 重启一个服务
+sudo systemctl kill apache.service  # 杀死一个服务的所有子进程
+sudo systemctl reload apache.service  # 重新加载一个服务的配置文件
+sudo systemctl daemon-reload  # 重载所有修改过的配置文件
+systemctl show httpd.service  # 显示某个 Unit 的所有底层参数
+systemctl show -p CPUShares httpd.service  # 显示某个 Unit 的指定属性的值
+sudo systemctl set-property httpd.service CPUShares=500  # 设置某个 Unit 的指定属性
+
+
+systemctl list-dependencies --all nginx.service  # 列出一个 Unit 的所有依赖
+#+END_EXAMPLE
+如果 Unit A 依赖于 Unit B, 则在启动 Unit A 时, 系统会同时去启动 Unit B.
+
+* Unit 配置文件
+
+每个 Unit 都有一个配置文件, 告诉 Systemd 如何启动该 Unit.
+
+Systemd 默认从 /etc/systemd/system/ 读取配置文件, 但里面存放的大部分文件都是符号链接, 指向目录 /usr/lib/systemd/system/, 这才是真正的配置文件存放目录.
+
+建立符号链接的命令:
+#+BEGIN_EXAMPLE
+sudo systemctl enable clamd@scan.service
+# 等同于
+sudo ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+#+END_EXAMPLE
+如果配置文件内部配置了开机启动, 则 systemctl enable 相当于激活开机启动, 对应的, 如果使用 systemctl disable 命令撤销符号链接关系, 则相当于撤销了开机启动.
+#+BEGIN_EXAMPLE
+sudo systemctl disable clamd@scan.service
+#+END_EXAMPLE
+
+** 配置文件的名称
+
+配置文件的后缀名就是该 Unit 的种类, 比如 sshd.socket. 如果省略则 Systemd 默认后缀名为 .service, 所以 sshd 会被理解成 sshd.service.
+
+** 配置文件的状态
+
+#+BEGIN_EXAMPLE
+systemctl list-unit-files  # 列出所有配置文件
+systemctl list-unit-files --type=service  # 列出指定类型的配置文件
+#+END_EXAMPLE
+
+配置文件的状态一共有 4 种:
+#+BEGIN_EXAMPLE
+enabled: 已建立启动链接
+disabled: 没建立启动链接
+static: 该配置文件没有 [Install] 部分(无法执行), 只能作为其他配置文件的依赖
+masked: 该配置文件被禁止建立启动链接
+#+END_EXAMPLE
+
+一旦修改配置文件, 就要让 systemd 重新加载配置文件, 然后重新启动.
+#+BEGIN_EXAMPLE
+sudo systemctl daemon-reload
+sudo systemctl restart httpd.service
+#+END_EXAMPLE
+
+** 配置文件的区块
+
+*** [Unit] 区块
+
+用来定义 Unit 的元数据, 以及配置与其他 Unit 的关系. 主要字段有:
+#+BEGIN_EXAMPLE
+Description: 简短描述
+Documentation: 文档地址
+Requires: 当前 Unit 依赖的其他 Unit, 如果它们没有运行, 当前 Unit 会启动失败
+Wants: 与当前 Unit 配合的其他 Unit, 如果它们没有运行, 当前 Unit 不会启动失败
+BindsTo: 与Requires类似, 它指定的 Unit 如果退出, 会导致当前 Unit 停止运行
+Before: 如果该字段指定的 Unit 也要启动, 那么必须在当前 Unit 之后启动
+After: 如果该字段指定的 Unit 也要启动, 那么必须在当前 Unit 之前启动
+Conflicts: 这里指定的 Unit 不能与当前 Unit 同时运行
+Condition...: 当前 Unit 运行必须满足的条件, 否则不会运行
+Assert...: 当前 Unit 运行必须满足的条件, 否则会报启动失败
+#+END_EXAMPLE
+
+*** [Service] 区块
+
+用来 Service 的配置, 只有 Service 类型的 Unit 才有这个区块. 主要字段如下:
+#+BEGIN_EXAMPLE
+Type: 定义启动时的进程行为. 它有以下几种值. 
+Type=simple: 默认值, 执行 ExecStart 指定的命令, 启动主进程
+Type=forking: 以 fork 方式从父进程创建子进程, 创建后父进程会立即退出
+Type=oneshot: 一次性进程, Systemd 会等当前服务退出, 再继续往下执行
+Type=dbus: 当前服务通过 D-Bus 启动
+Type=notify: 当前服务启动完毕, 会通知 Systemd, 再继续往下执行
+Type=idle: 若有其他任务执行完毕, 当前服务才会运行
+
+
+ExecStart: 启动当前服务的命令
+ExecStartPre: 启动当前服务之前执行的命令
+ExecStartPost: 启动当前服务之后执行的命令
+ExecReload: 重启当前服务时执行的命令
+ExecStop: 停止当前服务时执行的命令
+ExecStopPost: 停止当其服务之后执行的命令
+RestartSec: 自动重启当前服务间隔的秒数
+Restart: 定义何种情况 Systemd 会自动重启当前服务, 可能的值包括 always(总是重启), on-success, on-failure, on-abnormal, on-abort, on-watchdog
+TimeoutSec: 定义 Systemd 停止当前服务之前等待的秒数
+Environment: 指定环境变量
+#+END_EXAMPLE
+
+*** [Install] 区块
+
+通常是配置文件的最后一个区块, 用来定义如何启动, 是否开机启动等. 主要字段如下:
+#+BEGIN_EXAMPLE
+WantedBy: 它的值是一个或多个 Target, 当前 Unit 激活时(enable) 符号链接会放入/etc/systemd/system目录下面以 Target 名 + .wants后缀构成的子目录中
+RequiredBy: 它的值是一个或多个 Target, 当前 Unit 激活时, 符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中
+Alias: 当前 Unit 可用于启动的别名
+Also: 当前 Unit 激活（enable）时, 会被同时激活的其他 Unit
+#+END_EXAMPLE
+
+* Target
+
+启动计算机时, 会启动大量的 Unit, 如果每次启动都要写需要哪些 Unit, 会非常不方便.
+
+Target 是一个 Unit 组, 包含许多相关的 Unit, 启动某个 Target 时, Systemd 会启动里面所有的 Unit.
+
+#+BEGIN_EXAMPLE
+systemctl list-unit-files --type=target  # 查看当前系统的所有 Target
+
+systemctl list-dependencies multi-user.target  # 查看一个 Target 包含的所有 Unit
+
+systemctl get-default  # 查看启动时的默认 Target
+
+sudo systemctl set-default multi-user.target  # 设置启动时的默认 Target
+
+# 切换 Target 时，默认不关闭前一个 Target 启动的进程，
+# systemctl isolate 命令改变这种行为，
+# 关闭前一个 Target 里面所有不属于后一个 Target 的进程
+sudo systemctl isolate multi-user.target
+#+END_EXAMPLE
+
+* 日志管理
+
+#+BEGIN_EXAMPLE
+# 查看所有日志（默认情况下 ，只保存本次启动的日志）
+$ sudo journalctl
+
+# 查看内核日志（不显示应用日志）
+$ sudo journalctl -k
+
+# 查看系统本次启动的日志
+$ sudo journalctl -b
+$ sudo journalctl -b -0
+
+# 查看上一次启动的日志（需更改设置）
+$ sudo journalctl -b -1
+
+# 查看指定时间的日志
+$ sudo journalctl --since="2012-10-30 18:17:16"
+$ sudo journalctl --since "20 min ago"
+$ sudo journalctl --since yesterday
+$ sudo journalctl --since "2015-01-10" --until "2015-01-11 03:00"
+$ sudo journalctl --since 09:00 --until "1 hour ago"
+
+# 显示尾部的最新10行日志
+$ sudo journalctl -n
+
+# 显示尾部指定行数的日志
+$ sudo journalctl -n 20
+
+# 实时滚动显示最新日志
+$ sudo journalctl -f
+
+# 查看指定服务的日志
+$ sudo journalctl /usr/lib/systemd/systemd
+
+# 查看指定进程的日志
+$ sudo journalctl _PID=1
+
+# 查看某个路径的脚本的日志
+$ sudo journalctl /usr/bin/bash
+
+# 查看指定用户的日志
+$ sudo journalctl _UID=33 --since today
+
+# 查看某个 Unit 的日志
+$ sudo journalctl -u nginx.service
+$ sudo journalctl -u nginx.service --since today
+
+# 实时滚动显示某个 Unit 的最新日志
+$ sudo journalctl -u nginx.service -f
+
+# 合并显示多个 Unit 的日志
+$ journalctl -u nginx.service -u php-fpm.service --since today
+
+# 查看指定优先级（及其以上级别）的日志，共有8级
+# 0: emerg
+# 1: alert
+# 2: crit
+# 3: err
+# 4: warning
+# 5: notice
+# 6: info
+# 7: debug
+$ sudo journalctl -p err -b
+
+# 日志默认分页输出，--no-pager 改为正常的标准输出
+$ sudo journalctl --no-pager
+
+# 以 JSON 格式（单行）输出
+$ sudo journalctl -b -u nginx.service -o json
+
+# 以 JSON 格式（多行）输出，可读性更好
+$ sudo journalctl -b -u nginx.serviceqq
+ -o json-pretty
+
+# 显示日志占据的硬盘空间
+$ sudo journalctl --disk-usage
+
+# 指定日志文件占据的最大空间
+$ sudo journalctl --vacuum-size=1G
+
+# 指定日志文件保存多久
+$ sudo journalctl --vacuum-time=1years
+#+END_EXAMPLE
+
+* 配置文件内容
+
+一个服务怎么启动, 完全由它的配置文件决定. 配置文件主要放在 /usr/lib/systemd/system/ 和 /etc/systemd/system/ 目录.
+
+以下面的配置为例进行分析:
+#+BEGIN_EXAMPLE
+$ systemctl cat sshd.service
+
+[Unit]
+Description=OpenSSH server daemon
+Documentation=man:sshd(8) man:sshd_config(5)
+After=network.target sshd-keygen.service
+Wants=sshd-keygen.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/sshd
+ExecStart=/usr/sbin/sshd -D $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+Type=simple
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+#+END_EXAMPLE
+
+** [Unit]区块: 启动顺序与依赖关系
+
+Description 字段和 Documentation 字段略过.
+
+After: 表示如果 network.target 或 sshd-keygen.service 需要启动, 则 sshd.service 应该在它们之后启动;
+Before: 表示 sshd.service 应该在哪些服务之前启动;
+After 和 Before 涉及启动顺序, 不涉及依赖关系.
+
+Wants: 表示 sshd.service 与 sshd-keygen.service 之间存在弱依赖关系, 如果 sshd-keygen.service 启动失败, 不影响 sshd.service.
+Requires: 表示强依赖关系, 如果该服务启动失败或异常退出, sshd.service 也必须退出.
+Wants 和 Requires 只涉及依赖关系, 不涉及启动顺序, 默认同时启动.
+
+** [Service]区块: 启动行为
+
+*** 启动命令
+
+EnvironmentFile: 指定文件, 内含当前服务的环境参数. 该文件内部的 key=value 键值对, 可以用 $key 的形式在当前配置文件中获取. 在例子中, 环境参数文件是 /etc/sysconfig/sshd
+
+ExecStart: =定义启动进程时执行的命令=. 例子中, 启动 sshd, 执行的命令是 /usr/sbin/sshd -D $OPTIONS, 其中, $OPTIONS 的值来自 EnvironmentFile 字段指定的文件.
+
+ExecReload: 重启服务时执行的命令;
+ExecStop: 停止服务时执行的命令;
+ExecStartPre: 启动服务前执行的命令;
+ExecStartPost: 启动服务后执行的命令;
+ExecStopPost: 停止服务后执行的命令;
+
+**** 例子
+
+#+BEGIN_EXAMPLE
+[Service]
+ExecStart=/bin/echo execstart1
+ExecStart=
+ExecStart=/bin/echo execstart2
+ExecStartPost=/bin/echo post1
+ExecStartPost=/bin/echo post2
+#+END_EXAMPLE
+第二行的 ExecStart 字段为空, 会覆盖第一行的 ExecStart 字段值, 运行结果如下:
+#+BEGIN_EXAMPLE
+
+execstart2
+post1
+post2
+#+END_EXAMPLE
+
+如果在启动设置之前加上符号"-", 表示即使错误发生, 也不影响其他命令执行. 如: EnvironmentFile=-/etc/sysconfig/sshd, 表示即使 /etc/sysconfig/sshd 不存在, 也不会抛出错误.
+
+*** 启动类型
+
+Type 字段定义启动类型, 可设置的值在上面已经给出.
+
+**** 例子
+
+#+BEGIN_EXAMPLE
+[Unit]
+Description=Switch-off Touchpad
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/touchpad-off start
+ExecStop=/usr/bin/touchpad-off stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+#+END_EXAMPLE
+
+服务的内容为: 笔记本电脑启动时, 关闭触摸板. 启动类型设置为 oneshot, 表示这个服务只运行一次, 不需要长期运行; RemainAfterExit=yes 表示进程退出以后, 服务仍然保持运行, 这样, 一旦用 systemctl stop 停止服务, ExecStop 指定的命令就会执行, 从而重新开启触摸板.
+
+*** 重启行为
+
+KillMode: 定义 Systemd 如何停止 sshd 服务. 可设置的值如下:
+- control-group: 当前控制组里面的所有子进程, 都会被杀掉;
+- process: 只杀主进程;
+- mixed: 主进程将收到 SIGTERM 信号, 子进程收到 SIGKILL 信号;
+- none: 没有进程会被杀掉, 只是执行服务的 stop 命令.
+上面的例子将 KillMode=process, 表示只停止主进程, 不停止任何 sshd 子进程, 即子进程打开的 SSH session 仍然保持连接. 这个设置不太常见, 但对 sshd 很重要, 否则停止服务时, 会连自己打开的 SSH session 一起杀掉.
+
+Restart: 定义 sshd 退出后, Systemd 的重启方式. 可设置的值如下:
+- no: 退出后不重启;
+- on-success: 只有正常退出时才会重启;
+- on-failure: 非正常退出时才会重启;
+- on-abnormal: 只有信号被终止和超时, 才会重启;
+- on-abort: 只有在收到没有捕捉到的信号终止时, 才会重启;
+- on-watchdog: 超时退出才会重启;
+- always: 不管什么原因, 总是重启;
+对于守护进程, 推荐设置为 on-failure.
+
+RestartSec: 表示 Systemd 重启服务前需要等待的秒数.
+
+** [Install]区块: 安装方式
+
+WantedBy: 表示服务所在的 Target(服务组).
+
+例子中, WantedBy=multi-user.target 表示 sshd 所在的 Target 是 multi-user.target
+
+这个设置很重要, 因为执行 systemctl enable sshd.service 时, sshd.service 的一个符号链接会放在 /etc/systemd/system/multi-user.target.wants/ 目录中.
+
+Systemd 有默认的启动 Target, 开机时会启动这个 Target 下的所有服务.
+#+BEGIN_EXAMPLE
+systemctl get-default  # multi-user.target
+#+END_EXAMPLE
+
+其他常用命令:
+#+BEGIN_EXAMPLE
+# 查看 multi-user.target 包含的所有服务
+$ systemctl list-dependencies multi-user.target
+
+# 切换到另一个 target
+# shutdown.target 就是关机状态
+$ sudo systemctl isolate shutdown.target
+#+END_EXAMPLE
+
+* 修改配置文件后重启
+
+#+BEGIN_EXAMPLE
+# 重新加载配置文件
+$ sudo systemctl daemon-reload
+
+# 重启相关服务
+$ sudo systemctl restart foobar
+#+END_EXAMPLE
+
+* 官方网站
+
+[[https://www.freedesktop.org/wiki/Software/systemd/][官网]]
