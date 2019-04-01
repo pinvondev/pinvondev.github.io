@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>UML - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="软件设计" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">UML</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">概述</a></li>
+<li><a href="#sec-2">UML 构建模块</a>
+<ul>
+<li><a href="#sec-2-1">事物</a>
+<ul>
+<li><a href="#sec-2-1-1">结构事物</a></li>
+<li><a href="#sec-2-1-2">行为事物</a></li>
+<li><a href="#sec-2-1-3">分组事物</a></li>
+<li><a href="#sec-2-1-4">注释事物</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">关系</a>
+<ul>
+<li><a href="#sec-2-2-1">依赖关系</a></li>
+<li><a href="#sec-2-2-2">关联</a></li>
+<li><a href="#sec-2-2-3">聚合</a></li>
+<li><a href="#sec-2-2-4">组合</a></li>
+<li><a href="#sec-2-2-5">协作</a></li>
+<li><a href="#sec-2-2-6">泛化</a></li>
+<li><a href="#sec-2-2-7">实现</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">图</a></li>
+<li><a href="#sec-2-4">UML 视图</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">类图</a></li>
+<li><a href="#sec-4">对象图</a></li>
+<li><a href="#sec-5">组件图</a></li>
+<li><a href="#sec-6">部署图</a></li>
+<li><a href="#sec-7">用例图</a></li>
+<li><a href="#sec-8">交互图</a>
+<ul>
+<li><a href="#sec-8-1">序列图</a></li>
+</ul>
+</li>
+<li><a href="#sec-9">状态图</a></li>
+<li><a href="#sec-10">活动图</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+UML 是一种为面向对象开发系统的产品进行说明, 可视化, 编制文档的模型语言, 使开发人员专注于建立产品的模型和结构, 而不是选择程序语言和算法实现.
+</p>
+
+<p>
+UML 的核心是图表, 大致可以将这些图表归类为结构图和行为图.
+</p>
+<ul class="org-ul">
+<li>结构图. 由类图, 对象图, 部署图, 包图, 复合结构图, 组件图等静态图组成;
+</li>
+<li>行为图. 由活动图, 交互图, 用例图等动态图组成.
+</li>
+</ul>
+
+<p>
+要掌握 UML 模型, 首先要了解 UML 构建模块.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">UML 构建模块</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">事物</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+事物是实体抽象化的最终结果, 是 UML 构建块中最重要的组成部分. 事物分类如下:
+</p>
+<ul class="org-ul">
+<li>结构事物
+</li>
+<li>行为事物
+</li>
+<li>分组事物
+</li>
+<li>注释事物
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1">结构事物</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+结构事物是模型中的静态部分, 用来呈现概念或实体的表现元素, 是软件建模中最常见的元素.
+</p>
+
+<p>
+类. 具有相同属性, 方法, 关系, 语义的对象的集合. 用矩形表示.
+</p>
+
+<p>
+接口. 类或组件所提供的服务, 描述了类或组件对外可见的动作的组合. 用圆形表示.
+</p>
+
+<p>
+协作. 定义元素之间的相互作用. 用虚线椭圆表示.
+</p>
+
+<p>
+用例. 定义了用户和系统的交互, 即一个操作. 用实线椭圆表示.
+</p>
+
+<p>
+组件. 描述系统的一部分.
+</p>
+
+<p>
+节点. 系统运行时所存在的物理元素, 如服务器. 用立方体表示.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2">行为事物</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+行为事物是指 UML 模型中的动态部分, 表示模型随着时空不断变化的部分.
+</p>
+
+<p>
+交互. 一种行为. 用带箭头的直线表示.
+</p>
+
+<p>
+状态机. 由一系列对象的状态组成, 一个对象在其生命周期的状态是很重要的. 用圆角矩形表示.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3">分组事物</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+目前只有一种分组事物, 即包(package). 分组事物可以看成是一个盒子, 模型可以在其中被分解. 符号类似于文件夹的图标.
+</p>
+
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/1.png" alt="1.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4" class="outline-4">
+<h4 id="sec-2-1-4">注释事物</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<p>
+对 UML 模型元素的解释说明. 用折起一个角的矩形表示.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">关系</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+显示元素是如何彼此相关联的.
+</p>
+</div>
+
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1">依赖关系</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+依赖是指两个事物之间的联系, 其中一个事物的变化会影响到另一个事物. 用带虚线的箭头表示.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2">关联</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+类与类之间的联结, 使一个类知道另一个类的属性和方法. 用带实绩的箭头表示. 在 C++ 中, 类 B 的成员变量中有类 A 的对象, 则 A 与 B 之间有关联, 并且箭头指向 A.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3">聚合</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+与关联类似, 但是关联主要表示在同一层次上, 而聚合则是整体与部分之间的关系, 但在 C++ 语法上无法区分, 都是通过成员变量来实现.
+</p>
+
+<p>
+图标: 带实线的箭头, 另一边是空心的菱形.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4">组合</h4>
+<div class="outline-text-4" id="text-2-2-4">
+<p>
+属于关联的特殊情况, 也体现了整体与部分之间的关系, 整体与部分拥有相同的生命周期.
+</p>
+
+<p>
+与聚合的区别: 聚合关系中, 整体与部分之间没有相同的生命周期, 如部门不存在了, 但员工还可以继续存在; 组合则有相同的生命周期, 如部门不存在了, 员工也不再存在. 一般会先画成聚合关系, 后期发现确定是组合关系, 才会将空心菱形转成实心菱形.
+</p>
+
+<p>
+图标: 带实线的箭头, 另一边是实心的菱形.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-5" class="outline-4">
+<h4 id="sec-2-2-5">协作</h4>
+<div class="outline-text-4" id="text-2-2-5">
+<p>
+描述一组对象之间连接的结构关系, 如聚合关系(描述整体与部分之间的结构关系), 使用带虚线的双向箭头表示.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-6" class="outline-4">
+<h4 id="sec-2-2-6">泛化</h4>
+<div class="outline-text-4" id="text-2-2-6">
+<p>
+描述了对象世界中的继承关系, 是一种一般化-特殊化的关系. 用带实线的空心三角形表示.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-7" class="outline-4">
+<h4 id="sec-2-2-7">实现</h4>
+<div class="outline-text-4" id="text-2-2-7">
+<p>
+类之间的语义关系, 其中一个类指定了由另一个类保证执行的契约. 使用带虚线的空心三角形表示.
+</p>
+
+<p>
+泛化表示类与类之间的继承关系, 接口与接口之间的继承关系.
+</p>
+
+<p>
+实现表示类对接口的实现.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">图</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+图是事物集合的分类, UML 中包含多种图:
+</p>
+
+<ul class="org-ul">
+<li>类图. 描述系统所包含的类, 类的内部结构及类之间的关系;
+</li>
+<li>对象图. 类图的一个具体实例;
+</li>
+<li>用例图. 从用户的角度出发描述系统的功能和需求, 展示系统外部的各类角色与系统内部的各种用例之间的关系;
+</li>
+<li>顺序图. 表示对象之间动态合作的关系;
+</li>
+<li>协作图. 描述对象之间的协作关系;
+</li>
+<li>活动图. 描述系统中各种活动的执行顺序;
+</li>
+<li>状态图. 描述一类对象的所有可能的状态以及事件发生时状态的转移条件;
+</li>
+<li>部署关系图. 定义系统中软硬件的物理体系结构;
+</li>
+<li>组件图. 描述代码部件的物理结构以及各部件之间的依赖关系.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">UML 视图</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+视图用来表示被建模系统的各个方面, 由多个图构成.
+</p>
+
+<p>
+如果要为系统建立一个完整的模型图, 只需定义多个视图, 每个视图表示系统的一个方面即可.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">类图</h2>
+<div class="outline-text-2" id="text-3">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/0.png" alt="0.png" />
+</p>
+</div>
+
+<ul class="org-ul">
+<li>图中有 Student 和 Course 两个类
+</li>
+<li>+ 表示 public, - 表示 private, # 表示 protected
+</li>
+<li>成员变量的类型在前, 名称在后
+</li>
+<li>函数的参数, 名称在前, 类型在后, 返回值类型最后
+</li>
+<li>两个类之间若存在关系, 可以使用箭头进行关联
+</li>
+<li>1 表示一个, 0..* 表示 0 个到无限个
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">对象图</h2>
+<div class="outline-text-2" id="text-4">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/2.png" alt="2.png" />
+</p>
+</div>
+
+<p>
+对象图与类图类似. 区别在于:
+</p>
+<ul class="org-ul">
+<li>对象名称形式为"对象名:类名"加下划线
+</li>
+<li>属性具有值
+</li>
+<li>不包括函数, 因为同一个类的对象, 操作都一样
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">组件图</h2>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">部署图</h2>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">用例图</h2>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">交互图</h2>
+<div class="outline-text-2" id="text-8">
+</div><div id="outline-container-sec-8-1" class="outline-3">
+<h3 id="sec-8-1">序列图</h3>
+<div class="outline-text-3" id="text-8-1">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/3.png" alt="3.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9">状态图</h2>
+</div>
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10">活动图</h2>
+<div class="outline-text-2" id="text-10">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/4.png" alt="4.png" />
+</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-03-31</span>
+            <span title="last modification date" class="post-info">2019-04-01</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/软件设计">软件设计</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/";
+         var disqus_url = "https://pinvondev.github.io/blog/Design/2019/03/31/uml/ Or /blog/Design/uml/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

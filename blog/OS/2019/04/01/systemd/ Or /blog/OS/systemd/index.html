@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Systemd - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Ubuntu" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">Systemd</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">概述</a></li>
+<li><a href="#sec-2">系统管理</a>
+<ul>
+<li><a href="#sec-2-1">主命令 systemctl</a></li>
+<li><a href="#sec-2-2">hostnamectl</a></li>
+<li><a href="#sec-2-3">systemd-analyze</a></li>
+<li><a href="#sec-2-4">localectl</a></li>
+<li><a href="#sec-2-5">timedatectl</a></li>
+<li><a href="#sec-2-6">loginctl</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">Unit</a></li>
+<li><a href="#sec-4">Unit 配置文件</a>
+<ul>
+<li><a href="#sec-4-1">配置文件的名称</a></li>
+<li><a href="#sec-4-2">配置文件的状态</a></li>
+<li><a href="#sec-4-3">配置文件的区块</a>
+<ul>
+<li><a href="#sec-4-3-1">[Unit] 区块</a></li>
+<li><a href="#sec-4-3-2">[Service] 区块</a></li>
+<li><a href="#sec-4-3-3">[Install] 区块</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-5">Target</a></li>
+<li><a href="#sec-6">日志管理</a></li>
+<li><a href="#sec-7">配置文件内容</a>
+<ul>
+<li><a href="#sec-7-1">[Unit]区块: 启动顺序与依赖关系</a></li>
+<li><a href="#sec-7-2">[Service]区块: 启动行为</a>
+<ul>
+<li><a href="#sec-7-2-1">启动命令</a>
+<ul>
+<li><a href="#sec-7-2-1-1">例子</a></li>
+</ul>
+</li>
+<li><a href="#sec-7-2-2">启动类型</a>
+<ul>
+<li><a href="#sec-7-2-2-1">例子</a></li>
+</ul>
+</li>
+<li><a href="#sec-7-2-3">重启行为</a></li>
+</ul>
+</li>
+<li><a href="#sec-7-3">[Install]区块: 安装方式</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">修改配置文件后重启</a></li>
+<li><a href="#sec-9">官方网站</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+部分内容转自阮一峰老师的博客: <a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html</a>
+</p>
+
+<p>
+在历史上, Linux 的启动一直采用 init 进程, init 是 Linux 内核加载后执行的第一个进程, 以串行的方式对服务进行管理(启动, 停止, 监控等).
+</p>
+
+<p>
+缺点:
+</p>
+<ul class="org-ul">
+<li>以串行方式管理服务, 没有利用多 CPU 特性, 启动慢;
+</li>
+<li>只负责执行启动脚本, 脚本需要自己处理各种情况, 使得脚本变得很长;
+</li>
+<li>未体现服务间的依赖性;
+</li>
+<li>不同服务的启动顺序由服务本身设定, 且设定没有依据;
+</li>
+</ul>
+
+<p>
+Systemd 的设计目标: 为系统的启动和管理提供一套完整的解决方案, d 的含义就是要守护整个系统. 使用 Systemd 后, Systemd 成为系统的第一个进程(PID=1), 其他进程都是它的子进程. 它是一组命令, 涉及到系统管理的方方面面.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">系统管理</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">主命令 systemctl</h3>
+<div class="outline-text-3" id="text-2-1">
+<pre class="example">
+sudo systemctl reboot  # 重启系统
+sudo systemctl poweroff  # 关闭系统
+sudo systemctl halt  # 停止 CPU
+sudo systemctl suspend  # 暂停系统
+sudo systemctl hibernate  # 休眠
+...
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">hostnamectl</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+查看当前主机的信息.
+</p>
+
+<pre class="example">
+hostnamectl  # 显示当前主机信息
+sudo hostnamectl set-hostname pinvon  # 设置主机名
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">systemd-analyze</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+用于查看启动耗时.
+</p>
+
+<pre class="example">
+systemd-analyze  # 查看启动耗时
+systemd-analyze blame  # 查看每个服务的启动耗时
+systemd-analyze critical-chain  # 显示瀑布状的启动过程流
+systemd-analyze critical-chain atd.service  # 显示指定服务的启动流
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">localectl</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+用于本地化管理.
+</p>
+
+<pre class="example">
+localectl  # 查看本地化设置
+
+# 设置本地化参数。
+sudo localectl set-locale LANG=en_GB.utf8
+sudo localectl set-keymap en_GB
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5">timedatectl</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+用于当前时间设置的管理.
+</p>
+
+<pre class="example">
+timedatectl  # 查看当前时区设置
+timedatectl list-timezones  # 显示所有可用的时区
+
+# 设置当前时区
+sudo timedatectl set-timezone America/New_York
+sudo timedatectl set-time YYYY-MM-DD
+sudo timedatectl set-time HH:MM:SS
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6">loginctl</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+用于查看当前登录用户.
+</p>
+
+<pre class="example">
+loginctl list-sessions  # 列出当前session
+loginctl list-users  # 列出当前登录用户
+loginctl show-user ruanyf  # 列出显示指定用户的信息
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Unit</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Systemd 可以管理所有系统资源, 资源统称为 Unit, 一共有 12 种.
+</p>
+<pre class="example">
+Service Unit: 系统服务
+Target Unit: 多个 Unit 构成的一个组
+Device Unit: 硬件设备
+Mount Unit: 文件系统的挂载点
+Automount Unit: 自动挂载点
+Path Unit: 文件或路径
+Scope Unit: 不是由 Systemd 启动的外部进程
+Slice Unit: 进程组
+Snapshot Unit: Systemd 快照，可以切回某个快照
+Socket Unit: 进程间通信的 socket
+Swap Unit: swap 文件
+Timer Unit: 定时器
+</pre>
+
+<p>
+关于 Unit 的命令:
+</p>
+<pre class="example">
+systemctl list-units  # 列出正在运行的 Unit
+systemctl list-units --all  # 列出所有Unit，包括没有找到配置文件的或者启动失败的
+systemctl list-units --all --state=inactive  # 列出所有没有运行的 Unit
+systemctl list-units --failed  # 列出所有加载失败的 Unit
+systemctl list-units --type=service  # 列出所有正在运行的、类型为 service 的 Unit
+
+
+systemctl status  # 显示系统状态
+sysystemctl status bluetooth.service  # 显示单个 Unit 的状态
+systemctl -H root@rhel7.example.com status httpd.service  # 显示远程主机的某个 Unit 的状态
+
+
+systemctl is-active application.service  # 显示某个 Unit 是否正在运行
+systemctl is-failed application.service  # 显示某个 Unit 是否处于启动失败状态
+systemctl is-enabled application.service  # 显示某个 Unit 服务是否建立了启动链接
+
+
+sudo systemctl start apache.service  # 立即启动一个服务
+sudo systemctl stop apache.service  # 立即停止一个服务
+sudo systemctl restart apache.service  # 重启一个服务
+sudo systemctl kill apache.service  # 杀死一个服务的所有子进程
+sudo systemctl reload apache.service  # 重新加载一个服务的配置文件
+sudo systemctl daemon-reload  # 重载所有修改过的配置文件
+systemctl show httpd.service  # 显示某个 Unit 的所有底层参数
+systemctl show -p CPUShares httpd.service  # 显示某个 Unit 的指定属性的值
+sudo systemctl set-property httpd.service CPUShares=500  # 设置某个 Unit 的指定属性
+
+
+systemctl list-dependencies --all nginx.service  # 列出一个 Unit 的所有依赖
+</pre>
+<p>
+如果 Unit A 依赖于 Unit B, 则在启动 Unit A 时, 系统会同时去启动 Unit B.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Unit 配置文件</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+每个 Unit 都有一个配置文件, 告诉 Systemd 如何启动该 Unit.
+</p>
+
+<p>
+Systemd 默认从 <i>etc/systemd/system</i> 读取配置文件, 但里面存放的大部分文件都是符号链接, 指向目录 <i>usr/lib/systemd/system</i>, 这才是真正的配置文件存放目录.
+</p>
+
+<p>
+建立符号链接的命令:
+</p>
+<pre class="example">
+sudo systemctl enable clamd@scan.service
+# 等同于
+sudo ln -s '/usr/lib/systemd/system/clamd@scan.service' '/etc/systemd/system/multi-user.target.wants/clamd@scan.service'
+</pre>
+<p>
+如果配置文件内部配置了开机启动, 则 systemctl enable 相当于激活开机启动, 对应的, 如果使用 systemctl disable 命令撤销符号链接关系, 则相当于撤销了开机启动.
+</p>
+<pre class="example">
+sudo systemctl disable clamd@scan.service
+</pre>
+</div>
+
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">配置文件的名称</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+配置文件的后缀名就是该 Unit 的种类, 比如 sshd.socket. 如果省略则 Systemd 默认后缀名为 .service, 所以 sshd 会被理解成 sshd.service.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">配置文件的状态</h3>
+<div class="outline-text-3" id="text-4-2">
+<pre class="example">
+systemctl list-unit-files  # 列出所有配置文件
+systemctl list-unit-files --type=service  # 列出指定类型的配置文件
+</pre>
+
+<p>
+配置文件的状态一共有 4 种:
+</p>
+<pre class="example">
+enabled: 已建立启动链接
+disabled: 没建立启动链接
+static: 该配置文件没有 [Install] 部分(无法执行), 只能作为其他配置文件的依赖
+masked: 该配置文件被禁止建立启动链接
+</pre>
+
+<p>
+一旦修改配置文件, 就要让 systemd 重新加载配置文件, 然后重新启动.
+</p>
+<pre class="example">
+sudo systemctl daemon-reload
+sudo systemctl restart httpd.service
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">配置文件的区块</h3>
+<div class="outline-text-3" id="text-4-3">
+</div><div id="outline-container-sec-4-3-1" class="outline-4">
+<h4 id="sec-4-3-1">[Unit] 区块</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+用来定义 Unit 的元数据, 以及配置与其他 Unit 的关系. 主要字段有:
+</p>
+<pre class="example">
+Description: 简短描述
+Documentation: 文档地址
+Requires: 当前 Unit 依赖的其他 Unit, 如果它们没有运行, 当前 Unit 会启动失败
+Wants: 与当前 Unit 配合的其他 Unit, 如果它们没有运行, 当前 Unit 不会启动失败
+BindsTo: 与Requires类似, 它指定的 Unit 如果退出, 会导致当前 Unit 停止运行
+Before: 如果该字段指定的 Unit 也要启动, 那么必须在当前 Unit 之后启动
+After: 如果该字段指定的 Unit 也要启动, 那么必须在当前 Unit 之前启动
+Conflicts: 这里指定的 Unit 不能与当前 Unit 同时运行
+Condition...: 当前 Unit 运行必须满足的条件, 否则不会运行
+Assert...: 当前 Unit 运行必须满足的条件, 否则会报启动失败
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3-2" class="outline-4">
+<h4 id="sec-4-3-2">[Service] 区块</h4>
+<div class="outline-text-4" id="text-4-3-2">
+<p>
+用来 Service 的配置, 只有 Service 类型的 Unit 才有这个区块. 主要字段如下:
+</p>
+<pre class="example">
+Type: 定义启动时的进程行为. 它有以下几种值. 
+Type=simple: 默认值, 执行 ExecStart 指定的命令, 启动主进程
+Type=forking: 以 fork 方式从父进程创建子进程, 创建后父进程会立即退出
+Type=oneshot: 一次性进程, Systemd 会等当前服务退出, 再继续往下执行
+Type=dbus: 当前服务通过 D-Bus 启动
+Type=notify: 当前服务启动完毕, 会通知 Systemd, 再继续往下执行
+Type=idle: 若有其他任务执行完毕, 当前服务才会运行
+
+
+ExecStart: 启动当前服务的命令
+ExecStartPre: 启动当前服务之前执行的命令
+ExecStartPost: 启动当前服务之后执行的命令
+ExecReload: 重启当前服务时执行的命令
+ExecStop: 停止当前服务时执行的命令
+ExecStopPost: 停止当其服务之后执行的命令
+RestartSec: 自动重启当前服务间隔的秒数
+Restart: 定义何种情况 Systemd 会自动重启当前服务, 可能的值包括 always(总是重启), on-success, on-failure, on-abnormal, on-abort, on-watchdog
+TimeoutSec: 定义 Systemd 停止当前服务之前等待的秒数
+Environment: 指定环境变量
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3-3" class="outline-4">
+<h4 id="sec-4-3-3">[Install] 区块</h4>
+<div class="outline-text-4" id="text-4-3-3">
+<p>
+通常是配置文件的最后一个区块, 用来定义如何启动, 是否开机启动等. 主要字段如下:
+</p>
+<pre class="example">
+WantedBy: 它的值是一个或多个 Target, 当前 Unit 激活时(enable) 符号链接会放入/etc/systemd/system目录下面以 Target 名 + .wants后缀构成的子目录中
+RequiredBy: 它的值是一个或多个 Target, 当前 Unit 激活时, 符号链接会放入/etc/systemd/system目录下面以 Target 名 + .required后缀构成的子目录中
+Alias: 当前 Unit 可用于启动的别名
+Also: 当前 Unit 激活（enable）时, 会被同时激活的其他 Unit
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Target</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+启动计算机时, 会启动大量的 Unit, 如果每次启动都要写需要哪些 Unit, 会非常不方便.
+</p>
+
+<p>
+Target 是一个 Unit 组, 包含许多相关的 Unit, 启动某个 Target 时, Systemd 会启动里面所有的 Unit.
+</p>
+
+<pre class="example">
+systemctl list-unit-files --type=target  # 查看当前系统的所有 Target
+
+systemctl list-dependencies multi-user.target  # 查看一个 Target 包含的所有 Unit
+
+systemctl get-default  # 查看启动时的默认 Target
+
+sudo systemctl set-default multi-user.target  # 设置启动时的默认 Target
+
+# 切换 Target 时，默认不关闭前一个 Target 启动的进程，
+# systemctl isolate 命令改变这种行为，
+# 关闭前一个 Target 里面所有不属于后一个 Target 的进程
+sudo systemctl isolate multi-user.target
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">日志管理</h2>
+<div class="outline-text-2" id="text-6">
+<pre class="example">
+# 查看所有日志（默认情况下 ，只保存本次启动的日志）
+$ sudo journalctl
+
+# 查看内核日志（不显示应用日志）
+$ sudo journalctl -k
+
+# 查看系统本次启动的日志
+$ sudo journalctl -b
+$ sudo journalctl -b -0
+
+# 查看上一次启动的日志（需更改设置）
+$ sudo journalctl -b -1
+
+# 查看指定时间的日志
+$ sudo journalctl --since="2012-10-30 18:17:16"
+$ sudo journalctl --since "20 min ago"
+$ sudo journalctl --since yesterday
+$ sudo journalctl --since "2015-01-10" --until "2015-01-11 03:00"
+$ sudo journalctl --since 09:00 --until "1 hour ago"
+
+# 显示尾部的最新10行日志
+$ sudo journalctl -n
+
+# 显示尾部指定行数的日志
+$ sudo journalctl -n 20
+
+# 实时滚动显示最新日志
+$ sudo journalctl -f
+
+# 查看指定服务的日志
+$ sudo journalctl /usr/lib/systemd/systemd
+
+# 查看指定进程的日志
+$ sudo journalctl _PID=1
+
+# 查看某个路径的脚本的日志
+$ sudo journalctl /usr/bin/bash
+
+# 查看指定用户的日志
+$ sudo journalctl _UID=33 --since today
+
+# 查看某个 Unit 的日志
+$ sudo journalctl -u nginx.service
+$ sudo journalctl -u nginx.service --since today
+
+# 实时滚动显示某个 Unit 的最新日志
+$ sudo journalctl -u nginx.service -f
+
+# 合并显示多个 Unit 的日志
+$ journalctl -u nginx.service -u php-fpm.service --since today
+
+# 查看指定优先级（及其以上级别）的日志，共有8级
+# 0: emerg
+# 1: alert
+# 2: crit
+# 3: err
+# 4: warning
+# 5: notice
+# 6: info
+# 7: debug
+$ sudo journalctl -p err -b
+
+# 日志默认分页输出，--no-pager 改为正常的标准输出
+$ sudo journalctl --no-pager
+
+# 以 JSON 格式（单行）输出
+$ sudo journalctl -b -u nginx.service -o json
+
+# 以 JSON 格式（多行）输出，可读性更好
+$ sudo journalctl -b -u nginx.serviceqq
+ -o json-pretty
+
+# 显示日志占据的硬盘空间
+$ sudo journalctl --disk-usage
+
+# 指定日志文件占据的最大空间
+$ sudo journalctl --vacuum-size=1G
+
+# 指定日志文件保存多久
+$ sudo journalctl --vacuum-time=1years
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">配置文件内容</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+一个服务怎么启动, 完全由它的配置文件决定. 配置文件主要放在 <i>usr/lib/systemd/system</i> 和 <i>etc/systemd/system</i> 目录.
+</p>
+
+<p>
+以下面的配置为例进行分析:
+</p>
+<pre class="example">
+$ systemctl cat sshd.service
+
+[Unit]
+Description=OpenSSH server daemon
+Documentation=man:sshd(8) man:sshd_config(5)
+After=network.target sshd-keygen.service
+Wants=sshd-keygen.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/sshd
+ExecStart=/usr/sbin/sshd -D $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+Type=simple
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+</div>
+
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1">[Unit]区块: 启动顺序与依赖关系</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Description 字段和 Documentation 字段略过.
+</p>
+
+<p>
+After: 表示如果 network.target 或 sshd-keygen.service 需要启动, 则 sshd.service 应该在它们之后启动;
+Before: 表示 sshd.service 应该在哪些服务之前启动;
+After 和 Before 涉及启动顺序, 不涉及依赖关系.
+</p>
+
+<p>
+Wants: 表示 sshd.service 与 sshd-keygen.service 之间存在弱依赖关系, 如果 sshd-keygen.service 启动失败, 不影响 sshd.service.
+Requires: 表示强依赖关系, 如果该服务启动失败或异常退出, sshd.service 也必须退出.
+Wants 和 Requires 只涉及依赖关系, 不涉及启动顺序, 默认同时启动.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-7-2" class="outline-3">
+<h3 id="sec-7-2">[Service]区块: 启动行为</h3>
+<div class="outline-text-3" id="text-7-2">
+</div><div id="outline-container-sec-7-2-1" class="outline-4">
+<h4 id="sec-7-2-1">启动命令</h4>
+<div class="outline-text-4" id="text-7-2-1">
+<p>
+EnvironmentFile: 指定文件, 内含当前服务的环境参数. 该文件内部的 key=value 键值对, 可以用 $key 的形式在当前配置文件中获取. 在例子中, 环境参数文件是 /etc/sysconfig/sshd
+</p>
+
+<p>
+ExecStart: <code>定义启动进程时执行的命令</code>. 例子中, 启动 sshd, 执行的命令是 /usr/sbin/sshd -D $OPTIONS, 其中, $OPTIONS 的值来自 EnvironmentFile 字段指定的文件.
+</p>
+
+<p>
+ExecReload: 重启服务时执行的命令;
+ExecStop: 停止服务时执行的命令;
+ExecStartPre: 启动服务前执行的命令;
+ExecStartPost: 启动服务后执行的命令;
+ExecStopPost: 停止服务后执行的命令;
+</p>
+</div>
+
+<div id="outline-container-sec-7-2-1-1" class="outline-5">
+<h5 id="sec-7-2-1-1">例子</h5>
+<div class="outline-text-5" id="text-7-2-1-1">
+<pre class="example">
+[Service]
+ExecStart=/bin/echo execstart1
+ExecStart=
+ExecStart=/bin/echo execstart2
+ExecStartPost=/bin/echo post1
+ExecStartPost=/bin/echo post2
+</pre>
+<p>
+第二行的 ExecStart 字段为空, 会覆盖第一行的 ExecStart 字段值, 运行结果如下:
+</p>
+<pre class="example">
+execstart2
+post1
+post2
+</pre>
+
+<p>
+如果在启动设置之前加上符号"-", 表示即使错误发生, 也不影响其他命令执行. 如: EnvironmentFile=-/etc/sysconfig/sshd, 表示即使 /etc/sysconfig/sshd 不存在, 也不会抛出错误.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7-2-2" class="outline-4">
+<h4 id="sec-7-2-2">启动类型</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<p>
+Type 字段定义启动类型, 可设置的值在上面已经给出.
+</p>
+</div>
+
+<div id="outline-container-sec-7-2-2-1" class="outline-5">
+<h5 id="sec-7-2-2-1">例子</h5>
+<div class="outline-text-5" id="text-7-2-2-1">
+<pre class="example">
+[Unit]
+Description=Switch-off Touchpad
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/touchpad-off start
+ExecStop=/usr/bin/touchpad-off stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+
+<p>
+服务的内容为: 笔记本电脑启动时, 关闭触摸板. 启动类型设置为 oneshot, 表示这个服务只运行一次, 不需要长期运行; RemainAfterExit=yes 表示进程退出以后, 服务仍然保持运行, 这样, 一旦用 systemctl stop 停止服务, ExecStop 指定的命令就会执行, 从而重新开启触摸板.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7-2-3" class="outline-4">
+<h4 id="sec-7-2-3">重启行为</h4>
+<div class="outline-text-4" id="text-7-2-3">
+<p>
+KillMode: 定义 Systemd 如何停止 sshd 服务. 可设置的值如下:
+</p>
+<ul class="org-ul">
+<li>control-group: 当前控制组里面的所有子进程, 都会被杀掉;
+</li>
+<li>process: 只杀主进程;
+</li>
+<li>mixed: 主进程将收到 SIGTERM 信号, 子进程收到 SIGKILL 信号;
+</li>
+<li>none: 没有进程会被杀掉, 只是执行服务的 stop 命令.
+</li>
+</ul>
+<p>
+上面的例子将 KillMode=process, 表示只停止主进程, 不停止任何 sshd 子进程, 即子进程打开的 SSH session 仍然保持连接. 这个设置不太常见, 但对 sshd 很重要, 否则停止服务时, 会连自己打开的 SSH session 一起杀掉.
+</p>
+
+<p>
+Restart: 定义 sshd 退出后, Systemd 的重启方式. 可设置的值如下:
+</p>
+<ul class="org-ul">
+<li>no: 退出后不重启;
+</li>
+<li>on-success: 只有正常退出时才会重启;
+</li>
+<li>on-failure: 非正常退出时才会重启;
+</li>
+<li>on-abnormal: 只有信号被终止和超时, 才会重启;
+</li>
+<li>on-abort: 只有在收到没有捕捉到的信号终止时, 才会重启;
+</li>
+<li>on-watchdog: 超时退出才会重启;
+</li>
+<li>always: 不管什么原因, 总是重启;
+</li>
+</ul>
+<p>
+对于守护进程, 推荐设置为 on-failure.
+</p>
+
+<p>
+RestartSec: 表示 Systemd 重启服务前需要等待的秒数.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-7-3" class="outline-3">
+<h3 id="sec-7-3">[Install]区块: 安装方式</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+WantedBy: 表示服务所在的 Target(服务组).
+</p>
+
+<p>
+例子中, WantedBy=multi-user.target 表示 sshd 所在的 Target 是 multi-user.target
+</p>
+
+<p>
+这个设置很重要, 因为执行 systemctl enable sshd.service 时, sshd.service 的一个符号链接会放在 <i>etc/systemd/system/multi-user.target.wants</i> 目录中.
+</p>
+
+<p>
+Systemd 有默认的启动 Target, 开机时会启动这个 Target 下的所有服务.
+</p>
+<pre class="example">
+systemctl get-default  # multi-user.target
+</pre>
+
+<p>
+其他常用命令:
+</p>
+<pre class="example">
+# 查看 multi-user.target 包含的所有服务
+$ systemctl list-dependencies multi-user.target
+
+# 切换到另一个 target
+# shutdown.target 就是关机状态
+$ sudo systemctl isolate shutdown.target
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">修改配置文件后重启</h2>
+<div class="outline-text-2" id="text-8">
+<pre class="example">
+# 重新加载配置文件
+$ sudo systemctl daemon-reload
+
+# 重启相关服务
+$ sudo systemctl restart foobar
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9">官方网站</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+<a href="https://www.freedesktop.org/wiki/Software/systemd/">官网</a>
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-04-01</span>
+            <span title="last modification date" class="post-info">2019-04-01</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/ubuntu">Ubuntu</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/OS/2019/04/01/systemd/ Or /blog/OS/systemd/";
+         var disqus_url = "https://pinvondev.github.io/blog/OS/2019/04/01/systemd/ Or /blog/OS/systemd/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>

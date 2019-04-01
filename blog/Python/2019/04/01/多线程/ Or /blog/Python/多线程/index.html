@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>多线程 - Pinvon&#39;s Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="author" content="pinvon" />
+  <meta name="description" content="&lt;Add description here&gt;" />
+  <meta name="keywords" content="Python" />
+  <style>
+   #ds-thread #ds-reset .ds-comment-body p {color: #ffffff;}
+   #ds-thread #ds-reset .ds-comment-body p a {color: #ff0;}
+   #ds-thread #ds-reset .ds-comment-body p a:hover {color: #0ff;}
+   #disqus_thread a {color: #00ffff;}
+  </style>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="https://pinvondev.github.io/media/css/comment.css" type="text/css"/>
+</head>
+
+  <body><div class="container">
+<div>
+  <header class="masthead">
+    <h1 class="masthead-title"><a href="https://pinvondev.github.io/">Pinvon&#39;s Blog</a></h1>
+    <p>所见, 所闻, 所思, 所想</p>
+    <nav class="site-nav">
+      <div class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z" fill="#ffff00"/>
+          <path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z" fill="#ffff00"/>
+          <path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z" fill="#ffff00"/>
+        </svg>
+      </div>
+      <ul class="trigger">
+        <li><a href="https://pinvondev.github.io/years/">Years</a></li>
+        <li><a href="https://pinvondev.github.io/authors/">Authors</a></li>
+        <li><a href="https://pinvondev.github.io/tags/">Tags</a></li>
+        <li><a href="https://pinvondev.github.io/about/">About</a></li>
+        <li><a href="https://github.com/pinvondev">Github</a></li>
+        <li><a href="https://pinvondev.github.io/rss.xml">RSS</a></li>
+      </ul>
+    </nav>
+    <form method="get" id="searchform" action="http://www.google.com/search">
+      <input type="text" class="field" name="q" id="s" placeholder="Search">
+      <input type="hidden" name="as_sitesearch" value="pinvondev.github.io">
+    </form>
+  </header>
+</div>
+
+<div>
+<div class="post">
+<h1 class="title">多线程</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">Python 中的线程</a></li>
+<li><a href="#sec-2">thread 模块</a>
+<ul>
+<li><a href="#sec-2-1">例子</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">threading 模块</a>
+<ul>
+<li><a href="#sec-3-1">Thread 类</a>
+<ul>
+<li><a href="#sec-3-1-1">例子</a></li>
+<li><a href="#sec-3-1-2">更加接近面向对象的多线程编程</a></li>
+<li><a href="#sec-3-1-3">最终方案: 使用 Thread 的派生类</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-4">小结</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Python 中的线程</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Python 代码的执行是由 Python 虚拟机(解释器主循环)控制的, Python 解释器中可以运行多个线程, 但在任意给定时刻, 只有一个线程会被解释器执行. Python 使用全局解释器锁(GIL)来保证这一点. 执行步骤如下:
+</p>
+<ol class="org-ol">
+<li>设置 GIL;
+</li>
+<li>切换到一个线程, 执行;
+</li>
+<li>执行指令或主动让出控制权(time.sleep(0));
+</li>
+<li>切换到另一个线程;
+</li>
+<li>解锁 GIL;
+</li>
+<li>重复上述步骤.
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">thread 模块</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+thread 模块的常用函数如下:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">start_new_thread(func, args, kwargs=None)</th>
+<th scope="col" class="left">派生一个新线程, 使用给定的 args 和可选的 kwargs 来执行 func</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">allocate_lock()</td>
+<td class="left">分配 LockType 锁对象</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">exit()</td>
+<td class="left">退出线程</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+LockType 是 thread 模块提供的同步数据结构, 也叫原语锁, 简单锁, 互斥锁等, 常用方法如下:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">acquire(wait=None)</th>
+<th scope="col" class="left">深度获取锁对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">locked()</td>
+<td class="left">获取锁对象返回 True, 未获取返回 False</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">release()</td>
+<td class="left">释放锁</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">例子</h3>
+<div class="outline-text-3" id="text-2-1">
+<pre class="example">
+#!/usr/bin/env python
+import thread
+from time import sleep,ctime
+
+loops = [4,2]
+
+def loop(nloop,nsec,lock):
+    print 'start loop', nloop, 'at:',ctime()
+    sleep(nsec)
+    print 'loop',nloop,'done at:',ctime()
+    lock.release()
+
+def main():
+    print'starting at:',ctime()
+    locks = []
+    nloops = range(len(loops))
+
+    for i in nloops:
+        lock = thread.allocate_lock()
+        lock.acquire()
+        locks.append(lock)
+
+    for i in nloops:
+        thread.start_new_thread(loop,(i,loops[i],locks[i]))
+
+    for i in nloops:
+        while locks[i].locked():pass
+
+    print 'all done at:', ctime()
+
+if __name__ == '__main__':
+    main()
+</pre>
+
+<p>
+main() 中使用了 3 个独立的 for 循环.
+</p>
+
+<p>
+第 1 个 for 循环:
+</p>
+<ul class="org-ul">
+<li>使用 thread.allocate_lock() 分配锁, 得到锁对象;
+</li>
+<li>通过 acquire() 取得锁(相当于上锁);
+</li>
+<li>将锁添加到锁列表 locks 中.
+</li>
+</ul>
+
+<p>
+第 2 个 for 循环: 派生线程, 每个线程调用 loop(), 传递循环号, 睡眠时间, 用于该线程的锁. 不在上锁的时候就启动线程的原因:
+</p>
+<ul class="org-ul">
+<li>想让所有的线程几乎同时开始执行;
+</li>
+<li>获取锁需要时间, 有可能线程在获取锁之前就结束了.
+</li>
+</ul>
+
+<p>
+第 3 个 for 循环: 不断测试是否获取了锁对象, 当线程尚未释放锁时返回 True, 会继续测试, 当线程释放后返回 False, 结束测试; 一般会优先检查第一个锁, 只有第一个锁释放之后, 才会继续检查剩下的锁; 当所有锁都被释放时, 主线程才结束.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">threading 模块</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+threading 模块中的可用对象如下表:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">Thread</th>
+<th scope="col" class="left">表示一个执行线程的对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">Lock</td>
+<td class="left">锁原语对象</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">RLock</td>
+<td class="left">可重入锁, 使单一线程可再次获得已持有的锁</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">Condition</td>
+<td class="left">条件变量对象, 使得一个线程等待另一个线程满足特定的"条件", 如改变状态或某个数据值</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">Event</td>
+<td class="left">条件变量的通用版本, 任意数量的线程等待某个事件的发生, 在该事件发生后所有线程将被激活</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">Semaphore</td>
+<td class="left">为线程间共享的有限资源提供了一个计数器, 如果没有可用资源时会被阻塞</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">BoundedSemaphore</td>
+<td class="left">与 Semaphore 相似, 不过它不允许超过初始值</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">Timer</td>
+<td class="left">与 Thread 相似, 不过它要在运行前等待一段时间</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">Barrier</td>
+<td class="left">创建一个"障碍", 必须达到指定数量的线程后才可以继续</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Thread 类</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Thread.daemon 属性, 用来判断该线程是否是守护线程, 只有设置了守护线程, 主线程才会等待其他线程结束.
+</p>
+</div>
+
+<div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1">例子</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<pre class="example">
+#!/usr/bin/env python
+import threading
+from time import sleep,ctime
+
+loops = [4,2]
+
+def loop(nloop,nsec,lock):
+    print 'start loop', nloop, 'at:',ctime()
+    sleep(nsec)
+    print 'loop',nloop,'done at:',ctime()
+	# lock.release()  # 不再需要
+
+def main():
+    print'starting at:',ctime()
+    threads = []  # 替换 locks = []
+    nloops = range(len(loops))
+
+    for i in nloops:
+        t = threading.Thread(target=loop, args=(i, loops[i]))  # 替换 thread.allocate_lock()
+        threads.append(t)
+
+    for i in nloops:
+		threads[i].start()  # 替换 thread.start_new_thread(loop,(i,loops[i],locks[i]))
+
+    for i in nloops:
+		threads[i].join()  # 替换 while locks[i].locked():pass
+
+    print 'all done at:', ctime()
+
+if __name__ == '__main__':
+    main()
+</pre>
+
+<p>
+最重要的修改在于, Thread 类使用 start() 开始线程, 使用 join() 等待线程结束.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2">更加接近面向对象的多线程编程</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<pre class="example">
+import threading
+from time import sleep,ctime
+ 
+loops = [4,2]
+ 
+class ThreadFunc(object):
+    def __init__(self,func,args,name=''):
+        self.name = name
+        self.func = func
+        self.args = args
+    def __call__(self):
+        self.func(*self.args)
+ 
+def loop(nloop,nsec):
+    print('start loop',nloop,'at:',ctime())
+    sleep(nsec)
+    print('loop',nloop,'done at:',ctime())
+ 
+def main():
+    print('starting at:',ctime())
+    threads = []
+    nloops = list(range(len(loops)))
+ 
+    for i in nloops:
+        t = threading.Thread(
+            target=ThreadFunc(loop,(i,loops[i]),
+                loop.__name__))
+        threads.append(t)
+ 
+    for i in nloops: #开始多线程
+        threads[i].start()
+ 
+    for i in nloops: #等待所有线程完成
+        threads[i].join()
+ 
+    print('all done at:',ctime())
+ 
+if __name__ == '__main__':
+	main()
+</pre>
+
+<p>
+主要是添加了 ThreadFunc 类, 在实例化 Thread 对象时进行了改动, 同时实例化了可调用类 ThreadFunc. 创建新线程时, Thread 类的代码将调用 ThreadFunc 对象, 此时会调用 __call__() 这个方法.
+</p>
+
+<p>
+这种方法更加通用, 不局限于 loop() 函数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-3" class="outline-4">
+<h4 id="sec-3-1-3">最终方案: 使用 Thread 的派生类</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<pre class="example">
+import threading
+from time import sleep,ctime
+ 
+loops = (4,2)
+ 
+class MyThread(threading.Thread):
+    def __init__(self, func, args, name=''):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.func = func
+        self.args = args
+ 
+    def run(self):
+        self.func(*self.args)
+ 
+def loop(nloop,nsec):
+    print('start loop',nloop,'at:',ctime())
+    sleep(nsec)
+    print('loop',nloop,'done at:',ctime())
+ 
+def main():
+    print('starting at:',ctime())
+    threads = []
+    nloops = list(range(len(loops)))
+ 
+    for i in nloops:
+        t = MyThread(loop,(i,loops[i]),loop.__name__)
+        threads.append(t)
+ 
+    for i in nloops: #开始多线程
+        threads[i].start()
+ 
+    for i in nloops: #等待所有线程完成
+        threads[i].join()
+ 
+    print('all done at:',ctime())
+ 
+if __name__ == '__main__':
+    main()
+</pre>
+
+<p>
+主要变化:
+</p>
+<ul class="org-ul">
+<li>子类的构造函数必须先调用基类的构造函数;
+</li>
+<li>__call__() 在子类中必须要改成 run().
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">小结</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+推荐使用 threading 模块, 而不是 thread 模块.
+</p>
+
+<p>
+threading 模块更加先进, 有更好的线程支持, thread 模块的同步原语(锁)很少, 而 threading 模块则很多.
+</p>
+
+<p>
+thread 模块对于进程何时退出没有控制, 当主线程结束时, 其他所有线程也都强制结束, 不会发出警告或者进行适当的清理, 而 threading 模块能确保重要的子线程在进程退出前结束.
+</p>
+
+<p>
+在 Python3 中, thread 模块被重命名为 _thread 模块.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+<div>
+        <div class="post-meta">
+            <span title="post date" class="post-info">2019-04-01</span>
+            <span title="last modification date" class="post-info">2019-04-01</span>
+            <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
+            <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
+        </div>
+    <script src="https://pinvondev.github.io/media/js/jquery-2.1.3.min.js"></script>
+        <section>
+            <h1>Comments</h1>
+            <div id="comment-wrap">
+                    <a class="disqus_label">使用 Disqus 评论</a>
+    </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+         //var disqus_developer = 1;
+         var preempt_signal=false;
+         var disqus_identifier = "/blog/Python/2019/04/01/多线程/ Or /blog/Python/多线程/";
+         var disqus_url = "https://pinvondev.github.io/blog/Python/2019/04/01/多线程/ Or /blog/Python/多线程/";
+         var disqus_shortname = 'pinvon';
+         /* * * DON'T EDIT BELOW THIS LINE * * */
+         (function() {
+             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+             dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+             $('#disqus_thread').css('display','none');
+         })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    <script>
+     /* comments */
+     var ego_disqus_thread=$('#disqus_thread');
+     var ego_ds_label=$('.ds-thread');
+     $('.disqus_label').click(function(){
+         ego_disqus_thread.show();
+         ego_ds_label.hide();
+     });
+     $('.ds-label').click(function(){
+         ego_disqus_thread.hide();
+         ego_ds_label.show();
+     });
+    </script>
+        </section>
+    <script src="https://pinvondev.github.io/media/js/main.js"></script>
+    <div class="footer">
+        <p>Generated by <a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.x(<a href="http://orgmode.org">Org mode</a> 8.x)</p>
+        <p>
+            Copyright &copy; 2014 - <span id="footerYear"></span> <a href="mailto:pinvon@t480">pinvon</a>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            Powered by <a href="https://github.com/emacs-china/ego" target="_blank">EGO</a><br/>
+            <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" style="border-width:0" alt="Creative Commons License" class="center"></a>
+            <script type="text/javascript">document.getElementById("footerYear").innerHTML = (new Date()).getFullYear();</script>
+        </p>
+    </div>
+            </div>
+            <script type="text/javascript"
+                    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG">
+            </script>
+            <script type="text/x-mathjax-config">
+             MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+            </script>
+</div>
+
+  </div></body>
+</html>
