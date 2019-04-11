@@ -183,13 +183,15 @@ tests\fixture\test_db.py Connection successful
 #+END_EXAMPLE
 -s 参数可以阻止消息被吞
 
+=需要将 fixture 装饰的函数, 作为其他需要测试的函数的参数, 如 test_search() 里面, 需要有 db 参数=.
+
 ** 作用域
 
 固件的 scope 可以声明固件的作用域, 可选项有:
-1 function. 函数级, 每个测试函数都会执行一次固件;
-2 class. 类级, 每个测试类都会执行一次;
-3 module. 模块级, 每个模块执行一次;
-4 session. 会话级, 每次测试执行一次.
+- function. 函数级, 每个测试函数都会执行一次固件;
+- class. 类级, 每个测试类都会执行一次;
+- module. 模块级, 每个模块执行一次;
+- session. 会话级, 每次测试执行一次.
 
 #+BEGIN_EXAMPLE
 @pytest.fixture(scope='function')
@@ -233,3 +235,108 @@ class TestClassScope:
 如果想让固件自动执行, 可以使用 autouse 参数.
 
 下面两个自动计时固件, 一个用于统计函数运行时间(function 作用域), 一个用于计算测试总耗时(session 作用域)
+
+#+BEGIN_EXAMPLE
+# test_autouse.py
+
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+
+@pytest.fixture(scope='session', autouse=True)
+def timer_session_scope():
+    start = time.time()
+    print('\nstart: {}'.format(time.strftime(DATE_FORMAT, time.localtime(start))))
+
+    yield
+
+    finished = time.time()
+    print('finished: {}'.format(time.strftime(DATE_FORMAT, time.localtime(finished))))
+    print('Total time cost: {:.3f}s'.format(finished - start))
+
+
+@pytest.fixture(autouse=True)
+def timer_function_scope():
+    start = time.time()
+    yield
+    print(' Time cost: {:.3f}s'.format(time.time() - start))
+
+
+def test_1():
+    time.sleep(1)
+
+
+def test_2():
+    time.sleep(2)
+#+END_EXAMPLE
+注意, test_1() 和 test_2() 都没有使用参数, 但 timer_session_scope() 和 timer_function_scope() 都会执行.
+
+
+** conftest.py
+
+如果多个测试文件都要用到同一个功能(如登录), 可以将这个功能写到 conftest.py 文件中, 其他用法仍然不变. 使用 conftest.py 需要注意以下几点:
+- conftest.py 名称固定, 不能修改;
+- conftest.py 与其他测试文件在同一个 package 下, 有 __init__.py 文件;
+- 不需要 import 导入 conftest.py, pytest 会自己查找.
+
+如:
+
+__init__.py: 空
+
+conftest.py
+#+BEGIN_EXAMPLE
+import pytest
+
+
+@pytest.fixture()
+def db():
+    print("connect successful")
+
+    yield
+
+    print("connect closed")
+#+END_EXAMPLE
+
+test_fix.py
+#+BEGIN_EXAMPLE
+import pytest
+
+
+def test_passing(db):
+    assert (1, 2, 3) == (1, 2, 3)
+#+END_EXAMPLE
+
+* pytest-cov
+
+pytest-cov是自动检测测试覆盖率的一个插件.
+
+安装:
+#+BEGIN_EXAMPLE
+pip3 install pytest-cov
+#+END_EXAMPLE
+
+使用:
+#+BEGIN_EXAMPLE
+pytest --cov=module_name
+
+或
+
+pytest --cov=./
+#+END_EXAMPLE
+module_name 是自己的测试模块名.
+
+** .coveragerc
+
+如果直接执行 pytest --cov=./ 会把所有的文件都跑一遍, 有时候我们不需要显示所有文件的覆盖率, 可以通过配置文件来忽略一些文件.
+
+在 package 根目录下新建一个 .coveragerc 文件, 内容形如:
+#+BEGIN_EXAMPLE
+[run]
+omit=
+  test_api.py
+#+END_EXAMPLE
+
+执行时指定配置文件:
+#+BEGIN_EXAMPLE
+pytest --cov=./ --cov-config ./.coveragerc
+#+END_EXAMPLE
+这样就会忽略 test_api.py 文件.

@@ -4,7 +4,7 @@
 #+DATE:        2019-04-01 一
 
 #+URI:         /blog/OS/%y/%m/%d/%t/ Or /blog/OS/%t/
-#+TAGS:        Ubuntu
+#+TAGS:        OS
 #+DESCRIPTION: <Add description here>
 
 #+LANGUAGE:    en
@@ -378,11 +378,15 @@ WantedBy=multi-user.target
 Description 字段和 Documentation 字段略过.
 
 After: 表示如果 network.target 或 sshd-keygen.service 需要启动, 则 sshd.service 应该在它们之后启动;
+
 Before: 表示 sshd.service 应该在哪些服务之前启动;
+
 After 和 Before 涉及启动顺序, 不涉及依赖关系.
 
 Wants: 表示 sshd.service 与 sshd-keygen.service 之间存在弱依赖关系, 如果 sshd-keygen.service 启动失败, 不影响 sshd.service.
+
 Requires: 表示强依赖关系, 如果该服务启动失败或异常退出, sshd.service 也必须退出.
+
 Wants 和 Requires 只涉及依赖关系, 不涉及启动顺序, 默认同时启动.
 
 ** [Service]区块: 启动行为
@@ -394,9 +398,13 @@ EnvironmentFile: 指定文件, 内含当前服务的环境参数. 该文件内�
 ExecStart: =定义启动进程时执行的命令=. 例子中, 启动 sshd, 执行的命令是 /usr/sbin/sshd -D $OPTIONS, 其中, $OPTIONS 的值来自 EnvironmentFile 字段指定的文件.
 
 ExecReload: 重启服务时执行的命令;
+
 ExecStop: 停止服务时执行的命令;
+
 ExecStartPre: 启动服务前执行的命令;
+
 ExecStartPost: 启动服务后执行的命令;
+
 ExecStopPost: 停止服务后执行的命令;
 
 **** 例子

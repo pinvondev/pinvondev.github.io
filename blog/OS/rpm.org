@@ -1,0 +1,105 @@
+#+TITLE:       制作 RPM 包
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
+#+DATE:        2019-04-08 一
+
+#+URI:         /blog/OS/%y/%m/%d/%t/ Or /blog/OS/%t/
+#+TAGS:        OS
+#+DESCRIPTION: <Add description here>
+
+#+LANGUAGE:    en
+#+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
+
+* 概述
+
+包绑定了运行应用程序所需的所有二进制文件, 数据, 配置文件, 还包括将应用程序部署到系统上所需的所有步骤, 这些步骤通常以脚本的形式提供, 脚本可以生成数据, 启动和停止服务.
+
+** 环境准备
+
+#+BEGIN_EXAMPLE
+yum install rpmdevtools
+#+END_EXAMPLE
+
+除此之外, 还需要其他的编译打包工具, 如 C 语言需要 make, gcc, Python 需要 setuptools 等.
+
+* 原理
+
+- 首先, RPM 打包时需要编译源码, 需要把相关的配置文件, 二进制命令文件等, 按照安装好的样子放到合适的位置; 
+- 然后, 需要对 RPM 包测试, 需要先有一个工作空间;
+
+使用如下命令直接生成所需的文件夹:
+#+BEGIN_EXAMPLE
+rpmdev-setuptree
+#+END_EXAMPLE
+
+- SPECS. %_specdir; 保存 RPM 包的配置文件(.spec)
+- SOURCES. %_sourcedir; 保存源代码(.tar).
+- BUILD. %_builddir; 源码解压到这里, 然后在该目录完成编译.
+- BUILDROOT. %buildrootdir; 最终安装目录.
+- RPMS. %_rpmdir; 生成并保存二进制 RPM 包.
+- SRPMS. %srcrpmdir; 生成并保存源码 RPM 包.
+
+** 流程
+
+- 将源代码放在 %_sourcedir 中;
+- 在 %_builddir 中完成编译, 此时需要将 %_sourcedir 中的 .tar 文件解压至此;
+- 将软件包应该包含的内容(二进制文件, 配置文件, man 文档等)放到 %_buildrootdir 中;
+- 配置一些必要的工作, 如安装前的准备, 安装后的清理等, 放在 %_specdir 中;
+- 生成的 RPM 包放在 %_rpmdir, 源码放在 %_srpmdir;
+
+对应的表格如下:
+
+|----------+----------------+----------------+----------------------------------------------------------------|
+| 阶段     | 读取的目录     | 写入的目录     | 具体动作                                                       |
+|----------+----------------+----------------+----------------------------------------------------------------|
+| %prep    | %_sourcedir    | %_builddir     |                                                                |
+|----------+----------------+----------------+----------------------------------------------------------------|
+| %build   | %_builddir     | %_builddir     | 执行命令类似: ./configure && make                              |
+|----------+----------------+----------------+----------------------------------------------------------------|
+| %install | %_builddir     | %_buildrootdir | 执行命令类似: make install                                     |
+|----------+----------------+----------------+----------------------------------------------------------------|
+| %check   | %_builddir     | %_builddir     | 检查软件是否正常运行, 执行命令类似 make test; 一般不需要此步骤 |
+|----------+----------------+----------------+----------------------------------------------------------------|
+| bin      | %_buildrootdir | %_rpmdir       | 在 %_rpmdir 中创建 RPM 包                                      |
+|----------+----------------+----------------+----------------------------------------------------------------|
+| src      | %_sourcedir    | %_srcrpmdir    | 创建源码 RPM 包, 以 .src.rpm 为后缀名, 通常用于审核和升级      |
+|----------+----------------+----------------+----------------------------------------------------------------|
+
+* 编写 SPEC 文件
+
+需要安装在系统中的文件, 需要在 %files 中声明它们, 这样 rpmbuild 命令才知道哪些文件是要安装的.
+
+* Python 程序打包
+
+在安装 python 相关的模块和库时, 一般使用 "pip install xxx" 或 "python setup.py install". 
+
+区别在于:
+
+- 前者是在线安装, 并安装相关的依赖包, 适用于安装某个 Python 包;
+- 后者下载所有源码, 不安装相关依赖包.
+
+适合使用 python setup.py install 的场景: 将相关的模块发布在服务器, 实现模块和自己的程序一起打包, 一键安装, 以 .exe 等格式安装在某个指定路径下.
+
+** setup.py
+
+依赖关系: 写在 install_requires 字段下, 如:
+#+BEGIN_EXAMPLE
+setup(
+    xxx,
+    install_requires=[
+    	'markdown',
+    ],
+)
+#+END_EXAMPLE
+
+如果不在 PyPI 中的包, 可以使用 dependency_links 字段:
+#+BEGIN_EXAMPLE
+setup(
+	xxx,
+	dependency_links=[
+		'http://github.com/xxx'
+	],
+)
+#+END_EXAMPLE
+
+使用 Python 打包程序,
