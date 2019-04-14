@@ -11,17 +11,44 @@
 
 * 从远程更新到本地(多分支)
 
-  #+BEGIN_SRC shell
-  git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
+#+BEGIN_SRC shell
+git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
 git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
 git merge origin/source # 将origin/source合并到当前分支
-  #+END_SRC
+git log --graph --pretty=oneline --abbrev-commit  # git log --graph  可以查看分支合并图
+#+END_SRC
 
 也可以直接使用pull来更新
 #+BEGIN_SRC shell
 git pull --rebase origin source:source
 #+END_SRC
 但是这个方法老出冲突. 或者直接打乱了本地文件.
+
+* 提交
+
+在提交之前, 一定要先进行更新, 然后修改冲突之后再提交.
+
+#+BEGIN_EXAMPLE
+git push origin pinvon:pinvon  # 提交本地 pinvon 分支作为远程 pinvon 分支
+git push origin :pinvon  # 删除远程 pinvon 分支
+git push origin pinvon:master  # 提交本地 pinvon 分支作为远程 master 分支
+#+END_EXAMPLE
+
+如要提交失败, 并且配置是正确的, 则说明远程分支比本地的更新, 需要先合并. 如果 git pull 时提示 no tracking information, 说明本地分支没有与远程分支关联, 使用命令 git branch --set-upstream-to <branch-name> origin/<branch-name> 来关联, 也可以在创建本地分支的同时, 创建与远程分支的关联: git branch -b branch-name origin/branch-name.
+
+在实际工作环境中, 比较少碰到这种问题, 因为每个人的分支会先统一规划好, 大家都往自己的分支上推送, 再通知主管来合并, 而不会直接推送一个新分支上去.
+
+还有一种可用于实际工作环境中的方案:
+- dev 分支公用
+- 每个人有自己的分支, 可以直接 push
+- 如果完成一个功能了, 切换到 dev 分支, 更新代码, 然后 merge 自己的分支, 解决冲突, push dev
+- 由专人来将 dev 合并到 master
+
+分支和标签的区别: 标签是固定的, 分支是会向前移动的.
+
+** 冲突
+
+冲突的内容在 <<<< >>>> 之间; =等号= 上方的是本地内容, 下方是远程内容.
 
 * 撤销
 
@@ -122,8 +149,9 @@ git stash
 *** 取出
 
 #+BEGIN_SRC Shell
-git stash apply  #  取出最近被暂存的内容
-git stash apply stash@{2}  #  取出指定的更旧的暂存内容
+git stash apply  # 取出最近被暂存的内容, 但是不删除 stash 内容, 通过 git stash list 仍可看到该内容
+git stash pop  # 取出暂存内容的同时, 删除 stash 内容
+git stash apply stash@{2}  # 取出指定的更旧的暂存内容
 #+END_SRC
 
 * 删除分支

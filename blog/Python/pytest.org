@@ -340,3 +340,21 @@ omit=
 pytest --cov=./ --cov-config ./.coveragerc
 #+END_EXAMPLE
 这样就会忽略 test_api.py 文件.
+
+生成 html 格式的测试报告, 并放在 htmlcov 文件夹下:
+#+BEGIN_EXAMPLE
+pytest --cov=./ --cov-report=html test.py
+#+END_EXAMPLE
+
+如果想要自己定义文件夹的名称, 就改成: --cov-report=html:dirname
+
+* 使用 allure 定制报告
+
+#+BEGIN_EXAMPLE
+pip3 install allure-pytest
+#+END_EXAMPLE
+
+生成 xml 报告:
+#+BEGIN_EXAMPLE
+pytest --cov=./ test_api.py --alluredir=./result/
+#+END_EXAMPLE
