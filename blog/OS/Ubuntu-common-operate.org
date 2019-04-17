@@ -154,13 +154,6 @@ ClientAliveCountMax 86400  # 客户端多长时间内没有响应, 服务器自�
 #+BEGIN_SRC Shell
 service sshd restart
 #+END_SRC
-* 查找
-
-查找某目录下文件中包含 pinvon 的文件:
-#+BEGIN_EXAMPLE
-grep -r 'pinvon' dirname
-#+END_EXAMPLE
-
 * 更改键盘映射
 
 安装 gnome-tweak-tool, 在"键盘和鼠标"子菜单下, 可以修改自己想修改的键盘映射.
@@ -168,3 +161,48 @@ grep -r 'pinvon' dirname
 为了避免小拇指使用 ctrl 按键所带来的酸痛感, 可以交换 lctrl 和 lalt 两个按键.
 
 windows 上的键盘映射修改, 可以参考: http://jixiuf.github.io/blog/windows-%E7%9A%84%E9%94%AE%E7%9B%98%E6%98%A0%E5%B0%84/
+* 工作常用工具集锦
+
+** tar
+
+*** 不解压查看 tar.gz 内容
+
+#+BEGIN_EXAMPLE
+tar -tf xxx.tar.gz  # 查看文件列表(包含路径)
+tar -tvf xxx.tar.gz | grep ^d  # 只查看目录结构
+#+END_EXAMPLE
+
+** find
+
+*** 查找当前目录下 txt 和 pdf 文件
+
+#+BEGIN_EXAMPLE
+find . -name "*.txt" -o -name "*.pdf"
+#+END_EXAMPLE
+
+*** 删除当前目录下的 .spec 文件
+
+#+BEGIN_EXAMPLE
+find . -name "*.spec" -delete
+#+END_EXAMPLE
+
+*** 查找完成后执行命令
+
+查找当前目录下所有的 .html.bak 文件, 然后拷贝到 dirname 目录下.
+#+BEGIN_EXAMPLE
+find . -name "*.html.bak" -exec cp {} dirname \;
+#+END_EXAMPLE
+注意最后面要加 \;, 否则会报错; 如果需要执行多个命令, 可以写多个 -exec, 每个 -exec 使用 \; 分隔.
+
+** grep
+
+查找某目录下文件中包含 pinvon 的文件:
+#+BEGIN_EXAMPLE
+grep -r 'pinvon' dirname
+#+END_EXAMPLE
+
+
+全局替换某路径下的所有字符:
+#+BEGIN_EXAMPLE
+sed -i "s/old/new/g" `grep "old" -lr ./`
+#+END_EXAMPLE
