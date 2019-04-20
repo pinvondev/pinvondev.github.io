@@ -66,28 +66,86 @@
 </li>
 </ul>
 </li>
-<li><a href="#sec-2">测试</a>
+<li><a href="#sec-2">介绍</a>
 <ul>
-<li><a href="#sec-2-1">assert</a></li>
-<li><a href="#sec-2-2">捕获异常</a></li>
-<li><a href="#sec-2-3">标记函数</a></li>
-<li><a href="#sec-2-4">参数化</a></li>
+<li><a href="#sec-2-1">Mock 类图</a>
+<ul>
+<li><a href="#sec-2-1-1">Mock 参数</a>
+<ul>
+<li><a href="#sec-2-1-1-1">参数 name</a></li>
+<li><a href="#sec-2-1-1-2">参数 spec</a></li>
+<li><a href="#sec-2-1-1-3">参数 return_value</a></li>
+<li><a href="#sec-2-1-1-4">参数 side_effect</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">固件</a>
+<li><a href="#sec-2-1-2">断言</a>
 <ul>
-<li><a href="#sec-3-1">预处理和后处理</a></li>
-<li><a href="#sec-3-2">作用域</a></li>
-<li><a href="#sec-3-3">自动执行固件</a></li>
-<li><a href="#sec-3-4">conftest.py</a></li>
+<li><a href="#sec-2-1-2-1">assert_called_with()</a></li>
+<li><a href="#sec-2-1-2-2">assert_called_once_with()</a></li>
+<li><a href="#sec-2-1-2-3">assert_any_call()</a></li>
+<li><a href="#sec-2-1-2-4">assert_has_calls()</a></li>
 </ul>
 </li>
-<li><a href="#sec-4">pytest-cov</a>
+<li><a href="#sec-2-1-3">管理 Mock</a>
 <ul>
-<li><a href="#sec-4-1">.coveragerc</a></li>
+<li><a href="#sec-2-1-3-1">attach_mock()</a></li>
+<li><a href="#sec-2-1-3-2">configure_mock()</a></li>
+<li><a href="#sec-2-1-3-3">mock_add_spec()</a></li>
+<li><a href="#sec-2-1-3-4">resetMock()</a></li>
 </ul>
 </li>
-<li><a href="#sec-5">使用 allure 定制报告</a></li>
+<li><a href="#sec-2-1-4">静态方法</a>
+<ul>
+<li><a href="#sec-2-1-4-1">called</a></li>
+<li><a href="#sec-2-1-4-2">call_count</a></li>
+<li><a href="#sec-2-1-4-3">call_args</a></li>
+<li><a href="#sec-2-1-4-4">call_args_list</a></li>
+<li><a href="#sec-2-1-4-5">method_calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-3">测试</a>
+<ul>
+<li><a href="#sec-3-1">assert</a></li>
+<li><a href="#sec-3-2">捕获异常</a></li>
+<li><a href="#sec-3-3">标记函数</a></li>
+<li><a href="#sec-3-4">参数化</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">固件</a>
+<ul>
+<li><a href="#sec-4-1">预处理和后处理</a></li>
+<li><a href="#sec-4-2">作用域</a></li>
+<li><a href="#sec-4-3">自动执行固件</a></li>
+<li><a href="#sec-4-4">conftest.py</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">pytest-cov</a>
+<ul>
+<li><a href="#sec-5-1">.coveragerc</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">使用 allure 定制报告</a></li>
+<li><a href="#sec-7">实践</a>
+<ul>
+<li><a href="#sec-7-1">更复杂的例子</a></li>
+</ul>
+</li>
+<li><a href="#sec-8">monkeypatch</a>
+<ul>
+<li><a href="#sec-8-1">原理</a>
+<ul>
+<li><a href="#sec-8-1-1">namespace</a></li>
+<li><a href="#sec-8-1-2">模块的导入</a></li>
+<li><a href="#sec-8-1-3">monkeypatch 的实现</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-9"><span class="todo TODO">TODO</span> mock 的坑</a></li>
 </ul>
 </div>
 </div>
@@ -144,21 +202,867 @@ F 表示测试失败
 </div>
 </div>
 
+
 <div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2">测试</h2>
+<h2 id="sec-2">介绍</h2>
 <div class="outline-text-2" id="text-2">
 </div><div id="outline-container-sec-2-1" class="outline-3">
-<h3 id="sec-2-1">assert</h3>
+<h3 id="sec-2-1">Mock 类图</h3>
 <div class="outline-text-3" id="text-2-1">
+
+<div class="figure">
+<p><img src="https://pinvondev.github.io/assets/blog/Python/2019/03/26/pytest/ Or /blog/Python/pytest/0.png" alt="0.png" />
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1">Mock 参数</h4>
+<div class="outline-text-4" id="text-2-1-1">
+</div><div id="outline-container-sec-2-1-1-1" class="outline-5">
+<h5 id="sec-2-1-1-1">参数 name</h5>
+<div class="outline-text-5" id="text-2-1-1-1">
+<p>
+name 定义了 mock 对象的唯一标识符.
+</p>
+<pre class="example">
+from mock import Mock
+
+# create the mock object
+mockFoo = Mock(name = "Foo")
+
+print mockFoo
+# returns: &lt;Mock name='Foo' id='494864'&gt;
+print repr(mockFoo)
+# still returns: &lt;Mock name='Foo' id='494864'&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-1-2" class="outline-5">
+<h5 id="sec-2-1-1-2">参数 spec</h5>
+<div class="outline-text-5" id="text-2-1-1-2">
+<p>
+使用 spec 来定义 mock 对象的属性. 
+</p>
+<pre class="example">
+from mock import Mock
+
+# prepare the spec list
+fooSpec = ["_fooValue", "callFoo", "doFoo"]
+
+# create the mock object
+mockFoo = Mock(spec = fooSpec)
+
+# accessing the mocked attributes
+print mockFoo
+# &lt;Mock id='427280'&gt;
+print mockFoo._fooValue
+# returns &lt;Mock name='mock._fooValue' id='2788112'&gt;
+print mockFoo.callFoo()
+# returns: &lt;Mock name='mock.callFoo()' id='2815376'&gt;
+
+mockFoo.callFoo()
+# nothing happens, which is fine
+
+# accessing the missing attributes
+print mockFoo._fooBar
+# raises: AttributeError: Mock object has no attribute '_fooBar'
+mockFoo.callFoobar()
+# raises: AttributeError: Mock object has no attribute 'callFoobar'
+</pre>
+
+<p>
+可以使用类名作为 spec 的值, 这样就使得 mock 对象与传入的类具有相同属性.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The class interfaces
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue    
+
+# create the mock object
+mockFoo = Mock(spec = Foo)
+
+# accessing the mocked attributes
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+print mockFoo._fooValue
+# returns &lt;Mock name='mock._fooValue' id='2788112'&gt;
+print mockFoo.callFoo()
+# returns: &lt;Mock name='mock.callFoo()' id='2815376'&gt;
+
+mockFoo.callFoo()
+# nothing happens, which is fine
+
+# accessing the missing attributes
+print mockFoo._fooBar
+# raises: AttributeError: Mock object has no attribute '_fooBar'
+mockFoo.callFoobar()
+# raises: AttributeError: Mock object has no attribute 'callFoobar'
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-1-3" class="outline-5">
+<h5 id="sec-2-1-1-3">参数 return_value</h5>
+<div class="outline-text-5" id="text-2-1-1-3">
+<p>
+设置 mock 对象被直接调用时返回的值.
+</p>
+<pre class="example">
+from mock import Mock
+
+# create the mock object
+mockFoo = Mock(return_value = 456)
+
+print mockFoo
+# &lt;Mock id='2787568'&gt;
+
+mockObj = mockFoo()
+print mockObj
+# returns: 456
+</pre>
+
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# creating the mock object
+fooObj = Foo()
+print fooObj
+# returns: &lt;__main__.Foo object at 0x68550&gt;
+
+mockFoo = Mock(return_value = fooObj)
+print mockFoo
+# returns: &lt;Mock id='2788144'&gt;
+
+# creating an "instance"
+mockObj = mockFoo()
+print mockObj
+# returns: &lt;__main__.Foo object at 0x68550&gt;
+
+# working with the mocked instance
+print mockObj._fooValue
+# returns: 123
+mockObj.callFoo()
+# returns: Foo:callFoo_
+mockObj.doFoo("narf")
+# returns: Foo:doFoo:input =  narf
+&lt;Mock id='428560'&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-1-4" class="outline-5">
+<h5 id="sec-2-1-1-4">参数 side_effect</h5>
+<div class="outline-text-5" id="text-2-1-1-4">
+<p>
+如果设置了 side_effect 的值, 它会覆盖 return_value, 当调用 mock 对象时, 会返回 side_effect 的值, 而不是 return_value 的值.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# creating the mock object (without a side effect)
+fooObj = Foo()
+
+mockFoo = Mock(return_value = fooObj)
+print mockFoo
+# returns: &lt;Mock id='2788144'&gt;
+
+# creating an "instance"
+mockObj = mockFoo()
+print mockObj
+# returns: &lt;__main__.Foo object at 0x2a88f0&gt;
+
+# creating a mock object (with a side effect)
+
+mockFoo = Mock(return_value = fooObj, side_effect = StandardError)
+mockObj = mockFoo()
+# raises: StandardError
+</pre>
+
+<p>
+还有一种用法, 是如果 side_effect 内部有多个值, 每次调用会返回不同的值.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# creating the mock object (with a side effect)
+fooObj = FooSpec()
+
+fooList = [665, 666, 667]
+mockFoo = Mock(return_value = fooObj, side_effect = fooList)
+
+fooTest = mockFoo()
+print fooTest
+# returns 665
+
+fooTest = mockFoo()
+print fooTest
+# returns 666
+
+fooTest = mockFoo()
+print fooTest
+# returns 667
+
+fooTest = mockFoo()
+print fooTest
+# raises: StopIteration
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2">断言</h4>
+<div class="outline-text-4" id="text-2-1-2">
+</div><div id="outline-container-sec-2-1-2-1" class="outline-5">
+<h5 id="sec-2-1-2-1">assert_called_with()</h5>
+<div class="outline-text-5" id="text-2-1-2-1">
+<p>
+检查 mock 方法是否获得了正确的参数.
+</p>
+
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        pass
+    
+    def doFoo(self, argValue):
+        pass
+
+# create the mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+mockFoo.doFoo("narf")
+mockFoo.doFoo.assert_called_with("narf")
+# assertion passes
+
+mockFoo.doFoo("zort")
+mockFoo.doFoo.assert_called_with("narf")
+# AssertionError: Expected call: doFoo('narf')
+# Actual call: doFoo('zort')
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2-2" class="outline-5">
+<h5 id="sec-2-1-2-2">assert_called_once_with()</h5>
+<div class="outline-text-5" id="text-2-1-2-2">
+<p>
+检查功能与 assert_called_with() 一样, 但是只允许调用一次, 超过一次将引发错误.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        pass
+    
+    def doFoo(self, argValue):
+        pass
+
+# create the mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+mockFoo.callFoo()
+mockFoo.callFoo.assert_called_once_with()
+# assertion passes
+
+mockFoo.callFoo()
+mockFoo.callFoo.assert_called_once_with()
+# AssertionError: Expected to be called once. Called 2 times.
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2-3" class="outline-5">
+<h5 id="sec-2-1-2-3">assert_any_call()</h5>
+<div class="outline-text-5" id="text-2-1-2-3">
+<p>
+检查是否调用了某方法.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock specification
+class Foo(object):
+    _fooValue = 123
+    
+    def callFoo(self):
+        pass
+    
+    def doFoo(self, argValue):
+        pass
+
+# create the mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+mockFoo.callFoo()
+mockFoo.doFoo("narf")
+mockFoo.doFoo("zort")
+
+mockFoo.callFoo.assert_any_call()
+# assert passes
+
+mockFoo.callFoo()
+mockFoo.doFoo("troz")
+
+mockFoo.doFoo.assert_any_call("zort")
+# assert passes
+
+mockFoo.doFoo.assert_any_call("egad")
+# raises: AssertionError: doFoo('egad') call not found
+</pre>
+<ul class="org-ul">
+<li>mockFoo.callFoo.assert_any_call() 通过, 因为确实调用了 callFoo()
+</li>
+<li>mockFoo.doFoo.assert_any_call("zort") 通过, 因为确实调用了 doFoo("zort")
+</li>
+<li>mockFoo.doFoo.assert_any_call("egad") 失败, 因为没调用过 doFoo("egad")
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2-4" class="outline-5">
+<h5 id="sec-2-1-2-4">assert_has_calls()</h5>
+<div class="outline-text-5" id="text-2-1-2-4">
+<p>
+检查调用顺序是否正确, any_order 参数可选.
+</p>
+<pre class="example">
+from mock import Mock, call
+
+# The mock specification
+class Foo(object):
+    _fooValue = 123
+    
+    def callFoo(self):
+        pass
+    
+    def doFoo(self, argValue):
+        pass
+
+# create the mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+mockFoo.callFoo()
+mockFoo.doFoo("narf")
+mockFoo.doFoo("zort")
+
+fooCalls = [call.callFoo(), call.doFoo("narf"), call.doFoo("zort")]
+mockFoo.assert_has_calls(fooCalls)
+# assert passes
+
+fooCalls = [call.callFoo(), call.doFoo("zort"), call.doFoo("narf")]
+mockFoo.assert_has_calls(fooCalls)
+# AssertionError: Calls not found.
+# Expected: [call.callFoo(), call.doFoo('zort'), call.doFoo('narf')]
+# Actual: [call.callFoo(), call.doFoo('narf'), call.doFoo('zort')]
+
+fooCalls = [call.callFoo(), call.doFoo("zort"), call.doFoo("narf")]
+mockFoo.assert_has_calls(fooCalls, any_order = True)
+# assert passes
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3">管理 Mock</h4>
+<div class="outline-text-4" id="text-2-1-3">
+</div><div id="outline-container-sec-2-1-3-1" class="outline-5">
+<h5 id="sec-2-1-3-1">attach_mock()</h5>
+<div class="outline-text-5" id="text-2-1-3-1">
+<p>
+该方法让我们在前一个 mock 对象上增加第二个 mock 对象, 并进行重命名.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+class Bar(object):
+    # instance properties
+    _barValue = 456
+    
+    def callBar(self):
+        pass
+    
+    def doBar(self, argValue):
+        pass
+
+# create the first mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+# create the second mock object
+mockBar = Mock(spec = Bar)
+print mockBar
+# returns: &lt;Mock spec='Bar' id='2784400'&gt;
+
+# attach the second mock to the first
+mockFoo.attach_mock(mockBar, 'fooBar')
+
+# access the first mock's attributes
+print mockFoo
+# returns: &lt;Mock spec='Foo' id='495312'&gt;
+print mockFoo._fooValue
+# returns: &lt;Mock name='mock._fooValue' id='428976'&gt;
+print mockFoo.callFoo()
+# returns: &lt;Mock name='mock.callFoo()' id='448144'&gt;
+
+# access the second mock and its attributes
+print mockFoo.fooBar
+# returns: &lt;Mock name='mock.fooBar' spec='Bar' id='2788592'&gt;
+print mockFoo.fooBar._barValue
+# returns: &lt;Mock name='mock.fooBar._barValue' id='2788016'&gt;
+print mockFoo.fooBar.callBar()
+# returns: &lt;Mock name='mock.fooBar.callBar()' id='2819344'&gt;
+print mockFoo.fooBar.doBar("narf")
+# returns: &lt;Mock name='mock.fooBar.doBar()' id='4544528'&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3-2" class="outline-5">
+<h5 id="sec-2-1-3-2">configure_mock()</h5>
+<div class="outline-text-5" id="text-2-1-3-2">
+<p>
+该方法允许我们修改 mock 对象.
+</p>
+<pre class="example">
+from mock import Mock
+
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+mockFoo = Mock(spec = Foo, return_value = 555)
+print mockFoo()
+# returns: 555
+
+mockFoo.configure_mock(return_value = 999)
+print mockFoo()
+# returns: 999
+
+fooSpec = {'callFoo.return_value':"narf", 'doFoo.return_value':"zort", 'doFoo.side_effect':StandardError}
+mockFoo.configure_mock(**fooSpec)
+
+print mockFoo.callFoo()
+# returns: narf
+print mockFoo.doFoo("narf")
+# raises: StandardError
+
+fooSpec = {'doFoo.side_effect':None}
+mockFoo.configure_mock(**fooSpec)
+print mockFoo.doFoo("narf")
+# returns: zort
+</pre>
+<ul class="org-ul">
+<li>mockFoo.doFoo("narf") 无法通过, 是因为设置了 doFoo.side_effect 为 StandardError
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3-3" class="outline-5">
+<h5 id="sec-2-1-3-3">mock_add_spec()</h5>
+<div class="outline-text-5" id="text-2-1-3-3">
+<p>
+该方法允许我们修改 mock 对象的属性.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The class interfaces
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+class Bar(object):
+    # instance properties
+    _barValue = 456
+    
+    def callBar(self):
+        pass
+    
+    def doBar(self, argValue):
+        pass
+    
+# create the mock object
+mockFoo = Mock(spec = Foo)
+
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+print mockFoo._fooValue
+# returns &lt;Mock name='mock._fooValue' id='2788112'&gt;
+print mockFoo.callFoo()
+# returns: &lt;Mock name='mock.callFoo()' id='2815376'&gt;
+
+# add a new spec attributes
+mockFoo.mock_add_spec(Bar)
+
+print mockFoo
+# returns: &lt;Mock spec='Bar' id='491088'&gt;
+print mockFoo._barValue
+# returns: &lt;Mock name='mock._barValue' id='2815120'&gt;
+print mockFoo.callBar()
+# returns: &lt;Mock name='mock.callBar()' id='4544368'&gt;
+
+print mockFoo._fooValue
+# raises: AttributeError: Mock object has no attribute '_fooValue'
+print mockFoo.callFoo()
+# raises: AttributeError: Mock object has no attribute 'callFoo'
+</pre>
+<p>
+将 mockFoo 的 spec 属性修改为 Bar 后, 再去访问 Foo 对象的属性, 都会出错.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-3-4" class="outline-5">
+<h5 id="sec-2-1-3-4">resetMock()</h5>
+<div class="outline-text-5" id="text-2-1-3-4">
+<p>
+恢复 mock 对象到测试前的状态, 清除 mock 对象的调用统计和断言, 但不会清除 return_value, side_effect 和 方法属性(如: mockFoo.callFoo.return_value 就是 callFoo 的方法属性).
+</p>
+
+<p>
+可以令 mockFoo.callFoo.side_effect = None 来清除 side_effect.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4" class="outline-4">
+<h4 id="sec-2-1-4">静态方法</h4>
+<div class="outline-text-4" id="text-2-1-4">
+</div><div id="outline-container-sec-2-1-4-1" class="outline-5">
+<h5 id="sec-2-1-4-1">called</h5>
+<div class="outline-text-5" id="text-2-1-4-1">
+<p>
+该属性返回 mock 对象是否被调用过.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# create the first mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+print mockFoo.called
+# returns: False
+
+mockFoo()
+print mockFoo.called
+# returns: True
+
+mockFoo = Mock(spec = Foo)
+print mockFoo.called
+# returns: False
+
+mockFoo.callFoo()
+print mockFoo.called
+# returns: False
+</pre>
+<p>
+从代码中可以看出, mockFoo.callFoo() 被调用, 不等于 mockFoo 被调用, 所以 mockFoo.called 仍为 False.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4-2" class="outline-5">
+<h5 id="sec-2-1-4-2">call_count</h5>
+<div class="outline-text-5" id="text-2-1-4-2">
+<p>
+统计 mock 对象的调用次数.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# create the first mock object
+mockFoo = Mock(spec = Foo)
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+print mockFoo.call_count
+# returns: 0
+
+mockFoo()
+print mockFoo.call_count
+# returns: 1
+
+mockFoo.callFoo()
+print mockFoo.call_count
+# returns: 1
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4-3" class="outline-5">
+<h5 id="sec-2-1-4-3">call_args</h5>
+<div class="outline-text-5" id="text-2-1-4-3">
+<p>
+返回调用的参数.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# create the first mock object
+mockFoo = Mock(spec = Foo, return_value = "narf")
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+print mockFoo.call_args
+# returns: None
+
+mockFoo("zort")
+print mockFoo.call_args
+# returns: call('zort')
+
+mockFoo()
+print mockFoo.call_args
+# returns: call()
+
+mockFoo("troz")
+print mockFoo.call_args
+# returns: call('troz')
+
+mockFoo.callFoo()
+print mockFoo.call_args
+# returns: call('troz')
+</pre>
+<p>
+注意, 如果没有参数, call_args 返回上一次的参数.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4-4" class="outline-5">
+<h5 id="sec-2-1-4-4">call_args_list</h5>
+<div class="outline-text-5" id="text-2-1-4-4">
+<p>
+返回调用过的参数的列表.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# create the first mock object
+mockFoo = Mock(spec = Foo, return_value = "narf")
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+
+mockFoo("zort")
+print mockFoo.call_args_list
+# returns: [call('zort')]
+
+mockFoo()
+print mockFoo.call_args_list
+# returns: [call('zort'), call()]
+
+mockFoo("troz")
+print mockFoo.call_args_list
+# returns: [call('zort'), call(), call('troz')]
+
+mockFoo.callFoo()
+print mockFoo.call_args_list
+# returns: [call('zort'), call(), call('troz')]
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-4-5" class="outline-5">
+<h5 id="sec-2-1-4-5">method_calls</h5>
+<div class="outline-text-5" id="text-2-1-4-5">
+<p>
+返回调用方法的列表.
+</p>
+<pre class="example">
+from mock import Mock
+
+# The mock object
+class Foo(object):
+    # instance properties
+    _fooValue = 123
+    
+    def callFoo(self):
+        print "Foo:callFoo_"
+    
+    def doFoo(self, argValue):
+        print "Foo:doFoo:input = ", argValue
+
+# create the first mock object
+mockFoo = Mock(spec = Foo, return_value = "poink")
+print mockFoo
+# returns &lt;Mock spec='Foo' id='507120'&gt;
+print mockFoo.method_calls
+# returns []
+
+mockFoo()
+print mockFoo.method_calls
+# returns []
+
+mockFoo.callFoo()
+print mockFoo.method_calls
+# returns: [call.callFoo()]
+
+mockFoo.doFoo("narf")
+print mockFoo.method_calls
+# returns: [call.callFoo(), call.doFoo('narf')]
+
+mockFoo()
+print mockFoo.method_calls
+# returns: [call.callFoo(), call.doFoo('narf')]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">测试</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">assert</h3>
+<div class="outline-text-3" id="text-3-1">
 <p>
 最基础的工具, 进行条件判断.
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-2-2" class="outline-3">
-<h3 id="sec-2-2">捕获异常</h3>
-<div class="outline-text-3" id="text-2-2">
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">捕获异常</h3>
+<div class="outline-text-3" id="text-3-2">
 <p>
 在测试时, 经常需要测试是否如期抛出预期的异常, 以确定异常处理模块生效. 使用 pytest.raises() 进行异常捕获.
 </p>
@@ -172,9 +1076,9 @@ def test_raises():
 </div>
 </div>
 
-<div id="outline-container-sec-2-3" class="outline-3">
-<h3 id="sec-2-3">标记函数</h3>
-<div class="outline-text-3" id="text-2-3">
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">标记函数</h3>
+<div class="outline-text-3" id="text-3-3">
 <p>
 pytest 会查找当前目录下所有以 test 开头或结尾的 py 文件, 执行文件内所有以 test 开头或结尾的方法. 如果某个方法尚未完成, 可以用以下方法指明不执行该方法:
 </p>
@@ -239,9 +1143,9 @@ s 表示跳过.
 </div>
 </div>
 
-<div id="outline-container-sec-2-4" class="outline-3">
-<h3 id="sec-2-4">参数化</h3>
-<div class="outline-text-3" id="text-2-4">
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">参数化</h3>
+<div class="outline-text-3" id="text-3-4">
 <p>
 如果把测试用例都写在测试函数内部进行遍历, 会因为某组用例失败, 导致测试终止.
 </p>
@@ -283,9 +1187,9 @@ tests/test-function/test_parametrize.py::test_passwd_md5[tom-a123456a] PASSED [1
 </div>
 </div>
 
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3">固件</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">固件</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 概念: 固件是一些函数, pytest 会在执行测试函数之前或之后自动运行它们.
 </p>
@@ -299,9 +1203,9 @@ tests/test-function/test_parametrize.py::test_passwd_md5[tom-a123456a] PASSED [1
 </p>
 </div>
 
-<div id="outline-container-sec-3-1" class="outline-3">
-<h3 id="sec-3-1">预处理和后处理</h3>
-<div class="outline-text-3" id="text-3-1">
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">预处理和后处理</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 pytest 使用 yield 将固件分成两部分, yield 之前的代码属于预处理, 之后的代码属于后处理.
 </p>
@@ -347,9 +1251,9 @@ tests\fixture\test_db.py Connection successful
 </div>
 </div>
 
-<div id="outline-container-sec-3-2" class="outline-3">
-<h3 id="sec-3-2">作用域</h3>
-<div class="outline-text-3" id="text-3-2">
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">作用域</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 固件的 scope 可以声明固件的作用域, 可选项有:
 </p>
@@ -407,9 +1311,9 @@ class TestClassScope:
 </div>
 </div>
 
-<div id="outline-container-sec-3-3" class="outline-3">
-<h3 id="sec-3-3">自动执行固件</h3>
-<div class="outline-text-3" id="text-3-3">
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">自动执行固件</h3>
+<div class="outline-text-3" id="text-4-3">
 <p>
 如果想让固件自动执行, 可以使用 autouse 参数.
 </p>
@@ -457,9 +1361,9 @@ def test_2():
 </div>
 
 
-<div id="outline-container-sec-3-4" class="outline-3">
-<h3 id="sec-3-4">conftest.py</h3>
-<div class="outline-text-3" id="text-3-4">
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4">conftest.py</h3>
+<div class="outline-text-3" id="text-4-4">
 <p>
 如果多个测试文件都要用到同一个功能(如登录), 可以将这个功能写到 conftest.py 文件中, 其他用法仍然不变. 使用 conftest.py 需要注意以下几点:
 </p>
@@ -510,9 +1414,9 @@ def test_passing(db):
 </div>
 </div>
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4">pytest-cov</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">pytest-cov</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 pytest-cov是自动检测测试覆盖率的一个插件.
 </p>
@@ -539,9 +1443,9 @@ module_name 是自己的测试模块名.
 </p>
 </div>
 
-<div id="outline-container-sec-4-1" class="outline-3">
-<h3 id="sec-4-1">.coveragerc</h3>
-<div class="outline-text-3" id="text-4-1">
+<div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1">.coveragerc</h3>
+<div class="outline-text-3" id="text-5-1">
 <p>
 如果直接执行 pytest --cov=./ 会把所有的文件都跑一遍, 有时候我们不需要显示所有文件的覆盖率, 可以通过配置文件来忽略一些文件.
 </p>
@@ -579,9 +1483,9 @@ pytest --cov=./ --cov-report=html test.py
 </div>
 </div>
 
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5">使用 allure 定制报告</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">使用 allure 定制报告</h2>
+<div class="outline-text-2" id="text-6">
 <pre class="example">
 pip3 install allure-pytest
 </pre>
@@ -594,13 +1498,635 @@ pytest --cov=./ test_api.py --alluredir=./result/
 </pre>
 </div>
 </div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">实践</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+main.py
+</p>
+<pre class="example">
+import time
+class Calculator:
+    def sum(self, a, b):
+        time.sleep(10)
+        return a + b
+</pre>
+
+<p>
+test/test_main.py
+</p>
+<pre class="example">
+import pytest
+
+from mock import patch
+from main import Calculator
+
+@patch("main.Calculator.sum")
+def test_sum(mock_sum):
+    mock_sum.return_value = 9
+    calc = Calculator()
+    print(calc.sum(2, 4))
+    print(mock_sum)
+</pre>
+
+<p>
+执行命令:
+</p>
+<pre class="example">
+pytest test_main.py --capture=no
+</pre>
+
+<p>
+输出:
+</p>
+<pre class="example">
+test_main.py 9
+&lt;MagicMock name='sum' id='139988835272576'&gt;
+</pre>
+
+<p>
+可以看到, 我们 mock 了 sum(), 并让其返回 9, 所以在调用 sum(2, 4) 时, 也直接返回 9, 而不是正确值 6.
+</p>
+</div>
+
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1">更复杂的例子</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Order 类: 模拟某个项目的采购订单.
+</p>
+
+<p>
+Warehouse 类: 测试资源.
+</p>
+
+<p>
+OrderTest 类: 测试用例.
+</p>
+
+<p>
+Order 类如下. 其中, _orderItem 是采购项目名称, _orderAmount 是要采购的数量, _orderFilled 是已采购的数量.
+</p>
+<pre class="example">
+class Order(object):
+    # instance properties
+    _orderItem = "None"
+    _orderAmount = 0
+    _orderFilled = -1
+    
+    # Constructor
+    def __init__(self, argItem, argAmount):
+        print "Order:__init__"
+        
+        # set the order item
+        if (isinstance(argItem, str)):
+            if (len(argItem) &gt; 0):
+                self._orderItem = argItem
+        
+        # set the order amount
+        if (argAmount &gt; 0):
+            self._orderAmount = argAmount
+        
+    # Magic methods
+    def __repr__(self):
+       # assemble the dictionary
+        locOrder = {'item':self._orderItem, 'amount':self._orderAmount}
+        return repr(locOrder)
+    
+    # Instance methods
+    # attempt to fill the order
+    def fill(self, argSrc):
+        print "Order:fill_"
+        
+        try:
+            # does the warehouse has the item in stock?
+            if (argSrc is not None):
+                if (argSrc.hasInventory(self._orderItem)):
+                    # get the item
+                    locCount =    argSrc.getInventory(self._orderItem, self._orderAmount)
+                
+                    # update the following property
+                    self._orderFilled = locCount
+                else:
+                    print "Inventory item not available"
+            else:
+                print "Warehouse not available"
+        except TypeError:
+            print "Invalid warehouse"
+    
+    # check if the order has been filled
+    def isFilled(self):
+        print "Order:isFilled_"
+        return (self._orderAmount == self._orderFilled)
+</pre>
+
+<p>
+Warehouse 类是一个抽象类. setup() 用于更新属性, hasInventory() 检查仓库中是否有某个项目, getInventory() 扣除项目的名称和数量, addInventory() 是增加项目的名称和数量. 内容如下:
+</p>
+<pre class="example">
+class Warehouse(object):    
+    # private properties
+    _houseName = None
+    _houseList = None
+        
+    # accessors
+    def warehouseName(self):
+        return (self._houseName)
+    
+    def inventory(self):
+        return (self._houseList)
+    
+    
+    # -- INVENTORY ACTIONS
+    # set up the warehouse
+    def setup(self, argName, argList):
+    &amp;#9;pass
+    
+    # check for an inventory item
+    def hasInventory(self, argItem):
+        pass
+    
+    # retrieve an inventory item
+    def getInventory(self, argItem, argCount):
+        pass
+        
+    # add an inventory item
+    def addInventory(self, argItem, argCount):
+        pass
+</pre>
+
+<p>
+OrderTest 类是测试用例本身. fooSource 属性是 Order 类所需的 mock 对象.
+</p>
+<pre class="example">
+import unittest
+from mock import Mock, call
+
+class OrderTest(unittest.TestCase):
+    # declare the test resource
+    fooSource = None
+    
+    # preparing to test
+    def setUp(self):
+        """ Setting up for the test """
+        print "OrderTest:setUp_:begin"
+        
+        # identify the test routine
+        testName = self.id().split(".")
+        testName = testName[2]
+        print testName
+        
+        # prepare and configure the test resource
+        if (testName == "testA_newOrder"):
+            print "OrderTest:setup_:testA_newOrder:RESERVED"
+        elif (testName == "testB_nilInventory"):
+            self.fooSource = Mock(spec = Warehouse, return_value = None)
+        elif (testName == "testC_orderCheck"):
+            self.fooSource = Mock(spec = Warehouse)
+            self.fooSource.hasInventory.return_value = True
+            self.fooSource.getInventory.return_value = 0
+        elif (testName == "testD_orderFilled"):
+            self.fooSource = Mock(spec = Warehouse)
+            self.fooSource.hasInventory.return_value = True
+            self.fooSource.getInventory.return_value = 10
+        elif (testName == "testE_orderIncomplete"):
+            self.fooSource = Mock(spec = Warehouse)
+            self.fooSource.hasInventory.return_value = True
+            self.fooSource.getInventory.return_value = 5
+        else:
+            print "UNSUPPORTED TEST ROUTINE"
+    
+    # ending the test
+    def tearDown(self):
+        """Cleaning up after the test"""
+        print "OrderTest:tearDown_:begin"
+        print ""
+    
+    # test: new order
+    # objective: creating an order
+    def testA_newOrder(self):
+        # creating a new order
+        testOrder = Order("mushrooms", 10)
+        print repr(testOrder)
+        
+        # test for a nil object
+        self.assertIsNotNone(testOrder, "Order object is a nil.")
+        
+        # test for a valid item name
+        testName = testOrder._orderItem
+        self.assertEqual(testName, "mushrooms", "Invalid item name")
+        
+        # test for a valid item amount
+        testAmount = testOrder._orderAmount
+        self.assertGreater(testAmount, 0, "Invalid item amount")
+    
+    # test: nil inventory
+    # objective: how the order object handles a nil inventory
+    def testB_nilInventory(self):
+        """Test routine B"""
+        # creating a new order
+        testOrder = Order("mushrooms", 10)
+        print repr(testOrder)
+        
+        # fill the order
+        testSource = self.fooSource()
+        testOrder.fill(testSource)
+        
+        # print the mocked calls
+        print self.fooSource.mock_calls
+        
+        # check the call history
+        testCalls = [call()]
+        self.fooSource.assert_has_calls(testCalls)
+    
+    def testC_orderCheck(self):
+        """Test routine C"""
+        # creating a test order
+        testOrder = Order("mushrooms", 10)
+        print repr(testOrder)
+        
+        # perform the test
+        testOrder.fill(self.fooSource)
+        
+        # perform the checks
+        self.assertFalse(testOrder.isFilled())
+        self.assertEqual(testOrder._orderFilled, 0)
+        
+        self.fooSource.hasInventory.assert_called_once_with("mushrooms")
+        print self.fooSource.mock_calls
+        
+        # creating another order
+        testOrder = Order("cabbage", 10)
+        print repr(testOrder)
+        
+        # reconfigure the test resource
+        self.fooSource.hasInventory.return_value = False
+        self.fooSource.reset_mock()
+        
+        # perform the test
+        testOrder.fill(self.fooSource)
+        
+        # perform the checks
+        self.assertFalse(testOrder.isFilled())
+        self.assertEqual(testOrder._orderFilled, -1)
+        
+        self.fooSource.hasInventory.assert_called_once_with("cabbage")
+        print self.fooSource.mock_calls
+
+    def testD_orderFilled(self):
+        """Test routine D"""
+        # creating a test order
+        testOrder = Order("mushrooms", 10)
+        print repr(testOrder)
+        
+        # perform the test
+        testOrder.fill(self.fooSource)
+        print testOrder.isFilled()
+        
+        # perform the checks
+        self.assertTrue(testOrder.isFilled())
+        self.assertNotEqual(testOrder._orderFilled, -1)
+        
+        self.fooSource.hasInventory.assert_called_once_with("mushrooms")
+        self.fooSource.getInventory.assert_called_with("mushrooms", 10)
+        
+        testCalls = [call.hasInventory("mushrooms"), call.getInventory("mushrooms", 10)]
+        self.fooSource.assert_has_calls(testCalls)
+
+    def testE_orderIncomplete(self):
+        """Test routine E"""
+        # creating a test order
+        testOrder = Order("mushrooms", 10)
+        print repr(testOrder)
+        
+        # perform the test
+        testOrder.fill(self.fooSource)
+        print testOrder.isFilled()
+        
+        # perform the checks
+        self.assertFalse(testOrder.isFilled())
+        self.assertNotEqual(testOrder._orderFilled, testOrder._orderAmount)
+        
+        self.fooSource.hasInventory.assert_called_once_with("mushrooms")
+        self.fooSource.getInventory.assert_called_with("mushrooms", 10)
+        print self.fooSource.mock_calls
+        
+        testCalls = [call.hasInventory("mushrooms"), call.getInventory("mushrooms", 10)]
+        self.fooSource.assert_has_calls(testCalls)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">monkeypatch</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+转自<a href="https://zpzhou.com/archives/monkey_patch.html">https://zpzhou.com/archives/monkey_patch.html</a>
+</p>
+
+<p>
+所谓猴子补丁, 就是在程序运行的过程中动态修改一些模块, 类或方法, 而不是在静态代码中去修改相应的实现.
+</p>
+
+<p>
+如: 小明最爱吃苹果:
+</p>
+<pre class="example">
+class XiaoMing(object):
+    def favorite(self):
+        print "apple"
+
+# 测试
+xiaoming=XiaoMing()
+xiaoming.favorite()
+&gt;&gt; apple
+</pre>
+
+<p>
+但是突然有天, 上帝不想让小明喜欢苹果了, 但是小明已经造出来了, 不能再重新修改小明, 所以可以给小明打个 monkeypatch:
+</p>
+<pre class="example">
+class XiaoMing(object):
+    def favorite(self):
+        print "apple"
+        
+def new_favorite():
+    print "banana"
+
+
+# 测试
+xiaoming=XiaoMing()
+xiaoming.favorite()
+&gt;&gt; apple
+
+xiaoming.favorite = new_favorite
+xiaoming.favorite()
+&gt;&gt; banana
+</pre>
+
+<p>
+换个高级写法:
+</p>
+<pre class="example">
+class XiaoMing(object):
+    def favorite(self):
+        print "apple"
+
+class God(object):
+    @classmethod
+    def new_xiaoming_favorite(cls):
+        print "banana"
+
+    @classmethod
+    def monkey_patch(cls):
+        XiaoMing.favorite = cls.new_xiaoming_favorite
+
+
+# 测试
+God.monkey_patch()
+
+xiaoming = XiaoMing()
+xiaoming.favorite()
+&gt;&gt; banana
+</pre>
+</div>
+
+<div id="outline-container-sec-8-1" class="outline-3">
+<h3 id="sec-8-1">原理</h3>
+<div class="outline-text-3" id="text-8-1">
+</div><div id="outline-container-sec-8-1-1" class="outline-4">
+<h4 id="sec-8-1-1">namespace</h4>
+<div class="outline-text-4" id="text-8-1-1">
+<p>
+python 中有 namespace 的概念, 是以 dict 的形式实现的, 保存了 name 和对象之间的映射. python 中主要有以下四类 namespace:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">-</th>
+<th scope="col" class="left">-</th>
+</tr>
+
+<tr>
+<th scope="col" class="left">类型</th>
+<th scope="col" class="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">locals</td>
+<td class="left">函数的 namespace, 只记录当前函数内的对象</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">enclosing function</td>
+<td class="left">记录闭包函数内的对象</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">globals</td>
+<td class="left">模块的 namespace, 记录模块内的 class, function 等</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left"><span class="underline">builtins</span></td>
+<td class="left">python 内置的 namespace, 在 python 解释器启动时创建, 记录了很多内置函数</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+在 python 中, 如果要访问一个对象(变量, 模块, 方法等), 都要去 namespace 中根据对象名来检索, 检索顺序为: LEGB, 即: locals -&gt; enclosing function -&gt; globals -&gt; <span class="underline">builtins</span>.
+</p>
+
+<p>
+如果这四类 namespace 中都找不到指定 name 的对象, 就报 NameError 错误.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-8-1-2" class="outline-4">
+<h4 id="sec-8-1-2">模块的导入</h4>
+<div class="outline-text-4" id="text-8-1-2">
+<p>
+python 在启动时会创建一个全局字典: sys.modules, 可以查看 sys.modules 的内容:
+</p>
+<pre class="example">
+import sys
+print(sys.modules)
+</pre>
+
+<p>
+sys.modules 为 dict 类型, key 为模块名, value 为模块内的对象;
+</p>
+
+<p>
+导入模块时, 有以下事情发生:
+</p>
+<ul class="org-ul">
+<li>在 sys.modules 中查找该模块, 如果存在则直接导入 sys.module 中模块内的对象;
+</li>
+<li>如果不存在, 则在 sys.modules 中插入 key-value;
+</li>
+<li>将模块内的对象加入到 global namespace 中, 当程序需要调用该模块时, 就到 global namespace 中检索;
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-8-1-3" class="outline-4">
+<h4 id="sec-8-1-3">monkeypatch 的实现</h4>
+<div class="outline-text-4" id="text-8-1-3">
+<p>
+实现就是 <code>替换掉 sys.modules 中的 key-value</code>.
+</p>
+
+<p>
+以 eventlet 库中对 thread, socket 等模块的 monkeypatch 为例:
+</p>
+<pre class="example">
+def monkey_patch(**on):
+    """Globally patches certain system modules to be greenthread-friendly.
+
+    The keyword arguments afford some control over which modules are patched.
+    If no keyword arguments are supplied, all possible modules are patched.
+    If keywords are set to True, only the specified modules are patched.  E.g.,
+    ``monkey_patch(socket=True, select=True)`` patches only the select and
+    socket modules.  Most arguments patch the single module of the same name
+    (os, time, select).  The exceptions are socket, which also patches the ssl
+    module if present; and thread, which patches thread, threading, and Queue.
+
+    It's safe to call monkey_patch multiple times.
+    """
+
+    # Workaround for import cycle observed as following in monotonic
+    # RuntimeError: no suitable implementation for this system
+    # see https://github.com/eventlet/eventlet/issues/401#issuecomment-325015989
+    #
+    # Make sure the hub is completely imported before any
+    # monkey-patching, or we risk recursion if the process of importing
+    # the hub calls into monkey-patched modules.
+    eventlet.hubs.get_hub()
+
+    accepted_args = set(('os', 'select', 'socket',
+                         'thread', 'time', 'psycopg', 'MySQLdb',
+                         'builtins', 'subprocess'))
+    # To make sure only one of them is passed here
+    assert not ('__builtin__' in on and 'builtins' in on)
+    try:
+        b = on.pop('__builtin__')
+    except KeyError:
+        pass
+    else:
+        on['builtins'] = b
+
+    default_on = on.pop("all", None)
+
+    for k in six.iterkeys(on):
+        if k not in accepted_args:
+            raise TypeError("monkey_patch() got an unexpected "
+                            "keyword argument %r" % k)
+    if default_on is None:
+        default_on = not (True in on.values())
+    for modname in accepted_args:
+        if modname == 'MySQLdb':
+            # MySQLdb is only on when explicitly patched for the moment
+            on.setdefault(modname, False)
+        if modname == 'builtins':
+            on.setdefault(modname, False)
+        on.setdefault(modname, default_on)
+
+    if on['thread'] and not already_patched.get('thread'):
+        _green_existing_locks()
+
+    # 检查哪些模块需要打补丁
+    modules_to_patch = []
+    for name, modules_function in [
+        ('os', _green_os_modules),
+        ('select', _green_select_modules),
+        ('socket', _green_socket_modules),
+        ('thread', _green_thread_modules),
+        ('time', _green_time_modules),
+        ('MySQLdb', _green_MySQLdb),
+        ('builtins', _green_builtins),
+        ('subprocess', _green_subprocess_modules),
+    ]:
+        if on[name] and not already_patched.get(name):
+            modules_to_patch += modules_function()
+            already_patched[name] = True
+
+    if on['psycopg'] and not already_patched.get('psycopg'):
+        try:
+            from eventlet.support import psycopg2_patcher
+            psycopg2_patcher.make_psycopg_green()
+            already_patched['psycopg'] = True
+        except ImportError:
+            # note that if we get an importerror from trying to
+            # monkeypatch psycopg, we will continually retry it
+            # whenever monkey_patch is called; this should not be a
+            # performance problem but it allows is_monkey_patched to
+            # tell us whether or not we succeeded
+            pass
+
+    imp.acquire_lock()
+    try:
+        # 遍历要打补丁的模块
+        # 如果还没导入, 就先导入模块
+        # 使用 setattr() 替换模块的相关属性
+        for name, mod in modules_to_patch:
+            orig_mod = sys.modules.get(name)
+            if orig_mod is None:
+                orig_mod = __import__(name)
+            for attr_name in mod.__patched__:
+                patched_attr = getattr(mod, attr_name, None)
+                if patched_attr is not None:
+                    setattr(orig_mod, attr_name, patched_attr)
+            deleted = getattr(mod, '__deleted__', [])
+            for attr_name in deleted:
+                if hasattr(orig_mod, attr_name):
+                    delattr(orig_mod, attr_name)
+    finally:
+        imp.release_lock()
+
+    if sys.version_info &gt;= (3, 3):
+        import importlib._bootstrap
+        thread = original('_thread')
+        # importlib must use real thread locks, not eventlet.Semaphore
+        importlib._bootstrap._thread = thread
+
+        # Issue #185: Since Python 3.3, threading.RLock is implemented in C and
+        # so call a C function to get the thread identifier, instead of calling
+        # threading.get_ident(). Force the Python implementation of RLock which
+        # calls threading.get_ident() and so is compatible with eventlet.
+        import threading
+        threading.RLock = threading._PyRLock
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="todo TODO">TODO</span> mock 的坑</h2>
+</div>
 
 </div>
 </div>
 <div>
         <div class="post-meta">
             <span title="post date" class="post-info">2019-03-26</span>
-            <span title="last modification date" class="post-info">2019-04-14</span>
+            <span title="last modification date" class="post-info">2019-04-20</span>
             <span title="tags" class="post-info">:<a href="https://pinvondev.github.io/tags/python">Python</a>:</span>
             <span title="author" class="post-info"><a href="mailto:pinvon@t480">pinvon</a></span>
         </div>
