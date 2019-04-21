@@ -270,6 +270,7 @@ print fooTest
 **** assert_called_with()
 
 检查 mock 方法是否获得了正确的参数.
+
 #+BEGIN_EXAMPLE
 from mock import Mock
 
@@ -1594,4 +1595,60 @@ def monkey_patch(**on):
         threading.RLock = threading._PyRLock
 #+END_EXAMPLE
 
-* TODO mock 的坑
+* mock 使用小结
+
+** mock 的正确写法
+
+假设要测试 mymodule, mymodule 里面使用到了 sysmodule.function, 现在需要 mock sysmodule 里面的这个方法, 错误用法:
+#+BEGIN_EXAMPLE
+@patch("sysmodule.function")
+#+END_EXAMPLE
+
+正确用法:
+#+BEGIN_EXAMPLE
+@patch("mymodule.sysmodule.function")
+#+END_EXAMPLE
+
+原因:
+- 在 mymodule 里已经导入了 sysmodule, 此时在 mymodule 中, function 指向 sysmodule.function;
+- 此时 @patch(sysmodule.function), 是将 sysmodule.function 指向了 mock.sysmodule.function;
+- 此时, mymodule 中的 function 指向未改变.
+
+** 模拟返回多个值
+
+如果要模拟返回多个值, 需要使用元组. 如:
+
+原代码:
+#+BEGIN_EXAMPLE
+a, b, c = func()
+#+END_EXAMPLE
+
+模拟 func 的输出, 应该写成:
+#+BEGIN_EXAMPLE
+mock_func.side_effect = (a, b, c)
+#+END_EXAMPLE
+
+** mock 最底层的方法
+
+假设想判断 log.error() 是否执行, 不要去 mock log, 应该 mock error.
+#+BEGIN_EXAMPLE
+log = logging.getLogger('a')
+log.error = Mock()
+log.error.assert_called_with('xxx')
+#+END_EXAMPLE
+
+** 断言未发生异常
+
+pytest 可以断言有异常发生, 如:
+#+BEGIN_EXAMPLE
+with pytest.raise(Exception, match=r'xxx'):
+    function()
+#+END_EXAMPLE
+
+但是没有直接提供方法断言没有异常发生, 如果有这个需求, 可以这么写:
+#+BEGIN_EXAMPLE
+try:
+    function()
+except Exception:
+    pytest.fail("xxx")
+#+END_EXAMPLE
