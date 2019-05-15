@@ -1,13 +1,12 @@
 #+TITLE:       Git基础
-#+AUTHOR:      Pinvon
-#+EMAIL:       pinvon@Inspiron
+#+AUTHOR:      pinvon
+#+EMAIL:       pinvon@t480
 #+DATE:        2018-01-04 四
+
 #+URI:         /blog/%y/%m/%d/git基础
-#+KEYWORDS:    <TODO: insert your keywords here>
 #+TAGS:        Git
 #+LANGUAGE:    en
 #+OPTIONS:     H:3 num:nil toc:t \n:nil ::t |:t ^:nil -:nil f:t *:t <:t
-#+DESCRIPTION: <TODO: insert your description here>
 
 * 从远程更新到本地(多分支)
 
@@ -186,3 +185,85 @@ git push origin :xxx
 * 配置免密钥后仍要输入用户名密码
 
 将 .git/config 中的 https://www.github.com/pinvondev/project.git 改成 git@github.com:pinvondev/project.git 即可.
+* Git 基本配置
+
+查看所有配置信息: git config --help
+
+Git 配置文件有三种:
+#+BEGIN_EXAMPLE
+/etc/gitconfig  # 使用 --system 来配置, 对系统上的所有用户生效
+~/.gitconfig  # 使用 --global 来配置, 对当前用户生效
+.git/config  # 只对当前 git 项目生效
+#+END_EXAMPLE
+检查顺序从上往下, 生效以最后的为准.
+
+** core.editor
+
+使用 core.editor 来指定默认编辑器.
+#+BEGIN_EXAMPLE
+git config --global core.editor "emacs -nw"
+#+END_EXAMPLE
+
+** commit.template
+
+.git_template:
+#+BEGIN_EXAMPLE
+# <类型>: (类型的值见下面描述) <主题> (最多50个字)
+
+# 解释为什么要做这些改动
+# |<----  请限制每行最多72个字   ---->|
+
+# 提供相关文章和其它资源的链接和关键字
+# 例如: Github issue #23
+
+# --- 提交 结束 ---
+# 类型值包含
+#    feat : 新功能
+#    fix : 修复bug
+#    docs : 文档改变
+#    style : 代码格式改变
+#    refactor : 某个已有功能重构
+#    perf : 性能优化
+#    test : 增加测试
+#    build : 改变了build工具 如 grunt换成了 npm
+#    revert : 撤销上一次的 commit
+#    chore : 构建过程或辅助工具的变动
+# --------------------
+# 注意
+#    主题和内容以一个空行分隔
+#    主题限制为最大50个字
+#    主题行大写
+#    主题行结束不用标点
+#    主题行使用祈使名
+#    内容每行72个字
+#    内容用于解释为什么和是什么,而不是怎么做
+#    内容多行时以'-'分隔
+# --------------------
+# 模板更多信息详见下面地址
+# https://gist.github.com/adeekshith/cd4c95a064977cdc6c50
+#+END_EXAMPLE
+
+执行命令:
+#+BEGIN_EXAMPLE
+git config commit.template .git_template
+#+END_EXAMPLE
+
+提交时, 使用 git commit, 然后填写模板即可.
+* git merge 与 git rebase 区别
+
+首先是 git merge. 假设当前在 dev 分支:
+#+BEGIN_EXAMPLE
+            master
+            |
+C0 &larr; C1 &larr; C3
+      
+      C2
+      |
+      dev
+
+git merge master  # 将 dev 分支合并到 master 分支
+
+C0 --> C1 --> C3
+       |
+       C2 --> 
+#+END_EXAMPLE

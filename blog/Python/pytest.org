@@ -1614,6 +1614,28 @@ def monkey_patch(**on):
 - 此时 @patch(sysmodule.function), 是将 sysmodule.function 指向了 mock.sysmodule.function;
 - 此时, mymodule 中的 function 指向未改变.
 
+如果觉得困惑, 可以自己实验一下. 假如有下面代码:
+
+main.py
+#+BEGIN_EXAMPLE
+from util import sum
+
+class MyObj:
+    def get_sum(self):
+        return sum(2, 4)
+
+print(dir())
+
+# 输出
+['MyObj', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'sum']
+#+END_EXAMPLE
+
+通过打印 dir() 可以看到 main.py 这个文件下的 namespaces.
+
+虽然 sum 这个方法是属于 util 模块的, 但是通过在 main.py 中 from util import sum, 打印 dir() , 可以发现 sum 已经属于 main.py 中了.
+
+所以 mock 时, 只需要 mock 要测试的模块中的 namespaces 即可(如: main.sum), 而不必去 mock 最初的来源(如: util.sum).
+
 ** 模拟返回多个值
 
 如果要模拟返回多个值, 需要使用元组. 如:
