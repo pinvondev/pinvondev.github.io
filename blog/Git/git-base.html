@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2019-05-16 四 08:15 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>git</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="pinvon" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">git</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf2167a9">1. 从远程更新到本地(多分支)</a></li>
+<li><a href="#org693dda8">2. 提交</a>
+<ul>
+<li><a href="#orgf29f843">2.1. 冲突</a></li>
+</ul>
+</li>
+<li><a href="#org112d156">3. 撤销</a></li>
+<li><a href="#orgd272001">4. 添加远程库</a>
+<ul>
+<li><a href="#org4103758">4.1. 创建SSH Key</a></li>
+<li><a href="#orga6e51f5">4.2. 创建仓库</a></li>
+<li><a href="#orgd291278">4.3. 关联仓库</a></li>
+<li><a href="#org7f7c299">4.4. 一台电脑, 多个Github账号</a></li>
+</ul>
+</li>
+<li><a href="#org39ad9e1">5. 暂存</a>
+<ul>
+<li>
+<ul>
+<li><a href="#org313b21b">5.0.1. 暂存</a></li>
+<li><a href="#org89cce1b">5.0.2. 取出</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org2bdf838">6. 删除分支</a>
+<ul>
+<li><a href="#org3e60ded">6.1. 查看分支</a></li>
+<li><a href="#org87d46fc">6.2. 删除本地分支</a></li>
+<li><a href="#orged05bd6">6.3. 删除远程分支</a></li>
+</ul>
+</li>
+<li><a href="#org25d8337">7. 配置免密钥后仍要输入用户名密码</a></li>
+<li><a href="#orgd658d0d">8. Git 基本配置</a>
+<ul>
+<li><a href="#org34d1e12">8.1. core.editor</a></li>
+<li><a href="#org850c23a">8.2. commit.template</a></li>
+</ul>
+</li>
+<li><a href="#org4f2d818">9. git merge 与 git rebase 区别</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf2167a9" class="outline-2">
+<h2 id="orgf2167a9"><span class="section-number-2">1</span> 从远程更新到本地(多分支)</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<pre class="src src-shell">git fetch origin source # 从远程origin仓库的source分支下载代码到本地的origin/source分支
+git diff source origin/source # 查看本地source分支和远程分支origin/source的差异
+git merge origin/source # 将origin/source合并到当前分支
+git log --graph --pretty=oneline --abbrev-commit  # git log --graph  可以查看分支合并图
+</pre>
+</div>
+
+<p>
+也可以直接使用pull来更新
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">git pull --rebase origin source:source
+</pre>
+</div>
+<p>
+但是这个方法老出冲突. 或者直接打乱了本地文件.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org693dda8" class="outline-2">
+<h2 id="org693dda8"><span class="section-number-2">2</span> 提交</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+在提交之前, 一定要先进行更新, 然后修改冲突之后再提交.
+</p>
+
+<pre class="example">
+git push origin pinvon:pinvon  # 提交本地 pinvon 分支作为远程 pinvon 分支
+git push origin :pinvon  # 删除远程 pinvon 分支
+git push origin pinvon:master  # 提交本地 pinvon 分支作为远程 master 分支
+</pre>
+
+<p>
+如要提交失败, 并且配置是正确的, 则说明远程分支比本地的更新, 需要先合并. 如果 git pull 时提示 no tracking information, 说明本地分支没有与远程分支关联, 使用命令 git branch &#x2013;set-upstream-to &lt;branch-name&gt; origin/&lt;branch-name&gt; 来关联, 也可以在创建本地分支的同时, 创建与远程分支的关联: git branch -b branch-name origin/branch-name.
+</p>
+
+<p>
+在实际工作环境中, 比较少碰到这种问题, 因为每个人的分支会先统一规划好, 大家都往自己的分支上推送, 再通知主管来合并, 而不会直接推送一个新分支上去.
+</p>
+
+<p>
+还有一种可用于实际工作环境中的方案:
+</p>
+<ul class="org-ul">
+<li>dev 分支公用</li>
+<li>每个人有自己的分支, 可以直接 push</li>
+<li>如果完成一个功能了, 切换到 dev 分支, 更新代码, 然后 merge 自己的分支, 解决冲突, push dev</li>
+<li>由专人来将 dev 合并到 master</li>
+</ul>
+
+<p>
+当主分支有更新时, 每个人需要将主分支的代码合并到自己的分支, 在自己的分支下执行命令: git merge master.
+</p>
+
+<p>
+分支和标签的区别: 标签是固定的, 分支是会向前移动的.
+</p>
+</div>
+
+<div id="outline-container-orgf29f843" class="outline-3">
+<h3 id="orgf29f843"><span class="section-number-3">2.1</span> 冲突</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+冲突的内容在 &lt;&lt;&lt;&lt; &gt;&gt;&gt;&gt; 之间; <code>等号</code> 上方的是本地内容, 下方是远程内容.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org112d156" class="outline-2">
+<h2 id="org112d156"><span class="section-number-2">3</span> 撤销</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-shell">git reflog source # 查看source的历史
+
+# 如果需要详细的时间
+git reflog source --relative-date
+
+git reset --hard commid_id
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd272001" class="outline-2">
+<h2 id="orgd272001"><span class="section-number-2">4</span> 添加远程库</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org4103758" class="outline-3">
+<h3 id="org4103758"><span class="section-number-3">4.1</span> 创建SSH Key</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -t rsa -C "your@email.com"
+</pre>
+</div>
+<p>
+将公钥的内容复制到<a href="https://www.github.com">Github</a>的SSH Keys里面.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga6e51f5" class="outline-3">
+<h3 id="orga6e51f5"><span class="section-number-3">4.2</span> 创建仓库</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+到<a href="https://www.github.com">Github</a>创建一个远程仓库. 然后在本地创建一个本地仓库.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd291278" class="outline-3">
+<h3 id="orgd291278"><span class="section-number-3">4.3</span> 关联仓库</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+将本地仓库与远程仓库关联: <code>git remote add origin git@github.com:path/to/repo.git</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7f7c299" class="outline-3">
+<h3 id="org7f7c299"><span class="section-number-3">4.4</span> 一台电脑, 多个Github账号</h3>
+<div class="outline-text-3" id="text-4-4">
+<ol class="org-ol">
+<li>生成两对私钥/公钥, 并且密钥文件名不能重复.</li>
+</ol>
+
+<p>
+此处假设已有一对密钥, 再生成另一对密钥.
+</p>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-keygen -t rsa -f ~/.ssh/id_rsa_x -C "your@email.com"
+</pre>
+</div>
+<p>
+这样就会生成 <code>id_rsa_x</code> 和 <code>id_rsa_x.pub</code> 两个文件.
+</p>
+
+<ol class="org-ol">
+<li>推送到远程时, 区分不同Github账号, 推送到相应的仓库.</li>
+
+<li>在 <code>~/.ssh/</code> 下创建一个 <code>config</code> 文件并编辑:</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-Shell"># 第一个账号
+Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa
+
+# 第二个账号
+Host second.github.com  # second为前缀名, 可任意设置
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa_x
+</pre>
+</div>
+<p>
+注: <code>@</code> 前的 <code>git</code> 是User, <code>@</code> 后的 <code>github.com</code> 是Host. 如果User和Host都一样, 则无法区分多个账号, 所以要分别配置每个User和Host, 再对Host解析到HostName.
+</p>
+
+<ul class="org-ul">
+<li>清空本地的SSH缓存, 添加新的SSH密钥到SSH agent中:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Shell">ssh-add -D
+ssh-add id_rsa
+ssh-add id_rsa_x
+ssh-add -l  #  确认新密钥是否添加成功
+
+#  测试
+ssh -T git@github.com
+ssh -T git@second.github.com
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>配置完成后, 取消git全局设置:</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-Shell">git config --global --unset user.name
+git config --global --unset user.email
+
+# 单独设置
+git config user.email "your@email"
+git config user.name "name"
+
+# 查看git项目的配置
+git config --list
+</pre>
+</div>
+
+<p>
+如果要关联到第2个账号, 使用 <code>git remote add origin git@second.github.com:path/to/repo.git</code>. 
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org39ad9e1" class="outline-2">
+<h2 id="org39ad9e1"><span class="section-number-2">5</span> 暂存</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+场景: 在项目上的某个分支工作了一段时间, 但是并未完成, 此时需要切换到另一分支, 而我们又不想仅因为过会儿回到这一点而为做了一半的工作创建一次提交. 此时, 就需要用到命令 <code>git stash</code>.
+</p>
+
+<p>
+<code>git stash</code> 会将未完成的修改保存到一个栈上, 我们可以在任何时候重新应用这些改动.
+</p>
+</div>
+
+<div id="outline-container-org313b21b" class="outline-4">
+<h4 id="org313b21b"><span class="section-number-4">5.0.1</span> 暂存</h4>
+<div class="outline-text-4" id="text-5-0-1">
+<div class="org-src-container">
+<pre class="src src-Shell">git stash
+</pre>
+</div>
+<p>
+此时, 如果使用 <code>git status</code> 命令查看, 会发现工作目录是干净的.
+</p>
+
+<p>
+<code>git stash list</code> 可以查看有哪些东西被暂存了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org89cce1b" class="outline-4">
+<h4 id="org89cce1b"><span class="section-number-4">5.0.2</span> 取出</h4>
+<div class="outline-text-4" id="text-5-0-2">
+<div class="org-src-container">
+<pre class="src src-Shell">git stash apply  # 取出最近被暂存的内容, 但是不删除 stash 内容, 通过 git stash list 仍可看到该内容
+git stash pop  # 取出暂存内容的同时, 删除 stash 内容
+git stash apply stash@{2}  # 取出指定的更旧的暂存内容
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2bdf838" class="outline-2">
+<h2 id="org2bdf838"><span class="section-number-2">6</span> 删除分支</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org3e60ded" class="outline-3">
+<h3 id="org3e60ded"><span class="section-number-3">6.1</span> 查看分支</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-Shell">// 查看本地分支
+git branch
+
+// 查看远程分支
+git branch -r
+
+// 查看所有分支
+git branch -a
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org87d46fc" class="outline-3">
+<h3 id="org87d46fc"><span class="section-number-3">6.2</span> 删除本地分支</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="org-src-container">
+<pre class="src src-Shell">git branch -d xxx
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orged05bd6" class="outline-3">
+<h3 id="orged05bd6"><span class="section-number-3">6.3</span> 删除远程分支</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+<pre class="src src-Shell">git push origin :xxx
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25d8337" class="outline-2">
+<h2 id="org25d8337"><span class="section-number-2">7</span> 配置免密钥后仍要输入用户名密码</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+将 .git/config 中的 <a href="https://www.github.com/pinvondev/project.git">https://www.github.com/pinvondev/project.git</a> 改成 git@github.com:pinvondev/project.git 即可.
+</p>
+</div>
+</div>
+<div id="outline-container-orgd658d0d" class="outline-2">
+<h2 id="orgd658d0d"><span class="section-number-2">8</span> Git 基本配置</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+查看所有配置信息: git config &#x2013;help
+</p>
+
+<p>
+Git 配置文件有三种:
+</p>
+<pre class="example">
+/etc/gitconfig  # 使用 --system 来配置, 对系统上的所有用户生效
+~/.gitconfig  # 使用 --global 来配置, 对当前用户生效
+.git/config  # 只对当前 git 项目生效
+</pre>
+<p>
+检查顺序从上往下, 生效以最后的为准.
+</p>
+</div>
+
+<div id="outline-container-org34d1e12" class="outline-3">
+<h3 id="org34d1e12"><span class="section-number-3">8.1</span> core.editor</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+使用 core.editor 来指定默认编辑器.
+</p>
+<pre class="example">
+git config --global core.editor "emacs -nw"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org850c23a" class="outline-3">
+<h3 id="org850c23a"><span class="section-number-3">8.2</span> commit.template</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+.git<sub>template</sub>:
+</p>
+<pre class="example">
+# &lt;类型&gt;: (类型的值见下面描述) &lt;主题&gt; (最多50个字)
+
+# 解释为什么要做这些改动
+# |&lt;----  请限制每行最多72个字   ----&gt;|
+
+# 提供相关文章和其它资源的链接和关键字
+# 例如: Github issue #23
+
+# --- 提交 结束 ---
+# 类型值包含
+#    feat : 新功能
+#    fix : 修复bug
+#    docs : 文档改变
+#    style : 代码格式改变
+#    refactor : 某个已有功能重构
+#    perf : 性能优化
+#    test : 增加测试
+#    build : 改变了build工具 如 grunt换成了 npm
+#    revert : 撤销上一次的 commit
+#    chore : 构建过程或辅助工具的变动
+# --------------------
+# 注意
+#    主题和内容以一个空行分隔
+#    主题限制为最大50个字
+#    主题行大写
+#    主题行结束不用标点
+#    主题行使用祈使名
+#    内容每行72个字
+#    内容用于解释为什么和是什么,而不是怎么做
+#    内容多行时以'-'分隔
+# --------------------
+# 模板更多信息详见下面地址
+# https://gist.github.com/adeekshith/cd4c95a064977cdc6c50
+</pre>
+
+<p>
+执行命令:
+</p>
+<pre class="example">
+git config commit.template .git_template
+</pre>
+
+<p>
+提交时, 使用 git commit, 然后填写模板即可.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org4f2d818" class="outline-2">
+<h2 id="org4f2d818"><span class="section-number-2">9</span> git merge 与 git rebase 区别</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+首先是 git merge. 假设当前在 dev 分支:
+</p>
+<pre class="example">
+            master
+            |
+C0 &lt;-- C1 C3
+      
+      C2
+      |
+      dev
+
+git merge master  # 将 dev 分支合并到 master 分支
+
+C0 --&gt; C1 --&gt; C3
+       |
+       C2 --&gt; 
+</pre>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: pinvon</p>
+<p class="date">Created: 2019-05-16 四 08:15</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
